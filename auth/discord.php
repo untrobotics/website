@@ -1,4 +1,6 @@
 <?php
+// this page must be the result of a Discord Oauth2 request with this set as the REDIRECT_URI
+
 require('../template/top.php'); // see https://github.com/sebastian-king/Sebs-Website-Framework
 
 function get_discord_access_token($code, $scope) {
