@@ -27,3 +27,10 @@ Commands
 		e.g.: @everyone It's a Monday morning!
 		
 		+ Send a message that mentions everyone in the channel, but less obtrustively than usual.
+
+	- @everyone <message> (posted from your own account, not the bot)
+		
+		+ Configure an endpoint for the message requests to go to that contained your GroupMe Developer Access Token.
+			+ Copy `groupme-endpoint-config-example.php` & `groupme-endpoint-example.php` to your own server.
+			+ Fill out the information in the config file.
+			+ Register your endpoint URL (send the URL & secret code to Seb)

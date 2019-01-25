@@ -93,7 +93,6 @@ function mention_everyone($message, $channel_id = GROUPME_CHANNEL_ID, $special_e
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
-
 	$headers = array();
 	$headers[] = 'Content-Type: application/json';
 	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
