@@ -103,7 +103,6 @@ function mention_everyone($message, $channel_id = GROUPME_CHANNEL_ID, $special_e
 	}
 	curl_close ($ch);
 	
-	error_log(var_export($result, true));
 	$data = json_decode($result);
 	$members = $data->response->members;
 	
