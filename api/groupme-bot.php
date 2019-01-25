@@ -68,11 +68,11 @@ if ($sender_type == 'user') {
 				$registered_uids[$r[0]] = $r[1];
 			}
 			
-			//if (array_key_exists($sender_id, $registered_uids)) {
-			//	mention_everyone($body, GROUPME_CHANNEL_ID, $registered_uids[$sender_id]);
-			//} else {
+			if (array_key_exists($sender_id, $registered_uids)) {
+				mention_everyone($body, GROUPME_CHANNEL_ID, $registered_uids[$sender_id]);
+			} else {
 				mention_everyone($body, GROUPME_CHANNEL_ID);
-			//}
+			}
 		}
 	}
 }
