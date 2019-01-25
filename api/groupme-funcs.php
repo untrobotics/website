@@ -1,6 +1,5 @@
 <?php
 require_once("../template/config.php");
-//curl -d '{"text" : "test", "bot_id" : "96ffb832f0781bf447877c2845"}' https://api.groupme.com/v3/bots/post
 
 function endpoint_request($endpoint, $data, $headers) {
 	$ch = curl_init();
