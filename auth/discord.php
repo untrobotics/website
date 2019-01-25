@@ -149,7 +149,7 @@ strong.no-wrap {
 											<img class="black" src="/images/buttons/discord-forward-android.png"/>
 											<img  class="white" src="/images/buttons/discord-forward-android-white.png"/>
 										</a>
-										<a href="https://discordapp.com/channels/376974049043021825/507260076319440922">
+										<a href="https://discordapp.com/channels/<?php echo DISCORD_GUILD_ID; ?>/<?php echo DISCORD_CHANNEL_ID; ?>">
 											<img class="black"  src="/images/buttons/discord-forward-browser.png"/>
 											<img class="white" src="/images/buttons/discord-forward-browser-white.png"/>
 										</a>
