@@ -1,7 +1,7 @@
 How to make the endpoint work
 _____________________________
 
-+ Host both of the files in this directory on your server
++ Host both of the PHP files in this directory on your server
 
 + Fill out the information in the config file (the channel ID & API URL is pre-filled)
 	+ Make a random, secure string to use as your secret code. This code is just to stop spam requests triggering the bot.
