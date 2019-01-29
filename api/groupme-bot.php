@@ -1,7 +1,7 @@
 <?php
 require_once('../template/top.php');
 
-if ($_GET['code'] != API_SECRET) {
+if ($_GET['code'] !== API_SECRET) {
 	http_response_code(401);
 	die();
 }

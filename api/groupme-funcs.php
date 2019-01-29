@@ -21,7 +21,7 @@ function endpoint_request($endpoint, $data, $headers) {
 	return $httpcode;
 }
 
-function post_message($message, $attachments = array(), $special_endpoint = false, $channel_id = false) {
+function post_message($message, $attachments = array(), $channel_id = false, $special_endpoint = false) {
 	
 	$headers = array();
 	
@@ -127,7 +127,7 @@ function mention_everyone($message, $channel_id = GROUPME_CHANNEL_ID, $special_e
 	
 	if ($special_endpoint) {
 		// call endpoint
-		post_message($message, $attachment, $special_endpoint, $channel_id);
+		post_message($message, $attachment, $channel_id, $special_endpoint);
 	} else {
 		post_message($message, $attachment, $channel_id);
 	}
