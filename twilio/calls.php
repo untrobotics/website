@@ -9,7 +9,7 @@ if ($_GET['code'] !== API_SECRET) {
 }
 ?><?xml version="1.0" encoding="UTF-8"?>
 <Response>
-    <Gather input="dtmf" timeout="10" numDigits="1" action="/twilio/process_gather.php?code=<?php echo API_SECRET; ?>">
+    <Gather input="dtmf" timeout="10" numDigits="1" action="/twilio/process-incoming-call.php?code=<?php echo API_SECRET; ?>">
 		<Pause length="1"/>
         <Say voice="woman" language="en-GB">
 			Thank you for calling U.N.T. Ru botics.
