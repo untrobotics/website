@@ -1,5 +1,3 @@
-<pre>
-
 <h4><a href="https://hackdfw.com/guidebook.pdf">Hack DFW Event Guidebook</a></h4>
 
 <h2>Teams</h2>
