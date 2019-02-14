@@ -1,3 +1,4 @@
+<h2>More Info</h2>
 <h4><a href="https://hackdfw.com/guidebook.pdf">Hack DFW Event Guidebook</a></h4>
 
 <h2>Teams</h2>
@@ -64,8 +65,8 @@ Team 8:
 
 <h2>Carpool Details</h2>
 
-<p><strong>We will be leaving at 8am on Saturday the 16th from Discovery Park.</strong></p>
-<p>The carpool groups are</p>
+<p><strong>We will be leaving at 8am on Saturday the 16th from Discovery Park.</strong><br>
+     The carpool groups are as follows: </p>
 
 Car 1:
 <ul>
