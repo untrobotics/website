@@ -1,6 +1,8 @@
 <pre>
-<a href="https://hackdfw.com/guidebook.pdf">Hack DFW Event Guidebook</a>
 
+<h4><a href="https://hackdfw.com/guidebook.pdf">Hack DFW Event Guidebook</a></h4>
+
+<h2>Teams</h2>
 Team 1:
      Brayden Cloud
      Gabe Castro
@@ -53,20 +55,32 @@ Team 8:
      Thong "Dan" Nguyen
 
 
-Carpool Details:
-We will be leaving at 8am on Saturday the 16th from Discovery Park. 
+<h2>Carpool Details</h2>
 
-The Car groups are
+<p><strong>We will be leaving at 8am on Saturday the 16th from Discovery Park.</strong></p>
+<p>The carpool groups are</P>
 
 Car 1:
-Mohammed Alsaadi (Driver)
-Ibrahim Al-Kuwaifi
-Joe Niu
-Jonathon Wright
+     Mohammed Alsaadi (Driver)
+     Ibrahim Al-Kuwaifi
+     Joe Niu
+     Jonathon Wright
 
 Car 2:
-Bassam Metwally
-Danilo Claros
-Clayton Clouser
-Raghib Aftab
-Christy Nguyen
+     Bassam Metwally (Driver)
+     Danilo Claros
+     Clayton Clouser
+     Raghib Aftab
+     Christy Nguyen
+
+Car 3:
+     Sebastian King (Driver)
+     Nicholas Tindle
+     Natalie Drewfs
+     Chris Panko
+
+Car 4:
+     Israel Makambu (Driver)
+     Keyon Geason
+     Aleandro "Alex" Baca
+     Skylar Werner
