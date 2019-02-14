@@ -51,3 +51,22 @@ Team 8:
      Mohammed Alsaadi
      Rickie Barroso
      Thong "Dan" Nguyen
+
+
+Carpool Details:
+We will be leaving at 8am on Saturday the 16th from Discovery Park. 
+
+The Car groups are
+
+Car 1:
+Mohammed Alsaadi (Driver)
+Ibrahim Al-Kuwaifi
+Joe Niu
+Jonathon Wright
+
+Car 2:
+Bassam Metwally
+Danilo Claros
+Clayton Clouser
+Raghib Aftab
+Christy Nguyen
