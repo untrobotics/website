@@ -20,12 +20,14 @@ Team 3:
      Nick Tindle
      Jesse Sainz
      Ibrahim Al-Kuwaifi
+     Kimberlee Ashmore
 
 Team 4:
      Danilo Claros
      Clayton Clouser
      Christy Nguyen
      Jonathon Wright
+     Uchenna Ajiwe
 
 Team 5:
      Casey Kinnamon
@@ -48,9 +50,4 @@ Team 8:
      Bassam Metwally
      Mohammed Alsaadi
      Rickie Barroso
-
-Team 9:
-     Kimberlee Ashmore
      Thong "Dan" Nguyen
-     Uchenna Ajiwe
-     Sampson Akwafuo
