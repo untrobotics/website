@@ -132,7 +132,8 @@ Team 8:
 
 <h2 id="carpool-info">5. Carpool Details</h2>
 
-<p><strong>We will be leaving at 8am on Saturday the 16th from Discovery Park (Lot 93).</strong><p>
+<p><strong>We will be leaving at 8am on Saturday the 16th from Discovery Park (Lot 93).<br>
+     Returning by 2pm on Sunday (unless in finals)</strong><p>
      
 <p>The carpool groups are as follows: </p>
 
