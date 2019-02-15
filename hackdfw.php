@@ -74,11 +74,9 @@
 <h4><a href="https://hackdfw.com/guidebook.pdf">Hack DFW Event Guidebook</a></h4>
 
 <h4>Directions:</h4>
-<p><a href="https://goo.gl/maps/QUAs6Gfu6QP2">Women's Museum in Fair Park,<br>3800 Parry Ave.,<br>Dallas, Tx<br>75226</a></p>
+<p><a href="https://goo.gl/maps/QUAs6Gfu6QP2">Women's Museum in Fair Park,<br>3800 Parry Ave,<br>Dallas, TX<br>75226</a></p>
 <p>You can park in any open space (no permit required) in Fair Park, entering through Gate 3. See the map below for more instructions.</p>
 <div><img class="map" src="/images/hackdfw/map.png"/></div>
-
-
 
 <h2 id="teams">4. Teams</h2>
 <p>Team 1:</p>
