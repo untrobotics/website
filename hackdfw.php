@@ -1,9 +1,18 @@
+<html>
 <head>
      <title>UNT Engineering - HackDFW Information Page</title>
 </head>
+<body>
 <h1><em>UNT Engineering</em> - HackDFW Information Page</h1>
 
-<h3>What to bring</h3>
+<div class="nav">
+     <a href="#what-to-bring">What to bring</a>
+     <a href="#event-info">Event Info</a>
+     <a href="#teams">Teams</a>
+     <a href="#carpool-info">Carpool Info</a>
+</div>
+
+<h3 id="what-to-bring">What to bring</h3>
 <ul>
      <li>Toothbrush</li>
      <li>Deodorant</li>
@@ -41,10 +50,10 @@
      </li>
 </ul>
 
-<h2>More Info</h2>
+<h2 id="event-info">More Info</h2>
 <h4><a href="https://hackdfw.com/guidebook.pdf">Hack DFW Event Guidebook</a></h4>
 
-<h2>Teams</h2>
+<h2 id="teams">Teams</h2>
 <p>Team 1:</p>
 <ul>
      <li>Brayden Cloud</li>
@@ -106,7 +115,7 @@ Team 8:
      <li>Thong "Dan" Nguyen</li>
 </ul>
 
-<h2>Carpool Details</h2>
+<h2 id="carpool-info">Carpool Details</h2>
 
 <p><strong>We will be leaving at 8am on Saturday the 16th from Discovery Park (Lot 93).</strong><p>
      
@@ -141,3 +150,5 @@ Car 4:
      <li>Aleandro "Alex" Bacallao</li>
      <li>Skylar Werner</li>
 </ul>
+</body>
+</html>
