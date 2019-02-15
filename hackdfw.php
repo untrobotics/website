@@ -1,3 +1,34 @@
+<h1><em>UNT Engineering</em> - HackDFW Information Page</h1>
+
+<h3>What to bring</h3>
+<ul>
+     <li>Toothbrush</li>
+     <li>Deodorant</li>
+     <li>Laptop</li>
+     <li>Charger</li>
+     <li>Power Strip</li>
+     <li>Resume (x20)</li>
+     <li>Pen/Scratch Paper</li>
+     <li>Headphones</li>
+     <li>Backpack</li>
+     <li>Pillow/Blanket (not necessity)</li>
+     <li>USB drive</li>
+<ul>
+     
+<h3>What <strong style="color: red;">NOT</strong> to bring</h3>
+
+<ul>
+     <li>Sweatshirt/Hoodie</li>
+     <li>Wallet</li>
+     <li>Spare outfit</li>
+     <li>If Hardware Hacking</li>
+          <ul>
+               <li>Hardware</li>
+               <li>Cables for any necessary computer connections</li>
+          </ul>
+     </li>
+</ul>
+
 <h2>More Info</h2>
 <h4><a href="https://hackdfw.com/guidebook.pdf">Hack DFW Event Guidebook</a></h4>
 
