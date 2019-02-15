@@ -159,7 +159,6 @@ Car 1:
      <li>Mohammed Alsaadi (Driver)</li>
      <li>Ibrahim Al-Kuwaifi</li>
      <li>Joe Niu</li>
-     <li>Jonathon Wright</li>
 </ul>
 Car 2:
 <ul>
