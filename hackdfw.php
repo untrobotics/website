@@ -8,6 +8,9 @@
                border: 1px solid gray;
                display: inline-block;
           }
+          .nav h4 {
+               text-align: center;
+          }
      </style>
 </head>
 <body>
