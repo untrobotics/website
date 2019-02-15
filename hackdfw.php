@@ -95,6 +95,6 @@ Car 4:
 <ul>
      <li>Israel Makambu (Driver)</li>
      <li>Keyon Geason</li>
-     <li>Aleandro "Alex" Baca</li>
+     <li>Aleandro "Alex" Bacallao</li>
      <li>Skylar Werner</li>
 </ul>
