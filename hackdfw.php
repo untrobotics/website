@@ -1,6 +1,7 @@
 <html>
 <head>
      <title>UNT Engineering - HackDFW Information Page</title>
+     <link rel="icon" href="/favicon.png" type="image/png" />
      <style>
           .nav {
                padding: 10px 40px 10px 10px;
