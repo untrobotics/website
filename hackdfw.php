@@ -1,6 +1,13 @@
 <html>
 <head>
      <title>UNT Engineering - HackDFW Information Page</title>
+     <style>
+          .nav {
+               padding: 50px;
+               background-color: whitesmoke;
+               border: 1px solid darkgray;
+          }
+     </style>
 </head>
 <body>
 <h1><em>UNT Engineering</em> - HackDFW Information Page</h1>
