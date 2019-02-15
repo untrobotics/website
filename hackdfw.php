@@ -12,6 +12,7 @@
                text-align: center;
           }
           img.map {
+               box-shadow: 0px 0px 6px darkgrey;
                width: 100%;
                max-width: 850px;
           }
