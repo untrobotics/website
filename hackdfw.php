@@ -5,7 +5,7 @@
           .nav {
                padding: 10px 40px 10px 10px;
                background-color: whitesmoke;
-               border: 1px solid lightgray;
+               border: 1px solid gray;
                display: inline-block;
           }
      </style>
@@ -14,6 +14,7 @@
 <h1><em>UNT Engineering</em> - HackDFW Information Page</h1>
 
 <div class="nav">
+     <h4>Navigation Menu</h4>
      <ol>
           <li><a href="#what-to-bring">What to bring</a></li>
           <li><a href="#what-not-to-bring">What NOT to bring</a></li>
