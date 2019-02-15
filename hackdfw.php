@@ -16,11 +16,6 @@
      <li>Backpack</li>
      <li>Pillow/Blanket (not necessity)</li>
      <li>USB drive</li>
-</ul>
-     
-<h3>What <strong style="color: red;">NOT</strong> to bring</h3>
-
-<ul>
      <li>Sweatshirt/Hoodie</li>
      <li>Wallet</li>
      <li>Spare outfit</li>
@@ -28,6 +23,20 @@
           <ul>
                <li>Hardware</li>
                <li>Cables for any necessary computer connections</li>
+          </ul>
+     </li>
+</ul>
+     
+<h3>What <strong style="color: red;">NOT</strong> to bring</h3>
+
+<ul>
+     <li>Anything illegal</li>
+     <li>Anything valuable</li>
+     <li>Desktops are discouraged</li>
+          <ul>
+               <li>Unless you’re doing VR</li>
+               <li>Unless you don’t have a laptop</li>
+               <li>Not banned but people will stare and interrupt your hacking</li>
           </ul>
      </li>
 </ul>
