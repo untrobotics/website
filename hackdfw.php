@@ -13,10 +13,12 @@
 <h1><em>UNT Engineering</em> - HackDFW Information Page</h1>
 
 <div class="nav">
-     <a href="#what-to-bring">What to bring</a>
-     <a href="#event-info">Event Info</a>
-     <a href="#teams">Teams</a>
-     <a href="#carpool-info">Carpool Info</a>
+     <ol>
+          <li><a href="#what-to-bring">What to bring</a></li>
+          <li><a href="#event-info">Event Info</a></li>
+          <li><a href="#teams">Teams</a></li>
+          <li><a href="#carpool-info">Carpool Info</a></li>
+     </ol>
 </div>
 
 <h3 id="what-to-bring">What to bring</h3>
