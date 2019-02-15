@@ -3,9 +3,10 @@
      <title>UNT Engineering - HackDFW Information Page</title>
      <style>
           .nav {
-               padding: 50px;
+               padding: 20px;
                background-color: whitesmoke;
                border: 1px solid darkgray;
+               display: inline-block;
           }
      </style>
 </head>
