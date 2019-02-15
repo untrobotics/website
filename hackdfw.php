@@ -81,7 +81,6 @@
 Team 2:
 <ul>
      <li>Chris Panko</li>
-     <li>Joe Niu</li>
      <li>Israel Makambu</li>
      <li>Answesh Baisyat</li>
      <li>Keyon Geason</li>
