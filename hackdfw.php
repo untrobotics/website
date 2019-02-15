@@ -3,7 +3,7 @@
      <title>UNT Engineering - HackDFW Information Page</title>
      <style>
           .nav {
-               padding: 20px;
+               padding: 20px 50px 20px 20px;
                background-color: whitesmoke;
                border: 1px solid darkgray;
                display: inline-block;
@@ -16,13 +16,14 @@
 <div class="nav">
      <ol>
           <li><a href="#what-to-bring">What to bring</a></li>
+          <li><a href="#what-not-to-bring">What NOT to bring</a></li>
           <li><a href="#event-info">Event Info</a></li>
           <li><a href="#teams">Teams</a></li>
           <li><a href="#carpool-info">Carpool Info</a></li>
      </ol>
 </div>
 
-<h3 id="what-to-bring">What to bring</h3>
+<h2 id="what-to-bring">1. What to bring</h3>
 <ul>
      <li>Toothbrush</li>
      <li>Deodorant</li>
@@ -46,7 +47,7 @@
      </li>
 </ul>
      
-<h3>What <strong style="color: red;">NOT</strong> to bring</h3>
+<h2 id="what-not-to-bring">2. What <strong style="color: red;">NOT</strong> to bring</h3>
 
 <ul>
      <li>Anything illegal</li>
@@ -60,10 +61,10 @@
      </li>
 </ul>
 
-<h2 id="event-info">More Info</h2>
+<h2 id="event-info">3. More Info</h2>
 <h4><a href="https://hackdfw.com/guidebook.pdf">Hack DFW Event Guidebook</a></h4>
 
-<h2 id="teams">Teams</h2>
+<h2 id="teams">4. Teams</h2>
 <p>Team 1:</p>
 <ul>
      <li>Brayden Cloud</li>
@@ -125,7 +126,7 @@ Team 8:
      <li>Thong "Dan" Nguyen</li>
 </ul>
 
-<h2 id="carpool-info">Carpool Details</h2>
+<h2 id="carpool-info">5. Carpool Details</h2>
 
 <p><strong>We will be leaving at 8am on Saturday the 16th from Discovery Park (Lot 93).</strong><p>
      
