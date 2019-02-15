@@ -159,6 +159,7 @@ Car 1:
      <li>Mohammed Alsaadi (Driver)</li>
      <li>Ibrahim Al-Kuwaifi</li>
      <li>Joe Niu</li>
+     <li>Thong "Dan" Nguyen</li>
 </ul>
 Car 2:
 <ul>
