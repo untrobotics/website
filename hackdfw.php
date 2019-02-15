@@ -13,7 +13,7 @@
      <li>Backpack</li>
      <li>Pillow/Blanket (not necessity)</li>
      <li>USB drive</li>
-<ul>
+</ul>
      
 <h3>What <strong style="color: red;">NOT</strong> to bring</h3>
 
