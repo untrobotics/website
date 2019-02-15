@@ -1,3 +1,6 @@
+<head>
+     <title>UNT Engineering - HackDFW Information Page</title>
+</head>
 <h1><em>UNT Engineering</em> - HackDFW Information Page</h1>
 
 <h3>What to bring</h3>
