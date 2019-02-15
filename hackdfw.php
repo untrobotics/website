@@ -128,6 +128,12 @@ Team 8:
      <li>Rickie Barroso</li>
      <li>Thong "Dan" Nguyen</li>
 </ul>
+Not Competing:
+<ul>
+	<li>Eric King</li>
+	<li>David Woodward</li>
+	<li>Joe Niu</li>
+</ul>
 
 <h2 id="carpool-info">5. Carpool Details</h2>
 
