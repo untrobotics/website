@@ -21,7 +21,7 @@
      <li>Sweatshirt/Hoodie</li>
      <li>Wallet</li>
      <li>Spare outfit</li>
-     <li>If Hardware Hacking</li>
+     <li>If Hardware Hacking
           <ul>
                <li>Hardware</li>
                <li>Cables for any necessary computer connections</li>
