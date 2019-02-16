@@ -169,6 +169,7 @@ Car 2:
      <li>Clayton Clouser</li>
      <li>Raghib Aftab</li>
      <li>Christy Nguyen</li>
+     <li>Sampson Akwafuo</li>
 </ul>
 Car 3:
 <ul>
