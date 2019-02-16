@@ -145,6 +145,7 @@ Not Competing:
 	<li>Eric King</li>
 	<li>David Woodward</li>
 	<li>Joe Niu</li>
+	<li>Jacob Woodson</li>
 </ul>
 
 <h2 id="carpool-info">5. Carpool Details</h2>
