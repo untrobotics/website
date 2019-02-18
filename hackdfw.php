@@ -1,5 +1,13 @@
 <html>
 <head>
+<script async src =“https://www.googletagmanager.com/gtag/js?id=UA-134691551-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-134691551-1');
+    </script>
      <title>UNT Engineering - HackDFW Information Page</title>
      <link rel="icon" href="/favicon.png" type="image/png" />
      <style>
