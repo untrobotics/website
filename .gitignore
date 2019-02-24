@@ -1,3 +1,4 @@
 api/endpoint-example/groupme-endpoint-config.php
 template/config.php
 twilio/phone-numbers-config.php
+dyndns/api/config.php

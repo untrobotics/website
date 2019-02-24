@@ -1,0 +1,24 @@
+Options -Indexes
+
+#RewriteEngine On
+#RewriteCond %{HTTPS} !=on
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteEngine on
+
+RewriteCond %{HTTP_HOST} !^www.untrobotics.com [NC]
+RewriteRule ^(.*)$ https://www.untrobotics.com/$1 [R=301,L]
+
+RewriteCond %{HTTP_HOST} !^$
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
+
+RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+RewriteRule ^(([^/]+/)*[^.]+)$ /$1.php [L]
+
+RewriteRule ^join/discord$ /join-discord.php [L]
+RewriteRule ^join/campuslabs$ /join-campuslabs.php [L]
+RewriteRule ^dues/paid$ /dues-paid.php [L]

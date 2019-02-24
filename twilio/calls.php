@@ -10,7 +10,7 @@ if ($_GET['code'] !== API_SECRET) {
 ?><?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Gather input="dtmf" timeout="10" numDigits="1" action="/twilio/process-incoming-call.php?code=<?php echo API_SECRET; ?>">
-		<Pause length="1"/>
+		<Pause length="2"/>
         <Say voice="woman" language="en-GB">
 			Thank you for calling U.N.T. Ru botics.
 			Please press 1 for Nicholas Tindle, Organisation President.
