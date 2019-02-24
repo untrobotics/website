@@ -60,6 +60,7 @@ if ($sender_type == 'user') {
 		
 		if (!$has_mentions) { // make sure the bot doesn't trigger itself
 			$body = $m[0];
+			$body = preg_replace("/@everyone/", "@potatoes", $body);
 			$q = $db->query("SELECT uid, endpoint FROM `officers_groupme_access_tokens`");
 			
 			$registered_uids = array();
