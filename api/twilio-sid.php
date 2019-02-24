@@ -4,7 +4,20 @@ require_once("../template/config.php");
 function sid_to_phone_number($sid) {
 	$ch = curl_init();
 
-	curl_setopt($ch, CURLOPT_URL, 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/Messages/' . $sid . '.json');
+	$sid_id = substr($sid, 0, 2);
+	switch ($sid_id) {
+		case "CA":
+			$url = "Calls";
+			break;
+		case "SM":
+		case "MS":
+			$url = "Messages";
+			break;
+		default:
+			$url = "Messages";
+			break;
+	}
+	curl_setopt($ch, CURLOPT_URL, 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/' . $url . '/' . $sid . '.json');
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
@@ -17,5 +30,6 @@ function sid_to_phone_number($sid) {
 	curl_close ($ch);
 
 	$data = json_decode($result);
+	error_log(var_export($data, true));
 	return $data->from;
 }
