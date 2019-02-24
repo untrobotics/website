@@ -29,7 +29,7 @@ function dial_attempt($phone_number) {
 		error_log('Error making twilio call request: ' . curl_error($ch));
 	}
 	curl_close($ch);
-	
+
 	$data = json_decode($result);
 
 	return $data->sid;
@@ -60,14 +60,14 @@ function call_completed($sid) {
         return false;
 }
 
-function queue_size($queue_name = TWILIO_FIND_FIRST_QUEUE) {
+function queue_size($queue_sid = TWILIO_FIND_FIRST_QUEUE_SID) {
 	$ch = curl_init();
 
 	$post = array(
 		'FriendlyName' => $queue_name
 	);
 
-	curl_setopt($ch, CURLOPT_URL, 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/Queues.json');
+	curl_setopt($ch, CURLOPT_URL, 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/Queues/' . $queue_sid . '.json');
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post));
@@ -78,8 +78,10 @@ function queue_size($queue_name = TWILIO_FIND_FIRST_QUEUE) {
 		error_log('Error making twilio queue log request: ' . curl_error($ch));
 	}
 	curl_close($ch);
-	
+
 	$data = json_decode($result);
+
+	error_log(var_export($data, true));
 
 	return intval($data->current_size);
 }
