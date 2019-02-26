@@ -7,6 +7,7 @@ if ($_GET['code'] !== API_SECRET) {
 // Keep phone numbers out of normal config file!!
 // This is just in case some other part of the system gets compromised, it stops all of our phone numbers being in the global scope of all pages on the website.
 require('phone-numbers-config.php');
+ob_start();
 ?><?xml version="1.0" encoding="UTF-8"?>
 <Response>
 	<?php
@@ -47,12 +48,7 @@ require('phone-numbers-config.php');
 			// find first available
 			?><Enqueue waitUrl="/twilio/hold-music/hold-music.php"><?php echo TWILIO_FIND_FIRST_QUEUE; ?></Enqueue><?php
 			// <Queue> is global, let's make a request in the background to find the first person
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, 'https://' . $_SERVER['SERVER_NAME'] . '/twilio/find-first/find-first-available.php?code=' . API_SECRET);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-			curl_exec($ch);
-			curl_close($ch);
+			
 			break;
 		default:
 			?>
@@ -60,4 +56,21 @@ require('phone-numbers-config.php');
 			<?php
 	}
 ?>
-</Response>
+</Response><?php
+// this code basically sends the output to the user and then continues execution in secret below
+header('Connection: close');
+header('Content-Length: ' . ob_get_length());
+ob_end_flush();
+ob_flush();
+flush();
+
+// the curl request must be done asynchronously, because the script called here checks to make sure the Queue size is greater than one,
+// however the call won't get added to the queue until this XML is returned, which without the async call waits for the curl to finish
+if (intval($_POST['Digits']) === 0) {
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, 'https://' . $_SERVER['SERVER_NAME'] . '/twilio/find-first/find-first-available.php?code=' . API_SECRET);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_exec($ch);
+	curl_close($ch);
+}
+?>
