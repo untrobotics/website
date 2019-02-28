@@ -63,8 +63,11 @@ function call_completed($sid) {
 
         $data = json_decode($result);
 
-		$final_status = array('Busy', 'No-answer', 'Canceled', 'Failed', 'Completed');
-		if (in_array($data->status, $final_status)) {
+		$final_status = array('busy', 'no-answer', 'canceled', 'failed', 'completed');
+	
+		error_log("CALL STATUS: " . $data->status);
+	
+		if (in_array(strtolower($data->status), $final_status)) {
 			// the call was ended, probably didn't complete the call challenge successfully
 			return true;
 		}
@@ -92,7 +95,7 @@ function queue_size($queue_sid = TWILIO_FIND_FIRST_QUEUE_SID) {
 
 	$data = json_decode($result);
 
-	error_log("QUEUE SIZE: " . var_export($data, true));
+	error_log("QUEUE SIZE: " . intval($data->current_size));
 
 	return intval($data->current_size);
 }
