@@ -61,9 +61,9 @@ if ($auth_api) {
 				}
 			}
 		}
-	} else {
-		$a = array("response"=>"Invalid API key.");
 	}
+} else {
+	$a = array("response"=>"Invalid API key.");
 }
 
 echo json_encode($a);
