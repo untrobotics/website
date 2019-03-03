@@ -68,7 +68,7 @@ flush();
 // however the call won't get added to the queue until this XML is returned, which without the async call waits for the curl to finish
 if (intval($_POST['Digits']) === 0) {
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'https://' . $_SERVER['SERVER_NAME'] . '/twilio/find-first/find-first-available.php?code=' . API_SECRET);
+	curl_setopt($ch, CURLOPT_URL, 'https://' . $_SERVER['SERVER_NAME'] . '/twilio/find-first/find-first-available.php?code=' . API_SECRET . '&SID=' . $_POST['CallSid']);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_exec($ch);
 	curl_close($ch);
