@@ -96,7 +96,7 @@ if ($sender_type == 'user') {
 					mention_everyone($body, $channel_id);
 				}
 			} else {
-				mention_person('Only officers may use the @everyone feature.', $channel, $sender_id);
+				mention_person('Only officers may use the @everyone feature.', $channel_id, $sender_id);
 			}
 		}
 	}
