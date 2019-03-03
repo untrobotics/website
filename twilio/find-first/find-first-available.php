@@ -1,4 +1,14 @@
 <?php
+/*
+ob_end_clean();
+header("Connection: close\r\n");
+header("Content-Encoding: none\r\n");
+header("Content-Length: 0");
+ignore_user_abort(true);
+*/
+
+// continue
+
 require('../../template/config.php');
 if ($_GET['code'] !== API_SECRET) {
         http_response_code(401);
@@ -6,8 +16,6 @@ if ($_GET['code'] !== API_SECRET) {
 }
 
 require('../phone-numbers-config.php');
-
-$final_status = array('Busy', 'No-answer', 'Canceled', 'Failed', 'Completed');
 
 function dial_attempt($phone_number) {
 	$ch = curl_init();
@@ -31,11 +39,26 @@ function dial_attempt($phone_number) {
 	curl_close($ch);
 
 	$data = json_decode($result);
+	
+	error_log("DIAL ATTEMPT: " . var_export($result, true));
 
 	return $data->sid;
 }
 
 function call_completed($sid) {
+
+        $status = call_status($sid);
+
+		$final_status = array('busy', 'no-answer', 'canceled', 'failed', 'completed');
+	
+		if (in_array(strtolower($status), $final_status)) {
+			// the call was ended, probably didn't complete the call challenge successfully
+			return true;
+		}
+        return false;
+}
+
+function call_status($sid) {
 
         $ch = curl_init();
 
@@ -52,19 +75,17 @@ function call_completed($sid) {
         curl_close($ch);
 
         $data = json_decode($result);
-
-		if (in_array($data->status, $final_status)) {
-			// the call was ended, probably didn't complete the call challenge successfully
-			return true;
-		}
-        return false;
+	
+		error_log("OUTGOING CALL STATUS: " . $data->status);
+	
+		return $data->status;
 }
 
 function queue_size($queue_sid = TWILIO_FIND_FIRST_QUEUE_SID) {
 	$ch = curl_init();
 
 	$post = array(
-		'FriendlyName' => $queue_name
+		'FriendlyName' => TWILIO_FIND_FIRST_QUEUE
 	);
 
 	curl_setopt($ch, CURLOPT_URL, 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/Queues/' . $queue_sid . '.json');
@@ -81,18 +102,23 @@ function queue_size($queue_sid = TWILIO_FIND_FIRST_QUEUE_SID) {
 
 	$data = json_decode($result);
 
-	error_log(var_export($data, true));
+	error_log("QUEUE SIZE: " . intval($data->current_size));
 
 	return intval($data->current_size);
 }
 
+$incoming_sid = $_GET['SID'];
+
+sleep(1); // give the queue a change to register
 foreach ($phone_numbers as $phone_number) {
 	if (queue_size() > 0) {
-		$sid = dial_attempt($phone_number);
+		$outgoing_sid = dial_attempt($phone_number);
 		do {
+			error_log("INCOMING CALL STATUS: " . call_status($incoming_sid));
 			sleep(1);
-		} while (!call_completed($sid) && queue_size() > 0);
+		} while (!call_completed($outgoing_sid) && queue_size() > 0);
 	} else {
 		break;
 	}
 }
+error_log("INCOMING CALL STATUS LAST: " . call_status($incoming_sid));

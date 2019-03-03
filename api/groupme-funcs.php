@@ -21,7 +21,7 @@ function endpoint_request($endpoint, $data, $headers) {
 	return $httpcode;
 }
 
-function post_message($message, $attachments = array(), $channel_id = false, $special_endpoint = false) {
+function post_message($message, $channel_id = false, $attachments = array(), $special_endpoint = false) {
 	
 	$headers = array();
 	
@@ -44,7 +44,7 @@ function post_message($message, $attachments = array(), $channel_id = false, $sp
 	} else {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'https://api.groupme.com/v3/bots/post');
-		$post_data['bot_id'] = GROUPME_BOT_ID;
+		$post_data['bot_id'] = CHANNEL_TO_BOT[$channel_id];
 		$headers[] = 'Content-Type: application/x-www-form-urlencoded';
 	}
 	
@@ -86,7 +86,7 @@ function prepare_image($attachment) {
 	return $data->payload->url;
 }
 
-function mention_everyone($message, $channel_id = GROUPME_CHANNEL_ID, $special_endpoint = false) {
+function get_all_members($channel_id) {
 	$ch = curl_init();
 
 	curl_setopt($ch, CURLOPT_URL, 'https://api.groupme.com/v3/groups/' . $channel_id . '?token=' . GROUPME_ACCESS_TOKEN);
@@ -106,18 +106,24 @@ function mention_everyone($message, $channel_id = GROUPME_CHANNEL_ID, $special_e
 	$data = json_decode($result);
 	$members = $data->response->members;
 	
+	return $members;
+}
+
+function mention_everyone($message, $channel_id, $special_endpoint = false) {
+	$members = get_all_members($channel_id);
+	
 	$attachment = array();
 	$user_ids = array();
 	$loci = array();
 	
-	$string = '';
+	//$string = '';
 	foreach ($members as $member) {
 		$mention = '@' . $member->nickname . ' ';
 		
 		$user_ids[] = $member->user_id;
 		//$loci[] = array(strlen($string), strlen($string) + strlen($mention) - 1);
 		$loci[] = array(0, 9);
-		$string .= $mention;
+		//$string .= $mention;
 	}
 	
 	$attachment[0] = array();
@@ -127,8 +133,60 @@ function mention_everyone($message, $channel_id = GROUPME_CHANNEL_ID, $special_e
 	
 	if ($special_endpoint) {
 		// call endpoint
-		post_message($message, $attachment, $channel_id, $special_endpoint);
+		post_message($message, $channel_id, $attachment, $special_endpoint);
 	} else {
-		post_message($message, $attachment, $channel_id);
+		post_message($message, $channel_id, $attachment);
 	}
+}
+
+function mention_officers($message, $channel_id) {
+	$officers = get_all_members(GROUPME_OFFICER_CHANNEL_ID);
+	
+	$attachment = array();
+	$user_ids = array();
+	$loci = array();
+	
+	//$string = '';
+	foreach ($officers as $officer) {
+		$mention = '@' . $officer->nickname;
+		
+		$user_ids[] = $officer->user_id;
+		//$loci[] = array(strlen($string), strlen($string) + strlen($mention) - 1);
+		$loci[] = array(0, 18);
+		//$string .= $mention;
+	}
+	
+	$attachment[0] = array();
+	$attachment[0]['type'] = 'mentions';
+	$attachment[0]['user_ids'] = $user_ids;
+	$attachment[0]['loci'] = $loci;
+	
+	post_message($message, $channel_id, $attachment);
+}
+
+function mention_person($message, $channel_id, $person) {
+	$members = get_all_members($channel_id); // this needs to be replaced with a single user get function
+	
+	$attachment = array();
+	$user_ids = array();
+	$loci = array();
+	
+	foreach ($members as $member) {
+		if ($member->user_id === $person) {
+			$mention = '@' . $member->nickname;
+		
+			$user_ids[] = $member->user_id;
+			//$loci[] = array(strlen($string), strlen($string) + strlen($mention) - 1);
+			$loci[] = array(0, strlen($mention));
+			
+			$message = $mention . ' ' . $message;
+		}
+	}
+	
+	$attachment[0] = array();
+	$attachment[0]['type'] = 'mentions';
+	$attachment[0]['user_ids'] = $user_ids;
+	$attachment[0]['loci'] = $loci;
+	
+	post_message($message, $channel_id, $attachment);
 }
