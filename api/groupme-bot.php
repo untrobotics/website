@@ -20,6 +20,7 @@ $message = $data->text;
 $sender_type = $data->sender_type;
 $o = $attachments = $data->attachments;
 $sender_id = $data->sender_id;
+$channel_id = $data->group_id;
 
 function parse_attachments($attachments) {
 	$a = array();
@@ -38,19 +39,20 @@ function parse_attachments($attachments) {
 
 $attachments = parse_attachments($attachments);
 
+
 if ($sender_type == 'user') {
-	if (preg_match('@^SMS#([a-z0-9]{34}) (.+)$@is', $message, $m)) {
+	if (preg_match('@^SMS#([a-z0-9]{34}) (.+)$@is', $message, $m) && $channel_id === GROUPME_OFFICER_CHANNEL_ID) {
 		$sid = $m[1];
 		$to = sid_to_phone_number($sid);
 		$body = $m[2];
 		$send_status = send_sms_message($body, $to, $attachments);
-		post_message('Sent message to ' . $to . ', status: ' . $send_status);
-	} else if (preg_match('@^SMS#(\+1[0-9]{10}) (.+)$@is', $message, $m)) {
+		post_message('Sent message to ' . $to . ', status: ' . $send_status, $channel_id);
+	} else if (preg_match('@^SMS#(\+1[0-9]{10}) (.+)$@is', $message, $m) && $channel_id === GROUPME_OFFICER_CHANNEL_ID) {
 		$to = $m[1];
 		$body = $m[2];
 		$send_status = send_sms_message($body, $to, $attachments);
-		post_message('Sent message to ' . $to . ', status: ' . $send_status);
-	} else if (preg_match('/^\@everyone (.+)$/is', $message, $m)) {
+		post_message('Sent message to ' . $to . ', status: ' . $send_status, $channel_id);
+	} else if (preg_match('/^\@officers (.+)$/is', $message, $m)) {
 		$has_mentions = false;
 		foreach ($o as $attachment) {
 			if ($attachment['type'] == 'mentions') {
@@ -60,19 +62,41 @@ if ($sender_type == 'user') {
 		
 		if (!$has_mentions) { // make sure the bot doesn't trigger itself
 			$body = $m[0];
-			$body = preg_replace("/@everyone/", "@potatoes", $body);
-			$q = $db->query("SELECT uid, endpoint FROM `officers_groupme_access_tokens`");
+			$body = preg_replace("/@officers/", "@potatoes_in_chief", $body);
+			mention_officers($body, $channel_id);
+		}
+	} else if (preg_match('/^\@everyone (.+)$/is', $message, $m)) {
+		$has_mentions = false;
+		foreach ($o as $attachment) {
+			if ($attachment['type'] == 'mentions') {
+				$has_mentions = true;
+			}
+		}
+		
+		if (!$has_mentions) { // make sure the bot doesn't trigger itself
+			$officers = get_all_members(GROUPME_OFFICER_CHANNEL_ID);
 			
-			$registered_uids = array();
-			
-			while ($r = $q->fetch_array(MYSQLI_NUM)) {
-				$registered_uids[$r[0]] = $r[1];
+			$user_is_officer = false;
+			foreach ($officers as $member) {
+				if ($member->user_id == $sender_id) {
+					$user_is_officer = true;
+				}
 			}
 			
-			if (array_key_exists($sender_id, $registered_uids)) {
-				mention_everyone($body, GROUPME_CHANNEL_ID, $registered_uids[$sender_id]);
+			if ($user_is_officer) {
+				$body = $m[0];
+				$body = preg_replace("/@everyone/", "@potatoes", $body);
+				$q = $db->query('SELECT endpoint FROM `officers_groupme_access_tokens` WHERE uid = "' . $db->real_escape_string($sender_id) . '" AND channel_id = "' . $db->real_escape_string($channel_id) . '"');
+
+				if ($q->num_rows > 0) {
+					$r = $q->fetch_array(MYSQLI_NUM);
+					$endpoint = $r[0];
+					mention_everyone($body, $channel_id, $endpoint);
+				} else {
+					mention_everyone($body, $channel_id);
+				}
 			} else {
-				mention_everyone($body, GROUPME_CHANNEL_ID);
+				mention_person('Only officers may use the @everyone feature.', $channel, $sender_id);
 			}
 		}
 	}
