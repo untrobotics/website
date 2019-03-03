@@ -52,6 +52,19 @@ if ($sender_type == 'user') {
 		$body = $m[2];
 		$send_status = send_sms_message($body, $to, $attachments);
 		post_message('Sent message to ' . $to . ', status: ' . $send_status, $channel_id);
+	} else if (preg_match('/^\@officers (.+)$/is', $message, $m)) {
+		$has_mentions = false;
+		foreach ($o as $attachment) {
+			if ($attachment['type'] == 'mentions') {
+				$has_mentions = true;
+			}
+		}
+		
+		if (!$has_mentions) { // make sure the bot doesn't trigger itself
+			$body = $m[0];
+			$body = preg_replace("/@officers/", "@potatoes_in_chief", $body);
+			mention_officers($body, $channel_id);
+		}
 	} else if (preg_match('/^\@everyone (.+)$/is', $message, $m)) {
 		$has_mentions = false;
 		foreach ($o as $attachment) {

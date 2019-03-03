@@ -139,8 +139,33 @@ function mention_everyone($message, $channel_id, $special_endpoint = false) {
 	}
 }
 
+function mention_officers($message, $channel_id) {
+	$officers = get_all_members(GROUPME_OFFICER_CHANNEL_ID);
+	
+	$attachment = array();
+	$user_ids = array();
+	$loci = array();
+	
+	//$string = '';
+	foreach ($officers as $officer) {
+		$mention = '@' . $officer->nickname;
+		
+		$user_ids[] = $officer->user_id;
+		//$loci[] = array(strlen($string), strlen($string) + strlen($mention) - 1);
+		$loci[] = array(0, 18);
+		//$string .= $mention;
+	}
+	
+	$attachment[0] = array();
+	$attachment[0]['type'] = 'mentions';
+	$attachment[0]['user_ids'] = $user_ids;
+	$attachment[0]['loci'] = $loci;
+	
+	post_message($message, $channel_id, $attachment);
+}
+
 function mention_person($message, $channel_id, $person) {
-	$members = get_all_members($channel_id);
+	$members = get_all_members($channel_id); // this needs to be replaced with a single user get function
 	
 	$attachment = array();
 	$user_ids = array();
@@ -148,11 +173,13 @@ function mention_person($message, $channel_id, $person) {
 	
 	foreach ($members as $member) {
 		if ($member->user_id === $person) {
-			$mention = '@' . $member->nickname . ' ';
+			$mention = '@' . $member->nickname;
 		
 			$user_ids[] = $member->user_id;
 			//$loci[] = array(strlen($string), strlen($string) + strlen($mention) - 1);
 			$loci[] = array(0, strlen($mention));
+			
+			$message = $mention . ' ' . $message;
 		}
 	}
 	
