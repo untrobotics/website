@@ -1,6 +1,8 @@
 Commands
 	Twilio SMS
 	__________
+	# SMS messaging is only available in the officers channel.
+	
 	- SMS#<Phone Number with international prefix> <message>
 		e.g.: SMS#+18176584570 Hi Seb!
 		
@@ -14,6 +16,8 @@ Commands
 
 	Twilio Voice
 	____________
+	# Voice messaging is only available in the officers channel.
+	
 	- Dialing our phone number and pressing "9" results in the prompt to leave a voicemail.
 		+ If a voicemail is left, a message appears in the GroupMe with the phone number, duration and a link to play the voicemail.
 
@@ -27,6 +31,7 @@ Commands
 		e.g.: @everyone It's a Monday morning!
 		
 		+ Send a message that mentions everyone in the channel, but less obtrustively than usual.
+		+ @everyone is restricted to be only accessible by officers.
 
 	- @everyone <message> (posted from your own account, not the bot)
 		
@@ -34,3 +39,7 @@ Commands
 			+ Copy `groupme-endpoint-config-example.php` & `groupme-endpoint-example.php` to your own server.
 			+ Fill out the information in the config file.
 			+ Register your endpoint URL (send the URL & secret code to Seb)
+
+	- @officers <message>
+		
+		+ Sends a message that mentions all of the officers present in the channel.
