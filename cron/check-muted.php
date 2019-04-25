@@ -1,7 +1,8 @@
 <?php
 if (php_sapi_name() === 'cli') {
+	chdir(__DIR__);
 	require_once('../template/top.php');
-	require_once('groupme-funcs.php');
+	require_once('../api/groupme-funcs.php');
 
 	$officers = get_all_members(GROUPME_OFFICER_CHANNEL_ID);
 
