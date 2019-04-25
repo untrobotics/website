@@ -19,6 +19,8 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
 RewriteCond %{DOCUMENT_ROOT}/$1.php -f
 RewriteRule ^(([^/]+/)*[^.]+)$ /$1.php [L]
 
-RewriteRule ^join/discord$ /join-discord.php [L]
-RewriteRule ^join/campuslabs$ /join-campuslabs.php [L]
-RewriteRule ^dues/paid$ /dues-paid.php [L]
+RewriteRule ^join/discord$ /auth/join-discord.php [L]
+RewriteRule ^join/campuslabs$ /auth/join-campuslabs.php [L]
+
+# tmp
+RewriteRule ^join$ /auth/join.php [L]
