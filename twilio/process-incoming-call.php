@@ -18,11 +18,11 @@ ob_start();
 		case 2: // Juan
 			?><Dial><?php echo $phone_numbers['Juan']; ?></Dial><?php
 			break;
-		case 3: // Kyle
-			?><Dial><?php echo $phone_numbers['Kyle']; ?></Dial><?php
+		case 3: // Michelle
+			?><Dial><?php echo $phone_numbers['Michelle']; ?></Dial><?php
 			break;
-		case 4: // Chase
-			?><Dial><?php echo $phone_numbers['Chase']; ?></Dial><?php
+		case 4: // Alec
+			?><Dial><?php echo $phone_numbers['Alec']; ?></Dial><?php
 			break;
 		case 5: // Tim
 			?><Dial><?php echo $phone_numbers['Tim']; ?></Dial><?php

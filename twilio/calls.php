@@ -15,8 +15,8 @@ if ($_GET['code'] !== API_SECRET) {
 			Thank you for calling U.N.T. Ru botics.
 			Please press 1 for Nicholas Tindle, Organisation President.
 			2 for Juan Ru eez, Vice President.
-			3 for Kyle Derrough, Public Relations.
-			4 for Chase Summers, Organisation Secretary.
+			3 for Michelle Vargas, Public Relations.
+			4 for Alec Slonina, Organisation Secretary.
 			5 for Tim Stern, Treasurer.
 			6 for David Woodward, Event Coordinator.
 			7 for Eric King, Inventory Manager.
