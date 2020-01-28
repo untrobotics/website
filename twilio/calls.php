@@ -13,14 +13,8 @@ if ($_GET['code'] !== API_SECRET) {
 		<Pause length="2"/>
         <Say voice="woman" language="en-GB">
 			Thank you for calling U.N.T. Ru botics.
-			Please press 1 for Nicholas Tindle, Organisation President.
-			2 for Juan Ru eez, Vice President.
-			3 for Michelle Vargas, Public Relations.
-			4 for Alec Slonina, Organisation Secretary.
-			5 for Tim Stern, Treasurer.
-			6 for David Woodward, Event Coordinator.
-			7 for Eric King, Inventory Manager.
-			8 for Sebastian King, Webmaster.
+			Please enter an extension now or press 1 to get a listing of officers. 
+			
 			Press 9 to leave us a voicemail.
 			Or, press 0 to be put through to the first available person.
 		</Say>

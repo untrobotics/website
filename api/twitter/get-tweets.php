@@ -1,6 +1,7 @@
 <?php
 function get_last_three_tweets() {
-	$twitter = file_get_contents('https://mobile.twitter.com/untrobotics');
+	require_once(__DIR__ . '/../../template/config.php');
+	$twitter = file_get_contents('https://mobile.twitter.com/' . SOCIAL_MEDIA_TWITTER_HANDLE);
 
 	preg_match_all('@<table class="tweet  "(.+?)</table>@ism', $twitter, $m);
 
@@ -19,5 +20,5 @@ function get_last_three_tweets() {
 		$result .= $val;
 	}
 	
-	return '<div class="untr_tweet_container">' . $result . '</div>';
+	return '<div class="untr_tweet_container text-left">' . $result . '</div>';
 }
