@@ -78,7 +78,7 @@ head('Our Team', true);
         </div>
         <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
           <div class="range range-sm-middle">
-            <div class="cell-md-6"><img src="images/bio-pics/tyler-adam-martinez.jpg" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-6"><img src="images/bio-pics/tyler-adam-martinez.png" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
