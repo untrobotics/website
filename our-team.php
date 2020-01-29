@@ -63,14 +63,14 @@ head('Our Team', true);
       <div class="range">
         <div class="cell-lg-6 cell-sm-6 cell-md-12">
           <div class="range range-sm-middle">
-            <div class="cell-md-6"><img src="images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-6"><img src="images/bio-pics/katie-lee.jpeg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                 <h6 class="h6-with-small"><a href="#"> Katie Lee</a><span class="small text-silver-chalice">Secretary</span></h6>
                 <p>Computer Engineer</p>
                 <ul class="list-inline-lg">
-                  <li><a href="https://github.com/TylerAdamMartinez" class="icon icon-sm text-primary fa-github"></a></li>
+                  <li><a href="https://www.linkedin.com/in/katharine-lee-894145b0/" class="icon icon-sm text-primary fa-linkedin"></a></li>
                 </ul>
               </div>
             </div>
