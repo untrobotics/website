@@ -26,6 +26,7 @@ head('Our Team', true);
           <h6>These people are the reason for our success and expertise.</h6>
         </div>
       </div>
+      <!-- This is a Juan -->
       <div class="range">
         <div class="cell-lg-6 cell-sm-6 cell-md-12">
           <div class="range range-sm-middle">
@@ -48,18 +49,21 @@ head('Our Team', true);
           <div class="range range-sm-middle">
             <div class="cell-md-6"><img src="images/bio-pics/alex-ferguson.jpg" alt="" width="360" height="404" class="img-responsive" />
             </div>
+            <!-- This is a Alex -->
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                 <h6 class="h6-with-small"><a href="#"> Alexander Ferguson</a><span class="small text-silver-chalice">Vice President</span></h6>
                 <p>Mechanical Engineer | Project Management | Machining Aspiring Aerospace Project Manager</p>
                 <ul class="list-inline-lg">
                   <li><a href="https://www.linkedin.com/in/alexander-ferguson-aerospace-engineer" class="icon icon-sm text-primary fa-linkedin"></a></li>
+                  <li><a href="mailto:alex.ferguson@my.unt.edu" class="icon icon-sm text-primary fa-envelope"></a></li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <!-- This is a Katie -->
       <div class="range">
         <div class="cell-lg-6 cell-sm-6 cell-md-12">
           <div class="range range-sm-middle">
@@ -71,6 +75,7 @@ head('Our Team', true);
                 <p>Computer Engineer</p>
                 <ul class="list-inline-lg">
                   <li><a href="https://www.linkedin.com/in/katharine-lee-894145b0/" class="icon icon-sm text-primary fa-linkedin"></a></li>
+                  <li><a href="mailto:katie.lee@my.unt.edu" class="icon icon-sm text-primary fa-envelope"></a></li>
                 </ul>
               </div>
             </div>
@@ -78,6 +83,7 @@ head('Our Team', true);
         </div>
         <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
           <div class="range range-sm-middle">
+            <!-- This is a Idiot -->
             <div class="cell-md-6"><img src="images/bio-pics/tyler-adam-martinez.png" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
@@ -97,6 +103,7 @@ head('Our Team', true);
       <div class="range">
         <div class="cell-lg-6 cell-sm-6 cell-md-12">
           <div class="range range-sm-middle">
+            <!-- This is a Nicole -->
             <div class="cell-md-6"><img src="images/bio-pics/nicole-kohm.jpeg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
@@ -105,6 +112,7 @@ head('Our Team', true);
                 <p>I am an adaptive problem-solver with a lifetime of scientific passion. I enjoy applying what I learn to make new ideas and possibilities come to fruition. I have a strong track record of careful attention to detail and thinking outside the box. I frequently invent new technologies and methods to quickly solve multidisciplinary problems.</p>
                 <ul class="list-inline-lg">
                   <li><a href="https://www.linkedin.com/in/nicole-kohm-9517b3126/" class=" icon icon-sm text-primary fa-linkedin"></a></li>
+                  <li><a href="mailto:nicole.kohm@my.unt.edu" class="icon icon-sm text-primary fa-envelope"></a></li>
                 </ul>
               </div>
             </div>
@@ -112,6 +120,7 @@ head('Our Team', true);
         </div>
         <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
           <div class="range range-sm-middle">
+            <!-- This is a Michelle -->
             <div class="cell-md-6"><img src="images/bio-pics/michelle-vargas.jpg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
@@ -126,6 +135,7 @@ head('Our Team', true);
           </div>
         </div>
       </div>
+      <!-- This is a Andy -->
       <div class="range">
         <div class="cell-lg-6 cell-sm-6 cell-md-12">
           <div class="range range-sm-middle">
@@ -147,6 +157,7 @@ head('Our Team', true);
             <div class="range range-sm-middle">
               <div class="cell-md-6"><img src="images/bio-pics/noel-winslow.jpg" alt="" width="360" height="404" class="img-responsive" />
               </div>
+              <!-- This is a Noel -->
               <div class="cell-md-6">
                 <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                   <h6 class="h6-with-small"><a href="#"> Noel Winslow</a><span class="small text-silver-chalice">Corporate Relations</span></h6>
@@ -158,6 +169,7 @@ head('Our Team', true);
               </div>
             </div>
           </div>
+        <!-- This is a Seb Thomas KING  -->
           <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
             <div class="range range-sm-middle">
               <div class="cell-md-6"><img src="images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
@@ -166,8 +178,7 @@ head('Our Team', true);
                 <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                   <h6 class="h6-with-small"><a href="#"> Sebastian King</a><span class="small text-silver-chalice">Webmaster</span></h6>
                   <p>I am the Webmaster for UNT Robotics. I'm in charge of the website that you see in front of you. I also integrate our technology stack with other organisations and maintain the online equipment checkout system.</p>
-                  <p>I'm almost finished studying Computer Science and Electrical Engineering, so robotics is the natural choice for all of my talents. I love to be hands on with technology, and take apart and break anything that I can. For me there's nothing quite like finally seeing a project successfully working out in the real-world.
-                  </p>
+                  <p>I'm almost finished studying Computer Science and Electrical Engineering, so robotics is the natural choice for all of my talents. I love to be hands on with technology, and take apart and break anything that I can. For me there's nothing quite like finally seeing a project successfully working out in the real-world.</p>
                   <ul class="list-inline-lg">
                     <li><a href="https://www.linkedin.com/in/sebastian-king" class="icon icon-sm text-primary fa-linkedin"></a></li>
                     <li><a href="https://www.twitter.com/@thekingseb" class="icon icon-sm text-primary fa-twitter"></a></li>
