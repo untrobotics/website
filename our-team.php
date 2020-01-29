@@ -83,7 +83,7 @@ head('Our Team', true);
         </div>
         <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
           <div class="range range-sm-middle">
-            <!-- This is a Idiot -->
+            <!-- This is a Tyler -->
             <div class="cell-md-6"><img src="images/bio-pics/tyler-adam-martinez.png" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
@@ -169,7 +169,7 @@ head('Our Team', true);
               </div>
             </div>
           </div>
-        <!-- This is a Seb Thomas KING  -->
+        <!-- This is a Seb -->
           <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
             <div class="range range-sm-middle">
               <div class="cell-md-6"><img src="images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
