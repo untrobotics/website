@@ -36,10 +36,9 @@ head('Our Team', true);
                 <h6 class="h6-with-small"><a href="#"> Juan Ruiz</a><span class="small text-silver-chalice">President</span></h6>
                 <p>I am a Computer Engineering Student, I.T. Support Technician, and Undergrad Research Assistant at The University of North Texas. I am an active member of The Alpha Tau Omega Fraternity, Society of Hispanic Professional Engineers, Engineers without Borders, IEEE, and National Society of Professional Engineers. I have also interned at NASA, U.S. Department of Energy, and iOLAP. My focus is Embedded Systems but I have a strong passion for robotics, automation, machine learning, and artificial intelligence.</p>
                 <ul class="list-inline-lg">
-                  <li><a href="#" class="icon icon-sm text-primary fa-linkedin"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-twitter"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-github"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-envelope"></a></li>
+                  <li><a href="https://www.linkedin.com/in/jruiz213/" class="icon icon-sm text-primary fa-linkedin"></a></li>
+                  <li><a href="https://github.com/JuanRuiz213" class="icon icon-sm text-primary fa-github"></a></li>
+                  <li><a href="mailto:president@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a></li>
                 </ul>
               </div>
             </div>
@@ -47,16 +46,14 @@ head('Our Team', true);
         </div>
         <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
           <div class="range range-sm-middle">
-            <div class="cell-md-6"><img src="images/bio-pics/alex-f_temp_.jpg" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-6"><img src="images/bio-pics/alex-ferguson.jpg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                <h6 class="h6-with-small"><a href="#"> Alex F</a><span class="small text-silver-chalice">Vice President</span></h6>
-                <p>Mechanical Engineer</p>
+                <h6 class="h6-with-small"><a href="#"> Alexander Ferguson</a><span class="small text-silver-chalice">Vice President</span></h6>
+                <p>Mechanical Engineer | Project Management | Machining Aspiring Aerospace Project Manager</p>
                 <ul class="list-inline-lg">
-                  <li><a href="#" class="icon icon-sm text-primary fa-facebook"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-twitter"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-instagram"></a></li>
+                  <li><a href="https://www.linkedin.com/in/alexander-ferguson-aerospace-engineer" class="icon icon-sm text-primary fa-linkedin"></a></li>
                 </ul>
               </div>
             </div>
@@ -73,9 +70,7 @@ head('Our Team', true);
                 <h6 class="h6-with-small"><a href="#"> Katie Lee</a><span class="small text-silver-chalice">Secretary</span></h6>
                 <p>Computer Engineer</p>
                 <ul class="list-inline-lg">
-                  <li><a href="#" class="icon icon-sm text-primary fa-facebook"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-twitter"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-instagram"></a></li>
+                  <!-- place social links here... -->
                 </ul>
               </div>
             </div>
@@ -102,16 +97,14 @@ head('Our Team', true);
       <div class="range">
         <div class="cell-lg-6 cell-sm-6 cell-md-12">
           <div class="range range-sm-middle">
-            <div class="cell-md-6"><img src="images/bio-pics/nicole-kohm_temp_.jpg" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-6"><img src="images/bio-pics/nicole-kohm.jpeg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                 <h6 class="h6-with-small"><a href="#"> Nicole Kohm</a><span class="small text-silver-chalice">Project Manager</span></h6>
-                <p>Chemist</p>
+                <p>I am an adaptive problem-solver with a lifetime of scientific passion. I enjoy applying what I learn to make new ideas and possibilities come to fruition. I have a strong track record of careful attention to detail and thinking outside the box. I frequently invent new technologies and methods to quickly solve multidisciplinary problems.</p>
                 <ul class="list-inline-lg">
-                  <li><a href="#" class="icon icon-sm text-primary fa-facebook"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-twitter"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-instagram"></a></li>
+                  <li><a href="https://www.linkedin.com/in/nicole-kohm-9517b3126/" class=" icon icon-sm text-primary fa-linkedin"></a></li>
                 </ul>
               </div>
             </div>
@@ -119,16 +112,14 @@ head('Our Team', true);
         </div>
         <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
           <div class="range range-sm-middle">
-            <div class="cell-md-6"><img src="images/bio-pics/michelle-v_temp_.jpg" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-6"><img src="images/bio-pics/michelle-vargas.jpg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                <h6 class="h6-with-small"><a href="#"> Michelle V</a><span class="small text-silver-chalice">Event Coordinator</span></h6>
-                <p>Mechanical Engineer</p>
+                <h6 class="h6-with-small"><a href="#"> Michelle Rosal Vargas</a><span class="small text-silver-chalice">Event Coordinator</span></h6>
+                <p>Mechanical Engineer | Event Coordinator at UNT Robotics</p>
                 <ul class="list-inline-lg">
-                  <li><a href="#" class="icon icon-sm text-primary fa-facebook"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-twitter"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-instagram"></a></li>
+                  <li><a href="https://www.linkedin.com/in/michellevrv/" class=" icon icon-sm text-primary fa-linkedin"></a></li>
                 </ul>
               </div>
             </div>
@@ -145,9 +136,7 @@ head('Our Team', true);
                 <h6 class="h6-with-small"><a href="#"> Noel Winslow</a><span class="small text-silver-chalice">Public Relations</span></h6>
                 <p>place bio here.. .</p>
                 <ul class="list-inline-lg">
-                  <li><a href="#" class="icon icon-sm text-primary fa-facebook"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-twitter"></a></li>
-                  <li><a href="#" class="icon icon-sm text-primary fa-instagram"></a></li>
+                  <li><a href="https://www.linkedin.com/in/noel-winslow-17379493/" class="icon icon-sm text-primary fa-linkedin"></a></li>
                 </ul>
               </div>
             </div>
