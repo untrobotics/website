@@ -5,3 +5,5 @@ api/robots/tunnel-status/*
 paypal/logs/ipn.log
 paypal/logs/.htpasswd
 ip2location/*.BIN
+
+.htpasswd
