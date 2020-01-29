@@ -1,0 +1,4 @@
+Authtype Basic
+AuthName "UNT Robotics Admin"
+AuthUserFile /var/www/untrobotics/admin/.htpasswd
+Require valid-user
