@@ -1,0 +1,100 @@
+array (
+  'text' => '@potatoes little announcement: for some reason registration hasn\'t come through so we can\'t register for events yet. If this isn\'t solved soon we won\'t be able to reserve a room On campus on time so I have two options
+
+1. I can push meetings one week over (we end up with the same amount of meetings)
+2. We start the second week and I can go on monday to all departments to see if I can reserve a room for the first meeting like I did last semester.  
+
+I\'ll make a poll to see what you guys like best. ',
+  'attachments' => 
+  array (
+    0 => 
+    array (
+      'type' => 'mentions',
+      'user_ids' => 
+      array (
+        0 => '21050456',
+        1 => '34501772',
+        2 => '42999758',
+        3 => '47849399',
+        4 => '45815134',
+        5 => '18703969',
+        6 => '70557957',
+        7 => '28318607',
+        8 => '27013206',
+        9 => '53155421',
+        10 => '74360190',
+        11 => '18745234',
+        12 => '64235574',
+      ),
+      'loci' => 
+      array (
+        0 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        1 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        2 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        3 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        4 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        5 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        6 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        7 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        8 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        9 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        10 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        11 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+        12 => 
+        array (
+          0 => 0,
+          1 => 9,
+        ),
+      ),
+    ),
+  ),
+  'bot_id' => 'e154fe069a5a0d2a1e5cdfff8a',
+)

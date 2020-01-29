@@ -12,29 +12,54 @@ ob_start();
 <Response>
 	<?php
 	switch (intval($_POST['Digits'])) {
-		case 1: // Nick
-			?><Dial><?php echo $phone_numbers['Nick']; ?></Dial><?php
+		case 1:
+			?>
+			<Gather input="dtmf" timeout="10" numDigits="1" action="/twilio/process-incoming-call.php?code=<?php echo API_SECRET; ?>">
+				<Pause length="2"/>
+				<Say voice="woman" language="en-GB">
+					Press 11 for Juan Ru eez, Organisation President.
+					12 for Alex Ferguson, Vice President.
+					13 for Katie Lee, Organisation Secretary.
+					14 for Andrew Jarrett, Public Relations.
+					15 for Noel Winslow, Corporate Outreach.
+					16 for Michelle Vargas, Event Coordinator.
+					17 for Nichole Kohm, Project Manager.
+					18 for Jake Favalora, Inventory Management.
+					19 for Tyler Martinez, Treasurer.
+					20 for Sebastian King, Webmaster.
+				</Say>
+			</Gather>
+			<?php
 			break;
-		case 2: // Juan
-			?><Dial><?php echo $phone_numbers['Juan']; ?></Dial><?php
+		case 11:
+			?><Dial><?php echo $phone_numbers['JuanR']; ?></Dial><?php
 			break;
-		case 3: // Michelle
-			?><Dial><?php echo $phone_numbers['Michelle']; ?></Dial><?php
+		case 12:
+			?><Dial><?php echo $phone_numbers['AlexF']; ?></Dial><?php
 			break;
-		case 4: // Alec
-			?><Dial><?php echo $phone_numbers['Alec']; ?></Dial><?php
+		case 13:
+			?><Dial><?php echo $phone_numbers['KatieL']; ?></Dial><?php
 			break;
-		case 5: // Tim
-			?><Dial><?php echo $phone_numbers['Tim']; ?></Dial><?php
+		case 14:
+			?><Dial><?php echo $phone_numbers['AndyJ']; ?></Dial><?php
 			break;
-		case 6: // David
-			?><Dial><?php echo $phone_numbers['David']; ?></Dial><?php
+		case 15:
+			?><Dial><?php echo $phone_numbers['NoelW']; ?></Dial><?php
 			break;
-		case 7: // Eric
-			?><Dial><?php echo $phone_numbers['Eric']; ?></Dial><?php
+		case 16:
+			?><Dial><?php echo $phone_numbers['MichelleV']; ?></Dial><?php
 			break;
-		case 8: // Sebastian King
-			?><Dial><?php echo $phone_numbers['Seb']; ?></Dial><?php
+		case 17:
+			?><Dial><?php echo $phone_numbers['NicoleK']; ?></Dial><?php
+			break;
+		case 18:
+			?><Dial><?php echo $phone_numbers['JakeF']; ?></Dial><?php
+			break;
+		case 19:
+			?><Dial><?php echo $phone_numbers['TylerM']; ?></Dial><?php
+			break;
+		case 20:
+			?><Dial><?php echo $phone_numbers['SebK']; ?></Dial><?php
 			break;
 		case 9: // Voicemail
 			?>

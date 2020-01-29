@@ -1,0 +1,4 @@
+Authtype Basic
+AuthName "PayPal Logs"
+AuthUserFile /var/www/untrobotics/paypal/logs/.htpasswd
+Require valid-user

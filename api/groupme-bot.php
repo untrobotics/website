@@ -39,6 +39,10 @@ function parse_attachments($attachments) {
 
 $attachments = parse_attachments($attachments);
 
+$DEBUG = true;
+if ($DEBUG) {
+	error_log(var_export($data, true));
+}
 
 if ($sender_type == 'user') {
 	if (preg_match('@^SMS#([a-z0-9]{34}) (.+)$@is', $message, $m) && $channel_id === GROUPME_OFFICER_CHANNEL_ID) {
@@ -59,7 +63,7 @@ if ($sender_type == 'user') {
 				$has_mentions = true;
 			}
 		}
-		
+
 		if (!$has_mentions) { // make sure the bot doesn't trigger itself
 			$body = $m[0];
 			$body = preg_replace("/@officers/", "@potatoes_in_chief", $body);
@@ -72,17 +76,18 @@ if ($sender_type == 'user') {
 				$has_mentions = true;
 			}
 		}
-		
+
 		if (!$has_mentions) { // make sure the bot doesn't trigger itself
+			error_log("@everyone triggered");
 			$officers = get_all_members(GROUPME_OFFICER_CHANNEL_ID);
-			
+
 			$user_is_officer = false;
 			foreach ($officers as $member) {
 				if ($member->user_id == $sender_id) {
 					$user_is_officer = true;
 				}
 			}
-			
+
 			if ($user_is_officer) {
 				$body = $m[0];
 				$body = preg_replace("/@everyone/", "@potatoes", $body);
