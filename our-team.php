@@ -56,7 +56,7 @@ head('Our Team', true);
                 <p>Mechanical Engineer | Project Management | Machining Aspiring Aerospace Project Manager</p>
                 <ul class="list-inline-lg">
                   <li><a href="https://www.linkedin.com/in/alexander-ferguson-aerospace-engineer" class="icon icon-sm text-primary fa-linkedin"></a></li>
-                  <li><a href="mailto:alex.ferguson@my.unt.edu" class="icon icon-sm text-primary fa-envelope"></a></li>
+                  <li><a href="mailto:alex.ferguson@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a></li>
                 </ul>
               </div>
             </div>
@@ -75,7 +75,7 @@ head('Our Team', true);
                 <p>Computer Engineer</p>
                 <ul class="list-inline-lg">
                   <li><a href="https://www.linkedin.com/in/katharine-lee-894145b0/" class="icon icon-sm text-primary fa-linkedin"></a></li>
-                  <li><a href="mailto:katie.lee@my.unt.edu" class="icon icon-sm text-primary fa-envelope"></a></li>
+                  <li><a href="mailto:katie.lee@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a></li>
                 </ul>
               </div>
             </div>
@@ -112,7 +112,7 @@ head('Our Team', true);
                 <p>I am an adaptive problem-solver with a lifetime of scientific passion. I enjoy applying what I learn to make new ideas and possibilities come to fruition. I have a strong track record of careful attention to detail and thinking outside the box. I frequently invent new technologies and methods to quickly solve multidisciplinary problems.</p>
                 <ul class="list-inline-lg">
                   <li><a href="https://www.linkedin.com/in/nicole-kohm-9517b3126/" class=" icon icon-sm text-primary fa-linkedin"></a></li>
-                  <li><a href="mailto:nicole.kohm@my.unt.edu" class="icon icon-sm text-primary fa-envelope"></a></li>
+                  <li><a href="mailto:nicole.kohm@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a></li>
                 </ul>
               </div>
             </div>
@@ -146,7 +146,8 @@ head('Our Team', true);
                 <h6 class="h6-with-small"><a href="#"> Andy Jarrett</a><span class="small text-silver-chalice">Public Relations</span></h6>
                 <p>Mechanical Engineer | Public Relations at UNT Robotics</p>
                 <ul class="list-inline-lg">
-                  <li><a href="#" class="icon icon-sm text-primary fa-linkedin"></a></li>
+                  <li><a href="https://www.linkedin.com/in/andrew-jarrett-765b40171/" class="icon icon-sm text-primary fa-linkedin"></a></li>
+                  <li><a href="mailto:andy.jarrett@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a></li>
                 </ul>
               </div>
             </div>
@@ -164,12 +165,13 @@ head('Our Team', true);
                   <p>Engineering nut with a wrench in hand.</p>
                   <ul class="list-inline-lg">
                     <li><a href="https://www.linkedin.com/in/noel-winslow-17379493/" class="icon icon-sm text-primary fa-linkedin"></a></li>
+                    <li><a href="mailto:noel.winslow@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a></li>
                   </ul>
                 </div>
               </div>
             </div>
           </div>
-        <!-- This is a Seb -->
+          <!-- This is a Seb -->
           <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
             <div class="range range-sm-middle">
               <div class="cell-md-6"><img src="images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
