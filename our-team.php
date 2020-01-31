@@ -2,6 +2,13 @@
 require('template/top.php');
 head('Our Team', true);
 ?>
+<style>
+.bio-area {
+	border-top: 2px solid #ececec;
+	margin-top: 10px;
+	padding-top: 10px;
+}
+</style>
 <main class="page-content">
   <!-- Classic Breadcrumbs-->
   <section class="breadcrumb-classic">
@@ -26,11 +33,11 @@ head('Our Team', true);
           <h6>These people are the reason for our success and expertise.</h6>
         </div>
       </div>
-      <!-- This is a Juan -->
+      <!-- President -->
       <div class="range">
-        <div class="cell-lg-6 cell-sm-6 cell-md-12">
+        <div class="cell-lg-12 bio-area">
           <div class="range range-sm-middle">
-            <div class="cell-md-6"><img src="images/bio-pics/juan-ruiz.jpg" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-3"><img src="images/bio-pics/juan-ruiz.jpg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -45,9 +52,10 @@ head('Our Team', true);
             </div>
           </div>
         </div>
-        <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
+		<!-- Vice President -->
+        <div class="cell-lg-12 bio-area">
           <div class="range range-sm-middle">
-            <div class="cell-md-6"><img src="images/bio-pics/alex-ferguson.jpg" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-3"><img src="images/bio-pics/alex-ferguson.jpg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <!-- This is a Alex -->
             <div class="cell-md-6">
@@ -63,48 +71,48 @@ head('Our Team', true);
           </div>
         </div>
       </div>
-      <!-- This is a Katie -->
-      <div class="range">
-        <div class="cell-lg-6 cell-sm-6 cell-md-12">
+      <!-- Secretary -->
+	  <div class="cell-lg-12 bio-area">
+		  <div class="range">
+			<div class="cell-lg-12">
+			  <div class="range range-sm-middle">
+				<div class="cell-md-3"><img src="images/bio-pics/no-photo" alt="" width="360" height="404" class="img-responsive" />
+				</div>
+				<div class="cell-md-6">
+				  <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
+					<h6 class="h6-with-small"><a href="#"> Katie Lee</a><span class="small text-silver-chalice">Secretary</span></h6>
+					<p>Computer Engineer</p>
+					<ul class="list-inline-lg">
+					  <li><a href="https://www.linkedin.com/in/katharine-lee-894145b0/" class="icon icon-sm text-primary fa-linkedin"></a></li>
+					  <li><a href="mailto:secretary@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a></li>
+					</ul>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		</div>
+		<!-- Treasurer -->
+        <div class="cell-lg-12 bio-area">
           <div class="range range-sm-middle">
-            <div class="cell-md-6"><img src="images/bio-pics/katie-lee.jpeg" alt="" width="360" height="404" class="img-responsive" />
-            </div>
-            <div class="cell-md-6">
-              <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                <h6 class="h6-with-small"><a href="#"> Katie Lee</a><span class="small text-silver-chalice">Secretary</span></h6>
-                <p>Computer Engineer</p>
-                <ul class="list-inline-lg">
-                  <li><a href="https://www.linkedin.com/in/katharine-lee-894145b0/" class="icon icon-sm text-primary fa-linkedin"></a></li>
-                  <li><a href="mailto:secretary@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
-          <div class="range range-sm-middle">
-            <!-- This is a Tyler -->
-            <div class="cell-md-6"><img src="images/bio-pics/tyler-adam-martinez.png" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-3"><img src="images/bio-pics/tyler-adam-martinez.jpg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                 <h6 class="h6-with-small"><a href="#"> Tyler Adam Martinez</a><span class="small text-silver-chalice">Treasurer</span></h6>
                 <p>I am a Junior, studying Electrical Engineering with a minor in Biomedical Engineering and a minor in Mathematics. My focus is on robotics and automation.</p>
                 <ul class="list-inline-lg">
-                  <li><a href="https://github.com/TylerAdamMartinez" class="icon icon-sm text-primary fa-github"></a></li>
                   <li><a href="https://www.linkedin.com/in/tyleradammartinez/" class="icon icon-sm text-primary fa-linkedin"></a></li>
+                  <li><a href="https://github.com/TylerAdamMartinez" class="icon icon-sm text-primary fa-github"></a></li>
                   <li><a href="mailto:treasury@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a></li>
                 </ul>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="range">
-        <div class="cell-lg-6 cell-sm-6 cell-md-12">
+		<!-- Project Manager -->
+        <div class="cell-lg-12 bio-area">
           <div class="range range-sm-middle">
-            <!-- This is a Nicole -->
-            <div class="cell-md-6"><img src="images/bio-pics/nicole-kohm.jpeg" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-3"><img src="images/bio-pics/nicole-kohm.jpg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -118,10 +126,11 @@ head('Our Team', true);
             </div>
           </div>
         </div>
-        <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
+	  	<!-- Event Coordinator -->
+        <div class="cell-lg-12 bio-area">
           <div class="range range-sm-middle">
             <!-- This is a Michelle -->
-            <div class="cell-md-6"><img src="images/bio-pics/michelle-vargas.jpg" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-3"><img src="images/bio-pics/michelle-vargas.jpg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -135,12 +144,10 @@ head('Our Team', true);
             </div>
           </div>
         </div>
-      </div>
-      <!-- This is a Andy -->
-      <div class="range">
-        <div class="cell-lg-6 cell-sm-6 cell-md-12">
+      	<!-- Public Relations -->
+        <div class="cell-lg-12 bio-area">
           <div class="range range-sm-middle">
-            <div class="cell-md-6"><img src="images/bio-pics/andrew-jarrett.jpg" alt="" width="360" height="404" class="img-responsive" />
+            <div class="cell-md-3"><img src="images/bio-pics/andrew-jarrett.jpg" alt="" width="360" height="404" class="img-responsive" />
             </div>
             <div class="cell-md-6">
               <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -153,11 +160,11 @@ head('Our Team', true);
               </div>
             </div>
           </div>
-        </div>
-        <div class="range">
-          <div class="cell-lg-6 cell-sm-6 cell-md-12">
+	    </div>
+		<!-- Project Manager -->
+          <div class="cell-lg-12 bio-area">
             <div class="range range-sm-middle">
-              <div class="cell-md-6"><img src="images/bio-pics/noel-winslow.jpg" alt="" width="360" height="404" class="img-responsive" />
+              <div class="cell-md-3"><img src="images/bio-pics/noel-winslow.jpg" alt="" width="360" height="404" class="img-responsive" />
               </div>
               <!-- This is a Noel -->
               <div class="cell-md-6">
@@ -172,10 +179,10 @@ head('Our Team', true);
               </div>
             </div>
           </div>
-          <!-- This is a Seb -->
-          <div class="cell-lg-6 cell-sm-6 cell-md-12 offset-top-60 offset-lg-top-0 offset-sm-top-0 offset-md-top-60">
+          <!-- Webmaster -->
+          <div class="cell-lg-12 bio-area">
             <div class="range range-sm-middle">
-              <div class="cell-md-6"><img src="images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
+              <div class="cell-md-3"><img src="images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
               </div>
               <div class="cell-md-6">
                 <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -193,7 +200,8 @@ head('Our Team', true);
             </div>
           </div>
         </div>
-      </div>
+	  </div>
+    </div>
   </section>
 </main>
 <?php
