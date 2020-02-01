@@ -3,11 +3,10 @@ require('template/top.php');
 head('Our Team', true);
 ?>
 <style>
-  .bio-area {
-    border-top: 2px solid #ececec;
-    margin-top: 10px;
-    padding-top: 10px;
-  }
+.bio-area {
+	border-top: 2px solid #ececec;
+	margin-top: 10px;
+	padding-top: 10px;
 </style>
 <main class="page-content">
   <!-- Classic Breadcrumbs-->
@@ -237,72 +236,50 @@ head('Our Team', true);
               </div>
             </div>
           </div>
-        </div>
-        <!-- Project Manager -->
-        <div class="cell-lg-12 bio-area">
-          <div class="range range-sm-middle">
-            <div class="cell-md-3">
-              <img src="images/bio-pics/noel-winslow.jpg" alt="" width="360" height="404" class="img-responsive" />
-            </div>
-            <!-- This is a Noel -->
-            <div class="cell-md-6">
-              <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                <h6 class="h6-with-small">
-                  <a href="#"> Noel Winslow</a>
-                  <span class="small text-silver-chalice">Corporate Relations</span>
-                </h6>
-                <p>I'm a Mechanical and Energy Engineering major (Junior). I've been interested in Robotics for quite a long time, was a member of FIRST Robotics in high school, and am also a member of SAE. I am the Corporate Relations officer for UNT Robotics, our liaison between the team and our external partners.</p>
-                <ul class="list-inline-lg">
-                  <li>
-                    <a href="https://www.linkedin.com/in/noel-winslow-17379493/" class="icon icon-sm text-primary fa-linkedin"></a>
-                  </li>
-                  <li>
-                    <a href="mailto:corp-relations@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a>
-                  </li>
-                </ul>
+	    </div>
+		<!-- Project Manager -->
+          <div class="cell-lg-12 bio-area">
+            <div class="range range-sm-middle">
+              <div class="cell-md-3"><img src="images/bio-pics/noel-winslow.jpg" alt="" width="360" height="404" class="img-responsive" />
+              </div>
+              <!-- This is a Noel -->
+              <div class="cell-md-6">
+                <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
+                  <h6 class="h6-with-small"><a href="#"> Noel Winslow</a><span class="small text-silver-chalice">Corporate Relations</span></h6>
+                  <p>I'm a Mechanical and Energy Engineering major (Junior). I've been interested in Robotics for quite a long time, was a member of FIRST Robotics in high school, and am also a member of SAE. I am the Corporate Relations officer for UNT Robotics, our liaison between the team and our external partners</p>
+                  <ul class="list-inline-lg">
+                    <li><a href="https://www.linkedin.com/in/noel-winslow-17379493/" class="icon icon-sm text-primary fa-linkedin"></a></li>
+                    <li><a href="mailto:corp-relations@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <!-- Webmaster -->
-        <div class="cell-lg-12 bio-area">
-          <div class="range range-sm-middle">
-            <!-- This is a Seb -->
-            <div class="cell-md-3">
-              <img src="images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
-            </div>
-            <div class="cell-md-6">
-              <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                <h6 class="h6-with-small">
-                  <a href="#"> Sebastian King</a>
-                  <span class="small text-silver-chalice">Webmaster</span>
-                </h6>
-                <p>I am the Webmaster for UNT Robotics. I'm in charge of the website that you see in front of you. I also
-                  integrate our technology stack with other organisations and maintain the online equipment checkout system.</p>
-                <p>I'm almost finished studying Computer Science and Electrical Engineering, so robotics is the natural choice
-                  for all of my talents. I love to be hands on with technology, and take apart and break anything that
-                  I can. For me there's nothing quite like finally seeing a project successfully working out in the real-world.</p>
-                <ul class="list-inline-lg">
-                  <li>
-                    <a href="https://www.linkedin.com/in/sebastian-king" class="icon icon-sm text-primary fa-linkedin"></a>
-                  </li>
-                  <li>
-                    <a href="https://www.twitter.com/@thekingseb" class="icon icon-sm text-primary fa-twitter"></a>
-                  </li>
-                  <li>
-                    <a href="https://www.github.com/sebastian-king" class="icon icon-sm text-primary fa-github"></a>
-                  </li>
-                  <li>
-                    <a href="mailto:webmaster@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a>
-                  </li>
-                </ul>
+          <!-- Webmaster -->
+          <div class="cell-lg-12 bio-area">
+            <div class="range range-sm-middle">
+              <div class="cell-md-3"><img src="images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
+              </div>
+                <!-- This is a Seb -->
+              <div class="cell-md-6">
+                <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
+                  <h6 class="h6-with-small"><a href="#"> Sebastian King</a><span class="small text-silver-chalice">Webmaster</span></h6>
+                  <p>I am the Webmaster for UNT Robotics. I'm in charge of the website that you see in front of you. I also integrate our technology stack with other organisations and maintain the online equipment checkout system.</p>
+                  <p>I'm almost finished studying Computer Science and Electrical Engineering, so robotics is the natural choice for all of my talents. I love to be hands on with technology, and take apart and break anything that I can. For me there's nothing quite like finally seeing a project successfully working out in the real-world.</p>
+                  <ul class="list-inline-lg">
+                    <li><a href="https://www.linkedin.com/in/sebastian-king" class="icon icon-sm text-primary fa-linkedin"></a></li>
+                    <li><a href="https://www.twitter.com/@thekingseb" class="icon icon-sm text-primary fa-twitter"></a></li>
+                    <li><a href="https://www.github.com/sebastian-king" class="icon icon-sm text-primary fa-github"></a></li>
+                    <li><a href="mailto:webmaster@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    </div>
+   </div>
   </section>
 </main>
 <?php
