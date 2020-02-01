@@ -36,7 +36,7 @@ head('Home', true);
                       <div class="divider-1"></div>
                       <p class="h6 offset-top-40">Tap one of the buttons below to officially become part of UNT Robotics</p>
 			<div class="group">
-				<a class="join-btn discord" href="/join/discord"><img src="/images/btn-discord.png"/></a>
+				<a class="join-btn discord" href="https://groupme.com/join_group/48461300/sfmmOwpm"><img src="/images/btn-groupme.png"/></a>
 				<a class="join-btn campuslabs" href="/join/campuslabs"><img src="/images/btn-campuslabs.png"/></a>
 			</div>
                     </div>
