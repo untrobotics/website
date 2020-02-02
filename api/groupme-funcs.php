@@ -44,7 +44,13 @@ function post_message($message, $channel_id = false, $attachments = array(), $sp
 	} else {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'https://api.groupme.com/v3/bots/post');
-		$post_data['bot_id'] = CHANNEL_TO_BOT[$channel_id];
+		
+		if ($channel_id === false) {
+			$post_data['bot_id'] = CHANNEL_TO_BOT[key(CHANNEL_TO_BOT)]; // reset canno be used on a const.
+		} else {
+			$post_data['bot_id'] = CHANNEL_TO_BOT[$channel_id];
+		}
+		
 		$headers[] = 'Content-Type: application/x-www-form-urlencoded';
 	}
 
@@ -64,7 +70,7 @@ function post_message($message, $channel_id = false, $attachments = array(), $sp
 		error_log('ERROR (curl) when posting as BOT: ' . curl_error($ch));
 	}
 
-	curl_close ($ch);
+	curl_close($ch);
 }
 
 function prepare_image($attachment) {

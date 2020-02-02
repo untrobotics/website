@@ -31,4 +31,4 @@ $result = ob_get_clean();
 error_log($result);
 */
 
-post_message("Received SMS message (#{$sid}):\nFrom: {$from} ({$location})\n\n{$body}", $attachments);
+post_message("Received SMS message (#{$sid}):\nFrom: {$from} ({$location})\n\n{$body}", false, $attachments);
