@@ -73,12 +73,30 @@ function post_message($message, $channel_id = false, $attachments = array(), $sp
 	curl_close($ch);
 }
 
+function get_image($url) {
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	$result = curl_exec($ch);
+	
+	if (curl_errno($ch)) {
+		error_log('ERROR (curl) when downloading an image file for GroupMe prepare function: ' . curl_error($ch));
+	}
+	curl_close($ch);
+	
+	return $result;
+}
+
 function prepare_image($attachment) {
 	$ch = curl_init();
+	
+	$image = get_image($attachment['url']);
 
 	curl_setopt($ch, CURLOPT_URL, 'https://image.groupme.com/pictures');
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($attachment['url']));
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $image);
 	curl_setopt($ch, CURLOPT_POST, 1);
 
 	$headers = array();
@@ -88,9 +106,9 @@ function prepare_image($attachment) {
 
 	$result = curl_exec($ch);
 	if (curl_errno($ch)) {
-		error_log('ERROR (curl) when added an image to GroupMe: ' . curl_error($ch));
+		error_log('ERROR (curl) when adding an image to GroupMe: ' . curl_error($ch));
 	}
-	curl_close ($ch);
+	curl_close($ch);
 
 	$data = json_decode($result);
 	return $data->payload->url;
