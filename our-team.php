@@ -81,7 +81,7 @@ head('Our Team', true);
 				<div class="cell-md-6">
 				  <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
 					<h6 class="h6-with-small"><a href="#"> Katie Lee</a><span class="small text-silver-chalice">Secretary</span></h6>
-					<p>Computer Engineer</p>
+					<p>I’m a transfer student from UH. I’m studying Computer Engineering because I want to be on the front of the newest technology development, and I’m the secretary for UNT Robotics.</p>
 					<ul class="list-inline-lg">
 					  <li><a href="https://www.linkedin.com/in/katharine-lee-894145b0/" class="icon icon-sm text-primary fa-linkedin"></a></li>
 					  <li><a href="mailto:secretary@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a></li>
@@ -170,7 +170,7 @@ head('Our Team', true);
               <div class="cell-md-6">
                 <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                   <h6 class="h6-with-small"><a href="#"> Noel Winslow</a><span class="small text-silver-chalice">Corporate Relations</span></h6>
-                  <p>Engineering nut with a wrench in hand.</p>
+                  <p>I'm a Mechanical and Energy Engineering major (Junior). I've been interested in Robotics for quite a long time, was a member of FIRST Robotics in high school, and am also a member of SAE. I am the Corporate Relations officer for UNT Robotics, our liaison between the team and our external partners.</p>
                   <ul class="list-inline-lg">
                     <li><a href="https://www.linkedin.com/in/noel-winslow-17379493/" class="icon icon-sm text-primary fa-linkedin"></a></li>
                     <li><a href="mailto:corp-relations@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a></li>
