@@ -18,12 +18,13 @@ $attachments = array();
 $media_count = @intval($_POST['NumMedia']);
 if ($media_count > 0) {
 	for($i = 0; $i < $media_count; $i++) {
+		$attachments[$i] = array();
 		$attachments[$i]['type'] = $_POST['MediaContentType' . $i];
 		$attachments[$i]['url'] = $_POST['MediaUrl' . $i];
 	}
 }
 
-/*
+/* debug
 ob_start();
 var_dump($_POST);
 $result = ob_get_clean();
@@ -31,4 +32,4 @@ $result = ob_get_clean();
 error_log($result);
 */
 
-post_message("Received SMS message (#{$sid}):\nFrom: {$from} ({$location})\n\n{$body}", $attachments);
+post_message("Received SMS message (#{$sid}):\nFrom: {$from} ({$location})\n\n{$body}", false, $attachments);
