@@ -44,7 +44,7 @@ head('Contact Us', true);
 					  <h6><a href="#" class="text-darker">
 						  <strong>UNT Robotics</strong><br>
 						  University of North Texas<br>
-						  Department of Computer Science and Engineeringbr>
+						  Department of Computer Science and Engineering<br>
 						  1155 Union Circle #311366<br>
 						  Denton, TX 76203-5017<br>
 						  United States
