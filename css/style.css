@@ -27799,7 +27799,7 @@ html .page .blog + .blog {
 }
 
 .bg-image-1 {
-  background-image: url("../images/home-02-1920x1005.jpg");
+  background-image: url("../images/home-section-bg.jpg");
 }
 
 @media (max-width: 1199px) {
