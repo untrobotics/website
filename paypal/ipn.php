@@ -1,67 +1,118 @@
 <?php
-
 $log = var_export($_REQUEST, true);
 
 function payment_log($message) {
-	file_put_contents('logs/ipn.log', $message, FILE_APPEND);
+	file_put_contents('logs/ipn.log', $message . PHP_EOL, FILE_APPEND);
 }
 
-require('verify_ipn.php');
+require('ipn/IPNVerify.php');
+require('ipn/IPNResponse.php');
 require('../template/top.php');
 
+function handled_tx($tx_id, $source) {
+	global $db;
+	if (!$db->query('INSERT INTO handled_ipns (txid, handled_source) VALUES ("' . $db->real_escape_string($tx_id) . '", "' . $db->real_escape_string($source) . '")')) {
+		throw new Exception("Unable to mark the transaction as handle in the database");
+	}
+}
+
+function already_handled($tx_id) {
+	global $db;
+	$q = $db->query('SELECT handled_timestamp, handled_source FROM handled_ipns WHERE txid = "' . $db->real_escape_string($tx_id) . '"');
+	if ($q) {
+		if ($q->num_rows > 0) {
+			$row = $q->fetch_row();
+			return $row;
+		}
+	} else {
+		throw new Exception("Failed to retrieve handled transaction IDs from the database");
+	}
+	return false;
+}
+
 $ipn = new PaypalIPN();
-if (is_sandbox()) {
-        $ipn->useSandbox();
+
+$payer_email = $_POST['payer_email'];
+$payer_id = $_POST['payer_id'];
+$txn_id = $_POST['txn_id'];
+if ($payer_email == 'unt.robotics-buyer@unt.edu' && $payer_id == 'XKVTP2Y84G8ZU') {
+	$ipn->useSandbox();
 }
 
 //log_payment($invoice_id, 'INFO: IPN, SANDBOX: ' . (is_sandbox() ? 'true' : 'false'));
 
+class Source {
+	const PRINTFUL = 'PRINTFUL_PRODUCT';
+	const DUES = 'DUES_PAYMENT';
+}
+
+class IPNHandlerException extends Exception {
+	public function __construct($message, $code = 0, Exception $previous = null) {
+		parent::__construct($message, $code, $previous);
+	}
+
+	public function __toString() {
+		return __CLASS__ . ": [{$this->code}]: {$this->message}" . PHP_EOL;
+	}
+}
+
 $verified = $ipn->verifyIPN();
 if ($verified) {
-	// verified
-	payment_log("VALID");
-	payment_log(var_export($_REQUEST, true));
+	try {
+		// verified
+		payment_log("[{$txn_id}] VALID");
+		payment_log(var_export($_REQUEST, true));
 
-	$custom = $_POST['custom'];
-	$amount = $_POST['payment_gross'];
-	$fee = $_POST['payment_fee'];
-	$txid = $_POST['txn_id'];
+		$custom = $_POST['custom'];
 
-	if ($custom == 'MERCH_CLUB_TSHIRT') {
-		
-	} else if ($custom == 'DUES_PAYMENT') {
-		$name = $_POST['option_selection3'];
-		$email = $_POST['option_selection2'];
-		$euid = $_POST['option_selection1'];
+		$source = null;
+		if ($custom_obj = unserialize($custom)) {
+			$source = $custom_obj['source'];
+		} else {
+			$source = $custom;
+		}
 
-		$db->query('INSERT INTO dues_payments (name, email, euid, amount, fee, txid)
-		VALUES (
-		"' . $db->real_escape_string($name) . '",
-		"' . $db->real_escape_string($email) . '",
-		"' . $db->real_escape_string($euid) . '",
-		"' . $db->real_escape_string($amount) . '",
-		"' . $db->real_escape_string($fee) . '",
-		"' . $db->real_escape_string($txid) . '"
-		)');
+		$payment_info = new IPNResponse($_POST);
 
-		email($email, "UNT Robotics Dues Payment Receipt",
-			  "Dear {$name},<br>
-			  <br>
-			  <strong>Thank for paying your UNT Robotics dues.</strong><br>
-			  This is your receipt confirming we have received your payment and logged it in our system.<br>
-			  <br>
-			  Transaction amount: <pre>{$amount}</pre><br>
-			  Transaction PayPal ID: <pre>{$txid}</pre><br>
-			  <br>
-			  <br>
-			  If you have any concerns or questions, please feel free to reach out to us at <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a>
-			  <br>
-			  <br>
-			  Kindest regards,<br>
-			  UNT Robotics Officers
-		  ");
+		$already_handled = already_handled($txn_id);
+		if ($already_handled === false) {
+			//handled_tx($txn_id, $source);
+			payment_log("[{$txn_id}] Not yet handled");
+		} else {
+			payment_log("[{$txn_id}] ERROR: already handled on {$already_handled[0]} by {$already_handled[1]}");
+			die();
+		}
+
+		// call the correct handler based on the source of the request
+		try {
+		switch ($source) {
+			case Source::PRINTFUL:
+				payment_log("[{$txn_id}] Handling IPN with the PRINTFUL handler");
+				require_once('./ipn/handlers/printful.php');
+
+				handled_tx($txn_id, $source);
+				handle_payment_notification($ipn, $payment_info, $custom_obj);
+				break;
+			case Source::DUES:
+				payment_log("[{$txn_id}] Handling IPN with the DUES handler");			
+				require_once('./ipn/handlers/dues.php');
+
+				handled_tx($txn_id, $source);
+				handle_payment_notification($ipn, $payment_info, $custom_obj);
+				break;
+			default:
+				payment_log("[{$txn_id}] Unhandled IPN! Raw source: {$source}");	
+				// unhandled! this is bad
+				// perhaps we should notify the discord of this error
+		}
+		} catch (Exception $ex) {
+			payment_log("[{$txn_id}] ERROR:\n" . $ex);
+			throw $ex;
+		}
+	} catch (Exception $ex) {
+		// TODO: Alert
 	}
 } else {
 	// NOT verified
-	payment_log("INVALID");
+	payment_log("[{$txn_id}] INVALID");
 }

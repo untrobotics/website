@@ -11631,9 +11631,9 @@ h1.text-primary a:hover, h2.text-primary a:hover, h3.text-primary a:hover, h4.te
 }
 
 .btn-dark:hover {
-  color: #fff;
   background-color: transparent;
-  border-color: #fff;
+  border-color: #dcdcdc;
+  color: black;
 }
 
 .btn-primary, .btn-primary:focus, .btn-primary.focus, .btn-primary:active, .btn-primary.active,
@@ -47947,5 +47947,31 @@ header nav.rd-navbar-static.rd-navbar-secondary .rd-navbar-nav > li.thin {
     width: 100%;
     position: relative;
     text-align: center;
+}
+
+.paypal-button-container {
+	position: relative;
+    width: 210px;
+    height: 60px;
+}
+.paypal-button-overlay {
+	position: relative;
+    z-index: 2;
+	pointer-events: none;
+}
+.paypal-button-overlay > button {
+	width: 100%;
+}
+.actual-paypal-button {
+	position: absolute;
+    top: 0;
+    width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+.actual-paypal-button > form,
+.actual-paypal-button input[type="image"] {
+	width: 100%;
+	height: 100%;
 }
 /*# sourceMappingURL=style.css.map */

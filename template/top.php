@@ -1,6 +1,9 @@
 <?php
 // config
-require_once("config.php");
+require_once('config.php');
+require_once('classes/untrobotics.php');
+
+use SendGrid\Mail\Attachment;
 
 $base = BASE; // for legacy support
 
@@ -24,12 +27,10 @@ $db->set_charset(DATABASE_CHARSET);
 
 date_default_timezone_set(TIMEZONE);
 
-function is_sandbox() {
-	return false;
-}
+$untrobotics = new untrobotics();
 
 function head($title, $heading, $auth = false, $return = false) {
-	global $base, $userinfo, $session, $db;
+	global $base, $userinfo, $session, $untrobotics, $db;
 	$default_values = array(
 		2 => array("auth", true),
 		3 => array("breadcrumbs", array("Home" => "/")),
@@ -40,17 +41,27 @@ function head($title, $heading, $auth = false, $return = false) {
 			$$default_values[$key][0] = $default_values[$key][1];
 		}
 	}
-	if ($auth == true) {
-		$auth_result = auth((int)$auth);
-		if (!is_array($auth_result)) {
-			die(header("Location: /auth/login"));
-		}
+	
+	$auth_result = auth((int)$auth);
+	if (is_array($auth_result)) {
 		$userinfo = $auth_result[0];
 		$session = $auth_result[1];
 		date_default_timezone_set($userinfo['timezone']);
+		
+		//extras
+		if ($userinfo['sandbox']) {
+			$untrobotics->set_sandbox(true);
+		}
+	}
+	
+	if ($auth == true) {
+		if (!is_array($auth_result)) {
+			die(header("Location: /auth/login"));
+		}
 	}
 	
 	$title = htmlspecialchars($title ? $title . " | " . WEBSITE_NAME : WEBSITE_NAME);
+	$heading = htmlspecialchars($heading);
 	
 	if ($heading == true && gettype($heading) == "boolean") {
 		$heading = $title;
@@ -75,7 +86,54 @@ function footer($die = true) {
 	}
 }
 
-function email($to, $subject, $message, $replyto = false, $headers = NULL) {
+function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array()) {
+	require_once(BASE . "/api/sendgrid/sendgrid-php.php");
+	if (count($attachments)) {
+	}
+	
+	$email = new \SendGrid\Mail\Mail(); 
+	$email->setFrom("no-reply@untrobotics.com", "UNT Robotics");
+	$email->setSubject($subject);
+	
+	if ($replyto) {
+		$email->setReplyTo($replyto);
+	}
+	
+	if (is_array($to)) {
+		$email->addTo($to[0], $to[1]);
+	} else {
+		$email->addTo($to);
+	}
+	
+	$email->addContent("text/html", $message);
+	
+	foreach ($attachments as $attachment) {
+        $email->addAttachment(
+			$attachment['content'],
+			$attachment['type'],
+			$attachment['filename'],
+			$attachment['disposition'],
+			$attachment['content_id']
+		);
+	}
+	
+	$sendgrid = new \SendGrid(SENDGRID_API_KEY);
+	
+	try {
+		$response = $sendgrid->send($email);
+		$status_code = $response->statusCode();
+		
+		if ($status_code >= 200 && $status_code <= 299) {
+			return true;
+		}
+	} catch (Exception $e) {
+		//echo 'Caught exception: '. $e->getMessage() ."\n";
+		// TODO: Alerting
+	}
+	
+	return false;
+	
+	/*
 	$replyto = ($replyto ? "$replyto" : EMAIL_NAME . ' <' . EMAIL_USER . '@' . EMAIL_DOMAIN . '>');
 	if (!$headers || $headers == NULL) {
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
@@ -85,7 +143,7 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL) {
 		'X-Mailer: PHP/' . phpversion();
 	}
 	$status = mail($to, $subject, $message, $headers);
-	/*$db->query("
+	$db->query("
 				INSERT INTO sent_emails (`to`, `subject`, `message`, `headers`, `status,)
 				VALUES (
 				" . $db->real_escape_string($to) . ",
@@ -94,8 +152,9 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL) {
 				" . $db->real_escape_string($headers) . ",
 				" . $db->real_escape_string($status) . ",
 				)"
-			  );*/
+			  );
 	return $status;
+	*/
 }
 
 function get_fingerprint() {

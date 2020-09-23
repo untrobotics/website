@@ -13,7 +13,7 @@ head('Pay Dues', true);
 
 					<p><strong>Please fill out the information below and then click Pay Now.</strong></p>
 
-					<p><strong style="font-size: 20px;"><pre style="display: inline-block;">Cost: $20</pre></strong></p>
+					<p><strong style="font-size: 20px;"><pre style="display: inline-block;">Cost: $10</pre></strong></p>
 
 					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 					<input type="hidden" name="cmd" value="_s-xclick">
@@ -21,7 +21,7 @@ head('Pay Dues', true);
 					<table style="display: inline-block;">
 						<input type="hidden" name="custom" value="DUES_PAYMENT">
 						<tr><td><input type="hidden" name="on2" value="Your Name">Your Name</td></tr><tr><td><input type="text" name="os2" maxlength="200"></td></tr>
-						<tr><td><input type="hidden" name="on0" value="UNT EUID">UNT EUID</td></tr><tr><td><input type="text" name="os0" maxlength="200"></td></tr>
+						<tr><td><input type="hidden" name="on0" value="UNT EUID">UNT EUID (e.g. abc1234)</td></tr><tr><td><input type="text" name="os0" maxlength="200"></td></tr>
 						<tr><td><input type="hidden" name="on1" value="UNT E-mail Address">UNT E-mail Address</td></tr><tr><td><input type="text" name="os1" maxlength="200"></td></tr>
 					</table>
 						<br>
