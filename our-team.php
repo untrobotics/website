@@ -132,7 +132,7 @@ head('Our Team', true);
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                                 <h6 class="h6-with-small"><a href="#">Nicholas Tindle</a><span class="small text-silver-chalice">Project Manager</span></h6>
-                                <p>Nicholas Tindle is a Computer Engineering student at UNT. He works in software engineering and loves hackathons. You can generally find him wearing a hat and probably a sweatshirt. He has a long history of collaboration with UNT Robotics as the first president, a loyal advisor, and now Project manager. He has also served as an advisor to the dean, is an officer of Engineering United, and has helped host numerous events at the university over the years. In his professional life, he works in data analysis, webdev, and python scripting.</p>
+                                <p>Nicholas Tindle is a Computer Engineering student at UNT. He works in software engineering and loves hackathons. You can generally find him wearing a hat and probably a sweatshirt. He has a long history of collaboration with UNT Robotics as the first president, a loyal advisor, and now Project Manager. He has also served as an advisor to the dean, is an officer of Engineering United, and has helped host numerous events at the university over the years. In his professional life, he works in data analysis, webdev, and python scripting.</p>
                                 <ul class="list-inline-lg">
                                     <li>
                                         <a href="https://www.linkedin.com/in/ntindle/" class=" icon icon-sm text-primary fa-linkedin"></a>
@@ -241,6 +241,28 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
+                <!-- ALUMNI -->
+                <!-- Nicole Kohm -->
+                <!-- <div class="cell-lg-12 bio-area">
+                    <div class="range range-sm-middle">
+                        <div class="cell-md-3"><img src="images/bio-pics/nicole-kohm.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        </div>
+                        <div class="cell-md-6">
+                            <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
+                                <h6 class="h6-with-small"><a href="#">Nicole Kohm</a><span class="small text-silver-chalice">Project Manager</span></h6>
+                                <p>I am an adaptive problem-solver with a lifetime of scientific passion. I enjoy applying what I learn to make new ideas and possibilities come to fruition. I have a strong track record of careful attention to detail and thinking outside the box. I frequently invent new technologies and methods to quickly solve multidisciplinary problems.</p>
+                                <ul class="list-inline-lg">
+                                    <li>
+                                        <a href="https://www.linkedin.com/in/nicole-kohm-9517b3126/" class=" icon icon-sm text-primary fa-linkedin"></a>
+                                    </li>
+                                    <li>
+                                        <a href="mailto:project-manager@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
             </div>
         </section>
     </main>
