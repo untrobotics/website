@@ -175,7 +175,7 @@ function get_variant_variant($variant_name) {
 
 		<div class="range merch-header">
 			<div class="cell-lg-7 cell-md-12">
-				<h1 class="text-center text-lg-left"><?php echo $product->get_name(); ?></h1>
+				<h1 class="text-center text-lg-left"><?php echo htmlspecialchars($product->get_name()); ?></h1>
 				<div class="product-price"><?php
 					$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 					echo $fmt->formatCurrency($product->get_product_price(), $product->get_product_currency());
