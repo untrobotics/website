@@ -18,8 +18,7 @@ class DiscordBot {
 
 		$result = curl_exec($ch);
 		if (curl_errno($ch)) {
-			//echo 'Error:' . curl_error($ch);
-			throw new DiscordBotException();
+			throw new DiscordBotException("Error occurred when making API request: " . curl_error($ch));
 		}
 		curl_close($ch);
 		
