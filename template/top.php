@@ -119,11 +119,37 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
 	
 	$sendgrid = new \SendGrid(SENDGRID_API_KEY);
 	
+	$db->query("
+				INSERT INTO sent_emails (
+					`to`,
+					`subject`,
+					`message`,
+					`headers`,
+					`replyto`,
+					`attachments`,
+					`status`
+				)
+				VALUES (
+					" . $db->real_escape_string(json_encode($to)) . ",
+					" . $db->real_escape_string(json_encode($subject)) . ",
+					" . $db->real_escape_string(json_encode($message)) . ",
+					" . $db->real_escape_string(json_encode($headers)) . ",
+					" . $db->real_escape_string($replyto) . ",
+					" . $db->real_escape_string(json_encode($attachments)) . ",
+					" . $db->real_escape_string(0) . "
+				)"
+			  );
+	
 	try {
 		$response = $sendgrid->send($email);
 		$status_code = $response->statusCode();
 		
 		if ($status_code >= 200 && $status_code <= 299) {
+			$insert_id = $db->insert_id;
+			if (is_numeric($insert_id)) {
+				$db->query('UPDATE sent_emails SET status = 1 WHERE id = "' . $db->real_escape_string($insert_id) . '"');
+			}
+			
 			return true;
 		}
 	} catch (Exception $e) {
@@ -142,19 +168,8 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
 		'Reply-To: ' . $replyto . "\r\n" .
 		'X-Mailer: PHP/' . phpversion();
 	}
-	$status = mail($to, $subject, $message, $headers);
-	$db->query("
-				INSERT INTO sent_emails (`to`, `subject`, `message`, `headers`, `status,)
-				VALUES (
-				" . $db->real_escape_string($to) . ",
-				" . $db->real_escape_string($subject) . ",
-				" . $db->real_escape_string($message) . ",
-				" . $db->real_escape_string($headers) . ",
-				" . $db->real_escape_string($status) . ",
-				)"
-			  );
-	return $status;
 	*/
+	
 }
 
 function get_fingerprint() {
