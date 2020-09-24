@@ -7,7 +7,7 @@ if (!empty($_POST)) {
 	$name = $_POST['name'];
 	$email = $_POST['email'];
 	$phone = preg_replace('/[^0-9]/', '', $_POST['phone_number']);
-	$unteuid = $_POST['unteuid'];
+	$unteuid = strtolower($_POST['unteuid']);
 	$grad_term = $_POST['graduation_term'];
 	$grad_year = $_POST['graduation_year'];
 	$password1 = $_POST['password1'];
@@ -24,14 +24,22 @@ if (!empty($_POST)) {
 			break;
 		}
 		
-		$q = $db->query('SELECT * FROM users WHERE email = "' . $db->real_escape_string($email) . '"');
+		$q = $db->query('SELECT id FROM users WHERE email = "' . $db->real_escape_string($email) . '"');
 		if ($q->num_rows > 0) {
 			$error = "The e-mail address you entered is already in the database.";
 			break;
-		} else if (strlen($phone) != 10) {
+		}
+		
+		$q = $db->query('SELECT id FROM users WHERE unteuid = "' . $db->real_escape_string($unteuid) . '"');
+		if ($q->num_rows > 0) {
+			$error = "The UNT EUID you entered is already in the database.";
+			break;
+		}
+		
+		if (strlen($phone) != 10) {
 			$error = "Please enter a valid U.S. phone number";
 			break;
-		} else if (!preg_match('/[a-z]{2,3}\d{4}/i', $unteuid)) {
+		} else if (!preg_match('/[a-z]{2,3}\d{4}/', $unteuid)) {
 			$error = "Please enter a valid UNT EUID, e.g. abc1234";
 			break;
 		} else if (!in_array($grad_term, $valid_grad_terms)) {
