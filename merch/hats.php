@@ -12,7 +12,6 @@ head('Order Hats', true);
 		margin-top: 20px;
 	}
 	.product-item {
-		border: 1px solid #e6e6e6;
     	display: flex;
     	margin-left: -1px;
 		flex-direction: column;
@@ -37,6 +36,7 @@ head('Order Hats', true);
 	.product-item-listing {
 		display: flex;
 		flex-direction: column;
+		height: 333px;
 	}
 	.product-item-action button {
 		width: 100%;
@@ -45,6 +45,11 @@ head('Order Hats', true);
 		color: #fb5252;
 	    float: right;
 	    font-weight: 300;
+	}
+	.product-listing .product-container-pad {
+    	margin: 8px 2px;
+    	padding: 8px;
+		border: 1px solid #e6e6e6;
 	}
 	#buy-hat-now {
 		display: block;
@@ -90,12 +95,14 @@ head('Order Hats', true);
 									$product_price = $printfulapi->get_product_price($hat->id);
 								?>
 								<div class="col-lg-6 col-sm-12 product-item product-listing hats">
-									<div class="product-item-listing">
-										<h4><?php echo $hat->name; ?> <span><?php echo '$' . $product_price[0]; ?></span></h4>
-										<div class="product-images"><img src="<?php echo $hat->thumbnail_url; ?>" /></div>
-									</div>
-									<div class="product-item-action">
-										<a id="buy-hat-now" class="btn btn-primary" href="/merch/product/<?php echo $hat->external_id; ?>/<?php echo post_slug($hat->name); ?>">Buy Now</a>
+									<div class="product-container-pad">
+										<div class="product-item-listing">
+											<h4><?php echo htmlspecialchars($hat->name); ?> <span><?php echo '$' . $product_price[0]; ?></span></h4>
+											<div class="product-images"><img src="<?php echo $hat->thumbnail_url; ?>" /></div>
+										</div>
+										<div class="product-item-action">
+											<a id="buy-hat-now" class="btn btn-primary" href="/merch/product/<?php echo $hat->external_id; ?>/<?php echo post_slug($hat->name); ?>">Buy Now</a>
+										</div>
 									</div>
 								</div>
 								<?php

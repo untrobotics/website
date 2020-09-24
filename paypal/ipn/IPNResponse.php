@@ -85,13 +85,27 @@ class IPNResponse {
 		$this->payment_gross = $paypal_ipn_response_request['payment_gross'];
 		$this->ipn_track_id = $paypal_ipn_response_request['ipn_track_id'];
 		
-		$this->address_status = $paypal_ipn_response_request['address_status'];
-		$this->address_name = $paypal_ipn_response_request['address_name'];
-		$this->address_street = $paypal_ipn_response_request['address_street'];
-		$this->address_city = $paypal_ipn_response_request['address_city'];
-		$this->address_state = $paypal_ipn_response_request['address_state'];
-		$this->address_zip = $paypal_ipn_response_request['address_zip'];
-		$this->address_country_code = $paypal_ipn_response_request['address_country_code'];
+		if (isset($paypal_ipn_response_request['address_status'])) {
+			$this->address_status = $paypal_ipn_response_request['address_status'];
+		}
+		if (isset($paypal_ipn_response_request['address_name'])) {
+			$this->address_name = $paypal_ipn_response_request['address_name'];
+		}
+		if (isset($paypal_ipn_response_request['address_street'])) {
+			$this->address_street = $paypal_ipn_response_request['address_street'];
+		}
+		if (isset($paypal_ipn_response_request['address_city'])) {
+			$this->address_city = $paypal_ipn_response_request['address_city'];
+		}
+		if (isset($paypal_ipn_response_request['address_state'])) {
+			$this->address_state = $paypal_ipn_response_request['address_state'];
+		}
+		if (isset($paypal_ipn_response_request['address_zip'])) {
+			$this->address_zip = $paypal_ipn_response_request['address_zip'];
+		}
+		if (isset($paypal_ipn_response_request['address_country_code'])) {
+			$this->address_country_code = $paypal_ipn_response_request['address_country_code'];
+		}
 		!isset($paypal_ipn_response_request['contact_phone']) ?: $this->contact_phone = $paypal_ipn_response_request['contact_phone'];
 		
 		$this->quantity = $paypal_ipn_response_request['quantity'];

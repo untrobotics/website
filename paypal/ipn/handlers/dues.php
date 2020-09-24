@@ -1,5 +1,7 @@
 <?php
 function handle_payment_notification($ipn, $payment_info, $custom) {
+	global $db;
+	
 	$name = $payment_info->options[2][1];
 	$email = $payment_info->options[1][1];
 	$euid = $payment_info->options[0][1];
@@ -16,10 +18,13 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		"' . $db->real_escape_string($euid) . '",
 		"' . $db->real_escape_string($amount) . '",
 		"' . $db->real_escape_string($fee) . '",
-		"' . $db->real_escape_string(txid) . '"
+		"' . $db->real_escape_string($txid) . '"
 		)');
 
-		email($email, "UNT Robotics Dues Payment Receipt",
+		email($email,
+			  
+			  "UNT Robotics Dues Payment Receipt",
+			  
 			  "Dear {$name},<br>
 			  <br>
 			  <strong>Thank for paying your UNT Robotics dues.</strong><br>

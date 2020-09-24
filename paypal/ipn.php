@@ -66,7 +66,7 @@ if ($verified) {
 		$custom = $_POST['custom'];
 
 		$source = null;
-		if ($custom_obj = unserialize($custom)) {
+		if ($custom_obj = @unserialize($custom)) {
 			$source = $custom_obj['source'];
 		} else {
 			$source = $custom;
