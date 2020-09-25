@@ -1,6 +1,6 @@
 <?php
-require_once('../../../template/config.php');
-require_once('../bot.php');
+require_once(__DIR__ . '/../../../template/config.php');
+require_once(__DIR__ . '/../bot.php');
 
 class AdminBot extends DiscordBot {
 	protected const AUTH_TOKEN = DISCORD_ADMIN_BOT_TOKEN;

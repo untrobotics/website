@@ -1,7 +1,6 @@
 <?php
 
 class DiscordBot {
-	//private $auth_token;
 	
 	private function send_api_request($URI, $method = 'GET', $data) {
 		$ch = curl_init();
