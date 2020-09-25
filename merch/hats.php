@@ -65,7 +65,7 @@ head('Order Hats', true);
 			<ul class="list-breadcrumb">
 			  <li><a href="/">Home</a></li>
 			  <li><a href="/merch">Merch</a></li>
-			  <li>Shirts
+			  <li>Hats
 			  </li>
 			</ul>
 		  </div>

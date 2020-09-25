@@ -82,7 +82,7 @@ class PrintfulCustomAPI {
 	}
 	
 	public function confirm_order($order_id) {
-		$create_order_results = $this->send_request("orders/{$order_id}", null);
+		$create_order_results = $this->send_request("orders/{$order_id}/confirm", null);
 		$parsed_created_order_results = $this->parse_results($create_order_results);
 		
 		$order = new PrintfulOrder($parsed_created_order_results->get_results());
@@ -593,7 +593,9 @@ class PrintfulOrder {
 		$this->costs = new PrintfulOrderCosts($object->costs);
 		$this->status = $object->status;
 		$this->shipping_class = $object->shipping;
-		$this->shipping_service_name = $object->shipping_service_name;
+		if (property_exists($object, 'shipping_service_name')) {
+			$this->shipping_service_name = $object->shipping_service_name;
+		}
 		$this->notes = $object->notes;
 	}
 	
@@ -636,7 +638,9 @@ class PrintfulOrderCosts {
     private $total;
 	
 	public function __construct($object) {
-		$this->currency = $object->currency;
+		if (property_exists($object, 'currency')) {
+			$this->currency = $object->currency;
+		}
     	$this->subtotal = $object->subtotal;
     	$this->discount = $object->discount;
     	$this->shipping = $object->shipping;
@@ -744,6 +748,103 @@ class PrintfulOrderRecipient {
 	}
 	public function get_email() {
 		return $this->email;
+	}
+}
+
+class PrintfulShipment {
+	private $id;
+	private $carrier;
+	private $service;
+	private $tracking_number;
+	private $tracking_url;
+	private $created;
+	private $ship_date;
+	private $shipped_at;
+	private $reshipment; // boolean
+	private $items = array();
+	
+	public function __construct($object) {
+		$this->id = $object->id;
+		$this->carrier = $object->carrier;
+		$this->service = $object->service;
+		$this->tracking_number = $object->tracking_number;
+		$this->tracking_url = $object->tracking_url;
+		$this->created = $object->created;
+		$this->ship_date = $object->ship_date;
+		$this->shipped_at = $object->shipped_at;
+		$this->reshipment = $object->reshipment;
+		foreach ($object->items as $item) {
+			$this->items[] = new PrintfulShipmentItem($item);
+		}
+	}
+	
+	public function get_id() {
+		return $this->id;
+	}
+	public function get_carrier() {
+		return $this->carrier;
+	}
+	public function get_service() {
+		return $this->service;
+	}
+	public function get_tracking_number() {
+		return $this->tracking_number;
+	}
+	public function get_tracking_url() {
+		return $this->tracking_url;
+	}
+	public function get_created() {
+		return $this->created;
+	}
+	public function get_ship_date() {
+		return $this->ship_date;
+	}
+	public function get_shipped_at() {
+		return $this->shipped_at;
+	}
+	public function get_reshipment() {
+		return $this->reshipment;
+	}
+	public function get_items() {
+		return $this->items;
+	}
+}
+
+class PrintfulShipmentItem {
+	private $item_id;
+	private $quantity;
+	
+	public function __construct($object) {
+		$this->item_id = $object->item_id;
+		$this->quantity = $object->quantity;
+	}
+	
+	public function get_item_id() {
+		return $this->item_id;
+	}
+	public function get_quantity() {
+		return $this->quantity;
+	}
+}
+
+class PrintfulWebhookEvent {
+	// TODO
+}
+
+class PrintfulShippedEvent extends PrintfulWebhookEvent {
+	private $shipment;
+	private $order;
+	
+	public function __construct($object) {
+		$this->shipment = new PrintfulShipment($object->shipment);
+		$this->order = new PrintfulOrder($object->order);
+	}
+	
+	public function get_shipment() {
+		return $this->shipment;
+	}
+	public function get_order() {
+		return $this->order;
 	}
 }
 

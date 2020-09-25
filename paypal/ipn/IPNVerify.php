@@ -28,6 +28,11 @@ class PaypalIPN
     {
         $this->use_sandbox = true;
     }
+	
+	public function getSandbox()
+    {
+        return $this->use_sandbox;
+    }
 
     /**
      * Sets curl to use php curl's built in certs (may be required in some

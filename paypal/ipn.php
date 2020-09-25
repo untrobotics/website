@@ -8,6 +8,7 @@ function payment_log($message) {
 require('ipn/IPNVerify.php');
 require('ipn/IPNResponse.php');
 require('../template/top.php');
+require(BASE . '/api/discord/bots/admin.php');
 
 function handled_tx($tx_id, $source) {
 	global $db;
@@ -60,7 +61,7 @@ $verified = $ipn->verifyIPN();
 if ($verified) {
 	try {
 		// verified
-		payment_log("[{$txn_id}] VALID");
+		payment_log("[{$txn_id}] VALID (is sandbox: {$ipn->getSandbox()})");
 		payment_log(var_export($_REQUEST, true));
 
 		$custom = $_POST['custom'];
@@ -80,6 +81,7 @@ if ($verified) {
 			payment_log("[{$txn_id}] Not yet handled");
 		} else {
 			payment_log("[{$txn_id}] ERROR: already handled on {$already_handled[0]} by {$already_handled[1]}");
+			AdminBot::send_message("(IPN) Exception: Received duplicate notification for [{$txn_id}]. This suggests an earlier handling attempt failed.");
 			die();
 		}
 
@@ -110,9 +112,9 @@ if ($verified) {
 			throw $ex;
 		}
 	} catch (Exception $ex) {
-		// TODO: Alert
+		AdminBot::send_message("(IPN) Exception: Failed to process [{$txn_id}]: {$ex}");
 	}
 } else {
 	// NOT verified
-	payment_log("[{$txn_id}] INVALID");
+	payment_log("[{$txn_id}] INVALID (is sandbox: {$ipn->getSandbox()})");
 }

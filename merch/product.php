@@ -243,7 +243,10 @@ function get_variant_variant($variant_name) {
 							<?php
 								preg_match("@^(.+?)•@ims", $catalog_product->get_description(), $m);
 								//var_dump($m);
-								$description = trim($m[1]);
+								$description = "";
+								if (count($m)) {
+									$description = trim($m[1]);
+								}
 								preg_match_all("@• (.+)\n@i", $catalog_product->get_description(), $m);
 								//var_dump($m);
 								$other_info = array();
@@ -255,7 +258,13 @@ function get_variant_variant($variant_name) {
 							<ul style="list-style: circle; margin-left: 25px; margin-top: 20px; text-align: left;">
 								<li><strong>Brand:</strong> <?php echo $catalog_product->get_brand(); ?></li>
 								<li><strong>Model:</strong> <?php echo $catalog_product->get_model(); ?></li>
+								<?php
+										if (!empty($description)) {
+								?>
 								<li><strong>Description:</strong> <?php echo $description; ?></li>
+								<?php
+										}
+								?>
 								<li style="visibility: hidden;"></li>
 								<?php
 									foreach ($other_info as $info) {

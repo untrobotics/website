@@ -108,6 +108,12 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 			]
 		);
 		
+		if ($email_send_status) {
+			payment_log("[{$payment_info->txn_id}] Successfully delivered e-mail receipt (" . var_export($email_send_status, true) . ")");
+		} else {
+			throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
+		}
+		
 		// create association in the database between tx id and printful order id
 		$q = $db->query('INSERT INTO printful_order_tx (txid, printful_order_id) VALUES ("' . $db->real_escape_string($payment_info->txn_id) . '", "' . $db->real_escape_string($draft_order->get_id()) . '")');
 		if (!$q) {
@@ -117,16 +123,22 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		}
 		
 		// confirm the transaction
-		die(); // TODO: remove this for prod
-		$confirmed_order = $printfulapi->confirm_order($draft_order->get_id());
-		// confirm the confirmation of the transaction
-		if ($confirmed_order->get_status() !== PrintfulOrderStatus::PENDING) {
-			throw new IPNHandlerException("[{$payment_info->txn_id}]: Confirmation of order returned non-PENDING response (status: {$confirmed_order->get_status()})");
+		//die(); // TODO: remove this for prod
+		if ($ipn->getSandbox() === false) {
+			$confirmed_order = $printfulapi->confirm_order($draft_order->get_id());
+			// confirm the confirmation of the transaction
+			if ($confirmed_order->get_status() !== PrintfulOrderStatus::PENDING) {
+				throw new IPNHandlerException("[{$payment_info->txn_id}]: Confirmation of order returned non-PENDING response (status: {$confirmed_order->get_status()})");
+			}
+			payment_log("[{$payment_info->txn_id}] Order confirmed and sent for fulfillment (status: {$confirmed_order->get_status()})");
+
+			AdminBot::send_message("(IPN) Alert: THIS IS A TEMPORARY NOTIFICATION. Successfully confirmed printful order [{$payment_info->txn_id}].");
+		} else {
+			payment_log("[{$payment_info->txn_id}] Not confirming order because this is a sandbox order.");
 		}
-		payment_log("[{$payment_info->txn_id}] Order confirmed and sent for fulfillment (status: {$confirmed_order->get_status()})");
 	} else {
-		// TODO: Alerting! this is some type of reversal
-		// to be honest, the below status isn't really an exception -- but it is an alertable offence
-		//throw new IPNHandlerException("[{$payment_info->txn_id}]: IPN received reversal of payment (amount: {$amount_paid})");
+		// Alerting! this is some type of reversal
+		payment_log("[{$payment_info->txn_id}] Amount is not positive. Alerting the executives of potential returned item.");
+		AdminBot::send_message("(IPN) Alert: Printful item returned for order [{$payment_info->txn_id}]. Reversal amount: {$amount_paid}.");
 	}
 }
