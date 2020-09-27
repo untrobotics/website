@@ -1,3 +1,4 @@
+
 <?php
 // One may think, why do I have to hide this page? It only contains the same text you can hear if you phone our number.
 // It is because it prints our API_SECRET in the URL, and being able to browse it would compromise that secret string.
@@ -7,6 +8,9 @@ if ($_GET['code'] !== API_SECRET) {
 	http_response_code(401);
 	die();
 }
+
+//TODO: if the call comes in from 402-935-7733 do something about it because this is paypal
+
 ?><?xml version="1.0" encoding="UTF-8"?>
 <Response>
     <Gather input="dtmf" timeout="10" numDigits="1" action="/twilio/process-incoming-call.php?code=<?php echo API_SECRET; ?>">
