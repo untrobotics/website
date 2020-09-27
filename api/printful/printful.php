@@ -753,6 +753,7 @@ class PrintfulOrderRecipient {
 
 class PrintfulShipment {
 	private $id;
+	private $status;
 	private $carrier;
 	private $service;
 	private $tracking_number;
@@ -760,11 +761,14 @@ class PrintfulShipment {
 	private $created;
 	private $ship_date;
 	private $shipped_at;
-	private $reshipment; // boolean
+	private $reshipment; // boolean as int
 	private $items = array();
 	
 	public function __construct($object) {
 		$this->id = $object->id;
+		if (property_exists($object, 'status')) {
+			$this->status = $object->status;
+		}
 		$this->carrier = $object->carrier;
 		$this->service = $object->service;
 		$this->tracking_number = $object->tracking_number;
@@ -772,7 +776,7 @@ class PrintfulShipment {
 		$this->created = $object->created;
 		$this->ship_date = $object->ship_date;
 		$this->shipped_at = $object->shipped_at;
-		$this->reshipment = $object->reshipment;
+		$this->reshipment = intval($object->reshipment);
 		foreach ($object->items as $item) {
 			$this->items[] = new PrintfulShipmentItem($item);
 		}
@@ -780,6 +784,9 @@ class PrintfulShipment {
 	
 	public function get_id() {
 		return $this->id;
+	}	
+	public function get_status() {
+		return $this->status;
 	}
 	public function get_carrier() {
 		return $this->carrier;
@@ -845,6 +852,18 @@ class PrintfulShippedEvent extends PrintfulWebhookEvent {
 	}
 	public function get_order() {
 		return $this->order;
+	}
+}
+
+class PrintfulReturnedEvent extends PrintfulShippedEvent {
+	private $reason;
+	public function __construct($object) {
+		$this->reason = $object->reason;
+		parent::__construct($object);
+	}
+	
+	public function get_reason() {
+		return $this->reason;
 	}
 }
 

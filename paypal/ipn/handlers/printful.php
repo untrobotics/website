@@ -11,6 +11,9 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 	$amount_paid = $payment_info->mc_gross;
 	$amount_revenue = $payment_info->mc_gross - $payment_info->mc_fee;
 	$quantity = $payment_info->quantity;
+	$order_type = $payment_info->options[0][1];
+	$order_name = $payment_info->options[1][1];
+	$order_variant_name = $payment_info->options[2][1];
 	
 	// ensure price is positive (if negative, it's a reversal)
 	if ($amount_paid > 0) {
@@ -109,9 +112,10 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		);
 		
 		if ($email_send_status) {
-			payment_log("[{$payment_info->txn_id}] Successfully delivered e-mail receipt (" . var_export($email_send_status, true) . ")");
+			payment_log("[{$payment_info->txn_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
 		} else {
-			throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
+			//throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
+			AdminBot::send_message("(IPN) Alert: Failed to send e-mail receipt for order #{$draft_order->get_id()} [{$payment_info->txn_id}].");
 		}
 		
 		// create association in the database between tx id and printful order id
@@ -122,8 +126,25 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 			payment_log("[{$payment_info->txn_id}] Created tx id and order id association in the database (order id: {$draft_order->get_id()})");
 		}
 		
+		$q = $db->query('INSERT INTO printful_order (order_id, first_name, last_name, email_address, order_name, order_variant_name, order_type)
+		VALUES
+		(
+			"' . $db->real_escape_string($draft_order->get_id()) . '",
+			"' . $db->real_escape_string($payment_info->first_name) . '",
+			"' . $db->real_escape_string($payment_info->last_name) . '",
+			"' . $db->real_escape_string($payment_info->payer_email) . '",
+			"' . $db->real_escape_string($order_name) . '",
+			"' . $db->real_escape_string($order_variant_name) . '",
+			"' . $db->real_escape_string($order_type) . '"
+		)');
+		$printful_order_db_id = $db->insert_id;
+		if (!$q) {
+			throw new IPNHandlerException("[{$payment_info->txn_id}]: Unable to create printful order entry in the database (error: {$db->error})");
+		} else {
+			payment_log("[{$payment_info->txn_id}] Created printful order entry in the database (super secret id: {$printful_order_db_id})");
+		}
+		
 		// confirm the transaction
-		//die(); // TODO: remove this for prod
 		if ($ipn->getSandbox() === false) {
 			$confirmed_order = $printfulapi->confirm_order($draft_order->get_id());
 			// confirm the confirmation of the transaction
@@ -131,8 +152,15 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 				throw new IPNHandlerException("[{$payment_info->txn_id}]: Confirmation of order returned non-PENDING response (status: {$confirmed_order->get_status()})");
 			}
 			payment_log("[{$payment_info->txn_id}] Order confirmed and sent for fulfillment (status: {$confirmed_order->get_status()})");
-
-			AdminBot::send_message("(IPN) Alert: THIS IS A TEMPORARY NOTIFICATION. Successfully confirmed printful order [{$payment_info->txn_id}].");
+			
+			$q = $db->query('UPDATE printful_order SET confirmed = 1 WHERE id = "' . $db->real_escape_string($printful_order_db_id) . '"');
+			if (!$q) {
+				payment_log("[{$payment_info->txn_id}] Failed to confirm order in the database.");
+				AdminBot::send_message("(IPN) Alert: Printful order table failed to commit confirmation update for [{$payment_info->txn_id}]. (super secret id: {$printful_order_db_id})");
+			} else {
+				payment_log("[{$payment_info->txn_id}] Order confirmed in database.");
+				AdminBot::send_message("(IPN) Alert: THIS IS A TEMPORARY NOTIFICATION. Successfully confirmed printful order [{$payment_info->txn_id}] (profit: ${$profit}, woohoo!).");
+			}
 		} else {
 			payment_log("[{$payment_info->txn_id}] Not confirming order because this is a sandbox order.");
 		}
