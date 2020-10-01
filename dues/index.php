@@ -1,38 +1,91 @@
 <?php
 require('../template/top.php');
+require(BASE . '/template/functions/payment_button.php');
 head('Pay Dues', true);
+
+$q = $db->query("SELECT `value` FROM dues_config WHERE `key` = 'semester_price'");
+if (!$q || $q->num_rows !== 1) {
+	// TODO: Uh oh!
+}
+
+$dues_price = $q->fetch_row()[0];
 ?>
 
 <main class="page-content">
-        <section class="section-75 section-md-100 section-lg-150">
-          <div class="shell">
-            <div class="range range-md-justify">
-              <div class="cell-md-12">
-                <div class="inset-md-right-30 inset-lg-right-0 text-center">
-                  <h1>Pay Dues</h1>
+	<section class="section-50 section-md-75 section-lg-100">
+	  <div class="shell">
+		<div class="range range-md-justify">
+		  <div class="cell-md-12">
+			<div class="inset-md-right-30 inset-lg-right-0 text-center">
+			  <h1>Pay Dues</h1>
+				<?php
+				if (is_current_user_authenticated()) {
+					if (!$untrobotics->is_user_in_good_standing($userinfo)) {
+						?>
 
-					<p><strong>Please fill out the information below and then click Pay Now.</strong></p>
+					<p>Please use the Pay Now button to pay your dues via PayPal.</p>
+					<p style="margin-top: 0px;">Once you have paid, your Discord account will automatically be given the <em>Good Standing</em> role.</p>
 
-					<p><strong style="font-size: 20px;"><pre style="display: inline-block;">Cost: $10</pre></strong></p>
+					<p><strong style="font-size: 20px;"><pre style="display: inline-block;border-radius: 10px;">Cost: $<?php echo $dues_price; ?></pre></strong></p>
 
-					<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-					<input type="hidden" name="cmd" value="_s-xclick">
-					<input type="hidden" name="hosted_button_id" value="6UME3HSZNR3FU">
-					<table style="display: inline-block;">
-						<input type="hidden" name="custom" value="DUES_PAYMENT">
-						<tr><td><input type="hidden" name="on2" value="Your Name">Your Name</td></tr><tr><td><input type="text" name="os2" maxlength="200"></td></tr>
-						<tr><td><input type="hidden" name="on0" value="UNT EUID">UNT EUID (e.g. abc1234)</td></tr><tr><td><input type="text" name="os0" maxlength="200"></td></tr>
-						<tr><td><input type="hidden" name="on1" value="UNT E-mail Address">UNT E-mail Address</td></tr><tr><td><input type="text" name="os1" maxlength="200"></td></tr>
-					</table>
-						<br>
-					<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-					<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-					</form>
+					<div style="display: inline-block;">
+						<?php
+							$custom = serialize(array(
+								'source' => 'DUES_PAYMENT',
+								'uid' => $userinfo['id']
+							));
 
-				  </div>
-				</div>
+							$payment_button = new PaymentButton(
+								'UNT Robotics Dues',
+								$dues_price,
+								'Pay Now',
+								'Complete Dues Payment'
+							);
+
+							$payment_button->set_custom($custom);
+							$payment_button->set_opt_names(
+								array(
+									'Semester',
+									'Year'
+								)
+							);
+							$payment_button->set_opt_vals(
+								array(
+									Semester::get_name_from_value($untrobotics->get_current_term()),
+									$untrobotics->get_current_year()
+								)
+							);
+							$payment_button->set_complete_return_uri('/dues/paid');
+
+							$button = $payment_button->get_button();
+							if ($button->error === false) {
+								echo $payment_button->get_button()->button;
+							} else {
+								// TODO: Alert
+								?>
+						<div class="alert alert-danger">An error occurred loading the payment button...</div>
+								<?php
+							}
+						?>
+					</div>
+
+					<?php
+					} else {
+						?>
+						<div class="alert alert-info alert-inline">You have already paid your dues for this semester. :&#41;</div>
+						<?php
+					}
+				} else {
+					?>
+					<div class="alert alert-info alert-inline">You must <a href="/auth/login?returnto=<?php echo urlencode('/dues'); ?>">log in</a> to pay dues.</div>
+					<?php
+				}
+				?>
+				
 			  </div>
 			</div>
+		  </div>
+		</div>
 	</section>
 </main>
 

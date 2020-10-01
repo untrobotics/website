@@ -125,7 +125,6 @@ class PrintfulCustomAPI {
 		$parsed_sync_variant_results = $this->parse_results($sync_variant_results);
 		
 		if ($parsed_sync_variant_results->get_results()) {
-			error_log("LOGGING" . var_export($parsed_sync_variant_results->get_results(), true));
 			//return new PrintfulSyncVariant($parsed_sync_variant_results->get_results()); // this is the correct output, but there is a bug with the Printful API
 			return new PrintfulVariant($parsed_sync_variant_results->get_results());
 		} else {

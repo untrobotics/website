@@ -2,26 +2,39 @@
 
 class DiscordBot {
 	
-	private function send_api_request($URI, $method = 'GET', $data) {
+	private function send_api_request($URI, $method = 'GET', $data = null) {
 		$ch = curl_init();
+		
+		$headers = array();
+		$headers[] = 'Authorization: Bot ' . static::AUTH_TOKEN;
+		$headers[] = 'Content-Type: application/json';
 
 		curl_setopt($ch, CURLOPT_URL, 'https://discord.com/api' . $URI);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+		$payload = "";
+		if ($data) {
+			$payload = json_encode($data);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+		}
+		$headers[] = 'Content-Length: ' . strlen($payload);
 
-		$headers = array();
-		$headers[] = 'Authorization: Bot ' . static::AUTH_TOKEN;
-		$headers[] = 'Content-Type: application/json';
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
 		$result = curl_exec($ch);
 		if (curl_errno($ch)) {
 			throw new DiscordBotException("Error occurred when making API request: " . curl_error($ch));
 		}
+		
+		$status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		
 		curl_close($ch);
 		
-		return json_decode($result);
+		$response = new stdClass();
+		$response->result = $result;
+		$response->status_code = $status_code;
+		
+		return $response;
 	}
 	
 	public static function send_message($message, $channel_id) {
@@ -29,6 +42,18 @@ class DiscordBot {
 		$data->content = $message;
 		
 		return static::send_api_request("/channels/{$channel_id}/messages", 'POST', $data);
+	}
+	
+	public static function add_user_role($guild_id, $user_id, $role_id) {
+		return static::send_api_request("/guilds/{$guild_id}/members/{$user_id}/roles/{$role_id}", 'PUT');
+	}
+	
+	public static function remove_user_role($guild_id, $user_id, $role_id) {
+		return static::send_api_request("/guilds/{$guild_id}/members/{$user_id}/roles/{$role_id}", 'DELETE');
+	}
+	
+	public static function type($channel_id) {
+		return static::send_api_request("/channels/{$channel_id}/typing", 'POST');
 	}
 }
 								

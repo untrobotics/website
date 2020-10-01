@@ -47951,16 +47951,31 @@ header nav.rd-navbar-static.rd-navbar-secondary .rd-navbar-nav > li.thin {
 
 .paypal-button-container {
 	position: relative;
-    width: 210px;
-    height: 60px;
+    width: 293px;
+    height: 80px;
 }
 .paypal-button-overlay {
+    text-align: right;
 	position: relative;
     z-index: 2;
 	pointer-events: none;
+	border: 1px solid #c1c1c1;
+    padding: 10px;
+    border-radius: 10px;
+}
+.paypal-button-overlay > img {
+	width: 55px;
+    display: inline-block;
+    margin-right: 10px;
+    position: absolute;
+    left: -25px;
+    top: 13px;
+    background-color: white;
+    padding: 5px;
 }
 .paypal-button-overlay > button {
-	width: 100%;
+	width: 250px;
+	border-radius: 5px;
 }
 .actual-paypal-button {
 	position: absolute;
@@ -47973,5 +47988,9 @@ header nav.rd-navbar-static.rd-navbar-secondary .rd-navbar-nav > li.thin {
 .actual-paypal-button input[type="image"] {
 	width: 100%;
 	height: 100%;
+	opacity: 0
+}
+.alert-inline {
+	display: inline-block;
 }
 /*# sourceMappingURL=style.css.map */

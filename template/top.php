@@ -22,12 +22,22 @@ session_start();
 $userinfo = array(); // this will be populated later, we are effectively making this a global
 $session = array();
 
-$db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME);
+class mmysqli extends mysqli {
+    public function __construct($host, $user, $pass, $db) {
+        parent::init();
+
+        if (!parent::real_connect($host, $user, $pass, $db, 3306, null, MYSQLI_CLIENT_FOUND_ROWS)) {
+            die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
+        }
+    }
+}
+
+$db = new mmysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME);
 $db->set_charset(DATABASE_CHARSET);
 
 date_default_timezone_set(TIMEZONE);
 
-$untrobotics = new untrobotics();
+$untrobotics = new untrobotics($db);
 
 function head($title, $heading, $auth = false, $return = false) {
 	global $base, $userinfo, $session, $untrobotics, $db;
@@ -194,6 +204,7 @@ function auth($auth_level = 1) {
 						if ($userinfo['is_admin'] == 1) {
 							return array($userinfo, $auth_session);
 						}
+						return false;
 					} else {
 						return array($userinfo, $auth_session);
 					}
@@ -202,6 +213,11 @@ function auth($auth_level = 1) {
 		}
 	}
 	return false;
+}
+
+function is_current_user_authenticated() {
+	global $userinfo, $session;
+	return !empty($userinfo) && !empty($session);
 }
 
 $timezones = timezone_identifiers_list();

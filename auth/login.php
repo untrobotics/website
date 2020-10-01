@@ -31,6 +31,7 @@ if (isset($_POST['email'])) {
 			session_regenerate_id();
 			// possibly an odd solution but it works, the hashes are random and hard to read and should be relatively unique per device
 			$auth_session_name = obfuscate_hash(bin2hex(random_bytes(32))); // just really random
+			
 			$db->query("INSERT INTO auth_sessions
 			(session_id,
 			session_name,
@@ -38,16 +39,18 @@ if (isset($_POST['email'])) {
 			uid,
 			expires)
 			VALUES
-			('".$db->real_escape_string($auth_session_id)."',
-			'".$db->real_escape_string($auth_session_name)."',
-			'".$db->real_escape_string($fingerprint)."',
-			'".$db->real_escape_string($r['id'])."',
-			'".$db->real_escape_string($expires)."')
+			(
+				'".$db->real_escape_string($auth_session_id)."',
+				'".$db->real_escape_string($auth_session_name)."',
+				'".$db->real_escape_string($fingerprint)."',
+				'".$db->real_escape_string($r['id'])."',
+				'".$db->real_escape_string($expires)."'
+			)
 			") or die($db->error); // remove this for security
 
 			setcookie(COOKIE_PREFIX . "_SESSION_ID", $auth_session_id, $expires, '/', WEBSITE_DOMAIN, true, true);
 			setcookie(COOKIE_PREFIX . "_SESSION_NAME", $auth_session_name, $expires, '/', WEBSITE_DOMAIN, true, true);
-			setcookie("remember", $r['username'], time()*2, '/auth/');
+			setcookie("remember", encode_hash($r['id']), time()*2, '/auth/', WEBSITE_DOMAIN);
 
 			if (isset($_GET['returnto'])) {
 				header("Location: //{$_SERVER['SERVER_NAME']}/".preg_replace("/^\//i", "", $_GET['returnto']));
@@ -108,7 +111,7 @@ head('Login', true);
 						</div>
                   		<button type="submit" class="btn btn-default offset-top-35">Sign in</button>
 						
-						<p style="margin-top: 40px;"><a href='/auth/forgot-password'>Forgot password?</a></p>
+						<p style="margin-top: 40px;"><a href='/auth/join'>Create an Account</a> <span>-</span> <a href='/auth/forgot-password'>Forgot password?</a></p>
 					</center>
                 </form>
               </div>
