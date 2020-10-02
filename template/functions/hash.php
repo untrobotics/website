@@ -304,7 +304,7 @@ function obfuscate_hash($hash, $length = -1) {
 	if ($length == -1) {
 		$length = strlen($hash);
 	}
-	$hashids = new Hashids(WEBSITE_NAME, $length);
+	$hashids = new Hashids(HASH_SALT, $length);
 	return $hashids->encodeHex(md5($hash));
 }
 
@@ -312,11 +312,11 @@ function encode_hash($hash, $length = -1) {
 	if ($length == -1) {
 		$length = strlen($hash);
 	}
-	$hashids = new Hashids(WEBSITE_NAME, $length);
+	$hashids = new Hashids(HASH_SALT, $length);
 	return $hashids->encode($hash);
 }
 
 function decode_hash($hash) {
-	$hashids = new Hashids(WEBSITE_NAME);
+	$hashids = new Hashids(HASH_SALT);
 	return $hashids->decode($hash);
 }

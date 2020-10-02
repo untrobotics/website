@@ -23,5 +23,11 @@ RewriteRule ^join/discord$ /auth/join-discord.php [L]
 RewriteRule ^join/campuslabs$ /auth/join-campuslabs.php [L]
 RewriteRule ^join/groupme$ /auth/join-groupme.php [L]
 
+# path params
+RewriteRule ^merch/product/([0-9a-f]+)/?([a-z-]*)$ /merch/product.php?id=$1&desc=$2 [L]
+RewriteRule ^merch/product/([0-9a-f]+)/([a-z-]*)/([0-9]+)$ /merch/product.php?id=$1&desc=$2&variant=$3 [L]
+RewriteRule ^merch/product/([0-9a-f]+)/([0-9+])$ /merch/product.php?id=$1&variant=$2 [L]
+RewriteRule ^merch/product/([0-9a-f]+)/?(.*) /merch/product.php?id=$1&desc=$2 [L]
+
 # tmp
 RewriteRule ^join$ /auth/join.php [L]

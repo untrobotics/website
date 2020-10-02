@@ -6,5 +6,6 @@ paypal/logs/ipn.log
 paypal/logs/.htpasswd
 ip2location/*.BIN
 downloads/videos/*
+tmp
 
 .htpasswd

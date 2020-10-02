@@ -1,6 +1,9 @@
 <?php
 // config
-require_once("config.php");
+require_once('config.php');
+require_once('classes/untrobotics.php');
+
+use SendGrid\Mail\Attachment;
 
 $base = BASE; // for legacy support
 
@@ -19,17 +22,25 @@ session_start();
 $userinfo = array(); // this will be populated later, we are effectively making this a global
 $session = array();
 
-$db = new mysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME);
+class mmysqli extends mysqli {
+    public function __construct($host, $user, $pass, $db) {
+        parent::init();
+
+        if (!parent::real_connect($host, $user, $pass, $db, 3306, null, MYSQLI_CLIENT_FOUND_ROWS)) {
+            die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
+        }
+    }
+}
+
+$db = new mmysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME);
 $db->set_charset(DATABASE_CHARSET);
 
 date_default_timezone_set(TIMEZONE);
 
-function is_sandbox() {
-	return false;
-}
+$untrobotics = new untrobotics($db);
 
 function head($title, $heading, $auth = false, $return = false) {
-	global $base, $userinfo, $session, $db;
+	global $base, $userinfo, $session, $untrobotics, $db;
 	$default_values = array(
 		2 => array("auth", true),
 		3 => array("breadcrumbs", array("Home" => "/")),
@@ -40,17 +51,27 @@ function head($title, $heading, $auth = false, $return = false) {
 			$$default_values[$key][0] = $default_values[$key][1];
 		}
 	}
-	if ($auth == true) {
-		$auth_result = auth((int)$auth);
-		if (!is_array($auth_result)) {
-			die(header("Location: /auth/login"));
-		}
+	
+	$auth_result = auth((int)$auth);
+	if (is_array($auth_result)) {
 		$userinfo = $auth_result[0];
 		$session = $auth_result[1];
 		date_default_timezone_set($userinfo['timezone']);
+		
+		//extras
+		if ($userinfo['sandbox']) {
+			$untrobotics->set_sandbox(true);
+		}
+	}
+	
+	if ($auth == true) {
+		if (!is_array($auth_result)) {
+			die(header("Location: /auth/login"));
+		}
 	}
 	
 	$title = htmlspecialchars($title ? $title . " | " . WEBSITE_NAME : WEBSITE_NAME);
+	$heading = htmlspecialchars($heading);
 	
 	if ($heading == true && gettype($heading) == "boolean") {
 		$heading = $title;
@@ -75,7 +96,81 @@ function footer($die = true) {
 	}
 }
 
-function email($to, $subject, $message, $replyto = false, $headers = NULL) {
+function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array()) {
+	global $db;
+	require_once(BASE . "/api/sendgrid/sendgrid-php.php");
+	if (count($attachments)) {
+	}
+	
+	$email = new \SendGrid\Mail\Mail(); 
+	$email->setFrom("no-reply@untrobotics.com", "UNT Robotics");
+	$email->setSubject($subject);
+	
+	if ($replyto) {
+		$email->setReplyTo($replyto);
+	}
+	
+	if (is_array($to)) {
+		$email->addTo($to[0], $to[1]);
+	} else {
+		$email->addTo($to);
+	}
+	
+	$email->addContent("text/html", $message);
+	
+	foreach ($attachments as $attachment) {
+        $email->addAttachment(
+			$attachment['content'],
+			$attachment['type'],
+			$attachment['filename'],
+			$attachment['disposition'],
+			$attachment['content_id']
+		);
+	}
+	
+	$sendgrid = new \SendGrid(SENDGRID_API_KEY);
+	
+	$db->query("
+				INSERT INTO sent_emails (
+					`to`,
+					`subject`,
+					`message`,
+					`headers`,
+					`replyto`,
+					`attachments`,
+					`status`
+				)
+				VALUES (
+					" . $db->real_escape_string(json_encode($to)) . ",
+					" . $db->real_escape_string(json_encode($subject)) . ",
+					" . $db->real_escape_string(json_encode($message)) . ",
+					" . $db->real_escape_string(json_encode($headers)) . ",
+					" . $db->real_escape_string($replyto) . ",
+					" . $db->real_escape_string(json_encode($attachments)) . ",
+					" . $db->real_escape_string(0) . "
+				)"
+			  );
+	
+	try {
+		$response = $sendgrid->send($email);
+		$status_code = $response->statusCode();
+		
+		if ($status_code >= 200 && $status_code <= 299) {
+			$insert_id = $db->insert_id;
+			if (is_numeric($insert_id)) {
+				$db->query('UPDATE sent_emails SET status = 1 WHERE id = "' . $db->real_escape_string($insert_id) . '"');
+			}
+			
+			return true;
+		}
+	} catch (Exception $e) {
+		//echo 'Caught exception: '. $e->getMessage() ."\n";
+		// TODO: Alerting
+	}
+	
+	return false;
+	
+	/*
 	$replyto = ($replyto ? "$replyto" : EMAIL_NAME . ' <' . EMAIL_USER . '@' . EMAIL_DOMAIN . '>');
 	if (!$headers || $headers == NULL) {
 		$headers  = 'MIME-Version: 1.0' . "\r\n";
@@ -84,18 +179,8 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL) {
 		'Reply-To: ' . $replyto . "\r\n" .
 		'X-Mailer: PHP/' . phpversion();
 	}
-	$status = mail($to, $subject, $message, $headers);
-	/*$db->query("
-				INSERT INTO sent_emails (`to`, `subject`, `message`, `headers`, `status,)
-				VALUES (
-				" . $db->real_escape_string($to) . ",
-				" . $db->real_escape_string($subject) . ",
-				" . $db->real_escape_string($message) . ",
-				" . $db->real_escape_string($headers) . ",
-				" . $db->real_escape_string($status) . ",
-				)"
-			  );*/
-	return $status;
+	*/
+	
 }
 
 function get_fingerprint() {
@@ -119,6 +204,7 @@ function auth($auth_level = 1) {
 						if ($userinfo['is_admin'] == 1) {
 							return array($userinfo, $auth_session);
 						}
+						return false;
 					} else {
 						return array($userinfo, $auth_session);
 					}
@@ -127,6 +213,11 @@ function auth($auth_level = 1) {
 		}
 	}
 	return false;
+}
+
+function is_current_user_authenticated() {
+	global $userinfo, $session;
+	return !empty($userinfo) && !empty($session);
 }
 
 $timezones = timezone_identifiers_list();
