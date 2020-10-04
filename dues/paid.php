@@ -18,7 +18,7 @@ error_log($log, 0, 'paypal/pdt.log');
 
 						<p><strong>Thank you for paying your dues.</strong></p>
 							
-						<a href="/auth/join-discord">Click here to update your Discord account status.</a>
+						<a href="/join/discord">Click here to update your Discord account status.</a>
 					</div>
 				</div>
 			</div>

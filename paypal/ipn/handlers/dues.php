@@ -48,7 +48,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 			
 			'<div style="text-align: left; max-width: 500px; display: inline-block;">' .
 			"	<p>Dear " . $payment_info->first_name . ' ' . $payment_info->last_name . ",</p>" .
-			"	<p>Thank you for paying your UNT Robotics dues. If you have not yet received the <em>Good Standing</em> role in the Discord server, please <a href=\"https://untro.bo/auth/join-discord\">click here</a> to be automatically assigned the role.</p>" .
+			"	<p>Thank you for paying your UNT Robotics dues. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role.</p>" .
 			'</div>' .
 			
 			'	<div></div>' .

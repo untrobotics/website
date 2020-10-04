@@ -66,7 +66,7 @@ function head($title, $heading, $auth = false, $return = false) {
 	
 	if ($auth == true) {
 		if (!is_array($auth_result)) {
-			die(header("Location: /auth/login"));
+			die(header("Location: /auth/login?returnto=" . $_SERVER['REQUEST_URI']));
 		}
 	}
 	
