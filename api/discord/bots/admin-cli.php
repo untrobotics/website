@@ -19,8 +19,7 @@ if ($did_match) {
     $error_message = $m[5];
 
     AdminBot::send_message(
-        "```accesslog\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```",
-        DISCORD_WEB_LOGS_CHANNEL_ID);
+        "```accesslog\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", DISCORD_WEB_LOGS_CHANNEL_ID);
 } else {
     AdminBot::send_message("```[ERROR LOG MESSAGE PARSE FAILED]\n{$message}```", DISCORD_WEB_LOGS_CHANNEL_ID);
 }
