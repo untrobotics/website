@@ -12,7 +12,7 @@ Our mission is to inspire and teach people the skills to achieve their goals in 
 
 ## Buy our [merch](https://www.untrobotics.com/merch/)
 
-## [Sponsor Us](mailto:hello@untrobotics.com)
+## [Sponsor Us](https://www.untrobotics.com/sponsorships/)
 
 ## Maintainers
 Mantained by: 
