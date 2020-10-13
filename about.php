@@ -43,9 +43,9 @@ head('About Us', true);
 					<h3>Networking</h3>
 				  <p>A big part of our development is encouraging &amp; facilitating networking. This is mutually beneficial for the students and companies alike who love to recruit our alumni. We also have working relationships with companies who offer talks, parts and equipment and mentorship every semester.</p>
 					<!--<h3>Botathon</h3>
-				  <p></p>
-					<h3>Competitions</h3>
 				  <p></p>-->
+					<h3>Competitions</h3>
+				  <p>UNT Robotics currently competes in <a href="https://www.roboticseducation.org/vex-u/">VexU</a>, a university based robotics competition. In the past, we have competed in IEEE Region 5 competitions. In 2019, we placed third at competition in Louisiana.</p>
 					<h3>Recreational Projects</h3>
 				  <p>These fun projects are for anyone and everyone that just wants to have fun and work on a project together. These projects tend to be very long-term because we don't require any time commitment, allowing people to come and go as they wish. Anyone can propose a project to work on, and so long as they get a team together we will support them in building it.</p>
 					<h3>Equipment Checkout</h3>
