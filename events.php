@@ -6,7 +6,7 @@ head('Events Calendar', true);
 <main class="page-content">
         <section class="section-25 section-md-50 section-lg-75">
 			<h1 class="text-center">Events Calendar</h1>
-			<div class="text-center">For the most up-to-date information please <a href="/join/discord">join our Discord</a>.</div>
+			<div class="text-center">For the most up-to-date information please <a href="/discord">join our Discord</a>.</div>
 			<br>
                 <div class="shell text-sm-left">
                         <div class="range text-center">

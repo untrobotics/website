@@ -44,7 +44,13 @@ function post_message($message, $channel_id = false, $attachments = array(), $sp
 	} else {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'https://api.groupme.com/v3/bots/post');
-		$post_data['bot_id'] = CHANNEL_TO_BOT[$channel_id];
+		
+		if ($channel_id === false) {
+			$post_data['bot_id'] = CHANNEL_TO_BOT[key(CHANNEL_TO_BOT)]; // reset canno be used on a const.
+		} else {
+			$post_data['bot_id'] = CHANNEL_TO_BOT[$channel_id];
+		}
+		
 		$headers[] = 'Content-Type: application/x-www-form-urlencoded';
 	}
 
@@ -64,15 +70,33 @@ function post_message($message, $channel_id = false, $attachments = array(), $sp
 		error_log('ERROR (curl) when posting as BOT: ' . curl_error($ch));
 	}
 
-	curl_close ($ch);
+	curl_close($ch);
+}
+
+function get_image($url) {
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+	$result = curl_exec($ch);
+	
+	if (curl_errno($ch)) {
+		error_log('ERROR (curl) when downloading an image file for GroupMe prepare function: ' . curl_error($ch));
+	}
+	curl_close($ch);
+	
+	return $result;
 }
 
 function prepare_image($attachment) {
 	$ch = curl_init();
+	
+	$image = get_image($attachment['url']);
 
 	curl_setopt($ch, CURLOPT_URL, 'https://image.groupme.com/pictures');
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents($attachment['url']));
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $image);
 	curl_setopt($ch, CURLOPT_POST, 1);
 
 	$headers = array();
@@ -82,9 +106,9 @@ function prepare_image($attachment) {
 
 	$result = curl_exec($ch);
 	if (curl_errno($ch)) {
-		error_log('ERROR (curl) when added an image to GroupMe: ' . curl_error($ch));
+		error_log('ERROR (curl) when adding an image to GroupMe: ' . curl_error($ch));
 	}
-	curl_close ($ch);
+	curl_close($ch);
 
 	$data = json_decode($result);
 	return $data->payload->url;
