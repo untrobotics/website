@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-$auth_result = auth((int)$auth);
+$auth_result = auth(1);
 
 if (!is_array($auth_result)) {
 	die(header("Location: /auth/login?returnto=" . $_SERVER['REQUEST_URI']));

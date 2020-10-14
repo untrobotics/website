@@ -159,7 +159,7 @@ class PrintfulCustomAPI {
 		
 		$product_results = $this->send_request("products/{$product_id}");
 		$parsed_product_results = $this->parse_results($product_results);
-		
+
 		if ($parsed_product_results->get_results()) {
 			return new PrintfulCatalogProduct($parsed_product_results);
 		} else {
@@ -557,12 +557,14 @@ class PrintfulCatalogProduct extends PrintfulCatalogVariantProduct {
 }
 
 class PrintfulCatalogVariantProductDimensions {
-	private $front;
-	private $side;
+	private $front; // nullable?
+	private $side = null;
 	
 	public function __construct($object) {
 		$this->front = $object->front;
-		$this->side = $object->side;
+        if (property_exists($object, 'side')) {
+            $this->side = $object->side;
+        }
 	}
 	
 	public function get_front() {

@@ -41,7 +41,9 @@ try:
 		[
 			"/usr/bin/php",
 			"/var/www/untrobotics/api/discord/bots/admin-cli.php",
-			''.join(current_log[prev_len:current_len])
+			''.join(current_log[prev_len:current_len]),
+			prev_len,
+			current_len
 		]
 	);
 except Exception as e:
@@ -49,6 +51,8 @@ except Exception as e:
                 [
                         "/usr/bin/php",
                         "/var/www/untrobotics/api/discord/bots/admin-cli.php",
-			"Error occurred while attempting to retreive error logs:\n" + str(e)
+			"Error occurred while attempting to retreive error logs:\n" + str(e),
+			prev_len,
+			current_len
                 ]
         );
