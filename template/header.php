@@ -146,6 +146,7 @@
                   <li><a href="/guides">Guides</a></li>
 				  <li><a href="/equipment" class="stacked">Checkout<br>Equipment</a></li>-->
 				  <li><a href="/dues">Pay Dues</a></li>
+				<li><a href="/sponsorships">Sponsor Us</a></li>
 				  <li><a href="/merch">Merch</a>
                     <ul class="rd-navbar-dropdown">
                   	  <li><a href="/merch/shirts-hoodies">Shirts &amp; Hoodies</a></li>
