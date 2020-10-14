@@ -41,7 +41,7 @@ try:
 		[
 			"/usr/bin/php",
 			Path(dir_path) / Path("../api/discord/bots/admin-cli.php"),
-			'test',
+			''.join(current_log[prev_len:current_len]),
 			str(prev_len),
 			str(current_len)
 		]
