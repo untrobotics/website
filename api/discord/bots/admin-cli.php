@@ -31,8 +31,8 @@ if ($did_match) {
         $request_info = $matches[4][$k];
         $error_message = $matches[5][$k];
 
-        var_dump(AdminBot::send_message(
-            "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel));
+        AdminBot::send_message(
+            "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel);
     }
 } else {
     var_dump(AdminBot::send_message("```({$prev} => {$current})\n[ERROR LOG MESSAGE PARSE FAILED]\n{$message}```", $discord_channel));
