@@ -146,9 +146,11 @@
                   <li><a href="/guides">Guides</a></li>
 				  <li><a href="/equipment" class="stacked">Checkout<br>Equipment</a></li>-->
 				  <li><a href="/dues">Pay Dues</a></li>
-				  <li><a href="/merch/shirts">Merch</a>
+				<li><a href="/sponsorships">Sponsor Us</a></li>
+				  <li><a href="/merch">Merch</a>
                     <ul class="rd-navbar-dropdown">
-                  	  <li><a href="/merch/shirts">T-Shirts</a></li>
+                  	  <li><a href="/merch/shirts-hoodies">Shirts &amp; Hoodies</a></li>
+                  	  <li><a href="/merch/hats">Hats</a></li>
                     </ul>
                   </li>
 				  <li><a href="/botathon">Botathon</a>
@@ -160,7 +162,7 @@
                   </li>
                   <li><a href="/contact">Contact us</a></li>
 			<?php
-			if (auth()) {
+			if (count($userinfo)) {
 			?>
 				<li class="thin auth" style="margin-left: auto;"><a href="/me/" class="stacked">My<br>Profile</a></li>
 				<li class="thin auth" style="margin-left: 0;"><a href="/auth/logout" class="stacked">Log<br>Out</a></li>

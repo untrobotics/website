@@ -17,49 +17,25 @@ ob_start();
 			<Gather input="dtmf" timeout="10" numDigits="1" action="/twilio/process-incoming-call.php?code=<?php echo API_SECRET; ?>">
 				<Pause length="2"/>
 				<Say voice="woman" language="en-GB">
-					Press 11 for Juan Ru eez, Organisation President.
-					12 for Alex Ferguson, Vice President.
-					13 for Katie Lee, Organisation Secretary.
-					14 for Andrew Jarrett, Public Relations.
-					15 for Noel Winslow, Corporate Outreach.
-					16 for Michelle Vargas, Event Coordinator.
-					17 for Nichole Kohm, Project Manager.
-					18 for Jake Favalora, Inventory Management.
-					19 for Tyler Martinez, Treasurer.
-					20 for Sebastian King, Webmaster.
+					Press 2 for Alex Ferguson, Organisation President.
+					3 for Sebastian King, Vice President.
+					4 for Ashank Annam, Corporate Relation.
+					5 for Lauren Caves, Organisation Secretary.
 				</Say>
 			</Gather>
 			<?php
 			break;
-		case 11:
-			?><Dial><?php echo $phone_numbers['JuanR']; ?></Dial><?php
-			break;
-		case 12:
+		case 2:
 			?><Dial><?php echo $phone_numbers['AlexF']; ?></Dial><?php
 			break;
-		case 13:
-			?><Dial><?php echo $phone_numbers['KatieL']; ?></Dial><?php
-			break;
-		case 14:
-			?><Dial><?php echo $phone_numbers['AndyJ']; ?></Dial><?php
-			break;
-		case 15:
-			?><Dial><?php echo $phone_numbers['NoelW']; ?></Dial><?php
-			break;
-		case 16:
-			?><Dial><?php echo $phone_numbers['MichelleV']; ?></Dial><?php
-			break;
-		case 17:
-			?><Dial><?php echo $phone_numbers['NicoleK']; ?></Dial><?php
-			break;
-		case 18:
-			?><Dial><?php echo $phone_numbers['JakeF']; ?></Dial><?php
-			break;
-		case 19:
-			?><Dial><?php echo $phone_numbers['TylerM']; ?></Dial><?php
-			break;
-		case 20:
+		case 3:
 			?><Dial><?php echo $phone_numbers['SebK']; ?></Dial><?php
+			break;
+		case 4:
+			?><Dial><?php echo $phone_numbers['AshankA']; ?></Dial><?php
+			break;
+		case 5:
+			?><Dial><?php echo $phone_numbers['LaurenC']; ?></Dial><?php
 			break;
 		case 9: // Voicemail
 			?>

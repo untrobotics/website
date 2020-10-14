@@ -2,11 +2,12 @@
 // this page must be the result of a Discord Oauth2 request with this set as the REDIRECT_URI
 
 require('../template/top.php'); // see https://github.com/sebastian-king/Sebs-Website-Framework
+require(BASE . '/api/discord/bots/admin.php');
 
 function get_discord_access_token($code, $scope) {
 	$ch = curl_init();
 
-	curl_setopt($ch, CURLOPT_URL, DISCORD_APP_API_ENDPOINT . '/oauth2/token');
+	curl_setopt($ch, CURLOPT_URL, DISCORD_APP_API_URL . '/oauth2/token');
 	curl_setopt($ch, CURLOPT_POST, 1);
 
 	$post = array();
@@ -30,6 +31,7 @@ function get_discord_access_token($code, $scope) {
 	$data = json_decode($result);
 
 	$access_token = $data->access_token;
+	//var_dump($data);
 	return $access_token;
 }
 
@@ -38,11 +40,11 @@ function discord_request($uri, $access_token, $access_token_type = "Bearer", $pa
 
 	$headers = array();
 	if ($access_token_type == 'Bot') {
-		$headers[] = "Authorization: {$access_token_type} " . DISCORD_APP_BOT_TOKEN;
+		$headers[] = "Authorization: {$access_token_type} " . DISCORD_ADMIN_BOT_TOKEN;
 	} else {
 		$headers[] = "Authorization: {$access_token_type} {$access_token}";
 	}
-	curl_setopt($ch, CURLOPT_URL, DISCORD_APP_API_ENDPOINT . $uri);
+	curl_setopt($ch, CURLOPT_URL, DISCORD_APP_API_URL . $uri);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	if ($custom_protocol) {
 		switch ($custom_protocol) {
@@ -87,22 +89,38 @@ function discord_request($uri, $access_token, $access_token_type = "Bearer", $pa
 	return array($data, $returned_headers, $httpcode);
 }
 
-$access_token = get_discord_access_token($_GET['code'], 'identify guilds.join');
-$user = discord_request('/users/@me', $access_token);
-$user_headers = $user[1];
-$user = $user[0];
+function get_user_information($access_token) {
+	$user = discord_request('/users/@me', $access_token);
+	$user_headers = $user[1];
+	$user = $user[0];
+	return $user;
+}
 
-//$roles = discord_request('/guilds/' . DISCORD_GUILD_ID . '/roles', $access_token, 'Bot');
+function add_user_to_server($user, $access_token, $name) {
+	//$join_request = discord_request('/guilds/' . DISCORD_GUILD_ID . '/members/' . $user->id, $access_token, 'Bot', array('access_token' => $access_token, 'roles' => array(DISCORD_APP_ROLE_ID)), 'PUT');
+	$join_request = discord_request('/guilds/' . DISCORD_GUILD_ID . '/members/' . $user->id, $access_token, 'Bot', array('access_token' => $access_token, 'nick' => 'smells'), 'PUT');
+	$join_headers = $join_request[1];
+	$join_httpcode = $join_request[2];
+	$join = $join_request[0];
+	
+	if ($join_httpcode == 201 || $join_httpcode == 204) { // 204 means the user was already in the server
+		return true;
+	}
+	return false;
+}
 
-$join_request = discord_request('/guilds/' . DISCORD_GUILD_ID . '/members/' . $user->id, $access_token, 'Bot', array('access_token' => $access_token, 'roles' => array(DISCORD_APP_ROLE_ID)), 'PUT');
-$join_headers = $join_request[1];
-$join_httpcode = $join_request[2];
-$join = $join_request[0];
+function get_user_roles() {
+	$roles = discord_request('/guilds/' . DISCORD_GUILD_ID . '/roles', $access_token, 'Bot');
+	return $roles;
+}
 
-//var_dump($user, $join_headers);
-//var_dump($join, $join_headers, $join_httpcode);
+function assign_user_good_standing($user_discord_id) {
+	return AdminBot::add_user_role($user_discord_id);
+}
 
-head('Joined Discord', true);
+head('Joined Discord', true, true);
+
+// user must be authenticated to reach this point
 
 ?>
 <style>
@@ -140,32 +158,67 @@ strong.no-wrap {
                         <div class="range text-center">
                                 <div class="col-lg-6 col-lg-offset-3">
 									<?php
-									if ($join_httpcode == 201 || $join_httpcode == 204) { // if $user fails, so will $join
-										// httpcode 204 means user already added, however the role may not have been set therefore its best to still display the success message
-									?>
-									<h1>Your account has been added</h1>
-									<h5 class="offset-top-50"><strong><?php echo $user->username; ?>#<?php echo $user->discriminator; ?></strong> has been granted access to <strong class="no-wrap">#<?php echo DISCORD_CHANNEL_NAME; ?></strong> on the <strong class="no-wrap"><?php echo DISCORD_GUILD_NAME; ?></strong> <?php echo DISCORD_SERVICE_NAME; ?> server</h5>
+									try {
+										$code = null;
+										if (isset($_GET['code'])) {
+											$code = $_GET['code'];
+										} else {
+											// Alert!
+											throw new Exception("No authorization code provided.");
+										}
 
-									<div class="scheme-buttons offset-top-50">
-										<a href="market://details?id=com.discord">
-											<img class="black" src="/images/buttons/discord-forward-android.png"/>
-											<img  class="white" src="/images/buttons/discord-forward-android-white.png"/>
-										</a>
-										<a href="https://discordapp.com/channels/<?php echo DISCORD_GUILD_ID; ?>/<?php echo DISCORD_CHANNEL_ID; ?>">
-											<img class="black"  src="/images/buttons/discord-forward-browser.png"/>
-											<img class="white" src="/images/buttons/discord-forward-browser-white.png"/>
-										</a>
-										<a href="com.hammerandchisel.discord://">
-											<img class="black"  src="/images/buttons/discord-forward-apple.png"/>
-											<img  class="white" src="/images/buttons/discord-forward-apple-white.png"/>
-										</a>
-									</div>
-                               		<?php
-									} else {
+										$discord_access_token = get_discord_access_token($code, "identify guilds.join");
+										$user = get_user_information($discord_access_token);
+
+
+										$q = $db->query('UPDATE users SET discord_id = "' . $db->real_escape_string($user->id) . '" WHERE id = "' . $db->real_escape_string($userinfo['id']) . '"');
+										if (!$q || $db->affected_rows !== 1) {
+											// Alert!
+											throw new Exception("Unable to set the user's Discord ID: " . $db->affected_rows);
+										}
+
+										$added_to_server = add_user_to_server($user, $discord_access_token, $userinfo['name']);
+
+										if (!$added_to_server) {
+											// Alert!
+											throw new Exception("Failed to add user to server.");
+										}
+
+										$is_user_in_good_standing = $untrobotics->is_user_in_good_standing($userinfo);
+										if ($is_user_in_good_standing) {
+											$assigned = assign_user_good_standing($user->id);
+											if ($assigned->status_code != 204) {
+												throw new Exception("Failed to give user the correct role");
+											}
+										} else {
+											// Alert!
+											throw new Exception("Current user is not in good standing.");
+										}
+										?>
+										<h1>You're good to go</h1>
+										<h5 class="offset-top-50"><strong><?php echo $user->username; ?>#<?php echo $user->discriminator; ?></strong> has been given the <em>Good Standing</em> role.</h5>
+
+										<div class="scheme-buttons offset-top-50">
+											<a href="market://details?id=com.discord">
+												<img class="black" src="/images/buttons/discord-forward-android.png"/>
+												<img  class="white" src="/images/buttons/discord-forward-android-white.png"/>
+											</a>
+											<a href="https://discordapp.com/channels/<?php echo DISCORD_GUILD_ID; ?>/<?php echo DISCORD_GENERAL_CHANNEL_ID; ?>">
+												<img class="black"  src="/images/buttons/discord-forward-browser.png"/>
+												<img class="white" src="/images/buttons/discord-forward-browser-white.png"/>
+											</a>
+											<a href="com.hammerandchisel.discord://">
+												<img class="black"  src="/images/buttons/discord-forward-apple.png"/>
+												<img  class="white" src="/images/buttons/discord-forward-apple-white.png"/>
+											</a>
+										</div>
+										<?php
+									} catch (Exception $ex) {
+										AdminBot::send_message("[AUTHDIS] Failed to assign user ({$userinfo['id']}) to the Good Standing role.\n{$ex}");
 										?>
 										<div class="alert alert-danger">
-											<h2>Error!</h2>
-											Unfortunately an error occurred while attempting to add you to our Discord server. Please contact us for support at <a class="text-danger" href="mailto:<?php echo EMAIL_SUPPORT; ?>"><?php echo EMAIL_SUPPORT; ?></a>.
+											<h2 style="color: inherit;">Error!</h2>
+											Unfortunately an error occurred while attemping to assign you the correct role. Please contact us for support at <a class="text-danger" href="mailto:<?php echo EMAIL_SUPPORT; ?>"><?php echo EMAIL_SUPPORT; ?></a>.
 										</div>
 										<?php
 									}

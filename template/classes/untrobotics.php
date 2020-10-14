@@ -1,0 +1,74 @@
+<?php
+class Semester {
+	const SPRING = 0;
+	const AUTUMN = 1;
+
+	public static function get_name_from_value($x) {
+		$semesterClass = new ReflectionClass ( 'Semester' );
+		$constants = $semesterClass->getConstants();
+
+		$constName = null;
+		foreach ( $constants as $name => $value )
+		{
+			if ( $value == $x )
+			{
+				$constName = $name;
+				break;
+			}
+		}
+
+		return $constName;
+	}
+}
+
+class untrobotics {
+	private $db;
+	private $is_sandbox = false;
+	
+	public function __construct($db) {
+		$this->db = $db;
+	}
+	
+	public function set_sandbox($is_sandbox) {
+		$this->is_sandbox = $is_sandbox;
+	}
+	public function get_sandbox() {
+		return $this->is_sandbox;
+	}
+	
+	// dues functions
+	public function is_user_in_good_standing($userinfo) {
+		$q = $this->db->query('
+			SELECT * FROM dues_payments
+			WHERE
+				uid = "' . $this->db->real_escape_string($userinfo['id']) . '" AND
+				dues_term = "' . $this->get_current_term() . '" AND
+				dues_year = "' . $this->get_current_year() . '"
+			');
+		
+		if (!$q) {
+			return false;
+		}
+		
+		return $q->num_rows === 1;
+	}
+	// semester, dues functions
+	public function get_current_term() {
+		return $this->get_term_from_date(time());
+	}
+	public function get_term_from_date($timestamp) {
+		// is it spring semester or autumn semester?
+		// we are going to allow some lee-way and not require new dues until september (term usually re-starts in late august)
+		$month = date('m', $timestamp);
+		if ($month <= 8) {
+			return Semester::SPRING; // spring semester
+		}
+		return Semester::AUTUMN; // autumn semester
+	}
+	public function get_current_year() {
+		return $this->get_year_from_date(time());
+	}
+	public function get_year_from_date($timestamp) {
+		return date('Y', $timestamp);
+	}
+}
