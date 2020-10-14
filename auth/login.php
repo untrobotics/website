@@ -52,8 +52,8 @@ if (isset($_POST['email'])) {
 			setcookie(COOKIE_PREFIX . "_SESSION_NAME", $auth_session_name, $expires, '/', WEBSITE_DOMAIN, true, true);
 			setcookie("remember", encode_hash($r['id']), time()*2, '/auth/', WEBSITE_DOMAIN);
 
-			if (isset($_GET['returnto'])) {
-				header("Location: //{$_SERVER['SERVER_NAME']}/".preg_replace("/^\//i", "", $_GET['returnto']));
+			if (isset($_GET['returnto']) && !preg_match("@^/auth@", $_GET['returnto'])) {
+				header("Location: //{$_SERVER['SERVER_NAME']}/".preg_replace("@^/@i", "", $_GET['returnto']));
 			} else {
 				header("Location: /me/");
 			}

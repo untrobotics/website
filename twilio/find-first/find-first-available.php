@@ -109,16 +109,24 @@ function queue_size($queue_sid = TWILIO_FIND_FIRST_QUEUE_SID) {
 
 $incoming_sid = $_GET['SID'];
 
-sleep(1); // give the queue a change to register
-foreach ($phone_numbers as $phone_number) {
-	if (queue_size() > 0) {
-		$outgoing_sid = dial_attempt($phone_number);
-		do {
-			error_log("INCOMING CALL STATUS: " . call_status($incoming_sid));
-			sleep(1);
-		} while (!call_completed($outgoing_sid) && queue_size() > 0);
-	} else {
-		break;
-	}
+sleep(1); // give the queue a chance to register
+
+$max_attempts = 5;
+$i = 1;
+
+while ($i <= $max_attempts) {
+    foreach ($phone_numbers as $phone_number) {
+        if (queue_size() > 0) {
+            $outgoing_sid = dial_attempt($phone_number);
+            do {
+                error_log("INCOMING CALL STATUS: " . call_status($incoming_sid));
+                sleep(1);
+            } while (!call_completed($outgoing_sid) && queue_size() > 0);
+        } else {
+            break 2;
+        }
+    }
+    $i++;
 }
+
 error_log("INCOMING CALL STATUS LAST: " . call_status($incoming_sid));
