@@ -110,7 +110,7 @@
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
-  font-family: sans-serif;
+  font-family: Calibiri;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
@@ -154,7 +154,7 @@ template {
 }
 
 a {
-  background-color: transparent;
+  background-color: Orange;
 }
 
 a:active,
@@ -172,7 +172,7 @@ strong {
 }
 
 dfn {
-  font-style: italic;
+  font-style: bold;
 }
 
 h1 {
