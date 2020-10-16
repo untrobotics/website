@@ -23,6 +23,9 @@ class PaymentButton {
 	private $complete_return_uri = PAYPAL_DEFAULT_RETURN_URL;
 	private $cancel_return_uri = NULL;
 	private $text;
+	private $cbt;
+
+	private $allow_custom_amount = false;
 	
 	public function __construct($item_name, $amount, $text = "Buy Now", $cbt = null) {
 		$this->item_name = $item_name;
@@ -118,8 +121,8 @@ class PaymentButton {
 		}
 
 		$buttonVar[] = 'return=' . WEBSITE_URL . '/' . $this->complete_return_uri;
-		if (!empty($cbt)) {
-			$buttonVar[] = 'cbt=' . $cbt;
+		if (!empty($this->cbt)) {
+			$buttonVar[] = 'cbt=' . $this->cbt;
 		}
 		$buttonVar[] = 'rm=2'; // The buyer's browser is redirected to the return URL by using the POST method, and all payment variables are included.
 		$buttonVar[] = 'cancel_return='. WEBSITE_URL . '/' . $this->cancel_return_uri;
@@ -142,7 +145,7 @@ class PaymentButton {
 
 		$createButtonRequest = new BMCreateButtonRequestType();
 		$createButtonRequest->ButtonCode = 'ENCRYPTED';
-		$createButtonRequest->ButtonType = 'BUYNOW';
+		$createButtonRequest->ButtonType = 'DONATE';
 		$createButtonRequest->ButtonVar = $buttonVar;
 		$createButtonReq = new BMCreateButtonReq();
 		$createButtonReq->BMCreateButtonRequest = $createButtonRequest;

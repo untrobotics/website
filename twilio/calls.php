@@ -17,7 +17,7 @@ if ($_GET['code'] !== API_SECRET) {
 		<Pause length="2"/>
         <Say voice="woman" language="en-GB">
 			Thank you for calling U.N.T. Ru botics.
-			Please enter an extension now or press 1 to get a listing of officers. 
+			Please enter an extension now or press 1 to get a listing of officers who are available by phone.
 			
 			Press 9 to leave us a voicemail.
 			Or, press 0 to be put through to the first available person.

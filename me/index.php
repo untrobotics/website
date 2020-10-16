@@ -1,7 +1,4 @@
 <?php
-if (!isset($_GET['seb'])) {
-	die('in development');
-}
 require('../template/top.php');
 head('My Profile', true, true);
 ?>
@@ -25,27 +22,6 @@ head('My Profile', true, true);
 				  <li><a href="#" class="ioon icon-sm icon-darker fa-times"></a></li>
 				</ul>
 			  </div>
-			</div>
-		  </div>
-		</div>
-		<div class="blog-post-navigation">
-		  <div class="range">
-			<div class="cell-md-preffix-2 cell-md-5 cell-sm-6 text-sm-left cell-lg-4">
-			  	<h6>
-					<a href="#">
-						<span class="prev">PREV</span><br>
-				  		<span class="preffix-sm-left-30 reveal-inline-block preffix-xl-left-40">How Plastics Influence Sports: an<br class="veil reveal-xl-block">	Independent Study by Plastic Goods</span>
-					</a>
-				</h6>
-			</div>
-			<div class="cell-md-5 cell-sm-6 text-sm-right cell-lg-4 offset-top-20 offset-sm-top-0">
-			  <h6>
-				  <a href="#">
-					  <span class="next">NEXT</span><br>
-				  	<span class="reveal-inline-block">Making Robots Safer Around People<br class="veil reveal-xl-block">
-						Without Sacrificing Performance</span>
-				  </a>
-			  </h6>
 			</div>
 		  </div>
 		</div>
