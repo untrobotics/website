@@ -18,6 +18,11 @@ if ($len == 0) {
 
 $did_match = preg_match_all("@^\[(.+?)\] \[(.+?)\] \[(.+?)\] \[(.+?)\] (.+?)$@ms", $message, $matches);
 
+$discord_channel = DISCORD_DEV_WEB_LOGS_CHANNEL_ID;
+if (ENVIRONMENT == Environment::PRODUCTION) {
+    $discord_channel = DISCORD_WEB_LOGS_CHANNEL_ID;
+}
+
 if ($did_match) {
     foreach ($matches[0] as $k => $m) {
         $timestamp = $matches[1][$k];
@@ -27,8 +32,8 @@ if ($did_match) {
         $error_message = $matches[5][$k];
 
         AdminBot::send_message(
-            "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", DISCORD_WEB_LOGS_CHANNEL_ID);
+            "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel);
     }
 } else {
-    AdminBot::send_message("```({$prev} => {$current})\n[ERROR LOG MESSAGE PARSE FAILED]\n{$message}```", DISCORD_WEB_LOGS_CHANNEL_ID);
+    var_dump(AdminBot::send_message("```({$prev} => {$current})\n[ERROR LOG MESSAGE PARSE FAILED]\n{$message}```", $discord_channel));
 }
