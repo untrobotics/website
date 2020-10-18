@@ -47997,7 +47997,7 @@ header nav.rd-navbar-static.rd-navbar-secondary .rd-navbar-nav > li.thin {
     color: white;
 }
 
-.tweet .tweet-header + tr a[name ^= "tweet_"] {
+.untr_tweet_container .tweet .tweet-header + tr a[name ^= "tweet_"] {
     color: #adadad;
 }
 /*# sourceMappingURL=style.css.map */
