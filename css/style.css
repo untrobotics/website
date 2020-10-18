@@ -47993,4 +47993,11 @@ header nav.rd-navbar-static.rd-navbar-secondary .rd-navbar-nav > li.thin {
 .alert-inline {
 	display: inline-block;
 }
+.fullname {
+    color: white;
+}
+
+.tweet .tweet-header + tr a[name ^= "tweet_"] {
+    color: #adadad;
+}
 /*# sourceMappingURL=style.css.map */
