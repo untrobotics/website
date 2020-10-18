@@ -115,7 +115,7 @@
 					<li><a href="/about">About Us</a>
 						<ul class="rd-navbar-dropdown">
 						  <li><a href="/about">What We Do</a></li>
-						  <li><a href="/our-team">Our Team</a></li>
+						  <li><a href="/about/our-team">Our Team</a></li>
 						  <li><a href="/activities">Activities</a></li>
 						</ul>
 					</li>
