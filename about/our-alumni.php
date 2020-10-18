@@ -41,7 +41,7 @@ head('Our Alumni', true);
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                                 <h6 class="h6-with-small"><a href="#"> Nick Tindle</a><span class="small text-silver-chalice">1st President</span></h6>
-                                <p>I am a Computer Engineering Student, The first president, and by far a better president than Juan. (FACTS!)</p>
+                                <p>I am a Computer Engineering Student, The first president, and still an active member of the group</p>
                             </div>
                         </div>
                     </div>
