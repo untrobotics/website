@@ -3,6 +3,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 	global $db;
 	
 	$dues_term = $payment_info->options[0][1];
+    $dues_term_n = constant("Semester::{$payment_info->options[0][1]}");
 	$dues_year = $payment_info->options[1][1];
 	
 	$term_string = ucfirst(strtolower($dues_term)) . ' ' . $dues_year;
@@ -27,15 +28,24 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 	// confirm the submission of the e-mail
 
 	if ($amount_paid > 0) {
-		$db->query('INSERT INTO dues_payments (name, email, euid, amount, fee, txid)
+		$q = $db->query('INSERT INTO dues_payments (name, email, euid, amount, fee, txid, dues_term, dues_year, uid)
 		VALUES (
 		"' . $db->real_escape_string($r['name']) . '",
 		"' . $db->real_escape_string($r['email']) . '",
 		"' . $db->real_escape_string($r['unteuid']) . '",
 		"' . $db->real_escape_string($amount_paid) . '",
 		"' . $db->real_escape_string($fee) . '",
-		"' . $db->real_escape_string($txid) . '"
+		"' . $db->real_escape_string($txid) . '",
+		"' . $db->real_escape_string($dues_term_n) . '",
+		"' . $db->real_escape_string($dues_year) . '",
+		"' . $db->real_escape_string($uid) . '"
 		)');
+
+		if (!$q) {
+            throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to insert dues payment record into Good Standing database (uid: {$uid}) (count: {$db->error})");
+        } else {
+            payment_log("[{$payment_info->txn_id}] Successfully created entry in the dues payments table (q: " . intval($q) . ")");
+        }
 
 		$email_send_status = email(
 			$payment_info->payer_email,

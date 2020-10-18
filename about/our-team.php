@@ -1,5 +1,5 @@
 <?php
-require('template/top.php');
+require('../template/top.php');
 head('Our Team', true);
 ?>
     <style>
@@ -13,7 +13,7 @@ head('Our Team', true);
         <!-- Classic Breadcrumbs-->
         <section class="breadcrumb-classic">
             <div class="rd-parallax">
-                <div data-speed="0.25" data-type="media" data-url="images/breadcrumbs-parallax.jpg" class="rd-parallax-layer"></div>
+                <div data-speed="0.25" data-type="media" data-url="/images/breadcrumbs-parallax.jpg" class="rd-parallax-layer"></div>
                 <div data-speed="0" data-type="html" class="rd-parallax-layer section-top-75 section-md-top-150 section-lg-top-260">
                     <div class="shell">
                         <ul class="list-breadcrumb">
@@ -36,7 +36,7 @@ head('Our Team', true);
                 <!-- President -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -57,7 +57,7 @@ head('Our Team', true);
                 <!-- Vice President -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <!-- This is a Alex -->
                         <div class="cell-md-6">
@@ -85,7 +85,7 @@ head('Our Team', true);
                 <!-- Secretary -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="images/bio-pics/lauren-caves.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/lauren-caves.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -106,7 +106,7 @@ head('Our Team', true);
                 <!-- Treasurer -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="images/bio-pics/tyler-adam-martinez.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/tyler-adam-martinez.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -130,7 +130,7 @@ head('Our Team', true);
                 <!-- Project Manager -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="images/bio-pics/nick-tindle.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/nick-tindle.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -148,7 +148,7 @@ head('Our Team', true);
                 <!-- Event Coordinator -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="images/bio-pics/jesse-sullivan.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/jesse-sullivan.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -167,7 +167,7 @@ head('Our Team', true);
 				<!--
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="images/bio-pics/michelle-vargas.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/michelle-vargas.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -186,7 +186,7 @@ head('Our Team', true);
                 <!-- Public Relations -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -204,7 +204,7 @@ head('Our Team', true);
                 <!-- Project Manager -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="images/bio-pics/ashank-annam.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/ashank-annam.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <!-- This is a Noel -->
                         <div class="cell-md-6">
@@ -223,7 +223,7 @@ head('Our Team', true);
                 <!-- Webmaster -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">

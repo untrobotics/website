@@ -1,5 +1,5 @@
 <?php
-require('template/top.php');
+require('../template/top.php');
 head('About Us', true);
 ?>
 	<main class="page-content">
