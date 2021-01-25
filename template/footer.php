@@ -20,7 +20,8 @@
                 </article>-->
 				  <!--
 				  	<a class="twitter-timeline" href="https://twitter.com/UNTRobotics" data-tweet-limit="2" data-theme="dark">Tweets by @UNTRobotics</a>
-					<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>-->
+					<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+				  -->
 				  <?php
 				  require_once(BASE . '/api/twitter/get-tweets.php');
 				  echo get_last_three_tweets();
@@ -74,6 +75,10 @@
           </div>
         </section>
       </footer>
+
+    <!-- Global Mailform Output-->
+    <div id="form-output-global" class="snackbars"></div>
+
     </div>
 
 	<script src="/js/core.min.js"></script>

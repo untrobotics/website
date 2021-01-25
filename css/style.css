@@ -47993,11 +47993,60 @@ header nav.rd-navbar-static.rd-navbar-secondary .rd-navbar-nav > li.thin {
 .alert-inline {
 	display: inline-block;
 }
-.untr_tweet_container .fullname {
-    color: white;
+/* merch start */
+.product-items-container {
+  margin-top: 20px;
+}
+.product-item {
+  display: flex;
+  margin-left: -1px;
+  flex-direction: column;
+  -ms-align-items: stretch;
+  align-items: stretch;
 }
 
-.untr_tweet_container .tweet .tweet-header + tr a[name ^= "tweet_"] {
-    color: #adadad;
+.product-listing.extern-items .product-images {
+  position: relative;
+  height: 300px;
+  z-index: 1;
 }
+.product-listing.extern-items .product-images img {
+  opacity: 1;
+  position: absolute;
+  height: 300px;
+  top: 0;
+  margin-top: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.product-item-listing {
+  display: flex;
+  flex-direction: column;
+  height: 333px;
+}
+.product-item-listing > h4 {
+  z-index: 2;
+}
+.product-item-action button {
+  width: 100%;
+}
+.product-listing.extern-items h4 > span:first-child {
+  max-width: 80%;
+  position: absolute;
+}
+.product-listing.extern-items h4 > span:last-child {
+  color: #fb5252;
+  float: right;
+  font-weight: 300;
+}
+.product-listing .product-container-pad {
+  margin: 8px 2px;
+  padding: 8px;
+  border: 1px solid #e6e6e6;
+}
+#buy-item-now {
+  display: block;
+}
+/* merch end */
 /*# sourceMappingURL=style.css.map */

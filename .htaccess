@@ -20,6 +20,7 @@ RewriteCond %{DOCUMENT_ROOT}/$1.php -f
 RewriteRule ^(([^/]+/)*[^.]+)$ /$1.php [L]
 
 RewriteRule ^join/discord$ /auth/join-discord.php [L]
+RewriteRule ^join/w/discord$ /auth/join-with-authorization-discord.php [L]
 RewriteRule ^join/campuslabs$ /auth/join-campuslabs.php [L]
 RewriteRule ^join/groupme$ /auth/join-groupme.php [L]
 

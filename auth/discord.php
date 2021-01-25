@@ -214,7 +214,7 @@ strong.no-wrap {
 										</div>
 										<?php
 									} catch (Exception $ex) {
-										AdminBot::send_message("[AUTHDIS] Failed to assign user ({$userinfo['id']}) to the Good Standing role.\n{$ex}");
+										AdminBot::send_message("[AUTHDIS] Failed to assign user (http://untro.bo/admin/check-good-standing?u={$userinfo['id']}) to the Good Standing role.\n{$ex}");
 										?>
 										<div class="alert alert-danger">
 											<h2 style="color: inherit;">Error!</h2>

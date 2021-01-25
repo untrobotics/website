@@ -3,18 +3,23 @@ require('../template/top.php');
 require('../api/groupme-funcs.php');
 
 if (isset($_POST)) {
-	$name = $_POST['name'];
-	$email = $_POST['email'];
-	$phone = preg_replace('/[^0-9]/', '', $_POST['phone']);
-	$company = $_POST['company'];
-	$message = $_POST['message'];
+	$name = @$_POST['name'];
+	$email = @$_POST['email'];
+	$phone = preg_replace('/[^0-9]/', '', @$_POST['phone']);
+	$company = @$_POST['company'];
+	$message = @$_POST['message'];
+	$captcha = @$_POST['g-recaptcha-response'];
 	
 	if (empty($company)) {
 		$company = "NONE.";
 	}
 	
 	do {
-		if (strlen($name) < 4) {
+		$response = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . GOOGLE_RECAPTCHA_KEY . '&response='.$captcha."&remoteip=".$_SERVER['REMOTE_ADDR']), true);
+		if ($response['success'] == false) {
+			echo 'FAILED';
+			break;
+		} else if (strlen($name) < 4) {
 			echo 'INVALID_NAME';
 			break;
 		} else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -26,7 +31,12 @@ if (isset($_POST)) {
 		} else if (strlen($message) < 10) {
 			echo 'INVALID_MESSAGE';
 			break;
+		} else if (empty($captcha)) {
+			echo 'EMPTY_CAPTCHA';
+			break;
 		}
+
+
 		$q = $db->query('INSERT INTO contact_form (name, email, phone, company, message)
 		VALUES (
 			"' . $db->real_escape_string($name) . '",
@@ -38,7 +48,7 @@ if (isset($_POST)) {
 		');
 		if ($q) {
 			echo 'CONTACT_SUCCESS';
-			post_message('Received contact form message:' . "\n" . 'FROM: ' . $name . ' (' . $email . ' / ' . $phone . ')' . "\n" . 'COMPANY: ' . $company . "\n\n" . 'MESSAGE: ' . $message, GROUPME_OFFICER_CHANNEL_ID);
+			//post_message('Received contact form message:' . "\n" . 'FROM: ' . $name . ' (' . $email . ' / ' . $phone . ')' . "\n" . 'COMPANY: ' . $company . "\n\n" . 'MESSAGE: ' . $message, GROUPME_OFFICER_CHANNEL_ID);
 		} else {
 			echo 'ERROR';
 		}
