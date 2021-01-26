@@ -76,7 +76,7 @@ function call_status($sid) {
 
         $data = json_decode($result);
 	
-		error_log("OUTGOING CALL STATUS: " . $data->status);
+		//error_log("OUTGOING CALL STATUS: " . $data->status);
 	
 		return $data->status;
 }
@@ -102,7 +102,7 @@ function queue_size($queue_sid = TWILIO_FIND_FIRST_QUEUE_SID) {
 
 	$data = json_decode($result);
 
-	error_log("QUEUE SIZE: " . intval($data->current_size));
+	//error_log("QUEUE SIZE: " . intval($data->current_size));
 
 	return intval($data->current_size);
 }
@@ -115,11 +115,11 @@ $max_attempts = 5;
 $i = 1;
 
 while ($i <= $max_attempts) {
-    foreach ($phone_numbers as $phone_number) {
+    foreach (constant('PHONE_NUMBERS') as $phone_number) {
         if (queue_size() > 0) {
             $outgoing_sid = dial_attempt($phone_number);
             do {
-                error_log("INCOMING CALL STATUS: " . call_status($incoming_sid));
+                //error_log("INCOMING CALL STATUS: " . call_status($incoming_sid));
                 sleep(1);
             } while (!call_completed($outgoing_sid) && queue_size() > 0);
         } else {

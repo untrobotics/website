@@ -11,7 +11,7 @@
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Poppins:400,500,700%7CKanit:300,400,700">
     <link rel="stylesheet" href="/css/style.css">
 		<!--[if lt IE 10]>
-    <div style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
+    <div style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="/images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
     <script src="js/html5shiv.min.js"></script>
 		<![endif]-->
       
@@ -115,7 +115,7 @@
 					<li><a href="/about">About Us</a>
 						<ul class="rd-navbar-dropdown">
 						  <li><a href="/about">What We Do</a></li>
-						  <li><a href="/about/our-team">Our Team</a></li>
+						  <li><a href="/our-team">Our Team</a></li>
 						  <li><a href="/activities">Activities</a></li>
 						</ul>
 					</li>
@@ -146,11 +146,12 @@
                   <li><a href="/guides">Guides</a></li>
 				  <li><a href="/equipment" class="stacked">Checkout<br>Equipment</a></li>-->
 				  <li><a href="/dues">Pay Dues</a></li>
-				<li><a href="/sponsorships">Sponsor Us</a></li>
 				  <li><a href="/merch">Merch</a>
                     <ul class="rd-navbar-dropdown">
-                  	  <li><a href="/merch/shirts-hoodies">Shirts &amp; Hoodies</a></li>
-                  	  <li><a href="/merch/hats">Hats</a></li>
+                  	    <li><a href="/merch/shirts-hoodies">Shirts &amp; Hoodies</a></li>
+                  	    <li><a href="/merch/hats">Hats</a></li>
+                        <li><a href="/merch/trousers">Trousers</a></li>
+                        <li><a href="/merch/gear">Gear</a></li>
                     </ul>
                   </li>
 				  <li><a href="/botathon">Botathon</a>

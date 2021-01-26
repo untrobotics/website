@@ -90,8 +90,11 @@ class PrintfulCustomAPI {
 		return $order;
 	}
 	
-	public function get_products() {
-		$products_results = $this->send_request("store/products");
+	public function get_products($search_string = "") {
+	    if (!empty($search_string)) {
+	        $search_string = "&search=" . $search_string;
+        }
+		$products_results = $this->send_request("store/products?limit=5" . $search_string);
 		$parsed_products_results = $this->parse_results($products_results);
 		
 		foreach ($parsed_products_results->get_results() as $product) {

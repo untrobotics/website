@@ -38,10 +38,17 @@ class untrobotics {
 	
 	// dues functions
 	public function is_user_in_good_standing($userinfo) {
+	    $uid = null;
+	    if (is_array($userinfo)) {
+	        $uid = $userinfo['id'];
+        } else {
+	        $uid = $userinfo;
+        }
+
 		$q = $this->db->query('
 			SELECT * FROM dues_payments
 			WHERE
-				uid = "' . $this->db->real_escape_string($userinfo['id']) . '" AND
+				uid = "' . $this->db->real_escape_string($uid) . '" AND
 				dues_term = "' . $this->get_current_term() . '" AND
 				dues_year = "' . $this->get_current_year() . '"
 			');

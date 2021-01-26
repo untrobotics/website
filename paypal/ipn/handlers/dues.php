@@ -93,6 +93,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		
 		if ($email_send_status) {
 			payment_log("[{$payment_info->txn_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
+            AdminBot::send_message("(IPN) Alert: THIS IS A TEMPORARY NOTIFICATION. Successfully received dues payment from {$r['name']} (#$uid), paid for by {$payment_info->first_name} {$payment_info->last_name}.");
 		} else {
 			//throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
 			payment_log("[{$payment_info->txn_id}] Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");

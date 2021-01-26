@@ -1,9 +1,6 @@
 <?php
 use PayPal\PayPalAPI\BMCreateButtonReq;
 use PayPal\PayPalAPI\BMCreateButtonRequestType;
-use PayPal\PayPalAPI\InstallmentDetailsType;
-use PayPal\PayPalAPI\OptionDetailsType;
-use PayPal\PayPalAPI\OptionSelectionDetailsType;
 use PayPal\Service\ButtonManagerService;
 
 class PaymentButtonResponse {
@@ -27,10 +24,12 @@ class PaymentButton {
 
 	private $allow_custom_amount = false;
 	
-	public function __construct($item_name, $amount, $text = "Buy Now", $cbt = null) {
+	public function __construct($item_name, $amount, $text = "Buy Now", $cbt = null, $type = "BUYNOW") {
 		$this->item_name = $item_name;
 		$this->amount = $amount;
 		$this->text = $text;
+		$this->cbt = $cbt;
+		$this->type = $type;
 	}
 	
 	function set_currency($currency) {
@@ -145,7 +144,7 @@ class PaymentButton {
 
 		$createButtonRequest = new BMCreateButtonRequestType();
 		$createButtonRequest->ButtonCode = 'ENCRYPTED';
-		$createButtonRequest->ButtonType = 'DONATE';
+		$createButtonRequest->ButtonType = $this->type;
 		$createButtonRequest->ButtonVar = $buttonVar;
 		$createButtonReq = new BMCreateButtonReq();
 		$createButtonReq->BMCreateButtonRequest = $createButtonRequest;

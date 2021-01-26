@@ -97,7 +97,7 @@ head('Contact Us', true);
 			<div class="cell-lg-4 cell-md-6 offset-top-20 offset-md-top-0">
 			  <div class="form-group postfix-xl-right-40">
 				<label for="contact-company" class="form-label">Company <em>(optional)</em></label>
-				<input id="contact-company" type="text" name="company" data-constraints="" class="form-control">
+				<input id="contact-company" type="text" name="company" class="form-control">
 			  </div>
 			  <div class="form-group postfix-xl-right-40">
 				<label for="contact-phone" class="form-label">Phone *</label>
