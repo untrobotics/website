@@ -4,7 +4,7 @@ if (isset($_COOKIE[COOKIE_PREFIX . '_SESSION_ID']) || isset($_COOKIE[COOKIE_PREF
 	setcookie(COOKIE_PREFIX . '_SESSION_ID', false, 1, '/', WEBSITE_DOMAIN, true, true);
 	setcookie(COOKIE_PREFIX . '_SESSION_NAME', false, 1, '/', WEBSITE_DOMAIN, true, true);
 
-	$db->query("DELETE FROM auth_sessions WHERE session_id = '" . $db->real_escape_string($_COOKIE[COOKIE_PREFIX . '_SESSION_ID']) . "' OR session_name = '" . $db->real_escape_string($_COOKIE[COOKIE_PREFIX . 'SESSION_NAME']) . "' LIMIT 1");
+	$db->query("DELETE FROM auth_sessions WHERE session_id = '" . $db->real_escape_string($_COOKIE[COOKIE_PREFIX . '_SESSION_ID']) . "' OR session_name = '" . $db->real_escape_string($_COOKIE[COOKIE_PREFIX . '_SESSION_NAME']) . "' LIMIT 1");
 }
 
 session_regenerate_id();
