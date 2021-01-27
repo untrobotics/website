@@ -2,7 +2,7 @@
 $log = var_export($_REQUEST, true);
 
 function payment_log($message) {
-	file_put_contents('logs/ipn.log', $message . PHP_EOL, FILE_APPEND);
+	file_put_contents('logs/ipn.log', '[' . date('c', time()) . '] ' . $message . PHP_EOL, FILE_APPEND);
 }
 
 require('ipn/IPNVerify.php');

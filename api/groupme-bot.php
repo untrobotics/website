@@ -39,7 +39,7 @@ function parse_attachments($attachments) {
 
 $attachments = parse_attachments($attachments);
 
-$DEBUG = true;
+$DEBUG = false;
 if ($DEBUG) {
 	error_log(var_export($data, true));
 }

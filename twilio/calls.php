@@ -1,4 +1,3 @@
-
 <?php
 // One may think, why do I have to hide this page? It only contains the same text you can hear if you phone our number.
 // It is because it prints our API_SECRET in the URL, and being able to browse it would compromise that secret string.

@@ -26,16 +26,16 @@ ob_start();
 			<?php
 			break;
 		case 2:
-			?><Dial><?php echo $phone_numbers['AlexF']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['AlexF']; ?></Dial><?php
 			break;
 		case 3:
-			?><Dial><?php echo $phone_numbers['SebK']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['SebK']; ?></Dial><?php
 			break;
 		case 4:
-			?><Dial><?php echo $phone_numbers['AshankA']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['AshankA']; ?></Dial><?php
 			break;
 		case 5:
-			?><Dial><?php echo $phone_numbers['LaurenC']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['LaurenC']; ?></Dial><?php
 			break;
 		case 9: // Voicemail
 			?>
