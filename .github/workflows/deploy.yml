@@ -45,7 +45,7 @@ jobs:
           # FTP User.
           user:  ${{ secrets.FTP_USERNAME }}
           # FTP Password.
-          password: ${{ secrets.FTP_PASSWORD }
+          password: ${{ secrets.FTP_PASSWORD }}
           # Local directory.
           local_dir: ./ # optional, default is ./
           # Remote directory.
