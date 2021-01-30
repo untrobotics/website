@@ -42,4 +42,3 @@ jobs:
           timeout: 300000
           # Bearer Authentication Token
           bearerToken: ${{secrets.DEV_API_TOKEN}}
-
