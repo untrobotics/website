@@ -20,3 +20,4 @@ Mantained by:
 * [Peyton Thibodeaux](https://github.com/peyton232)
 * [Nicholas Tindle](https://github.com/ntindle)
 * [Tyler Martinez](https://github.com/TylerAdamMartinez)
+* [Jacob Woodson](https://github.com/ASpaceDuck)
