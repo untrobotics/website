@@ -24,7 +24,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      # - uses: actions/checkout@v2
 
       - name: HTTP Request Action
         # You may pin to the exact commit or the version.
@@ -39,7 +39,7 @@ jobs:
           # Request Body as JSON String
           data: "{'env': 'dev' }" # optional, default is {}
 
-          timeout: 300 000
+          timeout: 300000
           # Bearer Authentication Token
           bearerToken: ${{secrets.DEV_API_TOKEN}}
 
