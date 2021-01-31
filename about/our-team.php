@@ -220,10 +220,29 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
+                <!-- Event Coordinator -->
+                <div class="cell-lg-12 bio-area">
+                    <div class="range range-sm-middle">
+                        <div class="cell-md-3"><img src="/images/bio-pics/abdus-samee.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        </div>
+                        <!-- This is a Noel -->
+                        <div class="cell-md-6">
+                            <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
+                                <h6 class="h6-with-small"><a href="#"> Abdus Samee</a><span class="small text-silver-chalice">Corporate Relations</span></h6>
+                                <p>Abdus Samee is an ECE graduate whose love for engineering must be seen to be believed. Being a former Toastmaster, he has a flair for speaking which convinces the listener to accept the facts that he puts forward. His never ending hunger for knowledge has enabled him to achieve a lot in a short time. Education is an ornament in prosperity and a refuge in adversity is what he says. Progress never comes without struggles, but his persistence helped him reach his dream destination. He is also the Vice Chair for UNT IEEE Robotics and Automation Society, and a IEEE Eta Kappa Nu Honor Student. The words of Ford inspired him to keep going. 'When everything seems to be going against you, remember that the airplane takes off against the wind and not with it.'</p>
+                                <ul class="list-inline-lg">
+                                    <li>
+                                        <a href="mailto:corp-relations@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Webmaster -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="/images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/peyton-thibodeaux.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
