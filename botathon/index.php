@@ -263,7 +263,7 @@ head('Botathon Info', true);
                 	<div class="inset-md-right-30 inset-lg-right-0">
 						
 						<h4>Base Kits</h4>
-						<p>Each team will get to choose which base kit they want to build their pirate ship with.</p>
+						<p>Each team will get to choose which base kit they want to build their pirate ship with. We have 15 of each robot kit and 10 robot kits from last year.</p>
 
                         <h4>OMNI WHEEL CAR ROBOT:</h4>
 						<table class="parts basekit" id = "partsTable1">
