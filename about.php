@@ -49,7 +49,7 @@ head('About Us', true);
 					<h3>Recreational Projects</h3>
 				  <p>These fun projects are for anyone and everyone that just wants to have fun and work on a project together. These projects tend to be very long-term because we don't require any time commitment, allowing people to come and go as they wish. Anyone can propose a project to work on, and so long as they get a team together we will support them in building it.</p>
 					<h3>Equipment Checkout</h3>
-				  <p>Equipment checkout is currently paused due to COVID-19.</p>
+				  <p>Equipment checkout is currently paused due to COVID-19. We hope to have a system in place soon. </p>
                 </div>
               </div>
             </div>
