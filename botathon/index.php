@@ -223,7 +223,7 @@ head('Botathon Info', true);
 		<section class="section-50" id="field-preview">
 			<div class="shell">
 			  <h2>Field preview</h2>
-                <h3>TBA</h3>
+                <h3>Coming Soon!</h3>
                 <!--
 			  <div class="range">
 				  <div class="cell-md-8 cell-lg-9">
