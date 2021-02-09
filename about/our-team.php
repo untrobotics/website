@@ -165,7 +165,6 @@ head('Our Team', true);
                 </div>
 
                 <!-- Multimedia Manager -->
-                <!-- after .jpg" alt="" width="200" height="404" class="image-responsive" -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
                         <div class="cell-md-3"> <img src="/images/bio-pics/chris-gonzales.jpg" style="text-align: center" alt="" width="230" height="404" class="image-responsive" />
