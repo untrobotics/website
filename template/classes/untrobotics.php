@@ -37,6 +37,15 @@ class untrobotics {
 	}
 	
 	// dues functions
+    public function get_user_by_discord_id($discord_id) {
+        $q = $this->db->query('SELECT * FROM users WHERE discord_id = "' . $this->db->real_escape_string($discord_id) . '"');
+        if ($q) {
+            $r = $q->fetch_array(MYSQLI_ASSOC);
+            return $r;
+        }
+        return null;
+    }
+
 	public function is_user_in_good_standing($userinfo) {
 	    $uid = null;
 	    if (is_array($userinfo)) {
@@ -59,6 +68,7 @@ class untrobotics {
 		
 		return $q->num_rows === 1;
 	}
+
 	// semester, dues functions
 	public function get_current_term() {
 		return $this->get_term_from_date(time());

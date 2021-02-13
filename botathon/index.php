@@ -122,6 +122,7 @@ head('Botathon Info', true);
                   <h4 class="text-regular">Navigation</h4>
                   <ul class="list-xs list-marked">
                     <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
+                      <li><a href="#event-details" class="text-content">Event Details</a></li>
 					<li><a href="#sponsors" class="text-content">Event Sponsors</a></li>
                     <li><a href="#rules" class="text-content">Rules</a></li>
                     <li><a href="#schedule" class="text-content">Schedule</a></li>
@@ -150,26 +151,37 @@ head('Botathon Info', true);
                   	<p>Participants will have 3 weeks to build a robot then compete head to head in a race to collect the most treasure on our custom built island. This event is open to all UNT students, with any amount of experience.</p>
                   
                   	<div class="well-custom">
-                    	<h5>Open to all UNT students, learn something new and make new friends.</h5>
+                        <div><h5><strong>Open to all UNT students.</strong></h5></div><div><h5>Learn something new and make new friends!</h5></div>
                   	</div>
-                  
-					<p>The goal of this event is to give students a chance to learn how to build a robot and compete against their peers. Botathon is free to all UNT students and will be completely virtual this year, with competitors building robots with a group virtually and controlling their robots remotely from home.</p>
-					
-					<p style="margin-top:40px; font-size: 22px;"><strong>When/Where is it happening?</strong></p>
-                    <h4>February 1st : Registration Begins</h4>
-                    <h4>March 22 - April 7th : Build Period</h4>
-                    <h4>March 29 - April 7th: Inspection Period</h4>
-					<h4 style="margin-top: 30px;"><em>10am-3pm</em>, <strong>April 10th, 2021</strong></h4>
-					<h3>@ <strong>UNT Discovery Park</strong></h3>
-					
-					<p>Our official informational packet is available <a href="/downloads/botathon/botathon-info-packet.pdf">here</a>.</p>
                 </div>
               </div>
             </div>
           </div>
         </section>
+
+        <section class="section-50" id="event-details">
+            <div class="shell">
+                <h2>Event Details</h2>
+                <div class="range">
+                    <div class="cell-md-8 cell-lg-9">
+                        <div>Registration</div>
+                        <h4><strong>Feb. 1:</strong> Registration Opened</h4>
+
+                        <div style="margin-top: 20px;">Build Season</div>
+                        <h4><strong>Mar. 22 - Mar. 29:</strong> Build Period</h4>
+                        <h4><strong>Mar. 29 - Apr. 7:</strong> Inspection Period</h4>
+
+                        <div style="margin-top: 20px;">Competition Day</div>
+                        <h4><em>10am-6pm</em>, <strong>Saturday, April 10th, 2021</strong></h4>
+                        <h3>@ <strong>HOME</strong> and in our <a href="/join/discord">Discord</a></h3>
+
+                        <p>Our official informational packet is available <a href="/downloads/botathon/botathon-info-packet.pdf">here</a>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 		
-		<section class="section-50" id="sponsor">
+		<section class="section-50" id="sponsors">
           <div class="shell">
 			<h2>Event Sponsors</h2>
             <div class="range">
@@ -212,7 +224,7 @@ head('Botathon Info', true);
 							<tr><td>&nbsp;11:00 am</td><td>Competition Begins</td></tr>
 							<tr><td>&nbsp;12:30 pm</td><td>Lunch Break</td></tr>
 							<tr><td>&nbsp;1:00 pm</td><td>Resume Competition</td></tr>
-							<tr><td>&nbsp;3:00 pm</td><td>Winners Announced</td></tr>
+							<tr><td>&nbsp;6:00 pm</td><td>Winners Announced</td></tr>
 						</table>
 					</div>
 				</div>
