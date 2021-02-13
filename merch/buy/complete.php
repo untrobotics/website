@@ -4,7 +4,7 @@ head('Merch Ordered', true);
 
 $log = var_export($_REQUEST, true);
 $log .= var_export($userinfo, true);
-error_log($log, 3, './pdt.log');
+error_log($log, 3, BASE . '/paypal/logs/pdt-merch.log');
 
 function validate_pdt($tx) {
 	global $untrobotics;
