@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="89e288ce-b07c-4f50-bfef-e3947c6b51b5" name="Default Changelist" comment="added multimedia officer section to Our Team page" />
+    <list default="true" id="89e288ce-b07c-4f50-bfef-e3947c6b51b5" name="Default Changelist" comment="added multimedia officer section to Our Team page">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -9,6 +11,9 @@
   </component>
   <component name="ComposerSettings">
     <execution />
+  </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="develop" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
@@ -61,7 +66,8 @@
       <updated>1612649833174</updated>
       <workItem from="1612649867525" duration="11351000" />
       <workItem from="1612850215366" duration="1841000" />
-      <workItem from="1612894819463" duration="335000" />
+      <workItem from="1612894819463" duration="761000" />
+      <workItem from="1613798670329" duration="643000" />
     </task>
     <task id="LOCAL-00001" summary="added multimedia officer section to Our Team page">
       <created>1612657541743</created>
