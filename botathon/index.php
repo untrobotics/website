@@ -175,7 +175,7 @@ head('Botathon Info', true);
                         <h4><em>10am-6pm</em>, <strong>Saturday, April 10th, 2021</strong></h4>
                         <h3>@ <strong>HOME</strong> and in our <a href="/join/discord">Discord</a></h3>
 
-                        <p>Our official informational packet is available <a href="/downloads/botathon/botathon-info-packet.pdf">here</a>.</p>
+                        <p>Our official informational packet is available <a href="/downloads/botathon/botathon-info-packet-s2.pdf">here</a>.</p>
                     </div>
                 </div>
             </div>
@@ -205,7 +205,7 @@ head('Botathon Info', true);
                         <p><strong>The challenge: </strong>Collaborate with an opposing pirate crew to fire cannons and defeat The Kraken as quickly as possible, gaining access to The Treasure Room. From there it's an all out race against the opposing crew to collect the most treasure.</p>					<p>Each side of the field contains 13 balloons, and each team must place 4 balloons on their robot(s). The objective is to pop as many of the opposite team’s balloons within 4 minutes, the team with the most points when the time runs out, wins.</p>
 						<p>Stage 1 consists of The Kraken room. It contains The Kraken, and 3 elevated platforms with cannons on them. The objective is to work together with the opposing pirate crew to fire all 3 of the cannons, effectively disabling the Kraken and unlocking The Treasure Room. Pirate crews will be given the same score in this stage, which depends on the time taken to take down The Kraken.</p>
 						<p>The second stage consists of The Treasure Room. This room is randomly filled with an assortment of treasure, with the highest quality treasure being on raised platforms. The objective in this stage is to push treasure into your Coffer located on one side of the field. Points will be based on both the quantity and quality of treasure collected. </p>
-                        <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet.pdf">information packet</a>.</p>
+                        <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet-s2.pdf">information packet</a>.</p>
 					</div>
 				</div>
 			</div>
