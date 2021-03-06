@@ -7,6 +7,7 @@ if (isset($_POST)) {
 	$name = $_POST['registrant_name'];
 	$email = $_POST['email'];
 	$phone = preg_replace('/[^0-9]/', '', $_POST['phone_number']);
+    $team = $_POST['team_name'];
 	$major = $_POST['major'];
 	$gender = $_POST['gender'];
 	$classification = $_POST['classification'];
@@ -44,7 +45,7 @@ if (isset($_POST)) {
 			echo 'INVALID_PROMISE';
 			break;
 		}
-		$q = $db->query('INSERT INTO botathon_registration (name, email, phone, gender, major, classification, latex_allergy, diet_restrictions, unteuid)
+		$q = $db->query('INSERT INTO botathon_registration (name, email, phone, gender, major, classification, latex_allergy, diet_restrictions, unteuid, team_name)
 		VALUES (
 			"' . $db->real_escape_string($name) . '",
 			"' . $db->real_escape_string($email) . '",
@@ -54,7 +55,8 @@ if (isset($_POST)) {
 			"' . $db->real_escape_string($classification) . '",
 			"' . intval($latex_allergy === 'on') . '",
 			"' . $db->real_escape_string($diet_restrictions) . '",
-			"' . $db->real_escape_string($unteuid) . '"
+			"' . $db->real_escape_string($unteuid) . '",
+			"' . $db->real_escape_string($team) . '"
 		)
 		');
 		if ($q) {
