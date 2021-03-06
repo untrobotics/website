@@ -12,8 +12,7 @@ class AdminBot extends DiscordBot {
 	public static function add_user_role($user_id, $role_id = DISCORD_GOOD_STANDING_ROLE_ID, $guild_id = DISCORD_GUILD_ID) {
 		return parent::add_user_role($guild_id, $user_id, $role_id);
 	}
-	
-	// TODO: implement this
+
 	public static function remove_user_role($user_id, $role_id = DISCORD_GOOD_STANDING_ROLE_ID, $guild_id = DISCORD_GUILD_ID) {
 		return parent::remove_user_role($guild_id, $user_id, $role_id);
 	}
@@ -21,4 +20,8 @@ class AdminBot extends DiscordBot {
 	public static function type($channel_id = DISCORD_ADMIN_CHANNEL_ID) {
 		return parent::type($channel_id);
 	}
+
+	public static function get_all_users($guild_id = DISCORD_GUILD_ID) {
+	    return parent::get_all_users($guild_id);
+    }
 }

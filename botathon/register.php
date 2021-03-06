@@ -98,11 +98,11 @@ head('Botathon Registration', true);
             <div class="range">
               <div class="cell-lg-6">
                 <h1>Register</h1>
-                <h6>You may sign up for the Botathon competition below.</h6>
+                <h6>You may sign up for our <strong>Botathon Season 2</strong> competition below.</h6>
               </div>
 				
 				<div>
-					<h4><small>Registration is open for all students.</small><br><strong>Spots remaining: <span style="color:red;"><?php
+                    <h4><small>Registration is open for all <span style="color:green;">UNT</span> students.</small><br><strong>Spots remaining: <span style="color:red;"><?php
 						echo botathon_spots_remaining();
 						?></span></strong></h4>
 				</div>
@@ -153,7 +153,15 @@ head('Botathon Registration', true);
 					  </div>
 					</div>
 				  </div>
+
 				  <div class="range" style="margin-top: 20px;">
+                      <div class="cell-lg-4 cell-md-6 offset-top-20 offset-md-top-0">
+                          <div class="form-group postfix-xl-right-40">
+                              <label for="team_name" class="form-label rd-input-label">Team Name <em><small>(Optional)</small></em></label>
+                              <input id="team_name" type="text" name="team_name" class="form-control form-control-has-validation form-control-last-child">
+                              <span class="form-validation"></span>
+                          </div>
+                      </div>
 					<div class="cell-lg-4 cell-md-6 offset-top-20 offset-md-top-0">
 					  <div class="form-group postfix-xl-right-40">
 							<label for="diet_restrictions" class="form-label rd-input-label">Dietary Restrictions</label>
@@ -168,16 +176,18 @@ head('Botathon Registration', true);
 						  	<span class="form-validation"></span>
 					  </div>
 					</div>
-					<div class="cell-lg-4 cell-md-6">
+
+					<!--<div class="cell-lg-4 cell-md-6">
 					  <div class="form-group postfix-xl-right-40">
 						  <div style="padding-top: 21px;">
-							  <label class="checkbox-container">I am allergic to Latex.
-							    <input id="latex_allergy" name="latex_allergy" type="checkbox" class="form-control form-control-has-validation form-control-last-child">
-							    <span class="checkmark"></span>
+							  <label class="checkbox-container">I am allergic to Latex.-->
+							    <input id="latex_allergy" name="latex_allergy" type="hidden" value="off" class="form-control form-control-has-validation form-control-last-child">
+							    <!--<span class="checkmark"></span>
 							  </label>
 						  </div>
 					  </div>
-					</div>
+					</div>-->
+
 				  </div>
 					
 					<center>

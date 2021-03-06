@@ -83,10 +83,6 @@ head('Botathon Info', true);
         }
     }
 
-    .botPics{
-
-    }
-
 </style>
 
 <main class="page-content">
@@ -121,61 +117,77 @@ head('Botathon Info', true);
     <section class="section-50" id="botathon-navigation">
         <div class="shell">
             <div class="range range-md-right">
-                <div class="col-lg-12 botathon-navigation">
-                    <div class="well-custom-1">
-                        <h4 class="text-regular">Navigation</h4>
-                        <ul class="list-xs list-marked">
-                            <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
-                            <li><a href="#sponsors" class="text-content">Event Sponsors</a></li>
-                            <li><a href="#rules" class="text-content">Rules</a></li>
-                            <li><a href="#schedule" class="text-content">Schedule</a></li>
-                            <li><a href="#field-preview" class="text-content">Field Preview</a></li>
-                            <li><a href="#parts-list" class="text-content">Parts List</a></li>
-                            <li><a href="#teams" class="text-content">Teams</a></li>
-                            <li><a href="#tshirts" class="text-content">T-Shirts</a></li>
-                            <li><a href="#contacts" class="text-content">Contact Info</a></li>
-                            <li><a href="#register" class="text-content">Register</a></li>
-                            <li><a href="brackets" class="text-content">Gameday Brackets</a></li>
-                        </ul>
+                    <div class="col-lg-12 botathon-navigation">
+                        <div class="well-custom-1">
+                            <h4 class="text-regular">Navigation</h4>
+                            <ul class="list-xs list-marked">
+                                <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
+                                <li><a href="#event-details" class="text-content">Event Details</a></li>
+                                <li><a href="#sponsors" class="text-content">Event Sponsors</a></li>
+                                <li><a href="#rules" class="text-content">Rules</a></li>
+                                <li><a href="#schedule" class="text-content">Schedule</a></li>
+                                <li><a href="#field-preview" class="text-content">Field Preview</a></li>
+                                <li><a href="#parts-list" class="text-content">Parts List</a></li>
+                                <li><a href="#teams" class="text-content">Teams</a></li>
+                                <li><a href="#tshirts" class="text-content">T-Shirts</a></li>
+                                <li><a href="#contacts" class="text-content">Contact Info</a></li>
+                                <li><a href="#register" class="text-content">Register</a></li>
+                                <li><a href="brackets" class="text-content">Gameday Brackets</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
     </section>
 
     <section class="section-50" id="info">
         <div class="shell">
             <div class="range range-md-justify">
-                <div class="cell-md-12 cell-lg-10">
-                    <div class="inset-md-right-30 inset-lg-right-0">
-                        <h1><strong>Botathon</strong> - <em>Season 2</em></h1>
-                        <p>Botathon is UNT’s second ever hosted robotics competition, think hackathon+robots!</p>
+                    <div class="cell-md-12 cell-lg-10">
+                        <div class="inset-md-right-30 inset-lg-right-0">
+                            <h1><strong>Botathon</strong> - <em>Season 2</em></h1>
+                            <p>Botathon is UNT’s second ever hosted robotics competition, think hackathon+robots!</p>
 
-                        <p>Participants will have 2 weeks to build a robot then compete head to head in a race to collect the most treasure on our custom built island. This event is open to all UNT students, with any amount of experience.</p>
+                            <p>Participants will have 3 weeks to build a robot then compete head to head in a race to collect the most treasure on our custom built island. This event is open to all UNT students, with any amount of experience.</p>
 
-                        <div class="well-custom">
-                            <h5>Open to all UNT students, learn something new and make new friends.</h5>
+                            <div class="well-custom">
+                                <div><h5><strong>Open to all UNT students.</strong></h5></div><div><h5>Learn something new and make new friends!</h5></div>
+                            </div>
                         </div>
-
-                        <p>The goal of this event is to give students a chance to learn how to build a robot and compete against their peers. Botathon is free to all UNT students and will be completely virtual this year, with competitors building robots with a group virtually and controlling their robots remotely from home.</p>
-
-                        <p style="margin-top:40px; font-size: 22px;"><strong>When/Where is it happening?</strong></p>
-                        <h4>February 1st: Registration Begins</h4>
-                        <h4>March 22 - April 5th: Build Period</h4>
-                        <h4>April 5th - April 9th: Inspection Period</h4>
-                        <h4 style="margin-top: 30px;"><em>12pm-6pm</em>, <strong>April 10th, 2021: Competition</strong></h4>
-                        <!-- <h3>@ <strong>UNT Discovery Park</strong></h3>-->
-
-                        <p>Our official informational packet is available <a href="/downloads/botathon/botathon-info-packet.pdf">here</a>.</p>
                     </div>
                 </div>
-            </div>
-        </div>
     </section>
 
     <section class="section-50" id="register">
         <div class="shell">
             <h2>Register Now</h2>
+        </div>
+    </section>
+
+    <section class="section-50" id="event-details">
+        <div class="shell">
+            <h2>Event Details</h2>
+            <div class="range">
+                <div class="cell-md-8 cell-lg-9">
+                    <div>Registration</div>
+                    <h4><strong>Feb. 1:</strong> Registration Opened</h4>
+
+                    <div style="margin-top: 20px;">Build Season</div>
+                    <h4><strong>Mar. 22 - Mar. 29:</strong> Build Period</h4>
+                    <h4><strong>Apr. 5 - Apr. 7:</strong> Inspection Period</h4>
+
+                    <div style="margin-top: 20px;">Competition Day</div>
+                    <h4><em>12pm-6pm</em>, <strong>Saturday, April 10th, 2021</strong></h4>
+                    <h3>@ <strong>HOME</strong> and in our <a href="/join/discord">Discord</a></h3>
+
+                    <p>Our official informational packet is available <a href="/downloads/botathon/botathon-info-packet-s2.pdf">here</a>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-50" id="sponsors">
+        <div class="shell">
+            <h2>Event Sponsors</h2>
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
@@ -210,6 +222,7 @@ head('Botathon Info', true);
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <p>Teams of up to four students will be given a robot kit <em>(consult the parts list below to see what these contain)</em>, and 2 weeks in which they may build a robot ship. The robot ship will then be submitted for inspection where UNT Robotics will hold it until competition day.</p>
                         <p><strong>The challenge: </strong>Collaborate with an opposing pirate crew to fire cannons and defeat The Kraken as quickly as possible, gaining access to The Treasure Room. From there it's an all out race against the opposing crew to collect the most treasure.</p>					<p>Each side of the field contains 13 balloons, and each team must place 4 balloons on their robot(s). The objective is to pop as many of the opposite team’s balloons within 4 minutes, the team with the most points when the time runs out, wins.</p>
+                        <<<<<<< develop
                         <p>Stage 1 consists of The Kraken room. It contains The Kraken, and 3 elevated platforms with cannons on them. The objective is to work together with the opposing pirate crew to fire all 3 of the cannons, effectively disabling the Kraken and unlocking The Treasure Room. Pirate crews will be given the same score in this stage, which depends on the time taken to take down The Kraken.</p>
                         <p>The second stage consists of The Treasure Room. This room is randomly filled with an assortment of treasure, with the highest quality treasure being on raised platforms. The objective in this stage is to push treasure into your Coffer located on one side of the field. Points will be based on both the quantity and quality of treasure collected. </p>
                         <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet.pdf">information packet</a>.</p>
@@ -278,6 +291,75 @@ head('Botathon Info', true);
     <section class="section-50" id="parts-list">
         <div class="shell">
             <h2>Parts List</h2>
+            =======
+            <p>Stage 1 consists of The Kraken room. It contains The Kraken, and 3 elevated platforms with cannons on them. The objective is to work together with the opposing pirate crew to fire all 3 of the cannons, effectively disabling the Kraken and unlocking The Treasure Room. Pirate crews will be given the same score in this stage, which depends on the time taken to take down The Kraken.</p>
+            <p>The second stage consists of The Treasure Room. This room is randomly filled with an assortment of treasure, with the highest quality treasure being on raised platforms. The objective in this stage is to push treasure into your Coffer located on one side of the field. Points will be based on both the quantity and quality of treasure collected. </p>
+            <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet-s2.pdf">information packet</a>.</p>
+        </div>
+        </div>
+        </div>
+        </div>
+    </section>
+
+    <section class="section-50" id="schedule">
+        <div class="shell">
+            <h2>Schedule</h2>
+            <div class="range">
+                <div class="cell-md-8 cell-lg-9">
+                    <div class="inset-md-right-30 inset-lg-right-0">
+                        <table id="schedule">
+                            <tr><td>&nbsp;10:00 am</td><td>Volunteer Call Time</td></tr>
+                            <tr><td>&nbsp;10:30 am</td><td>Online Check-In & Review of Event and Rules</td></tr>
+                            <tr><td>&nbsp;11:00 am</td><td>Competition Begins</td></tr>
+                            <tr><td>&nbsp;12:30 pm</td><td>Lunch Break</td></tr>
+                            <tr><td>&nbsp;1:00 pm</td><td>Resume Competition</td></tr>
+                            <tr><td>&nbsp;6:00 pm</td><td>Winners Announced</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section-50" id="field-preview">
+        <div class="shell">
+            <h2>Field preview</h2>
+            <h3>Coming Soon!</h3>
+            <!--
+          <div class="range">
+              <div class="cell-md-8 cell-lg-9">
+                <div class="inset-md-right-30 inset-lg-right-0 field-preview">
+                    <h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>
+                    <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/field-1.jpg" alt="" width="485" height="555" class="img-responsive"/>
+                      <h6><a href="/images/botathon-photos/field-1.jpg">The botathon competition field center obstacle</a></h6>
+                    </div>
+                    <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img src="/images/botathon-photos/robots-square.jpg" alt="" width="485" height="555" class="img-responsive"/>
+                      <h6><a href="/images/botathon-photos/robots-square.jpg">Demo robots squaring off</a></h6>
+                    </div>
+                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/field-2.jpg" alt="" width="485" height="555" class="img-responsive"/>
+                      <h6><a href="/images/botathon-photos/field-2.jpg">The field will contain baloons for each team to pop</a></h6>
+                    </div>
+
+                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-1.jpg" alt="" width="485" height="555" class="img-responsive"/>
+                      <h6><a href="/images/botathon-photos/cad-1.jpg">CAD of the standing view of the field</a></h6>
+                    </div>
+                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-2.jpg" alt="" width="485" height="555" class="img-responsive"/>
+                      <h6><a href="/images/botathon-photos/cad-2.jpg">3D CAD of the field</a></h6>
+                    </div>
+                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-3.jpg" alt="" width="485" height="555" class="img-responsive"/>
+                      <h6><a href="/images/botathon-photos/cad-3.jpg">Birds eye CAD of the field</a></h6>
+                    </div>
+                  </div>
+              </div>
+          </div>
+            -->
+        </div>
+    </section>
+
+    <section class="section-50" id="parts-list">
+        <div class="shell">
+            <h2>Parts List</h2>
+            >>>>>>> master
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">

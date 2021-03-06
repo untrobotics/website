@@ -55,6 +55,10 @@ class DiscordBot {
 	public static function type($channel_id) {
 		return static::send_api_request("/channels/{$channel_id}/typing", 'POST');
 	}
+
+	public static function get_all_users($guild_id) {
+	    return static::send_api_request("/guilds/{$guild_id}/members?limit=1000");
+    }
 }
 								
 class DiscordBotException extends Exception {
