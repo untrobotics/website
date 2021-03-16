@@ -33,7 +33,7 @@ head('Our Team', true);
                         <h6>These people are the reason for our success and expertise.</h6>
                     </div>
                 </div>
-                <!-- co-president lord supreme Seb -->
+                <!-- co-president -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
                         <div class="cell-md-3"><img src="/images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
@@ -60,7 +60,7 @@ head('Our Team', true);
                 </div>
             </div>
             </div>
-            <!-- co-president lord supreme Lauren -->
+            <!-- co-president -->
             <div class="cell-lg-12 bio-area">
                 <div class="range range-sm-middle">
                     <div class="cell-md-3"><img src="/images/bio-pics/lauren-caves.jpg" alt="" width="360" height="404" class="img-responsive" />
@@ -81,14 +81,14 @@ head('Our Team', true);
                     </div>
                 </div>
             </div>
-            <!-- Vice-president and Financial Director -->
+            <!-- Vice President and Financial Director -->
             <div class="cell-lg-12 bio-area">
                 <div class="range range-sm-middle">
                     <div class="cell-md-3"><img src="/images/bio-pics/tyler-adam-martinez.jpg" alt="" width="360" height="404" class="img-responsive" />
                     </div>
                     <div class="cell-md-6">
                         <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                            <h6 class="h6-with-small"><a href="#"> Tyler Adam Martinez</a><span class="small text-silver-chalice">Vice-president and Financial Director</span></h6>
+                            <h6 class="h6-with-small"><a href="#"> Tyler Adam Martinez</a><span class="small text-silver-chalice">Vice President and Financial Director</span></h6>
                             <p>Tyler is a junior currently studying electrical engineering with a minor in biomedical engineering. He focuses on robotics and automation, and loves designing cool circuits and building electronics. </p>
                             <ul class="list-inline-lg">
                                 <li>
@@ -176,7 +176,7 @@ head('Our Team', true);
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                                <h6 class="h6-with-small"><a href="#"> Abdus Samee</a><span class="small text-silver-chalice">Event coordinator</span></h6>
+                                <h6 class="h6-with-small"><a href="#"> Abdus Samee</a><span class="small text-silver-chalice">Event Coordinator</span></h6>
                                 <p>Abdus Samee is an ECE graduate whose love for engineering must be seen to be believed. Being a former Toastmaster, he has a flair for speaking which convinces the listener to accept the facts that he puts forward. His never ending hunger for knowledge has enabled him to achieve a lot in a short time. Education is an ornament in prosperity and a refuge in adversity is what he says. Progress never comes without struggles, but his persistence helped him reach his dream destination. He is also the Vice Chair for UNT IEEE Robotics and Automation Society, and a IEEE Eta Kappa Nu Honor Student. The words of Ford inspired him to keep going. 'When everything seems to be going against you, remember that the airplane takes off against the wind and not with it. </p>
                                 <ul class="list-inline-lg">
                                     <li>
@@ -263,7 +263,7 @@ head('Our Team', true);
                     </div>
                 </div>
 
-                <!-- Event Coordinator -->
+                <!-- Aerospace Division Lead -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
                         <div class="cell-md-3"><img src="/images/bio-pics/jesse-sullivan.jpg" alt="" width="360" height="404" class="img-responsive" />
@@ -281,26 +281,6 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
-                <!-- Event Coordinator -->
-				<!--
-                <div class="cell-lg-12 bio-area">
-                    <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="/images/bio-pics/michelle-vargas.jpg" alt="" width="360" height="404" class="img-responsive" />
-                        </div>
-                        <div class="cell-md-6">
-                            <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                                <h6 class="h6-with-small"><a href="#"> Jesse Sullivan</a><span class="small text-silver-chalice">Event Coordinator</span></h6>
-                                <p>Jesse is a senior mechanical engineering student interested in all things that fly and go fast. He has 4 years of experience in amateur high-power rocketry and currently holds an L1 certification with the National Association of Rocketry. He founded the Aerospace Division with UNT Robotics in order to foster interest in the hobby and provide a learning experience for anyone to become a part of. </p>
-                                <ul class="list-inline-lg">
-                                    <li>
-                                        <a href="mailto:events@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-				-->
             </div>
         </section>
     </main>
