@@ -4,7 +4,7 @@ if ($_GET['code'] !== API_SECRET) {
 	http_response_code(401);
 	die();
 }
-require_once("../api/groupme-funcs.php");
+require_once(BASE . '/api/discord/bots/admin.php');
 
 $body = $_POST['Body'];
 if (empty($body)) {
@@ -32,4 +32,9 @@ $result = ob_get_clean();
 error_log($result);
 */
 
-post_message("Received SMS message (#{$sid}):\nFrom: {$from} ({$location})\n\n{$body}", false, $attachments);
+$data = new stdClass();
+$data->embed = new stdClass();
+$data->embed->title = "Received SMS Message";
+$data->embed->description = "**SID:** #{$sid}\n**FROM:** {$from} _({$location})_\n\n{$body}";
+
+AdminBot::send_message($data, DISCORD_ADMIN_CHANNEL_ID, $attachments);
