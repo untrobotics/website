@@ -41,6 +41,8 @@ head('Merch', true);
 							<ul class="page-index-listing">
 								<li><a href="shirts-hoodies">Shirts &amp; Hoodies</a></li>
 								<li><a href="hats">Hats</a></li>
+                                <li><a href="trousers">Trousers</a></li>
+                                <li><a href="gear">Gear</a></li>
 							</ul>
 						</div>
 					</div>

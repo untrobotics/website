@@ -1,29 +1,36 @@
 <?php
+require_once(__DIR__ . '/../../template/functions/mime2ext.php');
 
 class DiscordBot {
-	
-	private function send_api_request($URI, $method = 'GET', $data = null) {
+
+	protected static function send_api_request($URI, $method = 'GET', $data = null, $files = null) {
 		$ch = curl_init();
 		
 		$headers = array();
 		$headers[] = 'Authorization: Bot ' . static::AUTH_TOKEN;
-		$headers[] = 'Content-Type: application/json';
+		$headers[] = 'Content-Type: multipart/form-data';
 
 		curl_setopt($ch, CURLOPT_URL, 'https://discord.com/api' . $URI);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-		$payload = "";
+        $payload = "";
 		if ($data) {
-			$payload = json_encode($data);
+			$payload = array(
+			    'payload_json' => json_encode($data)
+            );
+			if (count($files) > 0) {
+			    $payload = array_merge($payload, $files);
+            }
+
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 		}
-		$headers[] = 'Content-Length: ' . strlen($payload);
+		//$headers[] = 'Content-Length: ' . strlen($payload);
 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
 		$result = curl_exec($ch);
 		if (curl_errno($ch)) {
-			throw new DiscordBotException("Error occurred when making API request: " . curl_error($ch));
+			throw new DiscordBotException("Error occurred when making API request: '" . curl_error($ch) . "'" . "(" . curl_errno($ch) . ")");
 		}
 		
 		$status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -31,17 +38,47 @@ class DiscordBot {
 		curl_close($ch);
 		
 		$response = new stdClass();
-		$response->result = $result;
+		$response->result = json_decode($result);
 		$response->status_code = $status_code;
-		
+
 		return $response;
 	}
 	
-	public static function send_message($message, $channel_id) {
-		$data = new stdClass(); // can't be bothered right now to make a class
-		$data->content = $message;
+	public static function send_message($message, $channel_id, $attachments = null) {
+	    if (is_string($message)) {
+            $data = new stdClass(); // can't be bothered right now to make a class
+            $data->content = $message;
+        } else {
+	        $data = $message;
+        }
+
+		$files = array();
+		if ($attachments) {
+            foreach ($attachments as $k => $attachment) {
+                $file = tmpfile();
+                $path = stream_get_meta_data($file)['uri'];
+
+                //$content = file_get_contents($attachment['url']);
+
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $attachment['url']);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $content = curl_exec($ch);
+
+                //error_log($content);
+
+                file_put_contents($path, $content);
+                //error_log($attachment['url']);
+                //error_log($path);
+                //error_log($content);
+
+                $files["attachment{$k}"] = new CURLFile($path, $attachment['type'], "attachment{$k}." . mime2ext($attachment['type']));
+            }
+        }
+		//error_log(var_export($files, true));
 		
-		return static::send_api_request("/channels/{$channel_id}/messages", 'POST', $data);
+		return static::send_api_request("/channels/{$channel_id}/messages", 'POST', $data, $files);
 	}
 	
 	public static function add_user_role($guild_id, $user_id, $role_id) {

@@ -1,12 +1,15 @@
 <?php
 require('../template/top.php');
+require(BASE . '/api/discord/bots/admin.php');
+require(BASE . '/api/google/count_majors.php');
+
 head('About Us', true);
 ?>
 	<main class="page-content">
         <!-- Classic Breadcrumbs-->
         <section class="breadcrumb-classic">
           <div class="rd-parallax">
-            <div data-speed="0.25" data-type="media" data-url="images/breadcrumbs-parallax.jpg" class="rd-parallax-layer"></div>
+            <div data-speed="0.25" data-type="media" data-url="/images/breadcrumbs-parallax.jpg" class="rd-parallax-layer"></div>
             <div data-speed="0" data-type="html" class="rd-parallax-layer section-top-75 section-md-top-150 section-lg-top-260">
               <div class="shell">
                 <ul class="list-breadcrumb">
@@ -29,7 +32,7 @@ head('About Us', true);
                   <p>UNT Robotics is a broad engineering student organisation at the <a href="https://www.unt.edu/">University of North Texas</a>.</p>
 				  <p>We focus on developing student's skills in engineering &amp; robotics, which involves a range of beginner workshops, industry talks, robotics-based hackathons, recreational projects and competitions.</p>
                   <div class="well-custom">
-                    <h5><strong>X</strong> members from <strong>Y</strong> majors.</h5>
+                    <h5><strong><?php echo AdminBot::get_member_count(); ?></strong> members from <strong><?php echo count(get_majors()); ?></strong> majors.</h5>
                   </div>
                   <p>We've grown a lot since our conception in late 2018. UNT's Engineering program teaches students much of the theory of needed to flourish, however there was a gap for the invaluable hands on experience that we give our members. As a result, we've become a part of the growth and development of students here at UNT.</p>
                   <p>As a student organisation, we also develop the social skills of students. We host social and team building events and extensively network with industry partners who value the skills that we have given their recruits.</p>
