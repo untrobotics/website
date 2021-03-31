@@ -150,7 +150,7 @@ head('Our Team', true);
                     </div>
                 </div>
             </div>
-            <!-- Deputy Financial Director -->
+            <!-- Secretary -->
             <div class="cell-lg-12 bio-area">
                 <div class="range range-sm-middle">
                     <div class="cell-md-3"><img src="/images/bio-pics/meg-mcadams.jpg" alt="" width="360" height="404" class="img-responsive" />
