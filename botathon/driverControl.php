@@ -166,6 +166,16 @@ footer(false);
     var ws = new WebSocket("wss://" + window.location.hostname + ":9111", "team");
     ws.onopen = function(){
         $('#message').text('WebSocket open');
+
+        <?php
+        $validate = new stdClass();
+        $validate->TEAM_NO = "TEAM_NO_" . (100 + $team_no);
+        $validate->SECRET_KEY = $secret_key;
+
+        $validate_string = json_encode($validate);
+        ?>
+
+        ws.send();
     };
     ws.onmessage = function(ev){
         $('#message').text('recieved message');

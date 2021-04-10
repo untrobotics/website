@@ -40,7 +40,7 @@ while($row = $query->fetch_array(MYSQLI_ASSOC)){
     </form>";
 
     $matchScores = $matchScores . "<button onclick = \"startTimer(" . $id .");\"> Start Timer </button>";
-
+    $matchScores = $matchScores . "<button onclick = \"currentMatch(" . $id .");\"> Set as Current Match </button>";
 }
 
 echo $matchScores . "</div>";
