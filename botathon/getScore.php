@@ -1,6 +1,5 @@
 <?php
 require('../template/top.php');
-head('Botathon Live Page', true);
 ?>
 
 
@@ -150,15 +149,22 @@ if (!$db) {
     die('Could not connect: ' . mysqli_error($db));
 }
 
-mysqli_select_db($db,"ajax_demo");
-$sql="SELECT * FROM user WHERE id = '".$q."'";
-$result = mysqli_query($db,$sql);
+//mysqli_select_db($db,"botathon_score");
+$query = $db->query("SELECT * FROM botathon_score WHERE id = '". $db->real_escape_string($q) ."'");
+//$sql="SELECT * FROM user WHERE id = '".$q."'";
+//$result = mysqli_query($db,$sql);
 
-//TODO - fix SQL injection
-while($row = mysqli_fetch_array($result)) {
+while($row = $query->fetch_array(MYSQLI_ASSOC)) {
+    $time = DateTime::createFromFormat ( "Y-m-d H:i:s", $row["start_timestamp"] );
+    $time->modify("+90 minutes");
+
+
+
     echo "<div class=\"grid-container green-box\" style = \"margin-top: 32px; margin-bottom: 32px;\" >";
     echo "<h2 class=\"grid-child green-box\" style = \"width: 100%; height = 1em; border-bottom: none;\">" . $row['team_name1'] . "<div class = \"green-box\" style = \" width: 80px;\">" . $row['team_score1'] . "</div></h2>";
-    echo "<h2 class = \"green-box\" style = \"width = 15%; height: 240px; font-size: 2.5em;padding: 14px; border: 1px solid #000;\">Time Left: <div id = \"timer\" class = \"green-box\" style = \"background-color: white;  color: black;\">" . $row['start_timestamp'] . "</div></h2>";
+    //code that no work
+    //<img src = '/images/bio-pics/temp-pic.jpg' onload = 'countdown( \"timer\", " . $time->format('i') . ", " . $time->format('s') . "); alert('ahhh');'/>
+    echo "<h2 class = \"green-box\" style = \"width = 15%; height: 240px; font-size: 2.5em;padding: 14px; border: 1px solid #000;\">Time Left: <div id = \"timer\" class = \"green-box\" style = \"background-color: white;  color: black;\">" .  $time->format("i:s") . "</div></h2>";
     echo "<h2 class=\"grid-child green-box\" style = \"width: 100%; height = 1em; border-bottom: none;\">" . $row['team_name2'] . "<div class = \"green-box\" style = \" width: 80px;\">" . $row['team_score2'] . "</div> </h2>";
 }
 

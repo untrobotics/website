@@ -3,6 +3,8 @@ require('../template/top.php');
 head('Botathon referee Page', true);
 ?>
 
+
+
 <style>
     .btn-group button {
         background-color: #4CAF50; /* Green background */
@@ -36,6 +38,45 @@ head('Botathon referee Page', true);
 
 </style>
 
+<script>
+    function addMatch(){
+
+    }
+
+    //function dropDownChanged(id){
+    //    <?php //include 'modifyMatchScore.php' ?>
+    //
+    //}
+
+    //AJAX
+    function dropDownChanged(id) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("modifyingMatch").innerHTML = this.responseText;
+            }
+        };
+        xmlhttp.open("GET",`modifyMatchScore.php?id=${id}`,true);
+        xmlhttp.send();
+    }
+
+    //AJAX - score changed
+    function scoreChanged(id, teamName, teamNum, newScore) {
+
+        console.log(id, teamName, newScore);
+
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        };
+        xmlhttp.open("GET",`updateTeamScore.php?id=${id}&newScore=${newScore}&teamNum=${teamNum}`,true);
+        xmlhttp.send();
+    }
+
+</script>
+
 <main class="page-content">
 <!-- Classic Breadcrumbs-->
 <section class="breadcrumb-classic">
@@ -52,31 +93,60 @@ head('Botathon referee Page', true);
     </div>
 </section>
 
+    <!-- form to add a match to the db-->
+    <h1 style = "margin: 20px">Add match</h1>
     <div style = "text-align: center; margin-top: 40px">
-        <form style = "display: inline-block;">
-            <label for="teamName1">Team 1: </label><br>
-            <input type="text" id="fname" name="fname"><br>
-            <label for="teamName2">Team 1: </label><br>
-            <input type="text" id="fname" name="fname"><br>
-            <input type="submit" value="Submit">
-        </form>
+        <div style = "text-align: center; margin-top: 40px">
+                    <form style = "display: inline-block;" action="addMatch.php" method = "post">
+                        <label for="teamName1">Team 1: </label><br>
+                        <input type="text" id="teamName1" name="teamName1"><br>
+                        <label for="teamName2">Team 2: </label><br>
+                        <input type="text" id="teamName2" name="teamName2"><br>
+                        <input type="submit" value="Submit" style = "margin-top: 16px;">
+                    </form>
+                </div>
     </div>
 
-    <div class = "button-section" style = "text-align: center; margin-top: 40px">
-        <div class="btn-group" style = "display: inline-block;">
-          <button>Start timer</button>
-            <br><br><br>
-            <form action="team1score">
-                <label for="teamName1">Team 1 score : </label><br>
-                <input type="number" id="score1" name="score1"><br>
-            </form>
-            <br><br><br>
-            <form action="team2score">
-                <label for="teamName2">Team 2 score : </label><br>
-                <input type="number" id="score1" name="score1"><br>
-            </form>
-        </div>
+
+    <hr/>
+
+    <div style = "margin-top: 40px; padding: 60px;">
+        <?php include 'listMatches.php' ?>
+        <div id = "modifyingMatch"></div>
     </div>
+
+
+
+<!--    <div style = "text-align: center; margin-top: 40px">-->
+<!--        <form style = "display: inline-block;">-->
+<!--            <label for="teamName1">Team 1: </label><br>-->
+<!--            <input type="text" id="fname" name="fname"><br>-->
+<!--            <label for="teamName2">Team 1: </label><br>-->
+<!--            <input type="text" id="fname" name="fname"><br>-->
+<!--            <label for="teamName1">Team 1 score : </label><br>-->
+<!--            <input type="number" id="score1" name="score1"><br>-->
+<!--            <label for="teamName2">Team 2 score : </label><br>-->
+<!--            <input type="number" id="score1" name="score1"><br>-->
+<!---->
+<!--            <input type="submit" value="Submit">-->
+<!--        </form>-->
+<!--    </div>-->
+
+<!--    <div class = "button-section" style = "text-align: center; margin-top: 40px">-->
+<!--        <div class="btn-group" style = "display: inline-block;">-->
+<!--          <button>Start timer</button>-->
+<!--            <br><br><br>-->
+<!--            <form action="team1score">-->
+<!--                <label for="teamName1">Team 1 score : </label><br>-->
+<!--                <input type="number" id="score1" name="score1"><br>-->
+<!--            </form>-->
+<!--            <br><br><br>-->
+<!--            <form action="team2score">-->
+<!--                <label for="teamName2">Team 2 score : </label><br>-->
+<!--                <input type="number" id="score1" name="score1"><br>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
 
 
 

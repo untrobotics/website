@@ -137,6 +137,7 @@ head('Botathon Live Page', true);
 <script>
     //TODO change to AJAX request so that can be updated remotely
     function countdown(element, minutes, seconds) {
+        console.log(minutes, seconds);
         // set time for the particular countdown
         var time = minutes*60 + seconds;
         var interval = setInterval(function() {
@@ -170,7 +171,7 @@ head('Botathon Live Page', true);
                 document.getElementById("scoreBoard").innerHTML = this.responseText;
             }
         };
-        xmlhttp.open("GET","getuser.php?q=",true);
+        xmlhttp.open("GET","getScore.php?q=2",true);
         xmlhttp.send();
     }
 
@@ -214,18 +215,18 @@ head('Botathon Live Page', true);
     </div>
 
 <!--    //return this in AJAX request-->
-    <div class="grid-container green-box" style = "margin-top: 32px; margin-bottom: 32px;" >
-        <h2 class="grid-child green-box" style = "width: 100%; height = 1em; border-bottom: none;">
-            Team Blonde Boy Crew
-            <div class = "green-box" style = " width: 80px;">0</div>
-        </h2>
-        <script>countdown("timer", 3, 0)</script>
-        <h2 class = "green-box" style = "width = 15%; height: 240px; font-size: 2.5em;padding: 14px; border: 1px solid #000;">Time Left: <div id = "timer" class = "green-box" style = "background-color: white;  color: black;">0:00</div></h2>
-        <h2 class="grid-child green-box" style = "width: 100%; height = 1em; border-bottom: none;">
-            Team Blazing BBQ Bandits
-            <div class = "green-box" style = " width: 80px;">0</div>
-        </h2>
-    </div>
+<!--    <div class="grid-container green-box" style = "margin-top: 32px; margin-bottom: 32px;" >-->
+<!--        <h2 class="grid-child green-box" style = "width: 100%; height = 1em; border-bottom: none;">-->
+<!--            Team Blonde Boy Crew-->
+<!--            <div class = "green-box" style = " width: 80px;">0</div>-->
+<!--        </h2>-->
+<!--        <script>countdown("timer", 3, 0)</script>-->
+<!--        <h2 class = "green-box" style = "width = 15%; height: 240px; font-size: 2.5em;padding: 14px; border: 1px solid #000;">Time Left: <div id = "timer" class = "green-box" style = "background-color: white;  color: black;">0:00</div></h2>-->
+<!--        <h2 class="grid-child green-box" style = "width: 100%; height = 1em; border-bottom: none;">-->
+<!--            Team Blazing BBQ Bandits-->
+<!--            <div class = "green-box" style = " width: 80px;">0</div>-->
+<!--        </h2>-->
+<!--    </div>-->
 
     <div class="stream">
         <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
