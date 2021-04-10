@@ -75,6 +75,18 @@ head('Botathon referee Page', true);
         xmlhttp.send();
     }
 
+    //AJAX - score changed
+    function startTimer(id) {
+
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        };
+        xmlhttp.open("GET",`startTimer.php?id=${id}`,true);
+        xmlhttp.send();
+    }
 </script>
 
 <main class="page-content">

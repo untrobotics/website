@@ -39,6 +39,8 @@ while($row = $query->fetch_array(MYSQLI_ASSOC)){
                     
     </form>";
 
+    $matchScores = $matchScores . "<button onclick = \"startTimer(" . $id .");\"> Start Timer </button>";
+
 }
 
 echo $matchScores . "</div>";
