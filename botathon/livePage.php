@@ -160,6 +160,20 @@ head('Botathon Live Page', true);
     }
     //Call to start timer
     //countdown("timer", 3, 0);
+
+
+    //AJAX
+    function showScoreBoard() {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("scoreBoard").innerHTML = this.responseText;
+            }
+        };
+        xmlhttp.open("GET","getuser.php?q=",true);
+        xmlhttp.send();
+    }
+
 </script>
 
 <main class="page-content">
@@ -193,32 +207,25 @@ head('Botathon Live Page', true);
 
 <h1 class = "title"> Botathon Live Page</h1>
 
+
+    <div id = "scoreBoard">
+        Scoreboard will appear here
+        <script>showScoreBoard();</script>
+    </div>
+
+<!--    //return this in AJAX request-->
     <div class="grid-container green-box" style = "margin-top: 32px; margin-bottom: 32px;" >
         <h2 class="grid-child green-box" style = "width: 100%; height = 1em; border-bottom: none;">
             Team Blonde Boy Crew
             <div class = "green-box" style = " width: 80px;">0</div>
         </h2>
+        <script>countdown("timer", 3, 0)</script>
         <h2 class = "green-box" style = "width = 15%; height: 240px; font-size: 2.5em;padding: 14px; border: 1px solid #000;">Time Left: <div id = "timer" class = "green-box" style = "background-color: white;  color: black;">0:00</div></h2>
         <h2 class="grid-child green-box" style = "width: 100%; height = 1em; border-bottom: none;">
             Team Blazing BBQ Bandits
             <div class = "green-box" style = " width: 80px;">0</div>
         </h2>
     </div>
-
-<!--    <div class = "stream">-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!--        <iframe width="60%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>-->
-<!---->
-<!--    </div>-->
 
     <div class="stream">
         <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
@@ -266,5 +273,11 @@ footer(false);
                 });
             } // End if
         });
+
+        //AJAX
+
     });
 </script>
+
+
+

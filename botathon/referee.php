@@ -66,13 +66,15 @@ head('Botathon referee Page', true);
         <div class="btn-group" style = "display: inline-block;">
           <button>Start timer</button>
             <br><br><br>
-          <button>Add point team 1</button>
-            <button>Sub point team 1</button>
-            <button>Reset team 1</button>
+            <form action="team1score">
+                <label for="teamName1">Team 1 score : </label><br>
+                <input type="number" id="score1" name="score1"><br>
+            </form>
             <br><br><br>
-            <button>Add point team 2</button>
-          <button>Sub point team 2</button>
-            <button>Reset team 2</button>
+            <form action="team2score">
+                <label for="teamName2">Team 2 score : </label><br>
+                <input type="number" id="score1" name="score1"><br>
+            </form>
         </div>
     </div>
 
