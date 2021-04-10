@@ -222,7 +222,6 @@ head('Botathon Info', true);
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <p>Teams of up to four students will be given a robot kit <em>(consult the parts list below to see what these contain)</em>, and 2 weeks in which they may build a robot ship. The robot ship will then be submitted for inspection where UNT Robotics will hold it until competition day.</p>
                         <p><strong>The challenge: </strong>Collaborate with an opposing pirate crew to fire cannons and defeat The Kraken as quickly as possible, gaining access to The Treasure Room. From there it's an all out race against the opposing crew to collect the most treasure.</p>					<p>Each side of the field contains 13 balloons, and each team must place 4 balloons on their robot(s). The objective is to pop as many of the opposite team’s balloons within 4 minutes, the team with the most points when the time runs out, wins.</p>
-                        <<<<<<< develop
                         <p>Stage 1 consists of The Kraken room. It contains The Kraken, and 3 elevated platforms with cannons on them. The objective is to work together with the opposing pirate crew to fire all 3 of the cannons, effectively disabling the Kraken and unlocking The Treasure Room. Pirate crews will be given the same score in this stage, which depends on the time taken to take down The Kraken.</p>
                         <p>The second stage consists of The Treasure Room. This room is randomly filled with an assortment of treasure, with the highest quality treasure being on raised platforms. The objective in this stage is to push treasure into your Coffer located on one side of the field. Points will be based on both the quantity and quality of treasure collected. </p>
                         <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet.pdf">information packet</a>.</p>
@@ -291,75 +290,6 @@ head('Botathon Info', true);
     <section class="section-50" id="parts-list">
         <div class="shell">
             <h2>Parts List</h2>
-            =======
-            <p>Stage 1 consists of The Kraken room. It contains The Kraken, and 3 elevated platforms with cannons on them. The objective is to work together with the opposing pirate crew to fire all 3 of the cannons, effectively disabling the Kraken and unlocking The Treasure Room. Pirate crews will be given the same score in this stage, which depends on the time taken to take down The Kraken.</p>
-            <p>The second stage consists of The Treasure Room. This room is randomly filled with an assortment of treasure, with the highest quality treasure being on raised platforms. The objective in this stage is to push treasure into your Coffer located on one side of the field. Points will be based on both the quantity and quality of treasure collected. </p>
-            <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet-s2.pdf">information packet</a>.</p>
-        </div>
-        </div>
-        </div>
-        </div>
-    </section>
-
-    <section class="section-50" id="schedule">
-        <div class="shell">
-            <h2>Schedule</h2>
-            <div class="range">
-                <div class="cell-md-8 cell-lg-9">
-                    <div class="inset-md-right-30 inset-lg-right-0">
-                        <table id="schedule">
-                            <tr><td>&nbsp;10:00 am</td><td>Volunteer Call Time</td></tr>
-                            <tr><td>&nbsp;10:30 am</td><td>Online Check-In & Review of Event and Rules</td></tr>
-                            <tr><td>&nbsp;11:00 am</td><td>Competition Begins</td></tr>
-                            <tr><td>&nbsp;12:30 pm</td><td>Lunch Break</td></tr>
-                            <tr><td>&nbsp;1:00 pm</td><td>Resume Competition</td></tr>
-                            <tr><td>&nbsp;6:00 pm</td><td>Winners Announced</td></tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section-50" id="field-preview">
-        <div class="shell">
-            <h2>Field preview</h2>
-            <h3>Coming Soon!</h3>
-            <!--
-          <div class="range">
-              <div class="cell-md-8 cell-lg-9">
-                <div class="inset-md-right-30 inset-lg-right-0 field-preview">
-                    <h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>
-                    <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/field-1.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/field-1.jpg">The botathon competition field center obstacle</a></h6>
-                    </div>
-                    <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img src="/images/botathon-photos/robots-square.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/robots-square.jpg">Demo robots squaring off</a></h6>
-                    </div>
-                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/field-2.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/field-2.jpg">The field will contain baloons for each team to pop</a></h6>
-                    </div>
-
-                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-1.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/cad-1.jpg">CAD of the standing view of the field</a></h6>
-                    </div>
-                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-2.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/cad-2.jpg">3D CAD of the field</a></h6>
-                    </div>
-                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-3.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/cad-3.jpg">Birds eye CAD of the field</a></h6>
-                    </div>
-                  </div>
-              </div>
-          </div>
-            -->
-        </div>
-    </section>
-
-    <section class="section-50" id="parts-list">
-        <div class="shell">
-            <h2>Parts List</h2>
-            >>>>>>> master
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">

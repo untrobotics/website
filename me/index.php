@@ -1,6 +1,8 @@
 <?php
 require('../template/top.php');
 head('My Profile', true, true);
+
+global $userinfo
 ?>
 
 <main class="page-content">
@@ -13,9 +15,11 @@ head('My Profile', true, true);
 			  <h1>Your Profile</h1>
 			  <h6>Stuff?</h6>
 			  <p>Profile info.</p>
+                <p><?php echo $userinfo['id']; ?></p>
 			</div>
 			<div class="cell-xs-12">
-			  <div class="left-aside"><span class="small text-darker text-uppercase text-bold text-spacing-340"><?php echo $userinfo['name']; ?></span>
+			  <div class="left-aside"><span class="small text-darker text-uppercase text-bold text-spacing-340"></span>
+                  <h2>done</h2>
 				<div class="divider-custom veil reveal-md-block"></div>
 				<ul class="list text-md-center">
 				  <li><a href="#" class="ioon icon-sm icon-darker fa-check"></a></li>

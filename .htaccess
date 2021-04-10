@@ -6,8 +6,8 @@ Options -Indexes
 
 RewriteEngine on
 
-RewriteCond %{HTTP_HOST} !^www.untrobotics.com [NC]
-RewriteRule ^(.*)$ https://www.untrobotics.com/$1 [R=301,L]
+#RewriteCond %{HTTP_HOST} !^www.untrobotics.com [NC]
+#RewriteRule ^(.*)$ https://www.untrobotics.com/$1 [R=301,L]
 
 RewriteCond %{HTTP_HOST} !^$
 RewriteCond %{HTTP_HOST} !^www\. [NC]
@@ -29,6 +29,9 @@ RewriteRule ^merch/product/([0-9a-f]+)/?([a-z-]*)$ /merch/product.php?id=$1&desc
 RewriteRule ^merch/product/([0-9a-f]+)/([a-z-]*)/([0-9]+)$ /merch/product.php?id=$1&desc=$2&variant=$3 [L]
 RewriteRule ^merch/product/([0-9a-f]+)/([0-9+])$ /merch/product.php?id=$1&variant=$2 [L]
 RewriteRule ^merch/product/([0-9a-f]+)/?(.*) /merch/product.php?id=$1&desc=$2 [L]
+
+# botathon control pages
+RewriteRule ^botathon/team([0-9]+) /botathon/team.php?team_num=$1 [QSA,L]
 
 # tmp
 RewriteRule ^join$ /auth/join.php [L]
