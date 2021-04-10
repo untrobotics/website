@@ -157,8 +157,9 @@ $query = $db->query("SELECT * FROM botathon_score WHERE id = '". $db->real_escap
 while($row = $query->fetch_array(MYSQLI_ASSOC)) {
 
     $time = DateTime::createFromFormat ( "Y-m-d H:i:s", $row["start_timestamp"] );
-    $i = $time->format("i");
-    $s = $time->format("s");
+    $current = new dateTime();
+    $i = $current->format("i");
+    $s = $current->format("s");
 
     $time->modify("+3 minutes");
     $time->modify("-" . $i . " minutes");
