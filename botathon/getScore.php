@@ -158,9 +158,7 @@ $result = mysqli_query($db,$sql);
 while($row = mysqli_fetch_array($result)) {
     echo "<div class=\"grid-container green-box\" style = \"margin-top: 32px; margin-bottom: 32px;\" >";
     echo "<h2 class=\"grid-child green-box\" style = \"width: 100%; height = 1em; border-bottom: none;\">" . $row['team_name1'] . "<div class = \"green-box\" style = \" width: 80px;\">" . $row['team_score1'] . "</div></h2>";
-    echo "<div class=\"grid-container green-box\" style = \"margin-top: 32px; margin-bottom: 32px;\" >";
-    echo "<h2 class = \"green-box\" style = \"width = 15%; height: 240px; font-size: 2.5em;padding: 14px; border: 1px solid #000;\">Time Left: <div id = \"timer\" class = \"green-box\" style = \"background-color: white;  color: black;\">0:00</div></h2>";
-    echo "<h2 class=\"grid-child green-box\" style = \"width: 100%; height = 1em; border-bottom: none;\">";
+    echo "<h2 class = \"green-box\" style = \"width = 15%; height: 240px; font-size: 2.5em;padding: 14px; border: 1px solid #000;\">Time Left: <div id = \"timer\" class = \"green-box\" style = \"background-color: white;  color: black;\">" . $row['start_timestamp'] . "</div></h2>";
     echo "<h2 class=\"grid-child green-box\" style = \"width: 100%; height = 1em; border-bottom: none;\">" . $row['team_name2'] . "<div class = \"green-box\" style = \" width: 80px;\">" . $row['team_score2'] . "</div> </h2>";
 }
 
