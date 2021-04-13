@@ -168,7 +168,8 @@
 
 				<li class="thin auth" style="margin-left: 0;"><a href="/auth/logout" class="stacked">Log<br>Out</a></li>
 			<?php } else { ?>
-				<li class="thin" style="margin-left: auto;"><a href="/auth/login"target="_blank" class="stacked">Log<br>In</a></li>
+				<li class="thin" style="margin-left: auto;"><a href="/auth/login" class="stacked">Log<br>In</a></li>
+
 	                	<li class="thin" style="margin-left: 0;"><a href="/auth/join"target="_blank" class="stacked">Join<br>Now</a></li>
 			<?php
 			}
