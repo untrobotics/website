@@ -122,6 +122,7 @@ head('Botathon referee Page', true);
     <h1 style = "margin: 20px">Add match</h1>
     <div style = "text-align: center; margin-top: 40px">
         <div style = "text-align: center; margin-top: 40px">
+            <p>Whatever is the most recent thing submitted here, will be shown on the live page</p>
                     <form style = "display: inline-block;" action="addMatch.php" method = "post">
                         <label for="teamName1">Team 1: </label><br>
                         <input type="text" id="teamName1" name="teamName1"><br>

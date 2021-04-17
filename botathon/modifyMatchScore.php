@@ -25,6 +25,7 @@ $matchScores = "<div>";
 //<input type=\"submit\" value=\"Submit\" style = \"margin-top: 16px;\"><br>
 //<form style = \"display: inline-block;\" onchange = \"scoreChanged(" . $id . "," . $row["team_name1"] . ", this.value)\">
 while($row = $query->fetch_array(MYSQLI_ASSOC)){
+    $matchScores = $matchScores . "<p>Select the most recent team here, then you can modify score or start the timer</p>";
     $matchScores = $matchScores . "<form style = \"display: inline-block;\" onchange = \"scoreChanged(" . $id . ",'" . $row["team_name1"] . "', 1, document.getElementById('score1').value);\">
                     
                     <label for=\"teamName1\">Team 1 score: " . $row["team_name1"] .  " </label><br>
@@ -40,7 +41,7 @@ while($row = $query->fetch_array(MYSQLI_ASSOC)){
     </form>";
 
     $matchScores = $matchScores . "<button onclick = \"startTimer(" . $id .");\"> Start Timer </button>";
-    $matchScores = $matchScores . "<button onclick = \"currentMatch(" . $id .");\"> Set as Current Match </button>";
+    //$matchScores = $matchScores . "<button onclick = \"currentMatch(" . $id .");\"> Set as Current Match </button>";
 }
 
 echo $matchScores . "</div>";
