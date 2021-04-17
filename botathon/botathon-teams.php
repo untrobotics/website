@@ -60,7 +60,7 @@ head('Our Team', true);
             <!-- Bot 3 -->
             <div class="cell-lg-12 bio-area">
                 <div class="range range-sm-middle">
-                    <div class="cell-md-3"><img src="/images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
+                    <div class="cell-md-3"><img src="/images/botathon-photos/bots/theBarnacles.jpg" alt="" width="360" height="404" class="img-responsive" />
                     </div>
                     <div class="cell-md-6">
                         <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
@@ -112,7 +112,7 @@ head('Our Team', true);
             <!-- Bot 7 -->
             <div class="cell-lg-12 bio-area">
                 <div class="range range-sm-middle">
-                    <div class="cell-md-3"><img src="/images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
+                    <div class="cell-md-3"><img src="/images/botathon-photos/bots/blazingBbqBandits.jpg" alt="" width="360" height="404" class="img-responsive" />
                     </div>
                     <div class="cell-md-6">
                         <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">

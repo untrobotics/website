@@ -5,6 +5,8 @@ head('My Profile', true, true);
 global $userinfo
 ?>
 
+
+
 <main class="page-content">
 	<!-- Classic Breadcrumbs-->
 	<section class="section-50">
@@ -15,7 +17,7 @@ global $userinfo
 			  <h1>Your Profile</h1>
 			  <h6>Stuff?</h6>
 			  <p>Profile info.</p>
-                <p><?php echo $userinfo['id']; ?></p>
+                <p><?php echo var_dump($userinfo); ?></p>
 			</div>
 			<div class="cell-xs-12">
 			  <div class="left-aside"><span class="small text-darker text-uppercase text-bold text-spacing-340"></span>

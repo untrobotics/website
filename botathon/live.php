@@ -99,7 +99,7 @@ head('Botathon Live Page', true);
 
     .stream{
         display: grid;
-        grid-template-columns: auto auto auto;
+        grid-template-columns: 48% 48%;
     }
 
     .grid-item {
@@ -171,7 +171,7 @@ head('Botathon Live Page', true);
                 document.getElementById("scoreBoard").innerHTML = this.responseText;
             }
         };
-        xmlhttp.open("GET","getScore.php?q=${id}",true);
+        xmlhttp.open("GET",`getScore.php?q=${id}`,true);
         xmlhttp.send();
     }
 
@@ -180,10 +180,23 @@ head('Botathon Live Page', true);
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
+                //document.getElementById("test").innerHTML = this.responseText;
                 return this.responseText;
             }
         };
-        xmlhttp.open("GET","setCurrentMatch.php",true);
+        xmlhttp.open("GET",`getCurrentMatch.php`,true);
+        xmlhttp.send();
+    }
+
+    //pull most recent match
+    function showScoreBoardRecent() {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("scoreBoard").innerHTML = this.responseText;
+            }
+        };
+        xmlhttp.open("GET",`getScoreRecent.php?`,true);
         xmlhttp.send();
     }
 
@@ -221,13 +234,14 @@ head('Botathon Live Page', true);
     <h1 class = "title"> Botathon Live Page</h1>
 
 
+
     <div id = "scoreBoard">
-        Scoreboard will appear here
         <script>
-            const id = getCurrentMatch();
-            showScoreBoard(id);
+            showScoreBoardRecent();
         </script>
     </div>
+
+
 
     <!--    //return this in AJAX request-->
     <!--    <div class="grid-container green-box" style = "margin-top: 32px; margin-bottom: 32px;" >-->
@@ -243,16 +257,20 @@ head('Botathon Live Page', true);
     <!--        </h2>-->
     <!--    </div>-->
 
-    <div class="stream">
-        <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="grid-item"><iframe width="100%" height="380px" src="https://www.youtube.com/embed/21X5lGlDOfg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+
+
+
+
+
+    <div class="container">
+        <div class="row justify-content-center" >
+            <div class="col-lg-12"><iframe src="https://player.twitch.tv/?channel=nicktindle&parent=www.dev.untrobotics.com" frameborder="0" allowfullscreen="true" scrolling="no" height="720" width="100%"></iframe></div>
+        </div>
+        <div class="row text-justify-center">
+            <div class="col-lg-4"><iframe src="https://player.twitch.tv/?channel=nicktindle&parent=www.dev.untrobotics.com" frameborder="0" allowfullscreen="true" scrolling="no" height="360" width="100%"></iframe></div>
+            <div class="col-lg-4"><iframe src="https://player.twitch.tv/?channel=nicktindle&parent=www.dev.untrobotics.com" frameborder="0" allowfullscreen="true" scrolling="no" height="360" width="100%"></iframe></div>
+            <div class="col-lg-4"><iframe src="https://player.twitch.tv/?channel=nicktindle&parent=www.dev.untrobotics.com" frameborder="0" allowfullscreen="true" scrolling="no" height="360" width="100%"></iframe></div>
+        </div>
     </div>
 
 

@@ -10,10 +10,12 @@ if (!$db) {
     die('Could not connect: ' . mysqli_error($db));
 }
 
-$id = $_GET['id'];
-
 //mysqli_select_db($db,"botathon_score");
-$query = $db->query("ORDER BY id DESC LIMIT 1");
+//ORDER BY id DESC LIMIT 1
+//$query = $db->query("SELECT * FROM botathon_score WHERE id = '". $db->real_escape_string($q) ."'");
+//$query = $db->query("ORDER BY id DESC LIMIT 1");
+$query = $db->query("SELECT * FROM botathon_score ORDER BY id DESC LIMIT 1");
+
 //TODO unset current match for all, set currentMatch for id
 
 //$sql="SELECT * FROM user WHERE id = '".$q."'";
@@ -23,7 +25,10 @@ $query = $db->query("ORDER BY id DESC LIMIT 1");
 //echo "UPDATE botathon_score SET start_timestamp = NOW() WHERE id =' " .  $db->real_escape_string($id) . "'";
 
 
-echo $query['id'];
+while($row = $query->fetch_array(MYSQLI_ASSOC)) {
+    echo $row['id'];
+}
+
 
 
 //echo ;
