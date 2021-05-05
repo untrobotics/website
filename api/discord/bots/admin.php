@@ -33,4 +33,11 @@ class AdminBot extends DiscordBot {
         $server_details = static::get_server_details($guild_id);
         return $server_details->result->approximate_member_count;
     }
+
+    public static function create_dm($recipient_id) {
+        $data = new stdClass(); // can't be bothered right now to make a class
+        $data->recipient_id = $recipient_id;
+
+        return parent::send_api_request("/users/@me/channels", "POST", "application/json", $data);
+    }
 }

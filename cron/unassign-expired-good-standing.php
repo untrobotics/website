@@ -2,12 +2,11 @@
 require('../template/top.php');
 require(BASE . '/api/discord/bots/admin.php');
 
+echo "<pre>";
+
 $users = AdminBot::get_all_users();
 
-//var_dump(json_decode($users->result));
-
-$discord_users = json_decode($users->result);
-echo "<pre>";
+$discord_users = $users->result;
 foreach ($discord_users as $key => $val) {
     if (in_array(DISCORD_GOOD_STANDING_ROLE_ID, $val->roles)) {
         $user = $untrobotics->get_user_by_discord_id($val->user->id);
