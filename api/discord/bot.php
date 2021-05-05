@@ -3,28 +3,37 @@ require_once(__DIR__ . '/../../template/functions/mime2ext.php');
 
 class DiscordBot {
 
-	protected static function send_api_request($URI, $method = 'GET', $data = null, $files = null) {
+	protected static function send_api_request($URI, $method = 'GET', $content_type = "application/json", $data = null, $files = null) {
 		$ch = curl_init();
 		
 		$headers = array();
 		$headers[] = 'Authorization: Bot ' . static::AUTH_TOKEN;
-		$headers[] = 'Content-Type: multipart/form-data';
+		$headers[] = 'Content-Type: ' . $content_type; //multipart/form-data';
 
 		curl_setopt($ch, CURLOPT_URL, 'https://discord.com/api' . $URI);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        $payload = "";
-		if ($data) {
+
+		//var_dump("DEBUG", $URI, $method, $content_type, $data, $files);
+
+		if ($data && $content_type == "multipart/form-data") {
 			$payload = array(
 			    'payload_json' => json_encode($data)
             );
-			if (count($files) > 0) {
+			if ($files != null && count($files) > 0) {
 			    $payload = array_merge($payload, $files);
             }
 
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-		}
-		//$headers[] = 'Content-Length: ' . strlen($payload);
+		} else if ($data && $content_type == "application/json") {
+		    $payload = json_encode($data);
+            //$headers[] = 'Content-Length: ' . strlen($payload);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        } else {
+            $headers[] = 'Content-Length: 0';
+        }
+
+		//var_dump($headers);
 
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
@@ -78,7 +87,7 @@ class DiscordBot {
         }
 		//error_log(var_export($files, true));
 		
-		return static::send_api_request("/channels/{$channel_id}/messages", 'POST', $data, $files);
+		return static::send_api_request("/channels/{$channel_id}/messages", 'POST', 'multipart/form-data', $data, $files);
 	}
 	
 	public static function add_user_role($guild_id, $user_id, $role_id) {
