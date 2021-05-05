@@ -123,6 +123,7 @@ head('Botathon Info', true);
                             <ul class="list-xs list-marked">
                                 <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
                                 <li><a href="#event-details" class="text-content">Event Details</a></li>
+                                <li><a href="#register" class="text-content">Register</a></li>
                                 <li><a href="#sponsors" class="text-content">Event Sponsors</a></li>
                                 <li><a href="#rules" class="text-content">Rules</a></li>
                                 <li><a href="#schedule" class="text-content">Schedule</a></li>
@@ -131,7 +132,6 @@ head('Botathon Info', true);
                                 <li><a href="#teams" class="text-content">Teams</a></li>
                                 <li><a href="#tshirts" class="text-content">T-Shirts</a></li>
                                 <li><a href="#contacts" class="text-content">Contact Info</a></li>
-                                <li><a href="#register" class="text-content">Register</a></li>
                                 <li><a href="brackets" class="text-content">Gameday Brackets</a></li>
                             </ul>
                         </div>
@@ -155,12 +155,6 @@ head('Botathon Info', true);
                         </div>
                     </div>
                 </div>
-    </section>
-
-    <section class="section-50" id="register">
-        <div class="shell">
-            <h2>Register Now</h2>
-        </div>
     </section>
 
     <section class="section-50" id="event-details">
@@ -187,7 +181,7 @@ head('Botathon Info', true);
 
     <section class="section-50" id="sponsors">
         <div class="shell">
-            <h2>Event Sponsors</h2>
+            <h2>Register</h2>
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
@@ -221,11 +215,10 @@ head('Botathon Info', true);
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <p>Teams of up to four students will be given a robot kit <em>(consult the parts list below to see what these contain)</em>, and 2 weeks in which they may build a robot ship. The robot ship will then be submitted for inspection where UNT Robotics will hold it until competition day.</p>
-                        <p><strong>The challenge: </strong>Collaborate with an opposing pirate crew to fire cannons and defeat The Kraken as quickly as possible, gaining access to The Treasure Room. From there it's an all out race against the opposing crew to collect the most treasure.</p>					<p>Each side of the field contains 13 balloons, and each team must place 4 balloons on their robot(s). The objective is to pop as many of the opposite team’s balloons within 4 minutes, the team with the most points when the time runs out, wins.</p>
-                        <<<<<<< develop
+                        <p><strong>The challenge: </strong>Collaborate with an opposing pirate crew to fire cannons and defeat The Kraken as quickly as possible, gaining access to The Treasure Room. From there it's an all out race against the opposing crew to collect the most treasure.</p>
                         <p>Stage 1 consists of The Kraken room. It contains The Kraken, and 3 elevated platforms with cannons on them. The objective is to work together with the opposing pirate crew to fire all 3 of the cannons, effectively disabling the Kraken and unlocking The Treasure Room. Pirate crews will be given the same score in this stage, which depends on the time taken to take down The Kraken.</p>
                         <p>The second stage consists of The Treasure Room. This room is randomly filled with an assortment of treasure, with the highest quality treasure being on raised platforms. The objective in this stage is to push treasure into your Coffer located on one side of the field. Points will be based on both the quantity and quality of treasure collected. </p>
-                        <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet.pdf">information packet</a>.</p>
+                        <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet-s2.pdf">information packet</a>.</p>
                     </div>
                 </div>
             </div>
@@ -266,7 +259,7 @@ head('Botathon Info', true);
                             <h6><a href="/images/botathon-photos/robots-square.jpg">Demo pirate ships squaring off</a></h6>
                         </div>
                         <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img src="/images/botathon-photos/fieldPreview2.png" alt="" width="485" height="555" class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/fieldPreview2.png"></a>The botathon competition kraken side of field</h6>
+                            <h6><a href="/images/botathon-photos/fieldPreview2.png">The botathon competition kraken side of field</a></h6>
                         </div>
                         <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/fieldPreview3.png" alt="" width="485" height="555" class="img-responsive"/>
                             <h6><a href="/images/botathon-photos/fieldPreview3.png">The botathon competition jewels side of field</a></h6>
@@ -291,75 +284,15 @@ head('Botathon Info', true);
     <section class="section-50" id="parts-list">
         <div class="shell">
             <h2>Parts List</h2>
-            =======
             <p>Stage 1 consists of The Kraken room. It contains The Kraken, and 3 elevated platforms with cannons on them. The objective is to work together with the opposing pirate crew to fire all 3 of the cannons, effectively disabling the Kraken and unlocking The Treasure Room. Pirate crews will be given the same score in this stage, which depends on the time taken to take down The Kraken.</p>
             <p>The second stage consists of The Treasure Room. This room is randomly filled with an assortment of treasure, with the highest quality treasure being on raised platforms. The objective in this stage is to push treasure into your Coffer located on one side of the field. Points will be based on both the quantity and quality of treasure collected. </p>
             <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet-s2.pdf">information packet</a>.</p>
-        </div>
-        </div>
-        </div>
-        </div>
-    </section>
-
-    <section class="section-50" id="schedule">
-        <div class="shell">
-            <h2>Schedule</h2>
-            <div class="range">
-                <div class="cell-md-8 cell-lg-9">
-                    <div class="inset-md-right-30 inset-lg-right-0">
-                        <table id="schedule">
-                            <tr><td>&nbsp;10:00 am</td><td>Volunteer Call Time</td></tr>
-                            <tr><td>&nbsp;10:30 am</td><td>Online Check-In & Review of Event and Rules</td></tr>
-                            <tr><td>&nbsp;11:00 am</td><td>Competition Begins</td></tr>
-                            <tr><td>&nbsp;12:30 pm</td><td>Lunch Break</td></tr>
-                            <tr><td>&nbsp;1:00 pm</td><td>Resume Competition</td></tr>
-                            <tr><td>&nbsp;6:00 pm</td><td>Winners Announced</td></tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section-50" id="field-preview">
-        <div class="shell">
-            <h2>Field preview</h2>
-            <h3>Coming Soon!</h3>
-            <!--
-          <div class="range">
-              <div class="cell-md-8 cell-lg-9">
-                <div class="inset-md-right-30 inset-lg-right-0 field-preview">
-                    <h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>
-                    <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/field-1.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/field-1.jpg">The botathon competition field center obstacle</a></h6>
-                    </div>
-                    <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img src="/images/botathon-photos/robots-square.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/robots-square.jpg">Demo robots squaring off</a></h6>
-                    </div>
-                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/field-2.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/field-2.jpg">The field will contain baloons for each team to pop</a></h6>
-                    </div>
-
-                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-1.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/cad-1.jpg">CAD of the standing view of the field</a></h6>
-                    </div>
-                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-2.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/cad-2.jpg">3D CAD of the field</a></h6>
-                    </div>
-                    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-3.jpg" alt="" width="485" height="555" class="img-responsive"/>
-                      <h6><a href="/images/botathon-photos/cad-3.jpg">Birds eye CAD of the field</a></h6>
-                    </div>
-                  </div>
-              </div>
-          </div>
-            -->
         </div>
     </section>
 
     <section class="section-50" id="parts-list">
         <div class="shell">
             <h2>Parts List</h2>
-            >>>>>>> master
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
@@ -367,43 +300,56 @@ head('Botathon Info', true);
                         <h4>Base Kits</h4>
                         <p>Each team will get to choose which base kit they want to build their pirate ship with. We have 15 of each robot kit and 10 robot kits from last year.</p>
 
-                        <h4>MECANUM WHEEL CAR ROBOT:</h4>
-                        <table class="parts basekit" id = "partsTable1">
-                            <tr><th>Part Name</th><th>Quantity</th></tr>
-                            <tr><td>UNO R3 Development Board</td><td>1</td></tr>
-                            <tr><td>L293D Drive Board</td><td>1</td></tr>
-                            <tr><td>HC-05 Bluetooth Module</td><td>1</td></tr>
-                            <tr><td>HC-SR04 Ultrasonic Module</td><td>1</td></tr>
-                            <tr><td>Four-Way Tracking Module</td><td>1</td></tr>
-                            <tr><td>Infrared Detection Module</td><td>2</td></tr>
-                            <tr><td>DC Motor</td><td>4</td></tr>
-                            <tr><td>Rubber Wheels </td><td>4</td></tr>
-                            <tr><td>Servo</td><td>1</td></tr>
-                            <tr><td>Speed Code Disk</td><td>1</td></tr>
-                            <tr><td>Screws & Bolts</td><td>79</td></tr>
-                            <tr><td>Wires</td><td>50</td></tr>
-                        </table>
+                        <div class="row">
+                            <h4>MECANUM WHEEL CAR ROBOT</h4>
+                            <div class="col-lg-6 col-sm-12">
+                                <table class="parts basekit" id = "partsTable1">
+                                    <tr><th>Part Name</th><th>Quantity</th></tr>
+                                    <tr><td>UNO R3 Development Board</td><td>1</td></tr>
+                                    <tr><td>L293D Drive Board</td><td>1</td></tr>
+                                    <tr><td>HC-05 Bluetooth Module</td><td>1</td></tr>
+                                    <tr><td>HC-SR04 Ultrasonic Module</td><td>1</td></tr>
+                                    <tr><td>Four-Way Tracking Module</td><td>1</td></tr>
+                                    <tr><td>Infrared Detection Module</td><td>2</td></tr>
+                                    <tr><td>DC Motor</td><td>4</td></tr>
+                                    <tr><td>Rubber Wheels </td><td>4</td></tr>
+                                    <tr><td>Servo</td><td>1</td></tr>
+                                    <tr><td>Speed Code Disk</td><td>1</td></tr>
+                                    <tr><td>Screws & Bolts</td><td>79</td></tr>
+                                    <tr><td>Wires</td><td>50</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="botPics"><img src="/images/botathon-photos/mecanumBotPic.jpg" class="img-responsive"/></div>
+                            </div>
+                        </div>
 
-                        <div class="botPics"><img src="/images/botathon-photos/mecanumBotPic.jpg" alt="" width="50%"  class="img-responsive"/></div>
 
-                        <h4 style = "margin-top: 70px;">RUBBER WHEEL CAR ROBOT:</h4>
-                        <table class="parts basekit" id = "partsTable1">
-                            <tr><th>Part Name</th><th>Quantity</th></tr>
-                            <tr><td>CH340G UNO R3 Development Board</td><td>1</td></tr>
-                            <tr><td>UNO Expansion Board</td><td>1</td></tr>
-                            <tr><td>L298N Driver Board</td><td>1</td></tr>
-                            <tr><td>HC-SR04 Ultrasonic Module</td><td>1</td></tr>
-                            <tr><td>Ultrasonic Bracket</td><td>1</td></tr>
-                            <tr><td>18650 Battery Box</td><td>1</td></tr>
-                            <tr><td>M3*15 Double Pass Copper Pillar</td><td>4</td></tr>
-                            <tr><td>M3 Nut </td><td>2</td></tr>
-                            <tr><td>M3*8 Screw</td><td>10</td></tr>
-                            <tr><td>20cm Female to Female Dupont Wire</td><td>16</td></tr>
-                            <tr><td>Mecanum Wheel Single-Layer Chassis</td><td>1</td></tr>
-                            <tr><td>Mecanum Wheel Single-Layer Alloy Car</td><td>1</td></tr>
-                        </table>
 
-                        <div class="botPics"><img src="/images/botathon-photos/rubberBot.jpg" alt="" width="50%" class="img-responsive"/></div>
+                        <div class="row">
+                            <h4 style = "margin-top: 70px;">RUBBER WHEEL CAR ROBOT</h4>
+                            <div class="col-lg-6 col-sm-12">
+                                <table class="parts basekit" id = "partsTable1">
+                                    <tr><th>Part Name</th><th>Quantity</th></tr>
+                                    <tr><td>CH340G UNO R3 Development Board</td><td>1</td></tr>
+                                    <tr><td>UNO Expansion Board</td><td>1</td></tr>
+                                    <tr><td>L298N Driver Board</td><td>1</td></tr>
+                                    <tr><td>HC-SR04 Ultrasonic Module</td><td>1</td></tr>
+                                    <tr><td>Ultrasonic Bracket</td><td>1</td></tr>
+                                    <tr><td>18650 Battery Box</td><td>1</td></tr>
+                                    <tr><td>M3*15 Double Pass Copper Pillar</td><td>4</td></tr>
+                                    <tr><td>M3 Nut </td><td>2</td></tr>
+                                    <tr><td>M3*8 Screw</td><td>10</td></tr>
+                                    <tr><td>20cm Female to Female Dupont Wire</td><td>16</td></tr>
+                                    <tr><td>Mecanum Wheel Single-Layer Chassis</td><td>1</td></tr>
+                                    <tr><td>Mecanum Wheel Single-Layer Alloy Car</td><td>1</td></tr>
+                                </table>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="botPics"><img src="/images/botathon-photos/rubberBot.jpg" class="img-responsive"/></div>
+                            </div>
+                        </div>
+
 
                         <h4 style="margin-top: 40px;">Upgrades</h4>
                         <p>These parts are able to be bought with doubloons (in-game currency) and will be in addition to the base kits parts that you are given freely. Each team is given 500 doubloons of in-game currency.</p>
@@ -453,7 +399,7 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <p>You may order official UNT Robotics T-shirts to wear at the event, <a href="/merch/shirts">click here to order</a>.</p>
+                        <p>You may order official UNT Robotics T-shirts to wear at the event, <a href="/merch/shirts-hoodies">click here to order</a>.</p>
                     </div>
                 </div>
             </div>

@@ -133,7 +133,7 @@ strong.no-wrap {
 }
 .scheme-buttons a img {
 	width: 190px;
-	background-color: black;
+	background-color: white;
 	border-radius: 8px;
 	border: 3px solid black;
 }
@@ -142,7 +142,7 @@ strong.no-wrap {
 	margin: 0 !important;
 }
 .scheme-buttons a:hover img {
-	background-color: white;
+	background-color: black;
 }
 .scheme-buttons a:hover img.black {
 	display: none;
@@ -188,7 +188,8 @@ strong.no-wrap {
 										if ($is_user_in_good_standing) {
 											$assigned = assign_user_good_standing($user->id);
 											if ($assigned->status_code != 204) {
-												throw new Exception("Failed to give user the correct role");
+											    error_log("AUTHDIS", var_export($assigned, true));
+												throw new Exception("Failed to give user the correct role: " . $assigned->status_code . " ($code)");
 											}
 										} else {
 											// Alert!
@@ -200,16 +201,16 @@ strong.no-wrap {
 
 										<div class="scheme-buttons offset-top-50">
 											<a href="market://details?id=com.discord">
-												<img class="black" src="/images/buttons/discord-forward-android.png"/>
-												<img  class="white" src="/images/buttons/discord-forward-android-white.png"/>
+												<img class="black" src="/images/buttons/discord-forward-android-white.png"/>
+												<img class="white" src="/images/buttons/discord-forward-android.png"/>
 											</a>
 											<a href="https://discordapp.com/channels/<?php echo DISCORD_GUILD_ID; ?>/<?php echo DISCORD_GENERAL_CHANNEL_ID; ?>">
-												<img class="black"  src="/images/buttons/discord-forward-browser.png"/>
-												<img class="white" src="/images/buttons/discord-forward-browser-white.png"/>
+												<img class="black"  src="/images/buttons/discord-forward-browser-white.png"/>
+												<img class="white" src="/images/buttons/discord-forward-browser.png"/>
 											</a>
 											<a href="com.hammerandchisel.discord://">
-												<img class="black"  src="/images/buttons/discord-forward-apple.png"/>
-												<img  class="white" src="/images/buttons/discord-forward-apple-white.png"/>
+												<img class="black"  src="/images/buttons/discord-forward-apple-white.png"/>
+												<img class="white" src="/images/buttons/discord-forward-apple.png"/>
 											</a>
 										</div>
 										<?php
@@ -223,7 +224,7 @@ strong.no-wrap {
 									            $username = $user->username;
                                             }
                                             if (property_exists($user, "discriminator")) {
-                                                $username = $user->discriminator;
+                                                $discriminator = $user->discriminator;
                                             }
                                         }
 

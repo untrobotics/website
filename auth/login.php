@@ -48,8 +48,8 @@ if (isset($_POST['email'])) {
 			)
 			") or die($db->error); // remove this for security
 
-			setcookie(COOKIE_PREFIX . "_SESSION_ID", $auth_session_id, $expires, '/', WEBSITE_DOMAIN, true, true);
-			setcookie(COOKIE_PREFIX . "_SESSION_NAME", $auth_session_name, $expires, '/', WEBSITE_DOMAIN, true, true);
+			setcookie(COOKIE_PREFIX . "_SESSION_ID", $auth_session_id, $expires, '/', WEBSITE_DOMAIN, false, true);
+			setcookie(COOKIE_PREFIX . "_SESSION_NAME", $auth_session_name, $expires, '/', WEBSITE_DOMAIN, false, true);
 			setcookie("remember", encode_hash($r['id']), time()*2, '/auth/', WEBSITE_DOMAIN);
 
 			if (isset($_GET['returnto']) && !preg_match("@^/auth@", $_GET['returnto'])) {

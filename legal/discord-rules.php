@@ -6,6 +6,13 @@ head("Discord Rules", true);
     h3 {
         margin-top: 20px;
     }
+    .discord-rules ol li {
+        list-style: decimal;
+    }
+    .discord-rules ul li {
+        list-style: circle;
+        margin-left: 18px;
+    }
 </style>
 
 <section class="breadcrumb-classic">
@@ -18,7 +25,7 @@ head("Discord Rules", true);
     </div>
 </section>
 
-<section class="section-50 section-md-75 section-lg-100">
+<section class="section-50 section-md-75 section-lg-100 discord-rules">
     <div class="shell text-sm-left">
         <div class="range">
             <div class="cell-xl-12">
@@ -30,9 +37,12 @@ head("Discord Rules", true);
                             <li>The UNT Robotics Discord server is open to all current UNT students.</li>
                             <li>UNT Robotics alumni are permitted to remain part of the server after their graduation.</li>
                             <li>UNT Faculty are permitted to join and use the server.</li>
-                            <li>Any non-UNT students or faculty must be vetted before joining the server. All non-UNT affiliated members must first complete all appropriate paperwork with UNT to be allowed to work with students. The main criteria for non-UNT affiliated members are as follows:</li>
-                            <li>A professional working in the industry who is a mentor or volunteer.</li>
-                            <li>A member of an affiliated professional organization, such as IEEE, who is a mentor, volunteer, or associate.</li>
+                            <li>Any non-UNT students or faculty must be vetted before joining the server. All non-UNT affiliated members must first complete all appropriate paperwork with UNT to be allowed to work with students. The main criteria for non-UNT affiliated members are as follows:
+                                <ul>
+                                    <li>A professional working in the industry who is a mentor or volunteer.</li>
+                                    <li>A member of an affiliated professional organization, such as IEEE, who is a mentor, volunteer, or associate.</li>
+                                </ul>
+                            </li>
                         </ol>
                     <h3>Communications</h3>
                         <ol>

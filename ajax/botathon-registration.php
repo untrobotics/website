@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-require('../api/groupme-funcs.php');
+require('../api/discord/bots/admin.php');
 require('../template/functions/botathon-funcs.php');
 
 if (isset($_POST)) {
@@ -62,7 +62,7 @@ if (isset($_POST)) {
 		if ($q) {
 			echo 'SUCCESS';
 			
-			post_message($name . ' has signed up for bothaton. There are ' . botathon_spots_remaining() . ' spots remaining.',  GROUPME_OFFICER_CHANNEL_ID);
+			AdminBot::send_message($name . ' has signed up for bothaton. There are ' . botathon_spots_remaining() . ' spots remaining.');
 		} else {
 			echo 'ERROR';
 		}

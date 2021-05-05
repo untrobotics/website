@@ -31,6 +31,13 @@ if ($did_match) {
         $request_info = $matches[4][$k];
         $error_message = $matches[5][$k];
 
+        if (preg_match("/^AH01797/", $error_message)) {
+            //$error_message .= "\n\nThis message will soon be ignored.";
+            continue;
+        } else if (preg_match("@^script '/var/www/untrobotics/wp-login.php' not found or unable to stat@", $error_message)) {
+            $error_message .= "\n\nThis message will soon be ignored.";
+        }
+
         AdminBot::send_message(
             "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel);
     }
