@@ -48049,4 +48049,9 @@ header nav.rd-navbar-static.rd-navbar-secondary .rd-navbar-nav > li.thin {
   display: block;
 }
 /* merch end */
+
+.inline-alert {
+  display: inline-block;
+  margin: 0 auto;
+}
 /*# sourceMappingURL=style.css.map */

@@ -117,7 +117,8 @@ if (!empty($_POST)) {
 
 				header('Location: /auth/welcome');
 			} else {
-				$error = 'An internal error occurred, please contact support' . $db->error;
+				$error = 'An internal error occurred, please contact support.';
+				AdminBot::send_message("Failed to register new user due to database error: $db->error. Please investigate.");
 			}
 		}
 	} while (false);
