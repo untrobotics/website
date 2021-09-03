@@ -99,10 +99,8 @@ function footer($die = true) {
 function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array()) {
 	global $db;
 	require_once(BASE . "/api/sendgrid/sendgrid-php.php");
-	if (count($attachments)) {
-	}
 	
-	$email = new \SendGrid\Mail\Mail(); 
+	$email = new \SendGrid\Mail\Mail();
 	$email->setFrom("no-reply@untrobotics.com", "UNT Robotics");
 	$email->setSubject($subject);
 	
