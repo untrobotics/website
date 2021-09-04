@@ -4,7 +4,7 @@ require(BASE . '/api/printful/printful.php');
 require(BASE . '/api/discord/bots/admin.php');
 
 function webhook_log($message) {
-	file_put_contents(BASE . '/admin/logging/printful-webhook.log', $message . PHP_EOL, FILE_APPEND);
+	file_put_contents(BASE . '/admin/logging/printful-webhook.log', '[' . date('c', time()) . '] ' . $message . PHP_EOL, FILE_APPEND);
 }
 
 $data = json_decode(file_get_contents('php://input'));
@@ -54,9 +54,7 @@ try {
 				throw new PrintfulWebhookException("Failed to singularly set returned flag on printful order. (affected: {$affected_rows}).");
 			}
 			
-			
 			webhook_log("[{$log_prefix}] Order has been returned and the database has been updated (reason: {$printful_event->get_reason()}).");
-			throw new PrintfulWebhookException("Failed to singularly set returned flag on printful order. (affected: {$affected_rows}).");
 			
 			break;
 		case PrintfulWebhookType::PACKAGE_SHIPPED:
@@ -79,33 +77,56 @@ try {
 
 			// check if reshipment, i think that's the only verification required
 			$is_reshipment = $printful_event->get_shipment()->get_reshipment();
+			$shipment_id = $printful_event->get_shipment()->get_id();
+
+			// check if the shipment notification has already been sent!
+            $retry = false;
+
+			$q = $db->query("SELECT count(*) FROM printful_shipment WHERE shipment_id = " . $db->real_escape_string($shipment_id));
+			if (!$q) {
+				webhook_log("[{$log_prefix}] Failed to check if shipment was already processed, returned error: {$db->error}.");
+				throw new PrintfulWebhookException("Failed to check if shipment was already processed for order #{$printful_event->get_order()->get_id()}.");
+			} else if ($q->num_rows > 0) {
+			    $r = $q->fetch_assoc();
+			    if ($r['confirmed'] != 1) {
+                    webhook_log("[{$log_prefix}] Received retry shipment notification.");
+			        $retry = true;
+                    $printful_shipment_db_id = $r['id'];
+                } else {
+                    webhook_log("[{$log_prefix}] Received duplicate shipment notification. Ignoring.");
+                    AdminBot::send_message("(PRW) Notice: THIS IS A TEMPORARY NOTIFICATION. Received DUPLICATE notification for: Order #[{$printful_event->get_shipment()->get_id()}/{$printful_event->get_order()->get_id()}] has shipped.");
+                }
+				return;
+			}
 			
 			// create an entry in the database for the shipment information
-			$q = $db->query('
-						INSERT INTO printful_shipment
-						(order_id, shipment_id, carrier, service, tracking_number, tracking_url, ship_date, ship_time, reshipment)
-						VALUES
-						(
-							"' . $db->real_escape_string($printful_event->get_order()->get_id()) . '",
-							"' . $db->real_escape_string($printful_event->get_shipment()->get_id()) . '",
-							"' . $db->real_escape_string($printful_event->get_shipment()->get_carrier()) . '",
-							"' . $db->real_escape_string($printful_event->get_shipment()->get_service()) . '",
-							"' . $db->real_escape_string($printful_event->get_shipment()->get_tracking_number()) . '",
-							"' . $db->real_escape_string($printful_event->get_shipment()->get_tracking_url()) . '",
-							"' . $db->real_escape_string($printful_event->get_shipment()->get_ship_date()) . '",
-							"' . $db->real_escape_string($printful_event->get_shipment()->get_shipped_at()) . '",
-							"' . $db->real_escape_string($is_reshipment) . '"						
-						)
-						');
-			if (!$q) {
-				webhook_log("[{$log_prefix}] Failed to commit shipment to printful_shipment table, returned error: {$db->error}.");
-				throw new PrintfulWebhookException("Failed to commit shipment to printful shipment database table for order #{$printful_event->get_order()->get_id()}.");
-			} else {
-				webhook_log("[{$log_prefix}] Committed shipment to printful_shipment table.");
-			}
-			$printful_shipment_db_id = $db->insert_id;
+            if (!$retry) {
+                $q = $db->query('
+                            INSERT INTO printful_shipment
+                            (order_id, shipment_id, carrier, service, tracking_number, tracking_url, ship_date, ship_time, reshipment)
+                            VALUES
+                            (
+                                "' . $db->real_escape_string($printful_event->get_order()->get_id()) . '",
+                                "' . $db->real_escape_string($printful_event->get_shipment()->get_id()) . '",
+                                "' . $db->real_escape_string($printful_event->get_shipment()->get_carrier()) . '",
+                                "' . $db->real_escape_string($printful_event->get_shipment()->get_service()) . '",
+                                "' . $db->real_escape_string($printful_event->get_shipment()->get_tracking_number()) . '",
+                                "' . $db->real_escape_string($printful_event->get_shipment()->get_tracking_url()) . '",
+                                "' . $db->real_escape_string($printful_event->get_shipment()->get_ship_date()) . '",
+                                "' . $db->real_escape_string($printful_event->get_shipment()->get_shipped_at()) . '",
+                                "' . $db->real_escape_string($is_reshipment) . '"						
+                            )
+                            ');
+                if (!$q) {
+                    webhook_log("[{$log_prefix}] Failed to commit shipment to printful_shipment table, returned error: {$db->error}.");
+                    throw new PrintfulWebhookException("Failed to commit shipment to printful shipment database table for order #{$printful_event->get_order()->get_id()}.");
+                } else {
+                    webhook_log("[{$log_prefix}] Committed shipment to printful_shipment table.");
+                }
+                $printful_shipment_db_id = $db->insert_id;
+            }
 			
-			// retrieve the information from the original
+			// retrieve the information from the original order
 			$q = $db->query('SELECT * FROM printful_order WHERE order_id = "' . $db->real_escape_string($printful_event->get_order()->get_id()) . '"');
 			if (!$q) {
 				throw new PrintfulWebhookException("Failed to retrieve printful order information from the database for order #{$printful_event->get_order()->get_id()}.");
@@ -117,7 +138,7 @@ try {
 			}
 			$r = $q->fetch_array(MYSQLI_ASSOC);
 			
-			if ($is_reshipment === true) {				
+			if ($is_reshipment === true) {
 				// apologise for the inconvenience
 				webhook_log("[{$log_prefix}] This is a reshipment. We are apologising.");
 				$message = "Your purchase of <strong>{$r['order_name']} - {$r['order_variant_name']}</strong> has been re-shipped. We apologise for any inconvenience. Please see your new tracking information below.";
@@ -171,9 +192,9 @@ try {
 			);
 			
 			if ($email_send_status) {
-				payment_log("Successfully sent e-mail with shipment notification (" . var_export($email_send_status, true) . ")");
+				webhook_log("Successfully sent e-mail with shipment notification (" . var_export($email_send_status, true) . ")");
 			} else {
-				webhook_log("[{$log_prefix}] Failed to sent e-mail with tracking information (status: " . ($email_send_status ? 'true' : 'false') . ").");
+				webhook_log("[{$log_prefix}] Failed to send e-mail with tracking information (status: " . ($email_send_status ? 'true' : 'false') . ").");
 				AdminBot::send_message("(PRW) Alert: Failed to send e-mail with shipment information for order #[{$printful_event->get_shipment()->get_id()}/{$printful_event->get_order()->get_id()}].");
 			}
 			
