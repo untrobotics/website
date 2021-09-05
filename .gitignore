@@ -9,5 +9,6 @@ downloads/videos/*
 tmp
 
 .htpasswd
+*.log
 *.logidea
 .idea
