@@ -116,7 +116,7 @@
 						<ul class="rd-navbar-dropdown">
 						  <li><a href="/about">What We Do</a></li>
 						  <li><a href="/about/our-team">Our Team</a></li>
-						  <!--<li><a href="/activities">Activities</a></li>-->
+						  <li><a href="/activities">Activities</a></li>
 						</ul>
 					</li>
                   <!--<li><a href="/about">About Us</a>
@@ -158,7 +158,8 @@
                     <ul class="rd-navbar-dropdown">
                   	  <li><a href="/botathon">Info</a></li>
                       <li><a href="/botathon/register">Register</a></li>
-					  <!--<li><a href="/botathon/brackets">Brackets</a></li>-->
+					  <li><a href="/botathon/brackets">Brackets</a></li>
+                        <li><a href="/botathon/botathon-teams">Teams</a></li>
                     </ul>
                   </li>
                   <li><a href="/contact">Contact us</a></li>

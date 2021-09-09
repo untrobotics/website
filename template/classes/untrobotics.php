@@ -77,7 +77,7 @@ class untrobotics {
 		// is it spring semester or autumn semester?
 		// we are going to allow some lee-way and not require new dues until september (term usually re-starts in late august)
 		$month = date('m', $timestamp);
-		if ($month <= 8) {
+		if ($month <= 4) {
 			return Semester::SPRING; // spring semester
 		}
 		return Semester::AUTUMN; // autumn semester

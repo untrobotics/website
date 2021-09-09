@@ -76,7 +76,7 @@ function call_status($sid) {
 
         $data = json_decode($result);
 	
-		//error_log("OUTGOING CALL STATUS: " . $data->status);
+		error_log("OUTGOING CALL STATUS: " . $data);
 	
 		return $data->status;
 }
@@ -119,7 +119,7 @@ while ($i <= $max_attempts) {
         if (queue_size() > 0) {
             $outgoing_sid = dial_attempt($phone_number);
             do {
-                //error_log("INCOMING CALL STATUS: " . call_status($incoming_sid));
+                error_log("INCOMING CALL STATUS: " . call_status($incoming_sid));
                 sleep(1);
             } while (!call_completed($outgoing_sid) && queue_size() > 0);
         } else {

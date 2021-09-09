@@ -6,6 +6,8 @@ Options -Indexes
 
 RewriteEngine on
 
+RewriteRule ^botathon/team([0-9]+) /botathon/team.php?team_num=$1 [L,END]
+
 RewriteCond %{HTTP_HOST} !^www.untrobotics.com [NC]
 RewriteRule ^(.*)$ https://www.untrobotics.com/$1 [R=301,L]
 

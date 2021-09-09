@@ -17,6 +17,7 @@ while ($r = $q->fetch_array(MYSQLI_ASSOC)) {
 		'MAJOR: ' . $r['major'] . PHP_EOL .
 		'DIET RESTRICTIONS: ' . $r['diet_restrictions'] . PHP_EOL .
 		'LATEX ALLERGY: ' . (($r['latex_allergy'] == 0) ? 'No.' : '<strong>Yes.</strong>') . PHP_EOL .
+        'TEAM: ' . $r['team_name'] . PHP_EOL .
 		'EUID: ' . $r['unteuid'] . PHP_EOL;
 }
 

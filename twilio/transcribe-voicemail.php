@@ -6,7 +6,7 @@ if ($_GET['code'] !== API_SECRET) {
 	die();
 }
 
-require_once("../api/groupme-funcs.php");
+require_once("../api/discord/bots/admin.php");
 
 $body = $_POST['RecordingUrl'] . '.mp3';
 if (empty($body)) {
@@ -19,4 +19,4 @@ $duration = $_POST['RecordingDuration'];
 $transcription = $_POST['TranscriptionText'];
 
 
-post_message("Transcribed VOICEMAIL message (#{$sid}):\nFrom: {$from}\n\nTranscription: {$transcription}");
+AdminBot::send_message("Transcribed VOICEMAIL message (#{$sid}):\nFrom: {$from}\n\nTranscription: {$transcription}");
