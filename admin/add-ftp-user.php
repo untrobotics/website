@@ -18,9 +18,8 @@ if (isset($_POST)) {
         $q = $db->query('INSERT INTO ftpusers (name, passwd)
 		VALUES (
 			"' . $db->real_escape_string($username) . '",
-			PASSWORD("' . $db->real_escape_string($password) . '")
-		)
-		');
+		    PASSWORD("' . $db->real_escape_string($password) . '")
+		)');
 
 
 
@@ -33,6 +32,7 @@ if (isset($_POST)) {
 }
 ?>
 <style>
+
     #contact-form-submit-area {
         margin-top: 10px;
     }
@@ -43,6 +43,10 @@ if (isset($_POST)) {
     }
 </style>
 
+<html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
 <main class="page-content">
     <section class="section-50 section-md-75 section-md-100 section-lg-120 section-xl-150 bg-wild-sand">
         <div class="shell text-left">
@@ -70,6 +74,4 @@ if (isset($_POST)) {
         </div>
     </section>
 </main>
-<?php
-footer();
-?>
+</html>
