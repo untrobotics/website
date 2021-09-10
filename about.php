@@ -39,13 +39,13 @@ head('About Us', true);
 					<h3>Socials</h3>
 				  <p>No student organisation is complete without the friends &amp; family that one makes throughout their tenure. We develop our students as people, not just academically. The aspect of building relationships is just as important as any academic teaching because the relationships that students forge when taking part in our social events can improve their academic life by engaging with like-minded and driven individuals.</p>
 					<h3>Talks</h3>
-				  <p>At UNT Robotics, we invite companies and individuals out to talk about their expertise. We have had a number of esteemed talks by <a href="https://www.linkedin.com/in/david-evenden/">David Evenden</a> of <a href="https://www.standardusercyber.com/">Standard User Cyber Security</a>, engineers from <a href="https://www.bellflight.com/">Bell Flight</a>, <a href="https://www.linkedin.com/in/maddenmengwasser/">Madden Mengwasser</a> from <a href="https://www.se.com/ww/en/"></a> and many more. If you would like to come speak at one of our events, <a href="./contact">contact us!</a></p>
+				  <p>At UNT Robotics, we invite companies and individuals out to talk about their expertise. We have had a number of esteemed talks by <a href="https://www.linkedin.com/in/david-evenden/">David Evenden</a> of <a href="https://www.standardusercyber.com/">Standard User Cyber Security</a>, engineers from <a href="https://www.bellflight.com/">Bell Flight</a>, <a href="https://www.linkedin.com/in/maddenmengwasser/">Madden Mengwasser</a> from <a href="https://www.se.com/ww/en/"></a> and many more. If you would like to come speak at one of our events, <a href="/contact">contact us!</a></p>
 					<h3>Networking</h3>
 				  <p>A big part of our development is encouraging &amp; facilitating networking. This is mutually beneficial for the students and companies alike who love to recruit our alumni. We also have working relationships with companies who offer talks, parts and equipment and mentorship every semester.</p>
 					<!--<h3>Botathon</h3>
 				  <p></p>-->
 					<h3>Competitions</h3>
-				  <p>UNT Robotics currently competes in <a href="https://www.roboticseducation.org/vex-u/">VexU</a>, a university based robotics competition. In the past, we have competed in IEEE Region 5 competitions. In 2019, we placed third at competition in Louisiana.</p>
+				  <p> In the past, we have competed in IEEE Region 5 competitions. In 2019, we placed third at competition in Louisiana.</p>
 					<h3>Recreational Projects</h3>
 				  <p>These fun projects are for anyone and everyone that just wants to have fun and work on a project together. These projects tend to be very long-term because we don't require any time commitment, allowing people to come and go as they wish. Anyone can propose a project to work on, and so long as they get a team together we will support them in building it.</p>
 					<h3>Equipment Checkout</h3>
