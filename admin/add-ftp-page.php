@@ -1,6 +1,36 @@
 <?php
 require('../template/top.php');
-head('Add FTP user', true);
+
+if (isset($_POST)) {
+    $username = @$_POST['username'];
+    $password = @$_POST['password'];
+
+    do {
+        if (strlen($username) < 4) {
+            echo 'INVALID_NAME';
+            break;
+        } else if (strlen($password) < 4) {
+            echo 'INVALID_PASSWORD';
+            break;
+        }
+
+
+        $q = $db->query('INSERT INTO ftpusers (name, passwd)
+		VALUES (
+			"' . $db->real_escape_string($username) . '",
+			PASSWORD("' . $db->real_escape_string($password) . '")
+		)
+		');
+
+
+
+        if ($q) {
+            echo 'ADD_SUCCESS';
+        } else {
+            echo 'ERROR';
+        }
+    } while (false);
+}
 ?>
 <style>
     #contact-form-submit-area {
@@ -13,13 +43,11 @@ head('Add FTP user', true);
     }
 </style>
 
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
 <main class="page-content">
     <section class="section-50 section-md-75 section-md-100 section-lg-120 section-xl-150 bg-wild-sand">
         <div class="shell text-left">
-            <h2>just fill in the form to add FTP user</h2>
-            <form action="../ajax/add-ftp-user.php" method="post">
+            <h2>Add FTP user</h2>
+            <form action="" method="post">
                 <div class="range offset-top-40 offset-md-top-120">
                     <div class="cell-lg-4 cell-md-6">
                         <div class="form-group postfix-xl-right-40">
@@ -34,9 +62,9 @@ head('Add FTP user', true);
                         </div>
                     </div>
                 </div>
-                <div id="contact-form-submit-area">
+                <div id="add-ftp-user-submit-area">
 
-                    <span><input type="submit" value="Add user to FTP DB" class="btn btn-form btn-default"></input></span>
+                    <span><input type="submit" value="Add user to FTP DB" class="btn btn-form btn-default"></span>
                 </div>
             </form>
         </div>
