@@ -55,17 +55,6 @@ if (isset($_POST)) {
     $q = $db->query("SELECT * FROM ftpusers");
 
 ?>
-<style>
-
-    #contact-form-submit-area {
-        margin-top: 10px;
-    }
-
-    #contact-form-submit-area > span > * {
-        display: inline-block;
-        vertical-align: middle;
-    }
-</style>
 
 <html>
 <head>
