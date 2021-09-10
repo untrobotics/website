@@ -2,6 +2,7 @@
 class Semester {
 	const SPRING = 0;
 	const AUTUMN = 1;
+    const SUMMER = 2;
 
 	public static function get_name_from_value($x) {
 		$semesterClass = new ReflectionClass ( 'Semester' );
@@ -73,6 +74,12 @@ class untrobotics {
 	public function get_current_term() {
 		return $this->get_term_from_date(time());
 	}
+    public function get_next_term() {
+        if ($this->get_current_term() == Semester::SPRING) {
+            return Semester::AUTUMN;
+        }
+        return Semester::SPRING;
+    }
 	public function get_term_from_date($timestamp) {
 		// is it spring semester or autumn semester?
 		// we are going to allow some lee-way and not require new dues until september (term usually re-starts in late august)
@@ -85,6 +92,12 @@ class untrobotics {
 	public function get_current_year() {
 		return $this->get_year_from_date(time());
 	}
+    public function get_next_year_from_date($timestamp) {
+        return date('Y', strtotime('+1 year', $timestamp));
+    }
+    public function get_next_year() {
+        return $this->get_next_year_from_date(time());
+    }
 	public function get_year_from_date($timestamp) {
 		return date('Y', $timestamp);
 	}
