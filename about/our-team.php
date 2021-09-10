@@ -187,24 +187,6 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
-                <!-- Multimedia Manager -->
-                <div class="cell-lg-12 bio-area">
-                    <div class="range range-sm-middle">
-                        <div class="cell-md-3"> <img src="/images/bio-pics/temp-pic.jpg" style="text-align: center" alt="" width="360" height="404" class="image-responsive" />
-                        </div>
-                        <div class="cell-md-6">
-                            <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                                <h6 class="h6-with-small"><a href="#"> Christopher Gonzales </a><span class="small text-silver-chalice">Multimedia Manager</span></h6>
-                                <p>Christopher is a post-baccalaureate Computer Science student, with a degree in Psychology from Texas State University. He plans to merge these two disciplines in a way that can further the understanding of how internet connected devices play a role in adolescence development.  His interests include electronics programming, iOS/Android application development, and cyber security.</p>
-                                <ul class="list-inline-lg">
-                                    <li>
-                                        <a href="mailto:multimediamanager@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <!-- Social Media Manager -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
