@@ -3,6 +3,8 @@ require('../template/top.php');
 
 if (isset($_POST)) {
 
+
+
     do {
         if (isset($_POST['userid'])){
             $id = $_POST['userid'];
@@ -24,6 +26,17 @@ if (isset($_POST)) {
             echo 'NO_PASSWD';
             break;
         }
+
+        if (strlen($username) < 5){
+            echo 'INVALID_USERNAME';
+            break;
+        }
+
+        if (strlen($password) < 5){
+            echo 'INVALID_PASSWD';
+            break;
+        }
+
 
         $q = $db->query('INSERT INTO ftpusers (name, passwd)
 		VALUES (
