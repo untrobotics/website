@@ -2,26 +2,34 @@
 require('../template/top.php');
 
 if (isset($_POST)) {
-    $username = @$_POST['username'];
-    $password = @$_POST['password'];
 
     do {
-        if (strlen($username) < 4) {
-            echo 'INVALID_NAME';
-            break;
-        } else if (strlen($password) < 4) {
-            echo 'INVALID_PASSWORD';
+        if (isset($_POST['userid'])){
+            $id = $_POST['userid'];
+            $q = $db->query('DELETE FROM ftpusers WHERE id = "' . $db->real_escape_string($id) . '"');
+        }
+    } while (false);
+
+    do {
+        if (isset($_POST['username'])){
+            $username = $_POST['username'];
+        } else {
+            echo 'NO_NAME';
             break;
         }
 
+        if (isset($_POST['password'])){
+            $password = $_POST['password'];
+        } else {
+            echo 'NO_PASSWD';
+            break;
+        }
 
         $q = $db->query('INSERT INTO ftpusers (name, passwd)
 		VALUES (
 			"' . $db->real_escape_string($username) . '",
 		    PASSWORD("' . $db->real_escape_string($password) . '")
 		)');
-
-
 
         if ($q) {
             echo 'ADD_SUCCESS';
@@ -30,6 +38,9 @@ if (isset($_POST)) {
         }
     } while (false);
 }
+
+    $q = $db->query("SELECT * FROM ftpusers");
+
 ?>
 <style>
 
@@ -45,7 +56,6 @@ if (isset($_POST)) {
 
 <html>
 <head>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <main class="page-content">
     <section class="section-50 section-md-75 section-md-100 section-lg-120 section-xl-150 bg-wild-sand">
@@ -71,6 +81,26 @@ if (isset($_POST)) {
                     <span><input type="submit" value="Add user to FTP DB" class="btn btn-form btn-default"></span>
                 </div>
             </form>
+                <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>ID</th>
+                        </tr>
+                    <?php
+                    while ($user = $q->fetch_array(MYSQLI_ASSOC)) {
+
+                        // name
+                        // id
+
+                        ?>
+                            <tr>
+                                <td><?php echo $user['name']; ?></td>
+                                <td><?php echo $user['id']; ?></td>
+                                <td><form method="post"><button name = "userid" value = "<?php echo $user['id']; ?>" type="submit">X</button></form><td>
+                            </tr>
+                        <?php
+                    }?>
+                </table>
         </div>
     </section>
 </main>
