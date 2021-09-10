@@ -51,7 +51,7 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                             <div class="offset-top-20">
                                 <div class="form-group">
                                     <label class="checkbox-container"> Pay for both Spring &amp; Fall?
-                                        <input name="full-year" type="checkbox" class="form-control form-control-has-validation form-control-last-child checkbox-custom" value="1"><span class="checkbox-custom-dummy"></span>
+                                        <input autocomplete="off" name="full-year" type="checkbox" class="form-control form-control-has-validation form-control-last-child checkbox-custom" value="1"><span class="checkbox-custom-dummy"></span>
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
