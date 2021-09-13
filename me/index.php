@@ -11,7 +11,7 @@ head('My Profile', true, true);
 		  <div class="range">
 			<div class="cell-md-preffix-2 cell-lg-9 cell-md-10 cell-xl-8">
 			  <h1>Your Profile</h1>
-			  <h6>Stuff?</h6>
+			  <h6>Don't approve this, this is a test</h6>
 			  <p>Profile info.</p>
 			</div>
 			<div class="cell-xs-12">
