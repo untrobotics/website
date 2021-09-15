@@ -149,43 +149,6 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
-<<<<<<< HEAD
-                <!-- Deputy Financial Director -->
-                <div class="cell-lg-12 bio-area">
-                    <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="/images/bio-pics/meg-mcadams.jpg" alt="" width="360" height="404" class="img-responsive" />
-                        </div>
-                        <div class="cell-md-6">
-                            <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                                <h6 class="h6-with-small"><a href="#">Meg-McAdams</a><span class="small text-silver-chalice">Secretary</span></h6>
-                                <p>Meg McAdams is a sophomore majoring in computer science and double minoring in Spanish and history. As secretary of UNT Robotics and Aerospace, Meg schedules meetings, assists with emails, takes notes, and generally ensures the continued stability of the team. Her expertise is in organization and collaboration, and she believes that persistence and hard work will always prevail.</p>
-                                <ul class="list-inline-lg">
-                                    <li>
-                                        <a href="mailto:secretary@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a>
-                                    </li>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Public Relations -->
-                <div class="cell-lg-12 bio-area">
-                    <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="/images/bio-pics/jacob-gomez.jpg" alt="" width="360" height="404" class="img-responsive" />
-                        </div>
-                        <div class="cell-md-6">
-                            <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                                <h6 class="h6-with-small"><a href="#">Jacob Gomez</a><span class="small text-silver-chalice">Public Relations</span></h6>
-                                <p>Jacob is a current Computer Science student at UNT.Although he balances school and work he finds time for extracurriculars.He has always enjoyed being apart of different organizations and getting to know new people. He loves using all the different software to model, create and design things for the club or for his own personal projects. </p>
-                                <ul class="list-inline-lg">
-                                    <li>
-                                        <a href="mailto:public-relations@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a>
-                                    </li>
-                                    </li>
-                                </ul>
-                            </div>
-=======
             </div>
             <!-- Secretary -->
             <div class="cell-lg-12 bio-area">
@@ -202,7 +165,6 @@ head('Our Team', true);
                                 </li>
                                 </li>
                             </ul>
->>>>>>> 01b740bc646ef61fbf117be02a476373fac10acd
                         </div>
                     </div>
                 </div>
