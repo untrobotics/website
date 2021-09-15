@@ -13,7 +13,7 @@ require(BASE . '/api/discord/bots/admin.php');
 function handled_tx($tx_id, $source) {
 	global $db;
 	if (!$db->query('INSERT INTO handled_ipns (txid, handled_source) VALUES ("' . $db->real_escape_string($tx_id) . '", "' . $db->real_escape_string($source) . '")')) {
-		throw new Exception("Unable to mark the transaction as handle in the database");
+		throw new Exception("Unable to mark the transaction as handled in the database");
 	}
 }
 
@@ -40,7 +40,7 @@ if ($payer_email == 'unt.robotics-buyer@unt.edu' && $payer_id == 'XKVTP2Y84G8ZU'
 	$ipn->useSandbox();
 }
 
-//log_payment($invoice_id, 'INFO: IPN, SANDBOX: ' . (is_sandbox() ? 'true' : 'false'));
+//payment_log($txn_id . ' -- INFO: IPN, SANDBOX: ' . ($ipn->getSandbox() ? 'true' : 'false'));
 
 class Source {
 	const PRINTFUL = 'PRINTFUL_PRODUCT';
