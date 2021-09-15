@@ -7,7 +7,8 @@
           <div class="shell">
             <div class="range text-sm-left">
               <div class="cell-sm-6 cell-lg-3 col-lg-offset-1"><span class="small text-spacing-340 text-white text-uppercase text-bold">UNT Robotics</span>
-                <p class="offset-top-20">We are a student-run organisation at the <a href="https://www.unt.edu">University of North Texas</a>.</p>
+                  <p class="offset-top-20">We are a student-run organisation at the <a href="https://www.unt.edu">University of North Texas</a></p>
+                  <p class="offset-top-20">We are thankful to have a wonderful <a href="/about/our-web-team">website development team</a></p>
               </div>
               <div class="cell-sm-6 cell-lg-3"><span class="small text-spacing-340 text-white text-uppercase text-bold">RECENT UPDATES</span>
                 <!--<article class="event offset-top-20">
