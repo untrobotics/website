@@ -1,10 +1,10 @@
 <?php
 require('../template/top.php');
+require_once('config.php');
 
 if (isset($_POST)) {
 
-
-
+    // Delete user
     do {
         if (isset($_POST['userid'])){
             $id = $_POST['userid'];
@@ -12,6 +12,7 @@ if (isset($_POST)) {
         }
     } while (false);
 
+    // Add User
     do {
         if (isset($_POST['username'])){
             $username = $_POST['username'];
@@ -45,10 +46,25 @@ if (isset($_POST)) {
 		)');
 
         if ($q) {
-            echo 'ADD_SUCCESS';
+
+            // Store the path of source file
+            $source = '/etc/ftp_user_config_dir/untrobotics-default';
+
+            // Store the path of destination file
+            $destination = '/etc/ftp_user_config_dir/$username';
+
+            // directory
+            if( !copy($source, $destination) ) {
+                echo "File can't copy error! \n";
+            }
+            else {
+                echo 'ADD_SUCCESS';
+            }
         } else {
             echo 'ERROR';
         }
+
+
     } while (false);
 }
 
