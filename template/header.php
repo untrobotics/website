@@ -112,7 +112,7 @@
                 <!-- RD Navbar Nav-->
                 <ul class="rd-navbar-nav">
                   <li class="active"><a href="/">Home</a></li>
-					<li><a href="/about">awdawdduhghuadw</a>
+					<li><a href="/about">About Us</a>
 						<ul class="rd-navbar-dropdown">
 						  <li><a href="/about">What We Do</a></li>
 						  <li><a href="/about/our-team">Our Team</a></li>
