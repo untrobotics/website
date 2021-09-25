@@ -274,7 +274,7 @@ head('Our Team', true);
                                 <p>Joseph is a Junior Mechanical Engineering student. Formerly a US Marine Master Explosive Ordnance Disposal Technician (EOD), he has always tried to tinker with things and figure out how they work and is passionate about establishing and growing our High-Power Rocketry team into a nationally competitive force. Both through STEM outreach efforts and internal events, he hopes to generate interest and encourage everyone to get into hobby rocketry, and the sport of high power rocketry. </p>
                                 <ul class="list-inline-lg">
                                     <li>
-                                        <a href="mailto:aerospace-division-lead@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a>
+                                        <a href="mailto:aerospace@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a>
                                     </li>
                                 </ul>
                             </div>
