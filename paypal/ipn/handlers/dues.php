@@ -1,6 +1,8 @@
 <?php
 function handle_payment_notification($ipn, $payment_info, $custom) {
+
 	global $db, $untrobotics;
+
 
     $q = $db->query("SELECT `value` FROM dues_config WHERE `key` = 'semester_price'");
     if (!$q || $q->num_rows !== 1) {
