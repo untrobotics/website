@@ -98,12 +98,14 @@ class untrobotics {
     public function get_next_year() {
         return $this->get_next_year_from_date(time());
     }
+
     public function get_last_year_from_date($timestamp) {
         return date('Y', strtotime('-1 year', $timestamp));
     }
     public function get_last_year() {
         return $this->get_last_year_from_date(time());
     }
+
 	public function get_year_from_date($timestamp) {
 		return date('Y', $timestamp);
 	}
