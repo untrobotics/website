@@ -262,7 +262,6 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
-
                 <!-- Aerospace Division Lead -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
