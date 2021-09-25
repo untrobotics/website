@@ -162,7 +162,9 @@
                         <li><a href="/botathon/botathon-teams">Teams</a></li>
                     </ul>
                   </li>
+                  <li><a href="/sponsorships">Sponsor us</a></li>
                   <li><a href="/contact">Contact us</a></li>
+
 			<?php
 			if (count($userinfo)) {
 			?>
