@@ -90,7 +90,7 @@ head('Our Team', true);
                                     <div class="cell-md-6">
                                         <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                                             <h6 class="h6-with-small"><a href="#"> Henry Legay</a><span class="small text-silver-chalice">Team Member</span></h6>
-                                            <p> Henry Legay is a Computer Science Student at UNT focused on web development. He is a web master in Robotics with ready applicable experience and a willingness to learn.</p>
+                                            <p> Henry Legay is a Computer Science Student at UNT focused on web development. He is a web developer in Robotics with ready applicable experience and a willingness to learn.</p>
                                             <ul class="list-inline-lg">q
                                                 <li>
                                                     <a href="https://www.linkedin.com/in/henrylegay/" class="icon icon-sm text-primary fa-linkedin"></a>
