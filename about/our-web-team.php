@@ -131,7 +131,7 @@ head('Our Team', true);
                                         <a href="https://www.linkedin.com/in/aryan-damle-8691b11bb/" class="icon icon-sm text-primary fa-linkedin"></a>
                                     </li>
                                     <li>
-                                        <a href="https://github.com/woahbro" class="icon icon-sm text-primary fa-github"></a>
+                                        <a href="https://github.com/aryan-damle" class="icon icon-sm text-primary fa-github"></a>
                                     </li>
                                 </ul>
                             </div>
