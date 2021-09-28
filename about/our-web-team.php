@@ -88,7 +88,7 @@ head('Our Team', true);
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                                <h6 class="h6-with-small"><a href="#"> Aryan Damle</a><span class="small text-silver-chalice">President | Team Member</span></h6>
+                                <h6 class="h6-with-small"><a href="#"> Aryan Damle</a><span class="small text-silver-chalice">Team Member</span></h6>
                                 <p>Aryan Damle is a Computer Science student at UNT. He is an aspiring full stack web developer and an avid Home Assistant enthusiast. He mentors a high school robotics team and loves to work on robots in his free time. You can find him at your local car meet on weekends if he isn't busy working on a robot or fixing something in his garage.</p>
                                 <ul class="list-inline-lg">
                                     <li>
