@@ -145,8 +145,8 @@ head('Our Team', true);
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                                <h6 id="Mary-Plana" class="h6-with-small"><a href="#Mary-Plana"> Mary Plana</a><span class="small text-silver-chalice">Team Member</span></h6>
-                                <p> Mary Plana is a Computer Science Student at UNT with studies focused on Front End Development. She loves designing and implementing the user interface of a project. She has a natural curiosity about the world
+                                <h6 id="mary-plana" class="h6-with-small"><a href="#mary-plana">Mary Plana</a><span class="small text-silver-chalice">Team Member</span></h6>
+                                <p>Mary Plana is a Computer Science Student at UNT with studies focused on Front End Development. She loves designing and implementing the user interface of a project. She has a natural curiosity about the world
                                     and loves to learn and improve her skills. She is currently the president of Application Development Organization. She facilitates the meeting and leads student UI
                                     designers to design, implement, and improve the user interface of projects.</p>
                                 <ul class="list-inline-lg">
