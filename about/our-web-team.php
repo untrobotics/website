@@ -190,12 +190,12 @@ head('Our Team', true);
                 <!-- Mary Plana -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="/images/bio-pics/mary-plana.jpg" alt="" width="360" height="404"
+                        <div class="cell-md-3"><img src="/images/web-team-pics/mary-plana.jpg" alt="" width="360" height="404"
                                                     class="img-responsive"/>
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                                <h6 id="Your-Name" class="h6-with-small"><a href="#Your-Name"> Mary
+                                <h6 id="Mary-Plana" class="h6-with-small"><a href="#Mary-Plana"> Mary
                                         Plana</a><span class="small text-silver-chalice">Team Member</span></h6>
                                 <p> Mary Plana is a Computer Science Student at UNT with studies focused on Front End Development. She loves designing and implementing the user interface of a project. She has a natural curiosity about the world
                                     and loves to learn and improve her skills. She is currently the president of Application Development Organization. She facilitates the meeting and leads student UI
