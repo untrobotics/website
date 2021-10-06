@@ -161,6 +161,28 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
+                <!-- David Thompson -->
+                <div class="cell-lg-12 bio-area">
+                    <div class="range range-sm-middle">
+                        <div class="cell-md-3"><img src="/images/web-team-pics/david-thompson.jpg" alt="" width="360" height="404" class="img-responsive"/>
+                        </div>
+                        <div class="cell-md-6">
+                            <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
+                                <h6 id="david-thompson" class="h6-with-small"><a href="#david-thompson">David Thompson</a><span class="small text-silver-chalice">Team Member</span></h6>
+                                <p>David Thompson is a Computer Science Student at UNT with studies focused on Full Stack Development. He loves solving problems, learning new things, and is currently working with a start up on a social media
+                                application that is currently in Apple's TestFlight.</p>
+                                <ul class="list-inline-lg">
+                                    <li>
+                                        <a href="https://www.linkedin.com/in/david-thompson-000/" class="icon icon-sm text-primary fa-linkedin"></a>
+                                    </li>
+                                    <li>
+                                        <a href="https://github.com/davidkt99" class="icon icon-sm text-primary fa-github"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Template NOTE: images must be 360 by 404 px, and take up less than -->
                 <!--            <div class="cell-lg-12 bio-area">-->
