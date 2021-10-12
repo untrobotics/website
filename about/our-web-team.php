@@ -8,12 +8,15 @@ head('Our Team', true);
             margin-top: 10px;
             padding-top: 10px;
         }
+        .bio-anchor {
+            position: absolute;
+        }
     </style>
     <main class="page-content">
         <!-- Classic Breadcrumbs-->
         <section class="breadcrumb-classic">
             <div class="rd-parallax">
-                <div data-speed="0.25" data-type="media" data-url="/images/breadcrumbs-parallax.jpg" class="rd-parallax-layer"></div>
+                <div data-speed="0.25" data-type="media" data-url="/images/headers/web-team-page-header.jpg" class="rd-parallax-layer"></div>
                 <div data-speed="0" data-type="html" class="rd-parallax-layer section-top-75 section-md-top-150 section-lg-top-260">
                     <div class="shell">
                         <ul class="list-breadcrumb">
@@ -35,12 +38,13 @@ head('Our Team', true);
                 </div>
                 <!-- Peyton Thibodeaux -->
                 <div class="cell-lg-12 bio-area">
+                    <div id="peyton-thibodeaux" class="bio-anchor"></div>
                     <div class="range range-sm-middle">
                         <div class="cell-md-3"><img src="/images/bio-pics/peyton-thibodeaux.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                                <h6 id="peyton-thibodeaux" class="h6-with-small"><a href="#peyton-thibodeaux"> Peyton Thibodeaux</a><span class="small text-silver-chalice">Webmaster | Team Member</span></h6>
+                                <h6 class="h6-with-small"><a href="#peyton-thibodeaux"> Peyton Thibodeaux</a><span class="small text-silver-chalice">Webmaster | Team Member</span></h6>
                                 <p>Peyton is a junior, studying computer science with a minor in mathematics. He's the webmaster for UNT Robotics and in charge of the website that you see in front of you. He enjoys learning and using new technologies and have a passion for creating things. </p>
                                 <ul class="list-inline-lg">
                                     <li>
@@ -56,6 +60,7 @@ head('Our Team', true);
                 </div>
                 <!-- Sebastian King -->
                 <div class="cell-lg-12 bio-area">
+                    <div id="sebastian-king" class="bio-anchor"></div>
                     <div class="range range-sm-middle">
                         <div class="cell-md-3"><img src="/images/bio-pics/sebastian-king.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
@@ -77,6 +82,7 @@ head('Our Team', true);
                 </div>
                 <!-- Nick Tindle -->
                 <div class="cell-lg-12 bio-area">
+                    <div id="nicholas-tindle" class="bio-anchor"></div>
                     <div class="range range-sm-middle">
                         <div class="cell-md-3"><img src="/images/bio-pics/nick-tindle.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
@@ -98,6 +104,7 @@ head('Our Team', true);
                 </div>
                 <!-- Mason Besmer -->
                 <div class="cell-lg-12 bio-area">
+                    <div id="mason-besmer" class="bio-anchor"></div>
                     <div class="range range-sm-middle">
                         <div class="cell-md-3"><img src="/images/web-team-pics/mason-besmer.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
@@ -119,12 +126,13 @@ head('Our Team', true);
                 </div>
                 <!-- Template NOTE: images must be 360 by 404 px, and take up less than -->
                 <!--            <div class="cell-lg-12 bio-area">-->
+                <!--            <div id="first-last" class="bio-anchor"></div> -->
                 <!--                <div class="range range-sm-middle">-->
                 <!--                    <div class="cell-md-3"><img src="/images/bio-pics/fileName.jpg" alt="" width="360" height="404" class="img-responsive" />-->
                 <!--                    </div>-->
                 <!--                    <div class="cell-md-6">-->
                 <!--                        <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">-->
-                <!--                            <h6 id="Your-Name" class="h6-with-small"><a href="#Your-Name"> FirstName LastName</a><span class="small text-silver-chalice">Team Member</span></h6>-->
+                <!--                            <h6 id="Your-Name" class="h6-with-small"><a href="#first-last"> FirstName LastName</a><span class="small text-silver-chalice">Team Member</span></h6>-->
                 <!--                            <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>-->
                 <!--                            <ul class="list-inline-lg">-->
                 <!--                                <li>-->
