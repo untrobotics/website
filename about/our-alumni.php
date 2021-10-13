@@ -112,6 +112,22 @@ head('Our Alumni', true);
                         </div>
                     </div>
                 </div>
+                <!-- Former Aerospace Division Lead -->
+                <div class="cell-lg-12 bio-area">
+                    <div class="range range-sm-middle">
+                        <div class="cell-md-3"><img src="/images/bio-pics/jesse-sullivan.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        </div>
+                        <div class="cell-md-6">
+                            <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
+                                <h6 class="h6-with-small"><a href="#"> Jesse Sullivan</a><span class="small text-silver-chalice">Former Aerospace Division Lead</span></h6>
+                                <p>Jesse is a senior mechanical engineering student interested in all things that fly and go fast. He has 4 years of experience in amateur high-power rocketry and currently holds an L1 certification with the National Association of Rocketry. He founded the Aerospace Division with UNT Robotics in order to foster interest in the hobby and provide a learning experience for anyone to become a part of. </p>
+                                <ul class="list-inline-lg">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </section>
     </main>
