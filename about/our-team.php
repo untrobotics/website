@@ -67,7 +67,7 @@ head('Our Team', true);
                     </div>
                     <div class="cell-md-6">
                         <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                            <h6 class="h6-with-small"><a href="#"> Lauren Caves</a><span class="small text-silver-chalice">Co-President</span></h6>
+                            <h6 class="h6-with-small"><p> Lauren Caves</p><span class="small text-silver-chalice">Co-President</span></h6>
                             <p>She’s a woman of action, eternal optimist, and a passionate speaker. As an undergraduate mechanical engineering student, her enthusiasm for the art of engineering is vast and the hunger for discovery drives her motivation which has led to many successes during her undergraduate years. Although not easily. She has gone through many failures and complicated situations which shaped a new passion to inspire the youth and other students to overcome diversity and really fight for their dreams. She believes everyone is destined for greatness, and that it's important to not let the minor roadblocks we stumble upon crush the stars we wish upon. </p>
                             <ul class="list-inline-lg">
                                 <li>
@@ -88,7 +88,7 @@ head('Our Team', true);
                     </div>
                     <div class="cell-md-6">
                         <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                            <h6 class="h6-with-small"><a href="#"> Tyler Adam Martinez</a><span class="small text-silver-chalice">Vice President and Financial Director</span></h6>
+                            <h6 class="h6-with-small"><p> Tyler Adam Martinez</p><span class="small text-silver-chalice">Vice President and Financial Director</span></h6>
                             <p>Tyler is a junior currently studying electrical engineering with a minor in biomedical engineering. He focuses on robotics and automation, and loves designing cool circuits and building electronics. </p>
                             <ul class="list-inline-lg">
                                 <li>
@@ -105,7 +105,6 @@ head('Our Team', true);
                     </div>
                 </div>
             </div>
-
                 <!-- financial director -->
 <!--                <div class="cell-lg-12 bio-area">-->
 <!--                    <div class="range range-sm-middle">-->
