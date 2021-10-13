@@ -1,6 +1,8 @@
 <?php
 function handle_payment_notification($ipn, $payment_info, $custom) {
-	global $db;
+
+	global $db, $untrobotics;
+
 
     $q = $db->query("SELECT `value` FROM dues_config WHERE `key` = 'semester_price'");
     if (!$q || $q->num_rows !== 1) {
@@ -128,7 +130,46 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		
 		if ($email_send_status) {
 			payment_log("[{$payment_info->txn_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
-            AdminBot::send_message("(IPN) Alert: THIS IS A TEMPORARY NOTIFICATION. Successfully received dues payment from {$r['name']} (#$uid), paid for by {$payment_info->first_name} {$payment_info->last_name}.");
+            AdminBot::send_message("(IPN) Alert: Successfully received dues payment from {$r['name']} (#$uid), paid for by {$payment_info->first_name} {$payment_info->last_name}. # Semesters: " . count($paid_for_terms));
+
+            $sum = "UNKNOWN";
+            if ($untrobotics->get_current_term() == Semester::AUTUMN) {
+                // get dues payments from this semester
+                $term = Semester::AUTUMN;
+                $year = $untrobotics->get_current_year();
+                $next_term = Semester::SPRING;
+                $next_year = $untrobotics->get_next_year();
+
+                $q = $db->query("SELECT SUM(amount) FROM dues_payments WHERE
+                    (dues_term = " . $db->real_escape_string($term) . " AND
+                    dues_year = " . $db->real_escape_string($year) . ") OR
+                    (dues_term = " . $db->real_escape_string($next_term) . " AND
+                    dues_year = " . $db->real_escape_string($next_year) . ")
+                ");
+
+                if ($q) {
+                    $sum = $q->fetch_row()[0];
+                }
+            } else {
+                // get dues payments from this semester and last semester
+                $term = Semester::SPRING;
+                $year = $untrobotics->get_current_year();
+                $last_term = Semester::AUTUMN;
+                $last_year = $untrobotics->get_last_year();
+
+                $q = $db->query("SELECT SUM(amount) FROM dues_payments WHERE
+                    (dues_term = " . $db->real_escape_string($term) . " AND
+                    dues_year = " . $db->real_escape_string($year) . ") OR
+                    (dues_term = " . $db->real_escape_string($last_term) . " AND
+                    dues_year = " . $db->real_escape_string($last_year) . ")
+                    ");
+
+                if ($q) {
+                    $sum = $q->fetch_row()[0];
+                }
+            }
+            AdminBot::send_message("Amount received in dues so far this academic year: \${$sum}");
+
 		} else {
 			//throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
 			payment_log("[{$payment_info->txn_id}] Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
