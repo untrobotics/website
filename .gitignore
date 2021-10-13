@@ -91,3 +91,4 @@ fabric.properties
 
 # Python virtual environments
 .venv
+.DS_Store
