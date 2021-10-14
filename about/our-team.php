@@ -160,7 +160,7 @@ head('Our Team', true);
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                                 <h6 class="h6-with-small"><a href="#">Cameron Smyrl</a><span class="small text-silver-chalice">Secretary</span></h6>
-                                <p></p>
+                                <p>Cameron is a senior majoring in computer science with a minor in mathematics. He is the secretary of UNT Robotics. His passions are messing with new and exciting softwares and tech products. He can be found doing long coding assignments, playing video games, and helping with UNT Robotics where he can. </p>
                                 <ul class="list-inline-lg">
                                 </ul>
                             </div>
