@@ -54,7 +54,7 @@ head('Our Team', true);
             <!-- co-president -->
             <div class="cell-lg-12 bio-area">
                 <div class="range range-sm-middle">
-                    <div class="cell-md-3"><img src="" alt="" width="360" height="404" class="img-responsive" />
+                    <div class="cell-md-3"><img src="/images/bio-pics/andrew-hooker.jpg" alt="" width="360" height="404" class="img-responsive" />
                     </div>
                     <div class="cell-md-6">
                         <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
