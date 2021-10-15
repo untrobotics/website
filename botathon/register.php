@@ -98,15 +98,16 @@ head('Botathon Registration', true);
             <div class="range">
               <div class="cell-lg-6">
                 <h1>Register</h1>
-                <h6>You may sign up for our <strong>Botathon Season 2</strong> competition below.</h6>
+				<h4 style = "color: red">Registration is closed for the year.</h4>
+                <!--<h6>You may sign up for our <strong>Botathon Season 2</strong> competition below.</h6>-->
               </div>
 				
-				<div>
+				<!--<div>
                     <h4><small>Registration is open for all <span style="color:green;">UNT</span> students.</small><br><strong>Spots remaining: <span style="color:red;"><?php
 						echo botathon_spots_remaining();
 						?></span></strong></h4>
-				</div>
-            </div>
+				</div>-->
+            <!--</div>
 			  <div class="shell text-left">
 				<form data-form-output="form-output-global" data-form-type="registration" method="post" action="/ajax/botathon-registration" class="rd-mailform text-left" novalidate="novalidate">
 				  <div class="range offset-top-40 offset-md-top-60">
@@ -175,7 +176,7 @@ head('Botathon Registration', true);
 							<input id="unteuid" type="text" name="unteuid" data-constraints="@Required" class="form-control form-control-has-validation form-control-last-child">
 						  	<span class="form-validation"></span>
 					  </div>
-					</div>
+					</div>-->
 
 					<!--<div class="cell-lg-4 cell-md-6">
 					  <div class="form-group postfix-xl-right-40">
@@ -188,7 +189,7 @@ head('Botathon Registration', true);
 					  </div>
 					</div>-->
 
-				  </div>
+				  <!--</div>
 					
 					<center>
 						<div style="padding: 40px 0px;">
@@ -203,7 +204,7 @@ head('Botathon Registration', true);
 					</center>
 
 				  </form>
-			  </div>
+			  </div>-->
           </div>
         </section>
       </main>

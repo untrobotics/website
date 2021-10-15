@@ -123,7 +123,7 @@ head('Botathon Info', true);
                             <ul class="list-xs list-marked">
                                 <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
                                 <li><a href="#event-details" class="text-content">Event Details</a></li>
-                                <li><a href="#register" class="text-content">Register</a></li>
+                                <!--<li><a href="#register" class="text-content">Register</a></li>-->
                                 <li><a href="#sponsors" class="text-content">Event Sponsors</a></li>
                                 <li><a href="#rules" class="text-content">Rules</a></li>
                                 <li><a href="#schedule" class="text-content">Schedule</a></li>
@@ -144,14 +144,17 @@ head('Botathon Info', true);
             <div class="range range-md-justify">
                     <div class="cell-md-12 cell-lg-10">
                         <div class="inset-md-right-30 inset-lg-right-0">
-                            <h1><strong>Botathon</strong> - <em>Season 2</em></h1>
-                            <p>Botathon is UNT’s second ever hosted robotics competition, think hackathon+robots!</p>
+                            <h1><strong>Botathon</strong> - <em style = "color: red">Season 2 <u>Over</u></em></h1>
+
+                            <p style = "color: red"><strong>Botathon is over for this year, we will anounce the next Botathon info at the start of the spring semester.</strong></p>
+
+                            <!--<p>Botathon is UNT’s second ever hosted robotics competition, think hackathon+robots!</p>
 
                             <p>Participants will have 3 weeks to build a robot then compete head to head in a race to collect the most treasure on our custom built island. This event is open to all UNT students, with any amount of experience.</p>
 
                             <div class="well-custom">
                                 <div><h5><strong>Open to all UNT students.</strong></h5></div><div><h5>Learn something new and make new friends!</h5></div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -179,7 +182,7 @@ head('Botathon Info', true);
         </div>
     </section>
 
-    <section class="section-50" id="sponsors">
+    <!--<section class="section-50" id="sponsors">
         <div class="shell">
             <h2>Register</h2>
             <div class="range">
@@ -190,7 +193,7 @@ head('Botathon Info', true);
                 </div>
             </div>
         </div>
-    </section>
+    </section>-->
 
     <section class="section-50" id="sponsor">
         <div class="shell">
@@ -198,7 +201,7 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="sponsors">
-                        <p>Our Sponsors are absolutely imperative to the success of UNT Robotics. We rely on our corporate sponsors so we can continue to bring quality engineering experience to our members and the community. Every company provides us with invaluable support through both monetary and part donations. Your support will be greatly appreciated and we will be flexible with connecting our members with your company's message. </p>
+                        <p>Our sponsors are absolutely imperative to the success of UNT Robotics. We rely on our corporate sponsors so we can continue to bring quality engineering experience to our members and the community. Every company provides us with invaluable support through both monetary and part donations. Your support will be greatly appreciated and we will be flexible with connecting our members with your company's message. </p>
                         <p><strong>If you would like to become a UNT Robotics sponsor, email us at: UNT.Robotics@unt.edu </strong></p>
                         <div class="sponsor"><img src="/images/sponsor-logos/botathon/eagles-nest.jpg"/></div>
                         <div class="sponsor"><img src="/images/sponsor-logos/botathon/elegoo.jpg"/></div>
