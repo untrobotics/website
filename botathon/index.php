@@ -146,7 +146,7 @@ head('Botathon Info', true);
                         <div class="inset-md-right-30 inset-lg-right-0">
                             <h1><strong>Botathon</strong> - <em style = "color: red">Season 2 <u>Over</u></em></h1>
 
-                            <p style = "color: red"><strong>Botathon is over for this year, we will anounce the next Botathon info at the start of the spring semester.</strong></p>
+                            <p style = "color: red"><strong>Botathon is over for this year, we will announce the next Botathon info at the start of the spring semester.</strong></p>
 
                             <!--<p>Botathon is UNT’s second ever hosted robotics competition, think hackathon+robots!</p>
 
