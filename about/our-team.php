@@ -208,12 +208,12 @@ head('Our Team', true);
                 <!-- Social Media Manager -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/temp-pic.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                                 <h6 class="h6-with-small"><a href="#">Brooke Qiao</a><span class="small text-silver-chalice">Social Media Manager</span></h6>
-                                <p></p>
+                                <p>I'm a freshman at UNT majoring in mechanical and engineering. I was in my high school robotics team and am excited to continue doing robotics throughout college. In my free time, I like reading, drawing, or walking my dog!</p>
                                 <ul class="list-inline-lg">
                                     <li>
                                         <a href="mailto:corp-relations@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a>
