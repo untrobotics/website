@@ -144,9 +144,9 @@ head('Botathon Info', true);
             <div class="range range-md-justify">
                     <div class="cell-md-12 cell-lg-10">
                         <div class="inset-md-right-30 inset-lg-right-0">
-                            <h1><strong>Botathon</strong> - <em>Season 2 {2021}</em></h1>
+                            <h1><strong>Botathon</strong> - <em>Season 2 (2021)</em></h1>
 
-                            <p>Botathon is over for this year, we will release information about season 3 at the start of the spring semester.</p>
+                            <p>Botathon has concluded for the year, we will release information about Season 3, early in the spring semester.</p>
 
                             <!--<p>Botathon is UNT’s second ever hosted robotics competition, think hackathon+robots!</p>
 
