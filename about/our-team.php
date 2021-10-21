@@ -195,7 +195,7 @@ head('Our Team', true);
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                                 <h6 class="h6-with-small"><a href="#"> Ibi Eni</a><span class="small text-silver-chalice">Event Coordinator</span></h6>
-                                <p>Ibi is simple guy, with many interests. Mechanics, electronics, food, obscure sci-fi, and comics. Normally found lurking around the engineering campus of UNT, this 3rd year Mechanical and Engineering major and self proclaimed "walking pop culture reference" is dedicated to the club  and is in charge of organizing all social events and gatherings digital or otherwise. Ibi was drawn to engineering due to is pension for creativity and his love hate relationship with mathematics. </p>
+                                <p>Ibi is simple guy, with many interests. Mechanics, electronics, food, obscure sci-fi, and comics. Normally found lurking around the engineering campus of UNT, this 3rd year Mechanical and Engineering major and self proclaimed "walking pop culture reference" is dedicated to the organisation and is in charge of organizing all social events and gatherings digital or otherwise. Ibi was drawn to engineering due to is pension for creativity and his love hate relationship with mathematics. </p>
                                 <ul class="list-inline-lg">
                                     <li>
                                         <a href="mailto:event-coordinator@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a>
