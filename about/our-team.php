@@ -52,14 +52,14 @@ head('Our Team', true);
             </div>
             </div>
             <!-- co-president -->
-            <!-- <div class="cell-lg-12 bio-area">
+            <div class="cell-lg-12 bio-area">
                 <div class="range range-sm-middle">
                     <div class="cell-md-3"><img src="/images/bio-pics/andrew-hooker.jpg" alt="" width="360" height="404" class="img-responsive" />
                     </div>
                     <div class="cell-md-6">
                         <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                             <h6 class="h6-with-small"><p> Andrew Hooker</p><span class="small text-silver-chalice">Co-President</span></h6>
-                            <p></p>
+                            <p>Andrew is a senior majoring in computer science. He is the President of UNT Robotics and also runs the CCDC division of UNT robotics. He has had an interest in technology for a long time. He can be found in the UNT library fueling his chronic caffeine addiction. His hobbies include video games, hackathons, and technology.</p>
                             <ul class="list-inline-lg">
                                 <li>
                                     <a href="mailto:president@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a>
@@ -68,7 +68,7 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
             <!-- Vice President-->
             <div class="cell-lg-12 bio-area">
                 <div class="range range-sm-middle">
