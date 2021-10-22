@@ -264,7 +264,7 @@ head('Our Team', true);
                     </div>
                 </div>  -->
                 <!-- Corporate Relations -->
-                <div class="cell-lg-12 bio-area">
+                <!-- <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
                         <div class="cell-md-3"><img src="/images/bio-pics/ashank-annam.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
@@ -280,7 +280,7 @@ head('Our Team', true);
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!-- Aerospace Division Lead -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
