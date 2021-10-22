@@ -32,12 +32,12 @@ head('Our Team', true);
                         <h1>Our Team</h1>
                         <h6>These people are the reason for our success and expertise.</h6>
                     </div>
-                </div>
-                <!-- co-president -->
-                <div class="cell-lg-12 bio-area">
-                    <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="/images/bio-pics/nick-tindle.jpg" alt="" width="360" height="404" class="img-responsive" />
-                        </div>
+            </div>
+            <!-- co-president -->
+            <div class="cell-lg-12 bio-area">
+                <div class="range range-sm-middle">
+                    <div class="cell-md-3"><img src="/images/bio-pics/nick-tindle.jpg" alt="" width="360" height="404" class="img-responsive" />
+                    </div>
                 <div class="cell-md-6">
                     <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                         <h6 class="h6-with-small"><a href="#"> Nick Tindle</a><span class="small text-silver-chalice">Co-President</span></h6>
@@ -49,7 +49,6 @@ head('Our Team', true);
                         </ul>
                     </div>
                 </div>
-            </div>
             </div>
             <!-- co-president -->
             <div class="cell-lg-12 bio-area">
@@ -176,7 +175,7 @@ head('Our Team', true);
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                                 <h6 class="h6-with-small"><a href="#">Jacob Gomez</a><span class="small text-silver-chalice">Public Relations</span></h6>
-                                <p>Jacob is a current Computer Science student at UNT.Although he balances school and work he finds time for extracurriculars.He has always enjoyed being apart of different organizations and getting to know new people. He loves using all the different software to model, create and design things for the club or for his own personal projects. </p>
+                                <p>Jacob is a current Computer Science student at UNT. Although he balances school and work he finds time for extracurriculars. He has always enjoyed being apart of different organizations and getting to know new people. He loves using all the different software to model, create and design things for the club or for his own personal projects. </p>
                                 <ul class="list-inline-lg">
                                     <li>
                                         <a href="mailto:public-relations@untrobotics.com" class="icon icon-sm text-primary fa-envelope"></a>
