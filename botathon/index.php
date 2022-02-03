@@ -114,7 +114,7 @@ head('Botathon Info', true);
         </div>
     </section>-->
 
-    <section class="section-50" id="botathon-navigation">
+    <!--<section class="section-50" id="botathon-navigation">
         <div class="shell">
             <div class="range range-md-right">
                     <div class="col-lg-12 botathon-navigation">
@@ -123,7 +123,7 @@ head('Botathon Info', true);
                             <ul class="list-xs list-marked">
                                 <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
                                 <li><a href="#event-details" class="text-content">Event Details</a></li>
-                                <!--<li><a href="#register" class="text-content">Register</a></li>-->
+                                <!--<li><a href="#register" class="text-content">Register</a></li>
                                 <li><a href="#sponsors" class="text-content">Event Sponsors</a></li>
                                 <li><a href="#rules" class="text-content">Rules</a></li>
                                 <li><a href="#schedule" class="text-content">Schedule</a></li>
@@ -137,17 +137,19 @@ head('Botathon Info', true);
                         </div>
                     </div>
                 </div>
-    </section>
+    </section>-->
 
     <section class="section-50" id="info">
         <div class="shell">
             <div class="range range-md-justify">
                     <div class="cell-md-12 cell-lg-10">
                         <div class="inset-md-right-30 inset-lg-right-0">
-                            <h1><strong>Botathon</strong> - <em>Season 2 (2021)</em></h1>
+                            <h1><strong>Botathon</strong> - <em>Season 3 (2022)</em></h1>
 
-                            <p>Botathon has concluded for the year, we will release information about Season 3, early in the spring semester.</p>
-
+                            <h2>Coming Soon.</h2>
+                            <h3>Botathon Season 3 will be a World Cup themed robotic football (soccer) competition. It's like a real-world rocket league.</h3>
+                            <h4><strong>The event will take place on March 5, 2022.</strong></h4>
+                            <h5>Detailed event information is coming soon</h5>
                             <!--<p>Botathon is UNT’s second ever hosted robotics competition, think hackathon+robots!</p>
 
                             <p>Participants will have 3 weeks to build a robot then compete head to head in a race to collect the most treasure on our custom built island. This event is open to all UNT students, with any amount of experience.</p>
@@ -162,7 +164,7 @@ head('Botathon Info', true);
 
     <section class="section-50" id="event-details">
         <div class="shell">
-            <h2>Event Details</h2>
+            <!--<h2>Event Details</h2>
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div>Registration</div>
@@ -178,7 +180,7 @@ head('Botathon Info', true);
 
                     <p>Our official informational packet is available <a href="/downloads/botathon/botathon-info-packet-s2.pdf">here</a>.</p>
                 </div>
-            </div>
+            </div>-->
         </div>
     </section>
 
@@ -195,7 +197,7 @@ head('Botathon Info', true);
         </div>
     </section>-->
 
-    <section class="section-50" id="sponsor">
+    <!--<section class="section-50" id="sponsor">
         <div class="shell">
             <h2>Event Sponsors</h2>
             <div class="range">
@@ -209,9 +211,9 @@ head('Botathon Info', true);
                 </div>
             </div>
         </div>
-    </section>
+    </section>-->
 
-    <section class="section-50" id="rules">
+    <!--<section class="section-50" id="rules">
         <div class="shell">
             <h2>Rules</h2>
             <div class="range">
@@ -226,9 +228,9 @@ head('Botathon Info', true);
                 </div>
             </div>
         </div>
-    </section>
+    </section>-->
 
-    <section class="section-50" id="schedule">
+    <!--<section class="section-50" id="schedule">
         <div class="shell">
             <h2>Schedule</h2>
             <div class="range">
@@ -246,15 +248,15 @@ head('Botathon Info', true);
                 </div>
             </div>
         </div>
-    </section>
+    </section>-->
 
-    <section class="section-50" id="field-preview">
+    <!--<section class="section-50" id="field-preview">
         <div class="shell">
             <h2>Field preview</h2>
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0 field-preview">
-                        <!--<h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>-->
+                        <!--<h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>
                         <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/fieldPreview1.png" alt="" width="485" height="555" class="img-responsive"/>
                             <h6><a href="/images/botathon-photos/fieldPreview1.png">The botathon competition field overview</a></h6>
                         </div>
@@ -276,23 +278,23 @@ head('Botathon Info', true);
                         <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-3.jpg" alt="" width="485" height="555" class="img-responsive"/>
                           <h6><a href="/images/botathon-photos/cad-3.jpg">Birds eye CAD of the field</a></h6>
                         </div>
-                        -->
+
                     </div>
                 </div>
             </div>
 
         </div>
-    </section>
+    </section>-->
 
-    <section class="section-50" id="parts-list">
+    <!--<section class="section-50" id="parts-list">
         <div class="shell">
             <h2>Parts List</h2>
             <p>Stage 1 consists of The Kraken room. It contains The Kraken, and 3 elevated platforms with cannons on them. The objective is to work together with the opposing pirate crew to fire all 3 of the cannons, effectively disabling the Kraken and unlocking The Treasure Room. Pirate crews will be given the same score in this stage, which depends on the time taken to take down The Kraken.</p>
             <p>The second stage consists of The Treasure Room. This room is randomly filled with an assortment of treasure, with the highest quality treasure being on raised platforms. The objective in this stage is to push treasure into your Coffer located on one side of the field. Points will be based on both the quantity and quality of treasure collected. </p>
             <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet-s2.pdf">information packet</a>.</p>
         </div>
-    </section>
-
+    </section>-->
+    <!--
     <section class="section-50" id="parts-list">
         <div class="shell">
             <h2>Parts List</h2>
@@ -422,7 +424,7 @@ head('Botathon Info', true);
             </div>
         </div>
     </section>
-
+    -->
 
 </main>
 <?php
