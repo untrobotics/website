@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-require('../api/groupme-funcs.php');
+require('../api/discord/bots/admin.php');
 
 if (isset($_POST)) {
 	$name = @$_POST['name'];
@@ -48,7 +48,7 @@ if (isset($_POST)) {
 		');
 		if ($q) {
 			echo 'CONTACT_SUCCESS';
-			//post_message('Received contact form message:' . "\n" . 'FROM: ' . $name . ' (' . $email . ' / ' . $phone . ')' . "\n" . 'COMPANY: ' . $company . "\n\n" . 'MESSAGE: ' . $message, GROUPME_OFFICER_CHANNEL_ID);
+			AdminBot::send_message('Received contact form message:' . "\n" . 'FROM: ' . $name . ' (' . $email . ' / ' . $phone . ')' . "\n" . 'COMPANY: ' . $company . "\n\n" . 'MESSAGE: ' . $message);
 		} else {
 			echo 'ERROR';
 		}

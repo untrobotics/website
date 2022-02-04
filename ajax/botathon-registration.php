@@ -15,6 +15,7 @@ if (isset($_POST)) {
 	$latex_allergy = @$_POST['latex_allergy'];
 	$unteuid = $_POST['unteuid'];
 	$promise = $_POST['promise'];
+	$disability_accommodations = $_POST['disability_accommodations'];
 	
 	$valid_genders = array('male', 'female', 'other');
 	$valid_classifications = array('freshman', 'sophomore', 'junior', 'senior', 'postgraduate');
@@ -45,7 +46,7 @@ if (isset($_POST)) {
 			echo 'INVALID_PROMISE';
 			break;
 		}
-		$q = $db->query('INSERT INTO botathon_registration (name, email, phone, gender, major, classification, latex_allergy, diet_restrictions, unteuid, team_name)
+		$q = $db->query('INSERT INTO botathon_registration (name, email, phone, gender, major, classification, latex_allergy, diet_restrictions, unteuid, team_name, disability_accommodations)
 		VALUES (
 			"' . $db->real_escape_string($name) . '",
 			"' . $db->real_escape_string($email) . '",
@@ -56,7 +57,8 @@ if (isset($_POST)) {
 			"' . intval($latex_allergy === 'on') . '",
 			"' . $db->real_escape_string($diet_restrictions) . '",
 			"' . $db->real_escape_string($unteuid) . '",
-			"' . $db->real_escape_string($team) . '"
+			"' . $db->real_escape_string($team) . '",
+			"' . $db->real_escape_string($disability_accommodations) . '"
 		)
 		');
 		if ($q) {
