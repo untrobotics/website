@@ -14,6 +14,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 	$order_type = $payment_info->options[0][1];
 	$order_name = $payment_info->options[1][1];
 	$order_variant_name = $payment_info->options[2][1];
+	$currency = $payment_info->mc_currency;
 	
 	// ensure price is positive (if negative, it's a reversal)
 	if ($amount_paid > 0) {
@@ -160,7 +161,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 				AdminBot::send_message("(IPN) Alert: Printful order table failed to commit confirmation update for [{$payment_info->txn_id}]. (super secret id: {$printful_order_db_id})");
 			} else {
 				payment_log("[{$payment_info->txn_id}] Order confirmed in database.");
-				AdminBot::send_message("(IPN) Alert: THIS IS A TEMPORARY NOTIFICATION. Successfully confirmed printful order [{$payment_info->txn_id}] (profit: ${$profit}, woohoo!).");
+				AdminBot::send_message("(IPN) Alert: Successfully confirmed printful order [{$payment_info->txn_id}] (profit: {$profit} {$currency}, woohoo!).");
 			}
 		} else {
 			payment_log("[{$payment_info->txn_id}] Not confirming order because this is a sandbox order.");

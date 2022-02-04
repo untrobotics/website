@@ -17,8 +17,8 @@ try:
 	dir_path = os.path.dirname(os.path.realpath(__file__))
 
 	# get the paths of the new and prev log files
-	new_log_path = Path(dir_path) / Path("tmp/unrobotics-error.log")
-	prev_log_path = Path(dir_path) / Path("tmp/prev-unrobotics-error.log")
+	new_log_path = Path(dir_path) / Path("tmp/untrobotics-error.log")
+	prev_log_path = Path(dir_path) / Path("tmp/prev-untrobotics-error.log")
 
 	if not new_log_path.is_file():
 		new_log_path.touch()
@@ -51,7 +51,7 @@ except Exception as e:
                 [
                         "/usr/bin/php",
                         Path(dir_path) / Path("../api/discord/bots/admin-cli.php"),
-			"Error occurred while attempting to retreive error logs:\n" + str(e),
+			"Error occurred while attempting to retrieve error logs:\n" + str(e),
 			str(prev_len),
 			str(current_len)
                 ]

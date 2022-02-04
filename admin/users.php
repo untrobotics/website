@@ -4,7 +4,13 @@ require("../template/top.php");
 $term = $untrobotics->get_current_term();
 $year = $untrobotics->get_current_year();
 
-$q = $db->query("SELECT * FROM dues_payments WHERE dues_term = '$term' AND dues_year = '$year'");
+$q = $db->query("SELECT * FROM dues_payments WHERE dues_term = '$term' AND dues_year = '$year' ORDER BY payment_timestamp DESC");
+
+function getUserInfo($uid) {
+    global $db;
+    $uq = $db->query("SELECT * FROM users WHERE id = '" . $uid. "' LIMIT 1");
+    return $uq->fetch_array(MYSQLI_ASSOC);
+}
 
 if (isset($_GET['download'])) {
 
@@ -14,8 +20,7 @@ if (isset($_GET['download'])) {
     header("Expires: 0");
 
     while ($r = $q->fetch_array(MYSQLI_ASSOC)) {
-        $uq = $db->query("SELECT * FROM users WHERE id = '" . $db->real_escape_string($r['uid']). "' LIMIT 1");
-        $user = $uq->fetch_array(MYSQLI_ASSOC);
+        $user = getUserInfo($r['uid']);
 
         // name
         // email
@@ -66,6 +71,8 @@ if (isset($_GET['download'])) {
         </span>
     </div>
 
+    <strong>Total: <?php echo $q->num_rows; ?></strong>
+
     <table>
         <tr>
             <th>Name</th>
@@ -77,8 +84,7 @@ if (isset($_GET['download'])) {
         </tr>
     <?php
     while ($r = $q->fetch_array(MYSQLI_ASSOC)) {
-        $uq = $db->query("SELECT * FROM users WHERE id = '" . $db->real_escape_string($r['uid']). "' LIMIT 1");
-        $user = $uq->fetch_array(MYSQLI_ASSOC);
+        $user = getUserInfo($r['uid']);
 
         // name
         // email
