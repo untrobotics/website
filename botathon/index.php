@@ -123,8 +123,8 @@ head('Botathon Info', true);
                             <ul class="list-xs list-marked">
                                 <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
                                 <li><a href="#event-details" class="text-content">Event Details</a></li>
-                                <!--<li><a href="#register" class="text-content">Register</a></li>-->
-                                <li><a href="#sponsors" class="text-content">Event Sponsors</a></li>
+                                <li><a href="#register" class="text-content">Register</a></li>
+                            <!--    <li><a href="#sponsors" class="text-content">Event Sponsors</a></li>
                                 <li><a href="#rules" class="text-content">Rules</a></li>
                                 <li><a href="#schedule" class="text-content">Schedule</a></li>
                                 <li><a href="#field-preview" class="text-content">Field Preview</a></li>
@@ -132,7 +132,7 @@ head('Botathon Info', true);
                                 <li><a href="#teams" class="text-content">Teams</a></li>
                                 <li><a href="#tshirts" class="text-content">T-Shirts</a></li>
                                 <li><a href="#contacts" class="text-content">Contact Info</a></li>
-                                <li><a href="brackets" class="text-content">Gameday Brackets</a></li>
+                                <li><a href="brackets" class="text-content">Gameday Brackets</a></li>-->
                             </ul>
                         </div>
                     </div>
@@ -144,17 +144,29 @@ head('Botathon Info', true);
             <div class="range range-md-justify">
                     <div class="cell-md-12 cell-lg-10">
                         <div class="inset-md-right-30 inset-lg-right-0">
-                            <h1><strong>Botathon</strong> - <em>Season 2 (2021)</em></h1>
+                            <h1><strong>Botathon</strong> - <em>Season 3 (2022)</em></h1>
 
-                            <p>Botathon has concluded for the year, we will release information about Season 3, early in the spring semester.</p>
+                            <h2>What is Botathon?</h2>
 
-                            <!--<p>Botathon is UNT’s second ever hosted robotics competition, think hackathon+robots!</p>
+                            <p>Botathon is a competition put on every year by UNT Robotics where UNT Students compete to test their skills in design, engineering, and team based problem solving.</p>
 
-                            <p>Participants will have 3 weeks to build a robot then compete head to head in a race to collect the most treasure on our custom built island. This event is open to all UNT students, with any amount of experience.</p>
+                            <p>Students compete by building a robot capable of partaking in each year’s game. Games each year can vary in form and rules in order to maintain a fair playing field for new and old competitors alike.</p>
+
+                            <p>Previous year’s games have ranged from obstacle courses to robot on robot combat and will continue to vary for future games to come.</p>
+
+                            <p>Botathon is all about teamwork and competition in order to promote creativity and comradery amongst its participants regardless of if they lose or not. </p>
+
+                            <h2>Registration</h2>
+
+                            <p>Registration For Botathon Season 3 will open on February 19th 2022 and end on March 20th and will be open to all currently enrolled UNT students.</p>
+
+                            <p>Participants will be able to register as teams if they wish but registering as a team will not be required as teams can be decided the day of the competition (March 26, 2022) if need be.</p>
+
+                            <p>Registration and additional game details can be found on the UNT Robotics website: www.untrobotics.com/botathon/</p>
 
                             <div class="well-custom">
                                 <div><h5><strong>Open to all UNT students.</strong></h5></div><div><h5>Learn something new and make new friends!</h5></div>
-                            </div>-->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -166,17 +178,9 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div>Registration</div>
-                    <h4><strong>Feb. 1:</strong> Registration Opened</h4>
+                    <h4><strong>Feb. 19:</strong> Registration Opened</h4>
+                    <h4><strong>Mar. 20:</strong> Registration Closed</h4>
 
-                    <div style="margin-top: 20px;">Build Season</div>
-                    <h4><strong>Mar. 22 - Mar. 29:</strong> Build Period</h4>
-                    <h4><strong>Apr. 5 - Apr. 7:</strong> Inspection Period</h4>
-
-                    <div style="margin-top: 20px;">Competition Day</div>
-                    <h4><em>12pm-6pm</em>, <strong>Saturday, April 10th, 2021</strong></h4>
-                    <h3>@ <strong>HOME</strong> and in our <a href="/join/discord">Discord</a></h3>
-
-                    <p>Our official informational packet is available <a href="/downloads/botathon/botathon-info-packet-s2.pdf">here</a>.</p>
                 </div>
             </div>
         </div>
@@ -193,7 +197,7 @@ head('Botathon Info', true);
                 </div>
             </div>
         </div>
-    </section>-->
+    </section>
 
     <section class="section-50" id="sponsor">
         <div class="shell">
@@ -269,14 +273,14 @@ head('Botathon Info', true);
                         </div>
 
 
-                        <!--
+                        
                         <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-2.jpg" alt="" width="485" height="555" class="img-responsive"/>
                           <h6><a href="/images/botathon-photos/cad-2.jpg">3D CAD of the field</a></h6>
                         </div>
                         <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-3.jpg" alt="" width="485" height="555" class="img-responsive"/>
                           <h6><a href="/images/botathon-photos/cad-3.jpg">Birds eye CAD of the field</a></h6>
                         </div>
-                        -->
+                        
                     </div>
                 </div>
             </div>
@@ -421,7 +425,7 @@ head('Botathon Info', true);
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
 
 </main>
