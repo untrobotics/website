@@ -117,13 +117,13 @@ head('Botathon Info', true);
     <section class="section-50" id="botathon-navigation">
         <div class="shell">
             <div class="range range-md-right">
-                <div class="col-lg-12 botathon-navigation">
-                    <div class="well-custom-1">
-                        <h4 class="text-regular">Navigation</h4>
-                        <ul class="list-xs list-marked">
-                            <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
-                            <li><a href="#event-details" class="text-content">Event Details</a></li>
-                            <li><a href="#register" class="text-content">Register</a></li>
+                    <div class="col-lg-12 botathon-navigation">
+                        <div class="well-custom-1">
+                            <h4 class="text-regular">Navigation</h4>
+                            <ul class="list-xs list-marked">
+                                <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
+                                <li><a href="#event-details" class="text-content">Event Details</a></li>
+                                <li><a href="#register" class="text-content">Register</a></li>
                             <!--    <li><a href="#sponsors" class="text-content">Event Sponsors</a></li>
                                 <li><a href="#rules" class="text-content">Rules</a></li>
                                 <li><a href="#schedule" class="text-content">Schedule</a></li>
@@ -133,7 +133,8 @@ head('Botathon Info', true);
                                 <li><a href="#tshirts" class="text-content">T-Shirts</a></li>
                                 <li><a href="#contacts" class="text-content">Contact Info</a></li>
                                 <li><a href="brackets" class="text-content">Gameday Brackets</a></li>-->
-                        </ul>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -142,30 +143,31 @@ head('Botathon Info', true);
     <section class="section-50" id="info">
         <div class="shell">
             <div class="range range-md-justify">
-                <div class="cell-md-12 cell-lg-10">
-                    <div class="inset-md-right-30 inset-lg-right-0">
-                        <h1><strong>Botathon</strong> - <em>Season 3 (2022)</em></h1>
+                    <div class="cell-md-12 cell-lg-10">
+                        <div class="inset-md-right-30 inset-lg-right-0">
+                            <h1><strong>Botathon</strong> - <em>Season 3 (2022)</em></h1>
 
-                        <h2>What is Botathon?</h2>
+                            <h2>What is Botathon?</h2>
 
-                        <p>Botathon is a competition put on every year by UNT Robotics where UNT Students compete to test their skills in design, engineering, and team based problem solving.</p>
+                            <p>Botathon is a competition put on every year by UNT Robotics where UNT Students compete to test their skills in design, engineering, and team based problem solving.</p>
 
-                        <p>Students compete by building a robot capable of partaking in each year’s game. Games each year can vary in form and rules in order to maintain a fair playing field for new and old competitors alike.</p>
+                            <p>Students compete by building a robot capable of partaking in each year’s game. Games each year can vary in form and rules in order to maintain a fair playing field for new and old competitors alike.</p>
 
-                        <p>Previous year’s games have ranged from obstacle courses to robot on robot combat and will continue to vary for future games to come.</p>
+                            <p>Previous year’s games have ranged from obstacle courses to robot on robot combat and will continue to vary for future games to come.</p>
 
-                        <p>Botathon is all about teamwork and competition in order to promote creativity and comradery amongst its participants regardless of if they lose or not. </p>
+                            <p>Botathon is all about teamwork and competition in order to promote creativity and comradery amongst its participants regardless of if they lose or not. </p>
 
-                        <h2>Registration</h2>
+                            <h2>Registration</h2>
 
-                        <p>Registration For Botathon Season 3 will open on February 19th 2022 and end on March 20th and will be open to all currently enrolled UNT students.</p>
+                            <p>Registration For Botathon Season 3 will open on February 19th 2022 and end on March 20th and will be open to all currently enrolled UNT students.</p>
 
-                        <p>Participants will be able to register as teams if they wish but registering as a team will not be required as teams can be decided the day of the competition (March 26, 2022) if need be.</p>
+                            <p>Participants will be able to register as teams if they wish but registering as a team will not be required as teams can be decided the day of the competition (March 26, 2022) if need be.</p>
 
-                        <p>Registration and additional game details can be found on the UNT Robotics website: www.untrobotics.com/botathon/</p>
+                            <p>Registration and additional game details can be found on the UNT Robotics website: www.untrobotics.com/botathon/</p>
 
-                        <div class="well-custom">
-                            <div><h5><strong>Open to all UNT students.</strong></h5></div><div><h5>Learn something new and make new friends!</h5></div>
+                            <div class="well-custom">
+                                <div><h5><strong>Open to all UNT students.</strong></h5></div><div><h5>Learn something new and make new friends!</h5></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -259,33 +261,33 @@ head('Botathon Info', true);
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0 field-preview">
                         <!--<h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>-->
-    <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/fieldPreview1.png" alt="" width="485" height="555" class="img-responsive"/>
-        <h6><a href="/images/botathon-photos/fieldPreview1.png">The botathon competition field overview</a></h6>
-    </div>
-    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/robots-square.jpg" alt="" width="485" height="555" class="img-responsive"/>
-        <h6><a href="/images/botathon-photos/robots-square.jpg">Demo pirate ships squaring off</a></h6>
-    </div>
-    <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img src="/images/botathon-photos/fieldPreview2.png" alt="" width="485" height="555" class="img-responsive"/>
-        <h6><a href="/images/botathon-photos/fieldPreview2.png">The botathon competition kraken side of field</a></h6>
-    </div>
-    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/fieldPreview3.png" alt="" width="485" height="555" class="img-responsive"/>
-        <h6><a href="/images/botathon-photos/fieldPreview3.png">The botathon competition jewels side of field</a></h6>
-    </div>
+                        <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/fieldPreview1.png" alt="" width="485" height="555" class="img-responsive"/>
+                            <h6><a href="/images/botathon-photos/fieldPreview1.png">The botathon competition field overview</a></h6>
+                        </div>
+                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/robots-square.jpg" alt="" width="485" height="555" class="img-responsive"/>
+                            <h6><a href="/images/botathon-photos/robots-square.jpg">Demo pirate ships squaring off</a></h6>
+                        </div>
+                        <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img src="/images/botathon-photos/fieldPreview2.png" alt="" width="485" height="555" class="img-responsive"/>
+                            <h6><a href="/images/botathon-photos/fieldPreview2.png">The botathon competition kraken side of field</a></h6>
+                        </div>
+                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/fieldPreview3.png" alt="" width="485" height="555" class="img-responsive"/>
+                            <h6><a href="/images/botathon-photos/fieldPreview3.png">The botathon competition jewels side of field</a></h6>
+                        </div>
 
 
+                        
+                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-2.jpg" alt="" width="485" height="555" class="img-responsive"/>
+                          <h6><a href="/images/botathon-photos/cad-2.jpg">3D CAD of the field</a></h6>
+                        </div>
+                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-3.jpg" alt="" width="485" height="555" class="img-responsive"/>
+                          <h6><a href="/images/botathon-photos/cad-3.jpg">Birds eye CAD of the field</a></h6>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
 
-    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-2.jpg" alt="" width="485" height="555" class="img-responsive"/>
-        <h6><a href="/images/botathon-photos/cad-2.jpg">3D CAD of the field</a></h6>
-    </div>
-    <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img src="/images/botathon-photos/cad-3.jpg" alt="" width="485" height="555" class="img-responsive"/>
-        <h6><a href="/images/botathon-photos/cad-3.jpg">Birds eye CAD of the field</a></h6>
-    </div>
-
-    </div>
-    </div>
-    </div>
-
-    </div>
+        </div>
     </section>
 
     <section class="section-50" id="parts-list">
