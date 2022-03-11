@@ -23,6 +23,41 @@ if (ENVIRONMENT == Environment::PRODUCTION) {
     $discord_channel = DISCORD_WEB_LOGS_CHANNEL_ID;
 }
 
+$not_found_paths_to_ignore = array(
+    "wp-login.php",
+    "xmlrpc.php",
+    "wp-config.php",
+    "force-download.php",
+    "maintenance.php",
+    "insom.php",
+    "demit.php",
+    "up.php",
+    "fuck.php",
+    "modules.php",
+    "286118814.php",
+    "vertigo.php",
+    "Foto2018.php",
+    "Foto02018.php",
+    "Drupal2019.php",
+    "logo2019.php",
+    "drupal.php",
+    "zeXXX.php",
+    "ramz.php",
+    "cia.php",
+    "pilat.php",
+    "accesson.php",
+    "renata.php",
+    "authorize_old.php"
+);
+
+$offending_patterns = array(
+    "@^AH01797@"
+);
+
+foreach ($not_found_paths_to_ignore as $path) {
+    $offending_patterns[] = "@^script '/var/www/untrobotics/{$path}' not found or unable to stat@i";
+}
+
 if ($did_match) {
     foreach ($matches[0] as $k => $m) {
         $timestamp = $matches[1][$k];
@@ -31,15 +66,15 @@ if ($did_match) {
         $request_info = $matches[4][$k];
         $error_message = $matches[5][$k];
 
-        if (preg_match("/^AH01797/", $error_message)) {
-            //$error_message .= "\n\nThis message will soon be ignored.";
-            continue;
-        } else if (preg_match("@^script '/var/www/untrobotics/wp-login.php' not found or unable to stat@", $error_message)) {
-            $error_message .= "\n\nThis message will soon be ignored.";
+        foreach ($offending_patterns as $pattern) {
+            if (preg_match($pattern, $error_message)) {
+                continue 2;
+            }
         }
 
         AdminBot::send_message(
-            "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel);
+            "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel
+        );
     }
 } else {
     var_dump(AdminBot::send_message("```({$prev} => {$current})\n[ERROR LOG MESSAGE PARSE FAILED]\n{$message}```", $discord_channel));

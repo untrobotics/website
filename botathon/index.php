@@ -137,6 +137,7 @@ head('Botathon Info', true);
                         </div>
                     </div>
                 </div>
+            </div>
     </section>
 
     <section class="section-50" id="info">
@@ -170,6 +171,7 @@ head('Botathon Info', true);
                         </div>
                     </div>
                 </div>
+            </div>
     </section>
 
     <section class="section-50" id="event-details">

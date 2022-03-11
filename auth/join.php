@@ -13,7 +13,7 @@ if (!empty($_POST)) {
 	$password1 = $_POST['password1'];
 	$password2 = $_POST['password2'];
 
-	$valid_grad_terms = array('spring', 'summer', 'fall');
+	$valid_grad_terms = array('spring', 'fall', 'summer');
 
 	do {
 		if (strlen($name) < 4) {

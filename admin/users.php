@@ -4,7 +4,13 @@ require("../template/top.php");
 $term = $untrobotics->get_current_term();
 $year = $untrobotics->get_current_year();
 
-$q = $db->query("SELECT * FROM dues_payments WHERE dues_term = '$term' AND dues_year = '$year'");
+$q = $db->query("SELECT * FROM dues_payments WHERE dues_term = '$term' AND dues_year = '$year' ORDER BY payment_timestamp DESC");
+
+function getUserInfo($uid) {
+    global $db;
+    $uq = $db->query("SELECT * FROM users WHERE id = '" . $uid. "' LIMIT 1");
+    return $uq->fetch_array(MYSQLI_ASSOC);
+}
 
 if (isset($_GET['download'])) {
 
@@ -14,8 +20,7 @@ if (isset($_GET['download'])) {
     header("Expires: 0");
 
     while ($r = $q->fetch_array(MYSQLI_ASSOC)) {
-        $uq = $db->query("SELECT * FROM users WHERE id = '" . $db->real_escape_string($r['uid']). "' LIMIT 1");
-        $user = $uq->fetch_array(MYSQLI_ASSOC);
+        $user = getUserInfo($r['uid']);
 
         // name
         // email
@@ -66,6 +71,8 @@ if (isset($_GET['download'])) {
         </span>
     </div>
 
+    <strong>Total: <?php echo $q->num_rows; ?></strong>
+
     <table>
         <tr>
             <th>Name</th>
@@ -74,11 +81,11 @@ if (isset($_GET['download'])) {
             <th>EUID</th>
             <th>Dues Payment Date</th>
             <th>Paypal Transaction</th>
+            <th>Discord ID</th>
         </tr>
     <?php
     while ($r = $q->fetch_array(MYSQLI_ASSOC)) {
-        $uq = $db->query("SELECT * FROM users WHERE id = '" . $db->real_escape_string($r['uid']). "' LIMIT 1");
-        $user = $uq->fetch_array(MYSQLI_ASSOC);
+        $user = getUserInfo($r['uid']);
 
         // name
         // email
@@ -93,6 +100,7 @@ if (isset($_GET['download'])) {
                 <td><?php echo $user['unteuid']; ?></td>
                 <td><?php echo $r['payment_timestamp']; ?></td>
                 <td><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=<?php echo $r['txid']; ?>"><?php echo $r['txid']; ?></a></td>
+                <td><?php echo $user['discord_id']; ?></td>
             </tr>
         <?php
     }
