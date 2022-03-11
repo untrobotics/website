@@ -103,9 +103,11 @@ head('Botathon Registration', true);
               </div>
 				
 				<div>
-                    <h4><small>Registration is open for all <span style="color:green;">UNT</span> students.</small><br><strong>Spots remaining: <span style="color:red;"><?php
-						echo botathon_spots_remaining();
-						?></span></strong></h4>
+                    <h4>
+                        <small>Registration is open for <strong>all</strong> <span style="color:green;">UNT</span> students.</small>
+                        <!--<br>
+                        <strong>Spots remaining: <span style="color:red;"><?php echo botathon_spots_remaining(); ?></span></strong>-->
+                    </h4>
 				</div>
             </div>
 			  <div class="shell text-left">
@@ -196,17 +198,17 @@ head('Botathon Registration', true);
 
 				  </div>
 					
-					<center>
-						<div style="padding: 40px 0px;">
+					<div class="offset-top-20 text-center">
+						<!--<div style="padding: 40px 0;">
 							<div style="max-width: 525px;">
 							<label class="checkbox-container"> I understand that if I do not attend the event without notifying organisers, I will be taking a spot away from someone else.
 							  <input id="promise" name="promise" type="checkbox" data-constraints="@Required" class="form-control form-control-has-validation form-control-last-child">
 							  <span class="checkmark"></span>
 							</label>
 							</div>
-						</div>
+						</div>-->
 						<button type="submit" class="btn btn-form btn-default">Sign Up</button>
-					</center>
+					</div>
 
 				  </form>
 			  </div>
