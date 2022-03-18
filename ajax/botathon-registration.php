@@ -73,12 +73,11 @@ if (isset($_POST)) {
 			"' . $db->real_escape_string($unteuid) . '",
 			"' . $db->real_escape_string($team) . '",
 			"' . $db->real_escape_string($disability_accommodations) . '",
-			"' . $db->real_escape_string(BOTATHON_SEASON) . '",
+			"' . $db->real_escape_string(BOTATHON_SEASON) . '"
 		)
 		');
 		if ($q) {
 			echo 'SUCCESS';
-			
 			AdminBot::send_message($name . ' has signed up for bothaton. There are ' . botathon_spots_remaining() . ' spots remaining.');
 		} else {
 			echo 'ERROR';
