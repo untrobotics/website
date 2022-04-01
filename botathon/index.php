@@ -149,7 +149,7 @@ head('Botathon Info', true);
 
                             <h2>What is Botathon?</h2>
 
-                            <p>Botathon is a competition put on every year by UNT Robotics where UNT Students compete to test their skills in design, engineering, and team based problem solving.</p>
+                            <p>Botathon is a competition put on every year by UNT Robotics where UNT Students compete to test their skills in design, engineering, and team based problem solving.|</p>
 
                             <p>Students compete by building a robot capable of partaking in each year’s game. Games each year can vary in form and rules in order to maintain a fair playing field for new and old competitors alike.</p>
 
