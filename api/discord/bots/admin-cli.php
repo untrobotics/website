@@ -27,7 +27,27 @@ $not_found_paths_to_ignore = array(
     "wp-login.php",
     "xmlrpc.php",
     "wp-config.php",
-    "force-download.php"
+    "force-download.php",
+    "maintenance.php",
+    "insom.php",
+    "demit.php",
+    "up.php",
+    "fuck.php",
+    "modules.php",
+    "286118814.php",
+    "vertigo.php",
+    "Foto2018.php",
+    "Foto02018.php",
+    "Drupal2019.php",
+    "logo2019.php",
+    "drupal.php",
+    "zeXXX.php",
+    "ramz.php",
+    "cia.php",
+    "pilat.php",
+    "accesson.php",
+    "renata.php",
+    "authorize_old.php"
 );
 
 $offending_patterns = array(
@@ -35,7 +55,7 @@ $offending_patterns = array(
 );
 
 foreach ($not_found_paths_to_ignore as $path) {
-    $offending_patterns[] = "@^script '/var/www/untrobotics/{$path}' not found or unable to stat@";
+    $offending_patterns[] = "@^script '/var/www/untrobotics/{$path}' not found or unable to stat@i";
 }
 
 if ($did_match) {

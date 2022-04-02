@@ -81,6 +81,7 @@ if (isset($_GET['download'])) {
             <th>EUID</th>
             <th>Dues Payment Date</th>
             <th>Paypal Transaction</th>
+            <th>Discord ID</th>
         </tr>
     <?php
     while ($r = $q->fetch_array(MYSQLI_ASSOC)) {
@@ -99,6 +100,7 @@ if (isset($_GET['download'])) {
                 <td><?php echo $user['unteuid']; ?></td>
                 <td><?php echo $r['payment_timestamp']; ?></td>
                 <td><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=<?php echo $r['txid']; ?>"><?php echo $r['txid']; ?></a></td>
+                <td><?php echo $user['discord_id']; ?></td>
             </tr>
         <?php
     }

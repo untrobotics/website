@@ -8,7 +8,16 @@ if (isset($_POST)) {
     do {
         if (isset($_POST['userid'])){
             $id = $_POST['userid'];
+
+            $q = $db->query('SELECT * FROM ftpusers WHERE id = "' . $db->real_escape_string($id) . '"');
+
+            $user = $q->fetch_assoc();
+            $username = $user['name'];
+
+            unlink(FTP_USER_CONFIG_DIR . $username);
+
             $q = $db->query('DELETE FROM ftpusers WHERE id = "' . $db->real_escape_string($id) . '"');
+            var_dump($q);
         }
     } while (false);
 
@@ -27,7 +36,7 @@ if (isset($_POST)) {
             break;
         }
 
-        if (strlen($username) < 5){
+        if (strlen($username) == 0){
             echo 'INVALID_USERNAME';
             break;
         }
@@ -43,6 +52,8 @@ if (isset($_POST)) {
 			"' . $db->real_escape_string($username) . '",
 		    PASSWORD("' . $db->real_escape_string($password) . '")
 		)');
+
+        copy(FTP_USER_CONFIG_FILE, FTP_USER_CONFIG_DIR . $username);
 
         if ($q) {
             echo 'ADD_SUCCESS';
