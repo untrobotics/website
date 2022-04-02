@@ -188,7 +188,7 @@ head('Botathon Info', true);
         </div>
     </section>
 
-    <!--<section class="section-50" id="sponsors">
+    <section class="section-50" id="sponsors">
         <div class="shell">
             <h2>Register</h2>
             <div class="range">
@@ -223,11 +223,40 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <p>Teams of up to four students will be given a robot kit <em>(consult the parts list below to see what these contain)</em>, and 2 weeks in which they may build a robot ship. The robot ship will then be submitted for inspection where UNT Robotics will hold it until competition day.</p>
-                        <p><strong>The challenge: </strong>Collaborate with an opposing pirate crew to fire cannons and defeat The Kraken as quickly as possible, gaining access to The Treasure Room. From there it's an all out race against the opposing crew to collect the most treasure.</p>
-                        <p>Stage 1 consists of The Kraken room. It contains The Kraken, and 3 elevated platforms with cannons on them. The objective is to work together with the opposing pirate crew to fire all 3 of the cannons, effectively disabling the Kraken and unlocking The Treasure Room. Pirate crews will be given the same score in this stage, which depends on the time taken to take down The Kraken.</p>
-                        <p>The second stage consists of The Treasure Room. This room is randomly filled with an assortment of treasure, with the highest quality treasure being on raised platforms. The objective in this stage is to push treasure into your Coffer located on one side of the field. Points will be based on both the quantity and quality of treasure collected. </p>
-                        <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet-s2.pdf">information packet</a>.</p>
+                        <h3> GAME OBJECTIVE:</h3>
+                        <p> Each team will build a tornament legal robot to score as many goals as possible in the 3 minute match time. 
+                            Each goal is worth one point. At the end of the three minutes the team with the most point wins and advances 
+                            on to the next round.</p>
+                            <br><br>
+                        <h3> BUILD RULES</h3>
+                        <p> Teams for Botathan will consist of 3-5 individuals. Each team must design and build a game legal robot using the provided kit, tools as well as any additional materials provided by the Botathon Planning Committee within the designated build time. Additional/personal parts may be brought in by teams, however the total cost of all personal items must not exceed $50. </p>
+                        <p> These personal items may inlude but are not limited to:</p>
+                        <ul> 
+                            <li> 3D Printed Attachements</li>
+                            <li> Motors/servos and other actuating devices</li>
+                            <li> Analog and Digital Sensors and other Electrical Components</li>
+                            <li> Wood, cardboard, and acylic attachements</li>
+                            <li> Pool Noodles</li>
+                        </ul>
+                        <p> List of Banned Personal Items include but are not limited to:</p>
+                        <ul> 
+                            <li> Loudspeakers/Air home</li>
+                            <li> Lasers and high intensity light or heat sources</li>
+                            <li> Flame producing elements</li>
+                            <li> Hydraulics</li>
+                            <li> Circuitry and electronics exceeding 24V</li>
+                            <li> Anything that will damage or leave marks on the competition field</li>
+                        </ul>
+
+                        <h3> MATCH RULES</h3>
+                        <p> After the build time has been completed each team's name will be entered randomly into a double elimination tournament bracket for matches to begin shortly. Each matchup will consist of 2 teams for a duration of three minutes. Before the time for each match starts each robot must be placed in the game field behind a designated starting line. Each team may determine how to orient and position their robot behind the starting line provided that the entirety of the robot is behind the designated line.</p>
+                        <p> The three minutes of the game will begin when the referee signals the match to start with their whistle. Within the 3 minutes match time each team must score as many points as possible into the opposing team's goal. Each goal is worth one point. At the end of the three minutes the team with the most points at the end of the three minute match wins and advances on to the next stage. If at the end of the match there is a tie, 90 seconds of extra time will be added with sudden death. This means that the next team that scores a goal regardless of the time left in extra time wins. </p>
+                        <p> Robots may not be allowed to intentionally deploy objects or smaller subsystems on the game field. Deployable objects are items and systems that are specifically designed to be released from the main robot. If a part were to fall off the robot unintentionally as the match occurs, it is not considered to be deployable. In the event of this action the part that has been dropped will be removed by the referee of the match to ensure that it does not interfere with the match outcome.</p>
+                        
+                        <h3> Shoot Outs:</h3>
+                        <p> If a winner is still not yet determined after sudden death then a penalty shoot out will occur. Shoot outs will have the defending robot in front of the goal. This robot can only move in a side to side direction. The other) will be positioned outside the penalty circle and will have to push the ball in one hit into the goal. After each shoot the offending and defending robots will switch positions and shoot again. Shoot outs are sudden death meaning that if one robot is able to hit the ball into the goal where the other is not then the scoring robot wins. </p>
+
+
                     </div>
                 </div>
             </div>
@@ -241,12 +270,13 @@ head('Botathon Info', true);
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <table id="schedule">
-                            <tr><td>&nbsp;10:00 am</td><td>Volunteer Call Time</td></tr>
-                            <tr><td>&nbsp;11:30 am</td><td>Online Check-In & Review of Event and Rules</td></tr>
-                            <tr><td>&nbsp;12:00 pm</td><td>Competition Begins</td></tr>
-                            <tr><td>&nbsp;1:30 pm</td><td>Lunch Break</td></tr>
-                            <tr><td>&nbsp;2:30 pm</td><td>Resume Competition</td></tr>
-                            <tr><td>&nbsp;6:00 pm</td><td>Winners Announced</td></tr>
+                            <tr><td>&nbsp;9:00 am</td><td>Check In Opens</td></tr>
+                            <tr><td>&nbsp;10:00 am</td><td>Team Finding Event</td></tr>
+                            <tr><td>&nbsp;10:30 pm</td><td>Build Time!!</td></tr>
+                            <tr><td>&nbsp;1:00 pm</td><td>Lunch Break</td></tr>
+                            <tr><td>&nbsp;5:00 pm</td><td>Competition Begins</td></tr>
+                            <tr><td>&nbsp;6:30 pm</td><td>Dinner</td></tr>
+                            <tr><td>&nbsp;9:00 pm</td><td>Closing Ceremony & Winners Announced<td/></tr>
                         </table>
                     </div>
                 </div>
@@ -427,7 +457,7 @@ head('Botathon Info', true);
                 </div>
             </div>
         </div>
-    </section> -->
+    </section>
 
 
 </main>
