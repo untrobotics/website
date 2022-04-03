@@ -2,7 +2,7 @@
 
 require('../template/top.php');
 
-$q = $db->query("SELECT * FROM botathon_registration");
+$q = $db->query('SELECT * FROM botathon_registration WHERE season = "' . $db->real_escape_string(BOTATHON_SEASON) . '"');
 
 echo '<pre>';
 
@@ -18,7 +18,6 @@ while ($r = $q->fetch_array(MYSQLI_ASSOC)) {
 		'DIET RESTRICTIONS: ' . $r['diet_restrictions'] . PHP_EOL .
 		'LATEX ALLERGY: ' . (($r['latex_allergy'] == 0) ? 'No.' : '<strong>Yes.</strong>') . PHP_EOL .
         'TEAM: ' . $r['team_name'] . PHP_EOL .
-        'Disability Accommodations: ' . $r ['disability_accommodations'] . PHP_EOL .
 		'EUID: ' . $r['unteuid'] . PHP_EOL;
 }
 

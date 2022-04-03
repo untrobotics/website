@@ -13,7 +13,7 @@ head('Our Team', true);
         <!-- Classic Breadcrumbs-->
         <section class="breadcrumb-classic">
             <div class="rd-parallax">
-                <div data-speed="0.25" data-type="media" data-url="/images/headers/activities.jpg" class="rd-parallax-layer"></div>
+                <div data-speed="0.25" data-type="media" data-url="/images/breadcrumbs-parallax.jpg" class="rd-parallax-layer"></div>
                 <div data-speed="0" data-type="html" class="rd-parallax-layer section-top-75 section-md-top-150 section-lg-top-260">
                     <div class="shell">
                         <ul class="list-breadcrumb">
@@ -67,7 +67,7 @@ head('Our Team', true);
                     </div>
                     <div class="cell-md-6">
                         <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                            <h6 class="h6-with-small"><a href="#"> Lauren Caves</a><span class="small text-silver-chalice">Co-President</span></h6>
+                            <h6 class="h6-with-small"><p> Lauren Caves</p><span class="small text-silver-chalice">Co-President</span></h6>
                             <p>She’s a woman of action, eternal optimist, and a passionate speaker. As an undergraduate mechanical engineering student, her enthusiasm for the art of engineering is vast and the hunger for discovery drives her motivation which has led to many successes during her undergraduate years. Although not easily. She has gone through many failures and complicated situations which shaped a new passion to inspire the youth and other students to overcome diversity and really fight for their dreams. She believes everyone is destined for greatness, and that it's important to not let the minor roadblocks we stumble upon crush the stars we wish upon. </p>
                             <ul class="list-inline-lg">
                                 <li>
@@ -88,7 +88,7 @@ head('Our Team', true);
                     </div>
                     <div class="cell-md-6">
                         <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                            <h6 class="h6-with-small"><a href="#"> Tyler Adam Martinez</a><span class="small text-silver-chalice">Vice President and Financial Director</span></h6>
+                            <h6 class="h6-with-small"><p> Tyler Adam Martinez</p><span class="small text-silver-chalice">Vice President and Financial Director</span></h6>
                             <p>Tyler is a junior currently studying electrical engineering with a minor in biomedical engineering. He focuses on robotics and automation, and loves designing cool circuits and building electronics. </p>
                             <ul class="list-inline-lg">
                                 <li>
@@ -105,7 +105,6 @@ head('Our Team', true);
                     </div>
                 </div>
             </div>
-
                 <!-- financial director -->
 <!--                <div class="cell-lg-12 bio-area">-->
 <!--                    <div class="range range-sm-middle">-->
@@ -262,16 +261,15 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
-
                 <!-- Aerospace Division Lead -->
                 <div class="cell-lg-12 bio-area">
                     <div class="range range-sm-middle">
-                        <div class="cell-md-3"><img src="/images/bio-pics/jesse-sullivan.jpg" alt="" width="360" height="404" class="img-responsive" />
+                        <div class="cell-md-3"><img src="/images/bio-pics/joe-moore.jpg" alt="" width="360" height="404" class="img-responsive" />
                         </div>
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
-                                <h6 class="h6-with-small"><a href="#"> Jesse Sullivan</a><span class="small text-silver-chalice">Aerospace Division Lead</span></h6>
-                                <p>Jesse is a senior mechanical engineering student interested in all things that fly and go fast. He has 4 years of experience in amateur high-power rocketry and currently holds an L1 certification with the National Association of Rocketry. He founded the Aerospace Division with UNT Robotics in order to foster interest in the hobby and provide a learning experience for anyone to become a part of. </p>
+                                <h6 class="h6-with-small"><a href="#"> Joe Moore</a><span class="small text-silver-chalice">Aerospace Division Lead</span></h6>
+                                <p>Joseph is a Junior Mechanical Engineering student. Formerly a US Marine Master Explosive Ordnance Disposal Technician (EOD), he has always tried to tinker with things and figure out how they work and is passionate about establishing and growing our High-Power Rocketry team into a nationally competitive force. Both through STEM outreach efforts and internal events, he hopes to generate interest and encourage everyone to get into hobby rocketry, and the sport of high power rocketry. </p>
                                 <ul class="list-inline-lg">
                                     <li>
                                         <a href="mailto:aerospace@untrobotics.com " class="icon icon-sm text-primary fa-envelope"></a>
