@@ -80,6 +80,7 @@ if (isset($_POST)) {
 			echo 'SUCCESS';
 			AdminBot::send_message($name . ' has signed up for bothaton. There are ' . botathon_spots_remaining() . ' spots remaining.');
 		} else {
+		    error_log("Failed to add botathon registration: " . $db->error);
 			echo 'ERROR';
 		}
 	} while (false);
