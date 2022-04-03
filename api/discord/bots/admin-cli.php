@@ -47,7 +47,8 @@ $not_found_paths_to_ignore = array(
     "pilat.php",
     "accesson.php",
     "renata.php",
-    "authorize_old.php"
+    "authorize_old.php",
+    "ccaef.php"
 );
 
 $offending_patterns = array(
