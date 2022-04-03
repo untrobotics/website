@@ -187,7 +187,7 @@ head('Botathon Info', true);
                             and there’s plenty of fun opportunities for advanced students too!
                         </p>
 
-                        <p>Botathon is all about teamwork and friendly competition, and our mission is to build knowledge and skills while promoting
+                        <p>Botathon is all about teamwork and friendly competition, our mission is to build knowledge and skills while promoting
                             creativity and camaraderie amongst all participants. </p>
 
                     </div>
