@@ -13,14 +13,17 @@ head('Botathon Info', true);
         padding-right: 15px;
         font-family: Consolas, "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", Monaco, "Courier New", "monospace";
         color: black;
-    }
-
-    #partsTable1 {
-        width: 70%;
+        white-space: nowrap;
     }
 
     .parts tr {
-        border-bottom: 1px solid gray;
+        background-color: #e1e1e1;
+        border-top: 2px solid white;
+        border-radius: 5px;
+    }
+
+    .parts tr td, .parts tr th {
+        padding: 5px;
     }
 
     .parts tr th {
@@ -90,6 +93,22 @@ head('Botathon Info', true);
         }
     }
 
+    .robot-kit-row {
+    }
+    .robot-kit-entry > div {
+        height: 100%;
+        border: 1px dotted black;
+        margin: 2px;
+    }
+    .robot-kit-entry h4 {
+        text-align: center;
+    }
+    .robot-kit-list li {
+        background-color: #e1e1e1;
+        padding: 5px;
+        margin-bottom: 4px;
+    }
+
 </style>
 
 <main class="page-content">
@@ -132,13 +151,13 @@ head('Botathon Info', true);
                         <ul class="list-xs list-marked">
                             <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
                             <li><a href="#register" class="text-content">Register</a></li>
-                            <li><a href="#" class="text-content">Event Sponsors</a></li>
                             <!--<li><a href="#rules" class="text-content">Rules</a></li>-->
                             <li><a href="#schedule" class="text-content">Schedule</a></li>
                             <li><a href="#field-preview" class="text-content">Field Preview</a></li>
                             <li><a href="#parts-list" class="text-content">Parts List</a></li>
                             <li><a href="#teams" class="text-content">Teams</a></li>
                             <!--<li><a href="#tshirts" class="text-content">T-Shirts</a></li>-->
+                            <li><a href="#" class="text-content">Event Sponsors</a></li>
                             <li><a href="#contacts" class="text-content">Contact Info</a></li>
                             <!--<li><a href="brackets" class="text-content">Gameday Brackets</a></li>-->
                         </ul>
@@ -156,15 +175,20 @@ head('Botathon Info', true);
 
                         <h2>What is Botathon?</h2>
 
-                        <p>Botathon is an annual competition hosted by UNT Robotics where UNT students compete to
-                            test their skills in design, engineering, and problem solving.</p>
+                        <p>Botathon is an annual event hosted by UNT Robotics where all UNT students are invited to compete in a one-day design,
+                            test, build and compete marathon!<p>
 
-                        <p>Students compete by building a robot capable of partaking in each year’s game. Games each
-                            year can vary in form and rules in order to maintain a fair playing field for new and old
-                            competitors alike.</p>
+                        <p>This year students will be building remote-controlled robots capable of playing soccer, followed by a mini tournament.</p>
 
-                        <p>Botathon is all about teamwork and competition in order to promote creativity and camaraderie
-                            amongst its participants regardless of if they lose or not. </p>
+                        <p>
+                            We provide everything you will need on the day, including parts, kits, tools, guides, mentorship,
+                            and fantastic food (lunch & dinner) for a packed day of robot building and competing. The event is open to all students,
+                            regardless of skill level, the event is aimed at entry level students looking to get involved with and learn about robotics,
+                            and there’s plenty of fun opportunities for advanced students too!
+                        </p>
+
+                        <p>Botathon is all about teamwork and friendly competition, and our mission is to build knowledge and skills while promoting
+                            creativity and camaraderie amongst all participants. </p>
 
                     </div>
                 </div>
@@ -183,7 +207,8 @@ head('Botathon Info', true);
 
                         <div class="cell-md-8 cell-lg-9">
                             <h4><strong>Feb. 19:</strong> Registration Opened</h4>
-                            <h4><strong>Mar. 20:</strong> Registration Ends</h4>
+                            <h4><strong>Apr. 8:</strong> Registration Ends</h4>
+                            <h4><strong>Apr. 9:</strong> Day of Event</h4>
                         </div>
 
                         <div class="well-custom">
@@ -213,27 +238,6 @@ head('Botathon Info', true);
         </div>
     </section>-->
 
-    <section class="section-50" id="sponsors">
-        <div class="shell">
-            <h2>Event Sponsors</h2>
-            <div class="range">
-                <div class="cell-md-8 cell-lg-9">
-                    <div class="sponsors">
-                        <p>Our sponsors are absolutely imperative to the success of UNT Robotics. We rely on our
-                            sponsors so we can continue to bring quality engineering experience to our members and the
-                            community. Every company provides us with invaluable support through both monetary and part
-                            donations. Your support will be greatly appreciated and we will be flexible with connecting
-                            our members with your company's message. </p>
-                        <p><strong>If you would like to become a UNT Robotics sponsor, please <a href="/contact">contact
-                                    us</a>!</strong></p>
-                        <div class="sponsor"><img src="/images/sponsor-logos/botathon/eagles-nest.jpg"
-                                                  alt="eagle's nest logo"/></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!--<section class="section-50" id="rules">
         <div class="shell">
             <h2>Rules</h2>
@@ -258,13 +262,14 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
+                        <div>Event Date: <strong>April 9, 2022</strong></div>
                         <table id="schedule">
                             <tr><td>&nbsp;9:00 am</td><td>Check In Opens</td></tr>
                             <tr><td>&nbsp;10:00 am</td><td>Team Finding Event</td></tr>
                             <tr><td>&nbsp;10:30 am</td><td>Build Time!</td></tr>
-                            <tr><td>&nbsp;1:00 pm</td><td>Lunch</td></tr>
+                            <tr><td>&nbsp;1:00 pm</td><td>Lunch (Which Wich)</td></tr>
                             <tr><td>&nbsp;5:00 pm</td><td>Competition Begins</td></tr>
-                            <tr><td>&nbsp;6:30 pm</td><td>Dinner</td></tr>
+                            <tr><td>&nbsp;6:30 pm</td><td>Dinner (Guiseppe's Italian)</td></tr>
                             <tr><td>&nbsp;9:00 pm</td><td>Closing Ceremony & Winners Announced</td></tr>
                         </table>
                     </div>
@@ -280,45 +285,30 @@ head('Botathon Info', true);
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0 field-preview">
                         <h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>
-                        <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/fieldPreview1.png" alt=""
-                                                             width="485" height="555"
-                                                             class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/fieldPreview1.png">The botathon competition field
-                                    overview</a></h6>
+                        <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img
+                                    src="/images/botathon-photos/season-3/field2.png"
+                                    alt="" width="485" height="555"
+                                    class="img-responsive"/>
+                            <h6><a href="/images/botathon-photos/season-3/field2.png">Arena birds-eye view</a></h6>
                         </div>
                         <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img
+                                    src="/images/botathon-photos/season-3/field3.png"
+                                    alt="" width="485" height="555"
+                                    class="img-responsive"/>
+                            <h6><a href="/images/botathon-photos/season-3/field3.png">Overfield of the competition field</a></h6>
+                        </div>
+                        <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/season-3/field1.png" alt=""
+                                                             width="485" height="555"
+                                                             class="img-responsive"/>
+                            <h6><a href="/images/botathon-photos/season-3/field1.png">The goal posts</a></h6>
+                        </div>
+                        <!--<div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img
                                     src="/images/botathon-photos/robots-square.jpg"
                                     alt="" width="485" height="555"
                                     class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/robots-square.jpg">Demo pirate ships squaring off</a>
+                            <h6><a href="/images/botathon-photos/robots-square.jpg">Demo robots squaring off</a>
                             </h6>
-                        </div>
-                        <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img
-                                    src="/images/botathon-photos/fieldPreview2.png"
-                                    alt="" width="485" height="555"
-                                    class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/fieldPreview2.png">The botathon competition kraken side
-                                    of field</a></h6>
-                        </div>
-                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img
-                                    src="/images/botathon-photos/fieldPreview3.png"
-                                    alt="" width="485" height="555"
-                                    class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/fieldPreview3.png">The botathon competition jewels side
-                                    of field</a></h6>
-                        </div>
-
-
-                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img
-                                    src="/images/botathon-photos/cad-2.jpg" alt=""
-                                    width="485" height="555" class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/cad-2.jpg">3D CAD of the field</a></h6>
-                        </div>
-                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img
-                                    src="/images/botathon-photos/cad-3.jpg" alt=""
-                                    width="485" height="555" class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/cad-3.jpg">Birds eye CAD of the field</a></h6>
-                        </div>
+                        </div>-->
 
                     </div>
                 </div>
@@ -337,139 +327,143 @@ head('Botathon Info', true);
                         <h4>Base Kits</h4>
                         <p>Each team will get to choose which base kit they want to use.</p>
 
-                        <div class="row offset-top-20">
-                            <h4>MECANUM WHEEL CAR ROBOT</h4>
-                            <div class="col-lg-6 col-sm-12">
-                                <table class="parts basekit" id="partsTable1">
-                                    <tr>
-                                        <th>Part Name</th>
-                                        <th>Quantity</th>
-                                    </tr>
-                                    <tr>
-                                        <td>UNO R3 Development Board</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>L293D Drive Board</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>HC-05 Bluetooth Module</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>HC-SR04 Ultrasonic Module</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Four-Way Tracking Module</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Infrared Detection Module</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr>
-                                        <td>DC Motor</td>
-                                        <td>4</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Rubber Wheels</td>
-                                        <td>4</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Servo</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Speed Code Disk</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Screws & Bolts</td>
-                                        <td>79</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Wires</td>
-                                        <td>50</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-lg-6 col-sm-12">
-                                <div class="botPics"><img src="/images/botathon-photos/mecanumBot.jpg"
-                                                          class="img-responsive"/></div>
-                            </div>
-                        </div>
+                        <div class="row offset-top-20 robot-kit-row">
 
+                            <div class="col-lg-4 col-sm-12 robot-kit-entry">
+                                <div>
+                                    <h4>MECANUM WHEEL CAR ROBOT</h4>
 
-                        <div class="row">
-                            <h4 style="margin-top: 70px;">RUBBER WHEEL CAR ROBOT</h4>
-                            <div class="col-lg-6 col-sm-12">
-                                <table class="parts basekit" id="partsTable1">
-                                    <tr>
-                                        <th>Part Name</th>
-                                        <th>Quantity</th>
-                                    </tr>
-                                    <tr>
-                                        <td>CH340G UNO R3 Development Board</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>UNO Expansion Board</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>L298N Driver Board</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>HC-SR04 Ultrasonic Module</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ultrasonic Bracket</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>18650 Battery Box</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>M3*15 Double Pass Copper Pillar</td>
-                                        <td>4</td>
-                                    </tr>
-                                    <tr>
-                                        <td>M3 Nut</td>
-                                        <td>2</td>
-                                    </tr>
-                                    <tr>
-                                        <td>M3*8 Screw</td>
-                                        <td>10</td>
-                                    </tr>
-                                    <tr>
-                                        <td>20cm Female to Female Dupont Wire</td>
-                                        <td>16</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mecanum Wheel Single-Layer Chassis</td>
-                                        <td>1</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mecanum Wheel Single-Layer Alloy Car</td>
-                                        <td>1</td>
-                                    </tr>
-                                </table>
+                                    <div class="botPics">
+                                        <img src="/images/botathon-photos/mecanum-wheeled-robot.jpg" alt="Mecanum wheeled robot" class="img-responsive"/>
+                                    </div>
+
+                                    <ul class="robot-kit-list">
+                                        <li>
+                                            Arduino UNO Microcontroller x1
+                                        </li>
+                                        <li>
+                                            L293D/L289N Motor Driver x1 or x2
+                                        </li>
+                                        <li>
+                                            7.2V 2200mAh Ni-MH Battery Pack x1
+                                        </li>
+                                        <li>
+                                            ESP32 Communication Module x1
+                                        </li>
+                                        <li>
+                                            DC Motor x4
+                                        </li>
+                                        <li>
+                                            Wheels x4
+                                        </li>
+                                        <li>
+                                            Single-layer Chassis x1
+                                        </li>
+                                        <li>
+                                            Speed Encoder Disk x4
+                                        </li>
+                                        <li>
+                                            Nuts & Bolts (Assorted)
+                                        </li>
+                                        <li>
+                                            Wires (Assorted)
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-                            <div class="col-lg-6 col-sm-12">
-                                <div class="botPics"><img src="/images/botathon-photos/rubberBot.jpg"
-                                                          class="img-responsive"/></div>
+
+                            <div class="col-lg-4 col-sm-12 robot-kit-entry">
+                                <div>
+                                    <h4>RUBBER WHEEL CAR ROBOT</h4>
+
+                                    <div class="botPics">
+                                        <img src="/images/botathon-photos/traditionally-wheeled-robot.jpg" alt="Traditionally wheeled robot" class="img-responsive"/>
+                                    </div>
+
+                                    <ul class="robot-kit-list">
+                                        <li>
+                                            Arduino UNO Microcontroller x1
+                                        </li>
+                                        <li>
+                                            L293D/L289N Motor Driver x1 or x2
+                                        </li>
+                                        <li>
+                                            7.2V 2200mAh Ni-MH Battery Pack x1
+                                        </li>
+                                        <li>
+                                            ESP32 Communication Module x1
+                                        </li>
+                                        <li>
+                                            DC Motor x4
+                                        </li>
+                                        <li>
+                                            Wheels x4
+                                        </li>
+                                        <li>
+                                            Dual-layer Chassis x2
+                                        </li>
+                                        <li>
+                                            Chassis Connectors x6
+                                        </li>
+                                        <li>
+                                            Speed Encoder Disk x4
+                                        </li>
+                                        <li>
+                                            Nuts & Bolts (Assorted)
+                                        </li>
+                                        <li>
+                                            Wires (Assorted)
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
+
+                            <div class="col-lg-4 col-sm-12 robot-kit-entry">
+                                <div>
+                                    <h4>TANK TRACK ROBOT</h4>
+
+                                    <div class="botPics">
+                                        <img src="/images/botathon-photos/tank-tracked-robot.jpg" alt="Tank track robot" class="img-responsive"/>
+                                    </div>
+
+                                    <ul class="robot-kit-list">
+                                        <li>
+                                            Arduino UNO Microcontroller x1
+                                        </li>
+                                        <li>
+                                            L293D/L289N Motor Driver x1 or x2
+                                        </li>
+                                        <li>
+                                            7.2V 2200mAh Ni-MH Battery Pack x1
+                                        </li>
+                                        <li>
+                                            ESP32 Communication Module x1
+                                        </li>
+                                        <li>
+                                            DC Motor x4
+                                        </li>
+                                        <li>
+                                            Tank tracks x2
+                                        </li>
+                                        <li>
+                                            Single-layer Chassis x1
+                                        </li>
+                                        <li>
+                                            Nuts & Bolts (Assorted)
+                                        </li>
+                                        <li>
+                                            Wires (Assorted)
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
                         </div>
 
 
                         <h4 style="margin-top: 40px;">Upgrades</h4>
-                        <p>These parts are able to be bought with doubloons (in-game currency) and will be in addition
-                            to the base kits parts that you are given freely. Each team is given 500 doubloons of
+                        <p>These parts are able to be bought with botbucks (in-game currency) and will be in addition
+                            to the base kits parts that you are given freely. Each team is given 500 botbucks of
                             in-game currency.</p>
                         <table class="parts upgrades">
                             <tr>
@@ -513,18 +507,13 @@ head('Botathon Info', true);
                                 <td>$100</td>
                             </tr>
                             <tr>
-                                <td>Buiding Materials</td>
+                                <td>Buiding Materials (cardboard, plastic, etc.)</td>
                                 <td>1</td>
-                                <td>TBD</td>
+                                <td>FREE</td>
                             </tr>
                             <tr>
                                 <td>Battery Harness</td>
                                 <td>1</td>
-                                <td>$50</td>
-                            </tr>
-                            <tr>
-                                <td>AA Battery</td>
-                                <td>4</td>
                                 <td>$50</td>
                             </tr>
                             <tr>
@@ -533,19 +522,9 @@ head('Botathon Info', true);
                                 <td>$10</td>
                             </tr>
                             <tr>
-                                <td>Ultrasonic Sensor</td>
+                                <td>Ultrasonic Distnace Sensor</td>
                                 <td>1</td>
                                 <td>$75</td>
-                            </tr>
-                            <tr>
-                                <td>3D Printing 30 mins</td>
-                                <td>unlimited</td>
-                                <td>$75</td>
-                            </tr>
-                            <tr>
-                                <td>3D Printing 1 hour (prior to event)</td>
-                                <td>unlimited</td>
-                                <td>$30</td>
                             </tr>
                             <tr>
                                 <td>Misc. screws &amp; bolts</td>
@@ -554,12 +533,12 @@ head('Botathon Info', true);
                             </tr>
                             <tr>
                                 <td>Jumper cables</td>
-                                <td>unknown</td>
+                                <td>10</td>
                                 <td>FREE</td>
                             </tr>
                             <tr>
                                 <td>Mini breadboards</td>
-                                <td>unknown</td>
+                                <td>1</td>
                                 <td>FREE</td>
                             </tr>
                         </table>
@@ -575,12 +554,11 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <p>Pirate Crews will consist of 3-4 members. Each crew will be given a base kit and 500
-                            doubloons of in-game currency to buy upgrade parts for their ship. Participants are
-                            encouraged to form their crew prior to registration, but single entry participants can be
-                            randomly matched with a pirate crew.</p>
-                        <p>There will be mentors to assist crews during the build process in our Discord as well as
-                            virtual build sessions. </p>
+                        <p>Teams will consist of 4-5 members. Each team will be given a base kit and 500
+                            botbucks of in-game currency to buy upgrade parts for their robot. Participants are
+                            encouraged to form their crew prior to registration, but a team building event will
+                            be held on the morning of the event to help find teammates.</p>
+                        <p>There will be mentors to assist teams during the build process in our <a href="/join/discord">Discord</a> as well as in person. </p>
                     </div>
                 </div>
             </div>
@@ -601,6 +579,27 @@ head('Botathon Info', true);
         </div>
     </section>-->
 
+    <section class="section-50" id="sponsors">
+        <div class="shell">
+            <h2>Event Sponsors</h2>
+            <div class="range">
+                <div class="cell-md-8 cell-lg-9">
+                    <div class="sponsors">
+                        <p>Our sponsors are absolutely imperative to the success of UNT Robotics. We rely on our
+                            sponsors so we can continue to bring quality engineering experience to our members and the
+                            community. Every company provides us with invaluable support through both monetary and part
+                            donations. Your support will be greatly appreciated and we will be flexible with connecting
+                            our members with your company's message. </p>
+                        <p><strong>If you would like to become a UNT Robotics sponsor, please <a href="/contact">contact
+                                    us</a>!</strong></p>
+                        <div class="sponsor"><img src="/images/sponsor-logos/botathon/eagles-nest.jpg"
+                                                  alt="eagle's nest logo"/></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="section-50" id="contacts">
         <div class="shell">
             <h2>Contact Info</h2>
@@ -617,7 +616,6 @@ head('Botathon Info', true);
             </div>
         </div>
     </section>
-    -->
 
 
 </main>
