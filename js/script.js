@@ -1592,7 +1592,7 @@ $document.ready(function () {
         'SUCCESS': 'You have been successfully registered!',
 		'CONTACT_SUCCESS': 'Your message has been successfully sent!',
         'INVALID_NAME': 'Please enter a valid name.',
-        'INVALID_EMAIL': 'The e-mail address you entered is not valid.',
+        'INVALID_EMAIL': 'The e-mail address you entered is not valid. Please ensure the email ends with @my.unt.edu.',
         'INVALID_PHONE': 'Please enter a valid U.S. phone number.',
         'INVALID_GENDER': 'Please select a gender from the list.',
         'INVALID_CLASSIFICATION': 'Please select a classification from the list.',

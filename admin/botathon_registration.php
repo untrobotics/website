@@ -2,7 +2,7 @@
 
 require('../template/top.php');
 
-$q = $db->query("SELECT * FROM botathon_registration");
+$q = $db->query('SELECT * FROM botathon_registration WHERE season = "' . $db->real_escape_string(BOTATHON_SEASON) . '"');
 
 echo '<pre>';
 

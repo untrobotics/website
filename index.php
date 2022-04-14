@@ -95,7 +95,6 @@ head('Home', true);
 					  	<div class="sponsors">
 							<div class="sponsor"><img src="/images/sponsor-logos/respec.jpg"/></div>
 							<div class="sponsor"><img src="/images/sponsor-logos/servocity.jpg"/></div>
-							<div class="sponsor"><img src="/images/sponsor-logos/studyology.jpg"/></div>
 							<div class="sponsor"><img src="/images/sponsor-logos/ieee-ft-worth.jpg"/></div>
 							<div class="sponsor"><img src="/images/sponsor-logos/eagles-nest.jpg"/></div>
 						</div>

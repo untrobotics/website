@@ -266,7 +266,7 @@ head('Order Shirts & Hoodies', true);
 							<img src="https://m.media-amazon.com/images/I/91IM87eeuCL._AC_CLa%7C2140%2C2000%7C51EkzFK%2BZ9L.png%7C0%2C0%2C2140%2C2000%2B0.0%2C0.0%2C2140.0%2C2000.0_UX679_.png" />
 							<img src="https://m.media-amazon.com/images/I/91TEt6lN0LL._AC_CLa%7C2140%2C2000%7C710mMTLKfpL.png%7C0%2C0%2C2140%2C2000%2B0.0%2C0.0%2C2140.0%2C2000.0_UX679_.png" />
 						</div>
-						<a class="btn btn-primary buy-product" href="https://www.amazon.com/dp/B08J63R8MQ" />Buy Now</a>
+						<a class="btn btn-primary buy-product" href="https://www.amazon.com/dp/B08HRYRXZH" />Buy Now</a>
 					</div>
 				</div>
 				<div class="cell-lg-3 product-listing shirt-hoodie">

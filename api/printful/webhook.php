@@ -7,7 +7,8 @@ function webhook_log($message) {
 	file_put_contents(BASE . '/admin/logging/printful-webhook.log', '[' . date('c', time()) . '] ' . $message . PHP_EOL, FILE_APPEND);
 }
 
-$data = json_decode(file_get_contents('php://input'));
+$raw_data = file_get_contents('php://input');
+$data = json_decode($raw_data);
 
 $type = $data->type;
 $created = $data->created;
@@ -59,6 +60,7 @@ try {
 			break;
 		case PrintfulWebhookType::PACKAGE_SHIPPED:
 			webhook_log(PHP_EOL . PHP_EOL . "Received shipment event");
+            webhook_log("RAW REQUEST:\n{$raw_data}");
 			$printful_event = new PrintfulShippedEvent($data->data);
 
 			// log this request
@@ -82,21 +84,21 @@ try {
 			// check if the shipment notification has already been sent!
             $retry = false;
 
-			$q = $db->query("SELECT count(*) FROM printful_shipment WHERE shipment_id = " . $db->real_escape_string($shipment_id));
+			$q = $db->query("SELECT * FROM printful_shipment WHERE shipment_id = " . $db->real_escape_string($shipment_id));
 			if (!$q) {
 				webhook_log("[{$log_prefix}] Failed to check if shipment was already processed, returned error: {$db->error}.");
 				throw new PrintfulWebhookException("Failed to check if shipment was already processed for order #{$printful_event->get_order()->get_id()}.");
 			} else if ($q->num_rows > 0) {
-			    $r = $q->fetch_assoc();
+			    $r = $q->fetch_array(MYSQLI_ASSOC);
 			    if ($r['confirmed'] != 1) {
                     webhook_log("[{$log_prefix}] Received retry shipment notification.");
 			        $retry = true;
                     $printful_shipment_db_id = $r['id'];
                 } else {
                     webhook_log("[{$log_prefix}] Received duplicate shipment notification. Ignoring.");
-                    AdminBot::send_message("(PRW) Notice: THIS IS A TEMPORARY NOTIFICATION. Received DUPLICATE notification for: Order #[{$printful_event->get_shipment()->get_id()}/{$printful_event->get_order()->get_id()}] has shipped.");
+                    AdminBot::send_message("(PRW) Notice: Received DUPLICATE notification for: Order #[{$printful_event->get_shipment()->get_id()}/{$printful_event->get_order()->get_id()}] has shipped.");
+                    return;
                 }
-				return;
 			}
 			
 			// create an entry in the database for the shipment information
@@ -203,7 +205,7 @@ try {
 				AdminBot::send_message("(PRW) Alert: Printful shipment table failed to commit confirmation update for [{$printful_event->get_shipment()->get_id()}/{$printful_event->get_order()->get_id()}]. (super secret id: {$printful_shipment_db_id})");
 			} else {
 				webhook_log("[{$log_prefix}] Successfully finished processing this shipment notification.");
-				AdminBot::send_message("(PRW) Notice: THIS IS A TEMPORARY NOTIFICATION. Order #[{$printful_event->get_shipment()->get_id()}/{$printful_event->get_order()->get_id()}] has shipped.");
+				AdminBot::send_message("(PRW) Notice: Order #[{$printful_event->get_shipment()->get_id()}/{$printful_event->get_order()->get_id()}] has shipped.");
 			}
 			break;
 		default:

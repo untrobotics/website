@@ -38,6 +38,7 @@ class AdminBot extends DiscordBot {
         $data = new stdClass(); // can't be bothered right now to make a class
         $data->recipient_id = $recipient_id;
 
-        return parent::send_api_request("/users/@me/channels", "POST", "application/json", $data);
+        $dm = parent::send_api_request("/users/@me/channels", "POST", "application/json", $data);
+        return $dm->result->id;
     }
 }
