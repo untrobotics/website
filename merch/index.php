@@ -6,6 +6,38 @@ head('Merch', true);
 	.page-index-listing li {
 		list-style: circle;
 	}
+	.text-heading {
+		display: block;
+    	margin-bottom: 2px;
+    	font-size: 30px;
+    	text-transform: uppercase;
+		letter-spacing: .340em;
+		text-align: center;
+	}
+	.text-lower-heading {
+		display: block;
+    	margin-bottom: 2px;
+		color: #212121;
+		text-align: center;
+	}
+	.merch-btn {
+  		display: block;
+  		width: 70%;
+  		border: none;
+  		background-color: #6C6C6C;
+  		padding: 15px 20px;
+  		font-size: 40px;
+  		font-family: 'Kanit';
+  		color: #FFFFFF;
+  		cursor: pointer;
+  		text-align: center;
+  		margin: auto;
+		line-height: 1.0;
+	}
+	.merch-btn:hover {
+		background-image: none;
+		background-color: #45cd8f;
+	}
 </style>
 <main class="page-content">
 	<!-- Classic Breadcrumbs-->
@@ -33,17 +65,18 @@ head('Merch', true);
 				<div class="inset-lg-right-45">
 				  <ul class="list list-xl">
 					<li>
-					  <p><span class="small">UNT Robotics Merchandise</span><span class="text-darker">Support UNT Robotics &amp; look dapper while doing it!</span></p>
+						<p>
+							<span class="text-heading">UNT Robotics Merchandise</span>
+							<span class="text-lower-heading">Support UNT Robotics &amp; look dapper while doing it!</span>
+						</p>
 					</li>
 				  </ul>
 					<div class="range range-lg-center">
 						<div class="cell-lg-10 cell-sm-12">
-							<ul class="page-index-listing">
-								<li><a href="shirts-hoodies">Shirts &amp; Hoodies</a></li>
-								<li><a href="hats">Hats</a></li>
-                                <li><a href="trousers">Trousers</a></li>
-                                <li><a href="gear">Gear</a></li>
-							</ul>
+							<a href="shirts-hoodies"><button type="button" class="merch-btn">Shirts &amp; Hoodies</button></a></br>
+							<a href="hats"><button type="button" class="merch-btn">Hats</button></a></br>
+                            <a href="trousers"><button type="button" class="merch-btn">Trousers</button></a></br>
+                            <a href="gear"><button type="button" class="merch-btn">Gear</button></a></br>
 						</div>
 					</div>
 				</div>
