@@ -1,17 +1,17 @@
 <?php
 
 class PrintfulCustomAPI {
-	private $encoded_api_key;
+	private $api_key;
 	
 	public function __construct($printful_api_key = PRINTFUL_API_KEY) {
-		$this->encoded_api_key = base64_encode($printful_api_key);
+		$this->api_key = $printful_api_key;
 	}
 	
 	protected function send_request($URI, $data = false) {
 		$ch = curl_init();
 
 		$headers = array();
-		$headers[] = 'Authorization: Basic ' . $this->encoded_api_key;
+		$headers[] = 'Authorization: Bearer ' . $this->api_key;
 		
 		curl_setopt($ch, CURLOPT_URL, 'https://api.printful.com/' . $URI);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
