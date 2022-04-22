@@ -48,7 +48,11 @@ $not_found_paths_to_ignore = array(
     "accesson.php",
     "renata.php",
     "authorize_old.php",
-    "ccaef.php"
+    "ccaef.php",
+    "sh3llx",
+    "xlet",
+    "jindex",
+    "admin" // do we need a special handler for admin?
 );
 
 $offending_patterns = array(
