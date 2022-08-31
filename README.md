@@ -18,6 +18,5 @@ Our mission is to inspire and teach people the skills to achieve their goals in 
 Mantained by: 
 * [Seb King](https://github.com/sebastian-king)
 * [Peyton Thibodeaux](https://github.com/peyton232)
-* [Nicholas Tindle](https://github.com/ntindle)
 * [Tyler Martinez](https://github.com/TylerAdamMartinez)
 * [Jacob Woodson](https://github.com/ASpaceDuck)
