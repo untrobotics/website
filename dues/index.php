@@ -1,15 +1,26 @@
 <?php
 require('../template/top.php');
-require(BASE . '/template/functions/payment_button.php');
+require(BASE . '/api/discord/bots/admin.php');
 head('Pay Dues', true);
 
-$q = $db->query("SELECT `value` FROM dues_config WHERE `key` = 'semester_price'");
-if (!$q || $q->num_rows !== 1) {
+$q = $db->query("SELECT `key`,`value` FROM dues_config WHERE `key` = 'semester_price' OR `key` = 't_shirt_dues_purchase_price'");
+if (!$q || $q->num_rows !== 2) {
     AdminBot::send_message("Unable to determine the dues payment price");
 	throw new RuntimeException("Unable to determine dues payment price");
 }
+$r = $q->fetch_all(MYSQLI_ASSOC);
 
-$single_semester_dues_price = $q->fetch_row()[0];
+$mapped_config = array();
+array_walk(
+    $r,
+    function(&$val, $_key) use (&$mapped_config)
+    {
+        $mapped_config[$val['key']] = $val['value'];
+    }
+);
+
+$t_shirt_dues_purchase_price = $mapped_config['t_shirt_dues_purchase_price'];
+$single_semester_dues_price = $mapped_config['semester_price'];
 $full_year_dues_price = $single_semester_dues_price * 2;
 $current_term = $untrobotics->get_current_term();
 $next_term = $untrobotics->get_next_term();
@@ -27,6 +38,27 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
     }
     .dues-payment-button.two-semesters {
         display: none;
+    }
+    .select2-container--bootstrap .select2-selection--single .select2-selection__rendered {
+        color: #686868;
+        padding: 18px;
+    }
+
+    label.checkbox-container {
+        display: inline-block;
+    }
+    .dues-payment-button {
+        display: inline-block;
+    }
+    .dues-payment-button.two-semesters {
+        display: none;
+    }
+    .dues-shirt-preview {
+        display: inline-block;
+        margin: 0 auto;
+    }
+    .dues-shirt-preview img {
+        width: 300px;
     }
 </style>
 
@@ -55,6 +87,27 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
+                                <div class="form-group">
+                                    <label class="checkbox-container"> <div>Order a T-shirt with your dues? (50% off!)</div>
+                                        <div><small>(The shirt will be shipped to the shipping address you select during payment)</small></div>
+                                        <div class="dues-shirt-preview">
+                                            <a href="/images/dues-shirt.png" target="_blank">
+                                                <img src="/images/dues-shirt.png"/>
+                                            </a>
+                                        </div>
+                                        <select id="include-tshirt" name="include-tshirt" class="">
+                                            <option value="" selected="selected">No T-shirt</option>
+                                            <option value="632b8e41a865f1">XS</option>
+                                            <option value="632b8e41a86664">S</option>
+                                            <option value="632b8e41a866a1">M</option>
+                                            <option value="632b8e41a866e2">L</option>
+                                            <option value="632b8e41a86724">XL</option>
+                                            <option value="632b8e41a86761">2XL</option>
+                                            <option value="632b8e41a867a9">3XL</option>
+                                            <option value="632b8e41a867e6">4XL</option>
+                                        </select>
+                                    </label>
+                                </div>
                             </div>
                         <?php
                         }
@@ -62,96 +115,8 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
 
                         <p><strong style="font-size: 20px;"><pre style="display: inline-block;border-radius: 10px;">Cost: <span id="dues_cost">$<?php echo $single_semester_dues_price; ?></span></pre></strong></p>
 
-                    <?php
-                    // both semesters
-                    ?>
-                    <div class="dues-payment-button two-semesters">
-                        <?php
-                        $custom = serialize(array(
-                            'source' => 'DUES_PAYMENT',
-                            'uid' => $userinfo['id']
-                        ));
-
-                        $payment_button = new PaymentButton(
-                            'UNT Robotics Dues',
-                            $full_year_dues_price,
-                            'Pay Now',
-                            'Complete Dues Payment'
-                        );
-
-                        $payment_button->set_custom($custom);
-                        $payment_button->set_opt_names(
-                            array(
-                                'Semester',
-                                'Year',
-                                'Semester1',
-                                'Year1'
-                            )
-                        );
-                        $payment_button->set_opt_vals(
-                            array(
-                                Semester::get_name_from_value($current_term),
-                                $untrobotics->get_current_year(),
-                                Semester::get_name_from_value($next_term),
-                                $untrobotics->get_next_year()
-                            )
-                        );
-                        $payment_button->set_complete_return_uri('/dues/paid');
-
-                        $button = $payment_button->get_button();
-                        if ($button->error === false) {
-                            echo $payment_button->get_button()->button;
-                        } else {
-                            AdminBot::send_message("Failed to load dues payment button: " . $button->error);
-                            ?>
-                            <div class="alert alert-danger">An error occurred loading the payment button...</div>
-                            <?php
-                        }
-                        ?>
-                    </div>
-
-                    <?php
-                    // single semester
-                    ?>
-					<div class="dues-payment-button one-semesters">
-						<?php
-							$custom = serialize(array(
-								'source' => 'DUES_PAYMENT',
-								'uid' => $userinfo['id']
-							));
-
-							$payment_button = new PaymentButton(
-								'UNT Robotics Dues',
-                                $single_semester_dues_price,
-								'Pay Now',
-								'Complete Dues Payment'
-							);
-
-							$payment_button->set_custom($custom);
-							$payment_button->set_opt_names(
-								array(
-									'Semester',
-									'Year'
-								)
-							);
-							$payment_button->set_opt_vals(
-								array(
-									Semester::get_name_from_value($current_term),
-									$untrobotics->get_current_year()
-								)
-							);
-							$payment_button->set_complete_return_uri('/dues/paid');
-
-							$button = $payment_button->get_button();
-							if ($button->error === false) {
-								echo $payment_button->get_button()->button;
-							} else {
-                                AdminBot::send_message("Failed to load dues payment button: " . $button->error);
-								?>
-						<div class="alert alert-danger">An error occurred loading the payment button...</div>
-								<?php
-							}
-						?>
+					<div class="dues-payment-button">
+                        Loading...
 					</div>
 
 					<?php
@@ -179,18 +144,59 @@ footer(false);
 ?>
 
 <script>
+    const cssLoader = `<div class="cssload-loader">
+              <div class="cssload-inner cssload-one"></div>
+              <div class="cssload-inner cssload-two"></div>
+              <div class="cssload-inner cssload-three"></div>
+            </div>`;
+
     const single_semester_price = <?php echo intval($single_semester_dues_price); ?>;
     const full_semester_price = <?php echo intval($full_year_dues_price); ?>;
+    const t_shirt_price = <?php echo intval($t_shirt_dues_purchase_price); ?>;
+
+    let fullYear = false;
+    let tShirt = null;
+
+    function setNewButton() {
+        $('.dues-payment-button').html(cssLoader);
+        $.get(`/api/paypal/buttons/generator?t-shirt=${tShirt || ''}&full-year=${fullYear}`, (data) => {
+                if (data.cost !== getDuesCost()) {
+                    $('.dues-payment-button').html('<div class="alert alert-danger">Unable to load payment button.</div>');
+                    return;
+                }
+                $('.dues-payment-button').html(data.button);
+            })
+            .fail(error => {
+                $('.dues-payment-button').html('<div class="alert alert-danger">Unable to load payment button.</div>');
+            })
+    }
+
+    $(document).ready(function() {
+        setNewButton();
+    })
+
+    function getDuesCost() {
+        let cost = 0;
+        if (fullYear) {
+            cost += full_semester_price;
+        } else {
+            cost += single_semester_price
+        }
+        if (tShirt) {
+            cost += t_shirt_price;
+        }
+        return cost;
+    }
 
 	$('input[name="full-year"]').on("change", function(e) {
-	   if ($(this).is(':checked')) {
-	       $("#dues_cost").text("$" + full_semester_price);
-           $(".dues-payment-button.two-semesters").css('display','inline-block');
-           $(".dues-payment-button.one-semesters").css('display','none');
-       } else {
-           $("#dues_cost").text("$" + single_semester_price);
-           $(".dues-payment-button.two-semesters").css('display','none');
-           $(".dues-payment-button.one-semesters").css('display','inline-block');
-       }
+        fullYear = !!$(this).is(':checked');
+        $("#dues_cost").text("$" + getDuesCost());
+        setNewButton();
     });
+
+	$('#include-tshirt').on('change', function(e) {
+	    tShirt = e.target.value || null;
+        $("#dues_cost").text("$" + getDuesCost());
+	    setNewButton();
+    })
 </script>

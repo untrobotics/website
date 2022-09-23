@@ -105,6 +105,11 @@ class DiscordBot {
 	public static function get_all_users($guild_id) {
 	    return static::send_api_request("/guilds/{$guild_id}/members?limit=1000");
     }
+
+    // utils
+    public static function hasHitRateLimit($result) {
+        return $result->status_code == 429;
+    }
 }
 								
 class DiscordBotException extends Exception {

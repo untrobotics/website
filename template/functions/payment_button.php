@@ -25,8 +25,9 @@ class PaymentButton {
 	private $allow_custom_amount = false;
 	
 	public function __construct($item_name, $amount, $text = "Buy Now", $cbt = null, $type = "BUYNOW") {
-		$this->item_name = $item_name;
-		$this->amount = $amount;
+        $this->item_name = $item_name;
+        $this->amount = $amount;
+
 		$this->text = $text;
 		$this->cbt = $cbt;
 		$this->type = $type;
@@ -110,10 +111,10 @@ class PaymentButton {
 		require_once(BASE . '/paypal/PP-BM-SDK/vendor/autoload.php');
 
 		$buttonVar = array();
-		$buttonVar[] = 'item_name=' . $this->item_name;
-		$buttonVar[] = 'amount=' . $this->amount;
-		$buttonVar[] = 'quantity=' . $this->quantity;
 
+        $buttonVar[] = "item_name=" . $this->item_name;
+        $buttonVar[] = "amount=" . $this->amount;
+        $buttonVar[] = "quantity=" . $this->quantity;
 		foreach ($this->opt_names as $key => $val) {
 			$buttonVar[] = 'on' . $key . '=' . $this->opt_names[$key];
 			$buttonVar[] = 'os' . $key . '=' . $this->opt_vals[$key];

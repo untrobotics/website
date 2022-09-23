@@ -18,6 +18,7 @@ if (isset($_GET['download'])) {
     header("Content-Disposition: attachment; filename=untrobotics-users-good-standing-report.csv");
     header("Pragma: no-cache");
     header("Expires: 0");
+    echo "Name,Email,Grad Term,Grad Year,EUID,Payment Timestamp,Paypal Transaction ID,Amount Paid\n";
 
     while ($r = $q->fetch_array(MYSQLI_ASSOC)) {
         $user = getUserInfo($r['uid']);
@@ -26,8 +27,7 @@ if (isset($_GET['download'])) {
         // email
         // graduation date
         // euid
-
-        echo "{$user['name']},{$user['email']}," . Semester::get_name_from_value($user['grad_term']) . ",{$user['grad_year']},{$user['unteuid']},{$r['payment_timestamp']},{$r['txid']}\n";
+        echo "{$user['name']},{$user['email']}," . Semester::get_name_from_value($user['grad_term']) . ",{$user['grad_year']},{$user['unteuid']},{$r['payment_timestamp']},{$r['txid']},{$r['amount']}\n";
     }
 
     die();

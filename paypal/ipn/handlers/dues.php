@@ -1,16 +1,41 @@
 <?php
+namespace DUES;
+use AdminBot;
+use IPNHandlerException;
+use PrintfulCustomAPI;
+use Semester;
+use \stdClass;
+
+require_once(__DIR__ . "/printful.php");
+
 function handle_payment_notification($ipn, $payment_info, $custom) {
 
 	global $db, $untrobotics;
 
 
-    $q = $db->query("SELECT `value` FROM dues_config WHERE `key` = 'semester_price'");
-    if (!$q || $q->num_rows !== 1) {
-        AdminBot::send_message("Unable to determine the dues payment price");
-        throw new IPNHandlerException("Unable to determine dues payment price");
+    $q = $db->query("SELECT `key`,`value` FROM dues_config WHERE `key` = 'semester_price' OR `key` = 't_shirt_dues_purchase_price'");
+    if (!$q || $q->num_rows !== 2) {
+        AdminBot::send_message("Unable to determine the dues payment price (IPN)");
+        throw new IPNHandlerException("Unable to determine dues payment price (IPN)");
     }
 
-    $single_semester_dues_price = $q->fetch_row()[0];
+    $r = $q->fetch_all(MYSQLI_ASSOC);
+
+    $mapped_config = array();
+    array_walk(
+        $r,
+        function(&$val, $_key) use (&$mapped_config)
+        {
+            $mapped_config[$val['key']] = $val['value'];
+        }
+    );
+
+    $t_shirt_dues_purchase_price = $mapped_config['t_shirt_dues_purchase_price'];
+    $single_semester_dues_price = $mapped_config['semester_price'];
+
+    $tshirt_size = $custom['include-tshirt'];
+    $is_tshirt_included = !empty($custom['include-tshirt']) && $custom['include-tshirt'] != false;
+    var_dump($custom, $is_tshirt_included);
 
     $paid_for_terms = array();
 
@@ -18,17 +43,21 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
     $dues_term_n = constant("Semester::{$payment_info->options[0][1]}");
 	$dues_year = $payment_info->options[1][1];
 
-    $paid_for_terms[0] = new stdClass();
+    $paid_for_terms[0] = new \stdClass();
     $paid_for_terms[0]->dues_term = $dues_term;
     $paid_for_terms[0]->dues_term_n = $dues_term_n;
     $paid_for_terms[0]->dues_year = $dues_year;
 
     $term_string = ucfirst(strtolower($dues_term)) . ' ' . $dues_year;
 
-	$expected_amount = $single_semester_dues_price;
+    $expected_amount = 0;
+    if ($is_tshirt_included) {
+        $expected_amount += $t_shirt_dues_purchase_price;
+    }
+	$expected_amount += $single_semester_dues_price;
 	if (isset($payment_info->options[2]) && isset($payment_info->options[3])) {
 	    // dues have been paid for the full year
-        $expected_amount = $single_semester_dues_price * 2;
+        $expected_amount += $single_semester_dues_price;
 
         $extra_dues_term = $payment_info->options[2][1];
         $extra_dues_term_n = constant("Semester::{$payment_info->options[2][1]}");
@@ -169,6 +198,29 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
                 }
             }
             AdminBot::send_message("Amount received in dues so far this academic year: \${$sum}");
+
+            var_dump($is_tshirt_included);
+            // process t-shirt order
+            if ($is_tshirt_included) {
+                AdminBot::send_message("Processing T-shirt order with this dues payment: @{$tshirt_size}");
+                $printful_custom = array(
+                    'variant'=>"@{$tshirt_size}",
+                    'discounts'=>array('paid-with-dues')
+                );
+
+                $printfulapi = new PrintfulCustomAPI();
+                $sync_variant = $printfulapi->get_variant($printful_custom['variant']);
+
+                $payment_info->mc_gross = $t_shirt_dues_purchase_price;
+                $payment_info->options = array();
+                $payment_info->options[0] = array();
+                $payment_info->options[1] = array();
+                $payment_info->options[2] = array();
+                $payment_info->options[0][1] = "Shirt";
+                $payment_info->options[1][1] = $sync_variant->get_name();
+                $payment_info->options[2][1] = "Standard";
+                \PRINTFUL\handle_payment_notification($ipn, $payment_info, $printful_custom);
+            }
 
 		} else {
 			//throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");

@@ -122,7 +122,7 @@ class PaypalIPN
             'User-Agent: PHP-IPN-Verification-Script',
             'Connection: Close',
         ));
-        $res = curl_exec($ch);
+        $res = trim(curl_exec($ch));
         if ( ! ($res)) {
             $errno = curl_errno($ch);
             $errstr = curl_error($ch);
