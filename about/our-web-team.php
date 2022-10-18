@@ -32,7 +32,7 @@ head('Our Team', true);
             <div class="shell range-offset-1">
                 <div class="range">
                     <div class="cell-lg-6">
-                        <h1>Our Web Dev Team</h1>
+                        <h1>Our Web Dev Team is without ties</h1>
                         <h6>These are the people who keep this site running.</h6>
                     </div>
                 </div>
