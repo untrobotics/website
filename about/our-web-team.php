@@ -32,7 +32,7 @@ head('Our Team', true);
             <div class="shell range-offset-1">
                 <div class="range">
                     <div class="cell-lg-6">
-                        <h1>Our Web Dev Team is without ties</h1>
+                        <h1>Our Web Dev Team</h1>
                         <h6>These are the people who keep this site running.</h6>
                     </div>
                 </div>
@@ -253,7 +253,31 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
-                                      
+                <!-- Kenneth Chen -->
+                <div class="cell-lg-12 bio-area">
+                    <div id="kenneth-chen" class="bio-anchor"></div>
+                    <div class="range range-sm-middle">
+                        <div class="cell-md-3"><img src="/images/bio-pics/kenneth-chen.jpg" alt="" width="360"
+                                                    height="404" class="img-responsive"/>
+                        </div>
+                        <div class="cell-md-6">
+                            <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
+                                <h6 id="kenneth-chen" class="h6-with-small"><a href="#kenneth-chen"> Kenneth Chen</a><span class="small text-silver-chalice">Team Member</span></h6>
+                                <p>Kenneth Chen is a Computer Science and Accounting student at UNT. </p>
+                                <ul class="list-inline-lg">
+                                    <li>
+                                        <a href="https://www.linkedin.com/in/kenwc"
+                                           class="icon icon-sm text-primary fa-linkedin"></a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.github.com/chenneth"
+                                           class="icon icon-sm text-primary fa-github"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Template NOTE: images must be 360 by 404 px, and take up less than -->
                 <!--            <div class="cell-lg-12 bio-area">-->
                 <!--            <div id="first-last" class="bio-anchor"></div> -->
