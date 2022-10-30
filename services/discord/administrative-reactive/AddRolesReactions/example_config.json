@@ -1,0 +1,35 @@
+{
+  "token": "LEtt3rsAndN4mb3r5",
+  "clientId": "m0rE3NUAMBE432FS",
+  "watchableMessages": [
+    {
+      "id":"1234567890",
+      "channelId": "3234567890",
+      "guildId": "834284382348",
+      "emojiIds": ["9999999999999","88888888888"]
+    },
+    {
+      "id": "12394823043290",
+      "channelId": "1239102381209",
+      "guildId": "123821903812",
+      "emojiIds": ["1034600715299070004","9999999999999"]
+    }],
+  "emojis" : [
+    {
+      "name": "emoji1",
+      "id":"9999999999999",
+      "guildId": "834284382348",
+      "roleId": "1111111111111",
+      "roleName": "emoji role 1",
+      "messageIds": ["1234567890","12394823043290"]
+    },
+    {
+      "name": "emoji2",
+      "id":"88888888888",
+      "guildId": "834284382348",
+      "roleId": "222222222222",
+      "roleName": "Admin",
+      "messageIds": ["1234567890"]
+    }
+  ]
+}
