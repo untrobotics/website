@@ -16,7 +16,6 @@ An example of how you should format it:
       "id":"messageID",
       "channelId": "channelID",
       "guildId": "guildID",
-      "emojiIds": ["emojiID1", "emojiID2", "emojiID3"]
     }],
   "emojis" : [
     {
@@ -33,10 +32,10 @@ An example of how you should format it:
 
 Most of these are self-explanatory, just enter the values as you would if it were a normal variable or parameter in discord.js.
 
-`watchableMessages.emojiIds` is an array of the emoji IDs that need to be checked (i.e. these emojis will correspond to a role). Limit would be whatever the limit JSON or JavaScript puts on array lengths.
-
 `emojis.name` is the name of the emoji as it appears in discord. This property isn't used in the code, it's mainly for readability. Same with `emojis.roleName`.
 
 `emojis.guildId` is the guild you're checking the emoji for. And so therefore `emojis.messageIds` must all be IDs from the same server. Will fix that one day.
 
 Both `emojis` and `watchableMessages` are arrays so you can add multiple things to watch. 
+
+If the emoji is a unicode emoji (e.g. :rocket: or :thumbsup: in Discord), then have emojis.id as `null` and the name as the literal name (e.g. "rocket" or "thumbsup", no colons, and not the unicode representation).
