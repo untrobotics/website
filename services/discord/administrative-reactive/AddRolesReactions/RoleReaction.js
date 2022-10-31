@@ -40,6 +40,16 @@ client.on(Events.MessageReactionRemove, OnReactionRemove())
 
 client.once(Events.ClientReady, c => {
     console.log(`Ready! Logged in as ${c.user.tag}`);
+
+    //need to do this or else it won't listen to removals until it gets an add
+    watchableMessages.forEach((watchableMessage) => {
+        client.guilds.fetch(watchableMessage.guildId).then((guild) => {
+            guild.channels.fetch(watchableMessage.channelId).then((channel) => {
+                if (channel.isTextBased)
+                    channel.messages.fetch(watchableMessage.id);
+            })
+        })
+    })
 });
 
 // Log in to Discord with your client's token
