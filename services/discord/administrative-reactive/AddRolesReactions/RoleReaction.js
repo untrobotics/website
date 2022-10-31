@@ -3,7 +3,7 @@ const path = require('node:path');
 
 
 const { Client, Events, GatewayIntentBits, Partials, Collection} = require('discord.js');
-
+let emojiDic = require("emoji-dictionary");
 //will someone please tell me how to typescript/jsdoc json properly?
 /*
  * @type {any} watchableMessages
@@ -24,7 +24,7 @@ const client = new Client({
 const guilds = client.guilds.cache;
 
 //Values should Look like <guildId, <emojiId, Role>>
-                                //Role is the discord object Role, the rest are a string representing the id
+//Role is the discord object Role, the rest are a string representing the id
 /**
  * Takes data from config.json. Values should Look like <guildId, <emojiId, Role>>. Role is the discord object Role, the rest are a string or snowflake representing the id
  * @type {Map<string, Map<string|import("discord.js").Snowflake,import("discord.js").Role>>} A map that takes the id of the guild and maps it to another map whose key is the emoji's id and value is the Role object from Discord.JS
@@ -48,6 +48,9 @@ client.login(token);
 //not documenting the listeners because they shouldn't need to be modified (unless something breaks)
 
 function OnReady() {
+    if(clientId==null) {
+        throw new Error("No client ID found in config.JSON");
+    }
     return () => {
         emojis.forEach((emojiItem) => {
             let guild = client.guilds.cache.get(emojiItem.guildId);
@@ -59,16 +62,21 @@ function OnReady() {
             }
             guild.roles.fetch(emojiItem.roleId).then((roleToAdd) => {
                 if (emojiToRole.has(emojiItem.guildId)) //if the guild has already been added to the map
-                    //we need to get the first map to set the nested map so we can add a new value in it
-                    emojiToRole.get(emojiItem.guildId).set(emojiItem.id, roleToAdd);
+                { //we need to get the first map to set the nested map so we can add a new value in it
+                    let secondKey = emojiItem.id == null ? emojiItem.name : emojiItem.id;
+                    emojiToRole.get(emojiItem.guildId).set(secondKey, roleToAdd);
+                }
                 else //we haven't added the guild to the map and we can use set
-                    emojiToRole.set(emojiItem.guildId, new Map([[emojiItem.id, roleToAdd]]));
+                {
+                    let secondKey = emojiItem.id == null ? emojiItem.name : emojiItem.id;
+                    emojiToRole.set(emojiItem.guildId, new Map([[secondKey, roleToAdd]]));
+                }
             }, () => {
                 console.log(`Couldn't find a role in the guild with the id ${emojiItem.roleId}, or had issues with fetching`)
             })
 
         })
-    };
+    };;
 }
 
 function OnReactionAdd() {
@@ -84,19 +92,21 @@ function OnReactionAdd() {
                 return;
             }
         }
-        if (/*!watchableMessages.includes(reaction.message.id)*/watchableMessagesHasVal(reaction.message.id, 'id')) {
+        if (watchableMessagesHasVal(reaction.message.id, 'id')) {
             console.log(`Not right message id ${reaction.message.id}`);
             return;
         }
         if (!hasEmoji(reaction.emoji)) {
-            console.log(`Could not find emoji with ID ${reaction.emoji.id}.`);
+            console.log(`Could not find emoji with ID ${reaction.emoji.id} or name ${reaction.emoji.name} if id is null.`);
             return;
         }
         if(user.id==clientId)
             return;
+
+        let secondKey = reaction.emoji.id==null? emojiDic.getName(reaction.emoji.toString()):reaction.emoji.id;
         reaction.message.guild.members.fetch(user.id).then((guildMember) => {
             try {
-                guildMember.roles.add(emojiToRole.get(reaction.message.guildId).get(reaction.emoji.id));
+                guildMember.roles.add(emojiToRole.get(reaction.message.guildId).get(secondKey));
             }catch (e) {
                 console.error(`Error trying to add role to user:`,e);
             }
@@ -119,7 +129,7 @@ function OnReactionRemove() {
                 return;
             }
         }
-        if (/*!watchableMessages.includes(reaction.message.id)*/watchableMessagesHasVal(reaction.message.id, 'id')) {
+        if (watchableMessagesHasVal(reaction.message.id, 'id')) {
             console.log(`Not right message id ${reaction.message.id}`);
             return;
         }
@@ -127,9 +137,14 @@ function OnReactionRemove() {
             console.log(`Could not find emoji with ID ${reaction.emoji.id}.`);
             return;
         }
+        if(user.id==clientId) {
+            console.log("User is bot");
+            return;
+        }
+        let secondKey = reaction.emoji.id==null? emojiDic.getName(reaction.emoji.toString()):reaction.emoji.id;
         reaction.message.guild.members.fetch(user.id).then((guildMember) => {
             try {
-                guildMember.roles.remove(emojiToRole.get(reaction.message.guildId).get(reaction.emoji.id));
+                guildMember.roles.remove(emojiToRole.get(reaction.message.guildId).get(secondKey));
             } catch (e) {
                 console.error(`Error trying to add role to user:`,e);
             }
@@ -145,7 +160,12 @@ function OnReactionRemove() {
  * @returns {boolean} Whether the emoji is in the emojis JSON array
  */
 function hasEmoji(emoji)
-{return !(emojis.every((item)=> {if(emoji.id.toString()==item.id) return false;}))}
+{
+    if(emoji.id==null)
+        return !(emojis.every((item)=>{if(item.id=="null"&&emojiDIc.getName(reaction.emoji.toString())==item.name) return false;}));
+    return !(emojis.every((item)=> {if(emoji.id.toString()==item.id) return false;
+    }))
+}
 
 /**
  * @param {import("discord.js").Snowflake|string} value The value we want to find in the watchableMessages array
