@@ -22,7 +22,7 @@ head('Our Team', true);
                         <ul class="list-breadcrumb">
                             <li><a href="/">Home</a></li>
                             <li><a href="/about">About Us</a></li>
-                            <li>Our Web Team</li>
+                            <li>Arish's dev team</li>
                         </ul>
                     </div>
                 </div>
