@@ -41,7 +41,7 @@ head('Activities', true);
 			 	  <p>In Louisiana, we competed in the IEEE R5 Autonomous Rover competition where we were commended for our mechanical engineering prowess. </p>
 				
 				  <h4>Botathon</h4>
-			 	  <p>UNT Robotics also hosts a 12 hour Hackathon for robotics in the early spring every year. Students get to design, build, and program a robot to fulfill the competition theme and objectives. For information about the next upcoming Botathon, visit <a href="botathon/index">the Botathon page</a> </p>
+			 	  <p>UNT Robotics also hosts a 12 hour Hackathon for robotics in the early spring every year. As an introduction to robotics, students get to design, build, and program a robot to fulfill the competition theme and objectives. For information about the next upcoming Botathon, visit <a href="botathon/index">the Botathon page</a> </p>
                 	
 				</div>
 			</div>
