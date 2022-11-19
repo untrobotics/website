@@ -39,7 +39,7 @@ head('Activities', true);
 					
 				  <h4>Inter-collegiate Competitions</h4>
 			 	  <p>In Louisiana, we competed in the IEEE R5 Autonomous Rover competition where we were commended for our mechanical engineering prowess. </p>
-				
+				  <p>UNT Robotics competes in the NASA University Student Launch Initiative, where teams are tasked with designing a rocket and its payload to fulfill requirements and themes set by NASA for the year's competition. Whether we <a href="https://youtu.be/DRm8GA1gIDE?t=43">successfully launch a rocket</a>, or <a href="https://youtu.be/o7km5D4jRNI?t=144">spectactularly fail</a>, our team members learn valuable skills in engineering and teamwork. </p>
 				  <h4>Botathon</h4>
 			 	  <p>UNT Robotics also hosts a 12 hour Hackathon for robotics in the early spring every year. As an introduction to robotics, students get to design, build, and program a robot to fulfill the competition theme and objectives. For information about the next upcoming Botathon, visit <a href="botathon/index">the Botathon page</a> </p>
                 	
