@@ -41,7 +41,7 @@ head('Activities', true);
 			 	  <p>Our collegiate team just came back from a competition in Louisiana where we competed in the IEEE R5 Autonomous Rover competition where we were commended for our mechanical engineering prowess. </p>
 				
 				  <h4>Botathon</h4>
-			 	  <p>UNT Robotics also hosts a 12 hour Hackathon for robotics. It is on April 27th. We expect around 60 people to attend. It is intended to be an intro to robotics for anyone who wants to attend.</p>
+			 	  <p>UNT Robotics also hosts an annual 12 hour Hackathon for robotics in March. In this competition intended to introduce robotics, students get to design, build, and program a robot to fulfill the competition theme and objectives. For information about the next upcoming Botathon, visit <a href="botathon/">the Botathon page</a>.</p>
                 	
 				</div>
 			</div>
