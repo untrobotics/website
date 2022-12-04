@@ -10,10 +10,16 @@ $payment_button = new PaymentButton(
 );
 $payment_button->set_complete_return_uri('/sponsorships/donate/thank-you');
 ?>
+
+<style>
+    .dues-payment-button {
+        display: inline-block;
+    }
+</style>
 <section class="section-50 section-md-75 section-lg-100">
     <div class="shell range-offset-1">
         <div class="range">
-            <div class="cell-lg-6">
+            <div class="cell-lg-12">
                 <h1>Sponsorships</h1>
 					<h3>Who Are We</h3>
 							<p>UNT Robotics is made up of students who are driven by a passion for engineering. We put together our efforts to introduce students to engineering integrated with computer science and to promote a fun engineering learning environment at UNT. Our goal is to grow UNT students’ interests in engineering and provide them with opportunities to apply what they learn in class through competitions that offer hands-on experiences. To achieve this, we participate in events and projects such as the NASA JPL Rover and the NASA Student Launch Initiative competition. Not only that, we also host weekly workshops, and our annual Botathon competition.</p>
@@ -24,10 +30,12 @@ $payment_button->set_complete_return_uri('/sponsorships/donate/thank-you');
 					<h3>Why Should You Sponsor Us?</h3>
 						<p>Because of our non-commercial business model, we rely entirely on sponsorships and donations for funding our events and sponsors are absolutely crucial to the success of UNT Robotics. Your support will be greatly appreciated, and we will be flexible with connecting our members with your company’s message.</p>
             </div>
-			<div class="cell-lg-12 offset-lg-top-50">
-				<?php echo $payment_button->get_button()->button; ?> <!--La Paypal button-->
-			</div>
         </div>
+		<div class="inset-md-right-30 inset-lg-right-0 offset-lg-top-50 text-center">
+			<div class="dues-payment-button">
+				<?php echo $payment_button->get_button()->button; ?>
+			</div>
+		</div>
     </div>
 </section>
 
