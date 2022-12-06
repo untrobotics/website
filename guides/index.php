@@ -32,10 +32,18 @@ head('Guides', true);
 						<p>Here are some helpful resources to get you started in various robotics, programming, or engineering subjects. Whether you're a competitor in <a href="/botathon">our Botathon competition</a>, or just interested in robotics, this is the place to start!</p>
 						<h3>Our Guides</h3>
 						<p>These are some guides our team has personally written to help our members!</p>
-						<p>--empty--</p>
+						<div class="inset-lg-left-25 inset-md-left-15 inset-sm-left-0">
+							<a href="" >Intro to embedded programming</a><br>
+						</div>
 						<h3>External Guides</h3>
 						<p>While not affiliated with UNT Robotics, we think these guides will be just as helpful!</p>
-						<p>Insert links here as a list (ask seb for them? or whatever context it was in so I can find it)</p>
+						<div class="inset-lg-left-25 inset-md-left-15 inset-sm-left-0">
+							<a href="https://www.tutorialspoint.com/arduino/arduino_installation.htm" >Setting up Arduino IDE</a><br>
+							<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" >Making a lightsaber</a><br>
+
+						</div>
+
+
 					</div>
 				</div>
 			</div>
