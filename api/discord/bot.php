@@ -63,28 +63,33 @@ class DiscordBot {
 
 		$files = array();
 		if ($attachments) {
-            foreach ($attachments as $k => $attachment) {
-                $file = tmpfile();
-                $path = stream_get_meta_data($file)['uri'];
+			foreach ($attachments as $k => $attachment) {
+				$file = tmpfile();
+				$path = stream_get_meta_data($file)['uri'];
+				if(isset($attachment['url'])) // sebastian only insane people put curly braces on the same line
+				{
+					//$content = file_get_contents($attachment['url']);
 
-                //$content = file_get_contents($attachment['url']);
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $attachment['url']);
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					$content = curl_exec($ch);
 
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $attachment['url']);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $content = curl_exec($ch);
+					//error_log($content);
 
-                //error_log($content);
-
-                file_put_contents($path, $content);
-                //error_log($attachment['url']);
-                //error_log($path);
-                //error_log($content);
-
-                $files["attachment{$k}"] = new CURLFile($path, $attachment['type'], "attachment{$k}." . mime2ext($attachment['type']));
-            }
-        }
+					file_put_contents($path, $content);
+					//error_log($attachment['url']);
+					//error_log($path);
+					//error_log($content);
+				}
+				else if(isset($attachment['uri']))	// It's a local file (hopefully)
+				{
+					file_put_contents($path, $attachment['uri']);
+				}
+				$files["attachment{$k}"] = new CURLFile($path, $attachment['type'], "attachment{$k}." . mime2ext($attachment['type']));
+			}
+		}
 		//error_log(var_export($files, true));
 		
 		return static::send_api_request("/channels/{$channel_id}/messages", 'POST', 'multipart/form-data', $data, $files);
