@@ -69,7 +69,14 @@ class DiscordBot {
 				{
 					file_put_contents($path, $attachment['bin']);
 				}*/
-				if(isset($attachment['path']))
+				if(isset($attachment['bin']))
+				{
+					$file = tmpfile();
+					$path = stream_get_meta_data($file)['uri'];
+					file_put_contents($path,$attachment['bin']);
+					$files["attachment{$k}"] = new CURLFile($path, $attachment['type'], "attachment{$k}." . mime2ext($attachment['type']));
+				}
+				else if(isset($attachment['path']))
 				{
 					$files["attachment{$k}"] = new CURLFile($attachment['path'],$attachment['type'], "attachments{$k}." . $attachment['type']);
 				}
