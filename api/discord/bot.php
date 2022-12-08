@@ -71,7 +71,6 @@ class DiscordBot {
 					$file = tmpfile();
 					$path = stream_get_meta_data($file)['uri'];
 					file_put_contents($path,$attachment['bin']);
-//					$files["attachment{$k}"] = new CURLFile($path, $attachment['type'], "attachment{$k}." . mime2ext($attachment['type']));
 					$file_type = $attachment['type'];
 					$file_mime = ext2mime($file_type);
 				}
@@ -80,7 +79,6 @@ class DiscordBot {
 					$path = $attachment['path'];
 					$file_type = $attachment['type'];
 					$file_mime = ext2mime($file_type);
-//					$files["attachment{$k}"] = new CURLFile($attachment['path'],$attachment['type'], "attachments{$k}." . $attachment['type']);
 				}
 				else	// We assume the attachment is an online file that we need to download
 				{	// sebastian only insane people put curly braces on the same line
