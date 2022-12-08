@@ -1,5 +1,5 @@
 <?php
-static $mimes = array(
+const MIMES = array(
 	"png"=>array("image/png","image/x-png"),
 	"bmp"=>array("image/bmp","image/x-bmp","image/x-bitmap","image/x-xbitmap","image/x-win-bitmap","image/x-windows-bmp","image/ms-bmp","image/x-ms-bmp","application/bmp","application/x-bmp","application/x-win-bitmap"),
 	"gif"=>array("image/gif"),
@@ -515,10 +515,10 @@ function mime2ext($mime){
 						"application\/json","text\/json"
 					]}';*/
     //$all_mimes = json_decode($all_mimes,true);
-	global $mimes;
 
 
-	foreach ($mimes as $key => $value) {
+
+	foreach (MIMES as $key => $value) {
         if(array_search($mime,$value) !== false) {
             return $key;
         }
@@ -529,7 +529,7 @@ function mime2ext($mime){
 function ext2mime($ext)
 {
 	global $mimes;
-	foreach($mimes as $key=>$value)
+	foreach(MIMES as $key=>$value)
 	{
 		if($key===$ext)
 		{
