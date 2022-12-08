@@ -64,12 +64,20 @@ class DiscordBot {
 		$files = array();
 		if ($attachments) {
 			foreach ($attachments as $k => $attachment) {
-				$file = tmpfile();
-				$path = stream_get_meta_data($file)['uri'];
-				if(isset($attachment['url'])) // sebastian only insane people put curly braces on the same line
+
+				/*if(isset($attachment['bin'])) // It's a local file (hopefully)
+				{
+					file_put_contents($path, $attachment['bin']);
+				}*/
+				if(isset($attachment['path']))
+				{
+					$files["attachment{$k}"] = new CURLFile($attachment['path'],$attachment['type'], "attachments{$k}." . $attachment['type']);
+				}
+				else	// sebastian only insane people put curly braces on the same line
 				{
 					//$content = file_get_contents($attachment['url']);
-
+					$file = tmpfile();
+					$path = stream_get_meta_data($file)['uri'];
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_URL, $attachment['url']);
 					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -82,12 +90,9 @@ class DiscordBot {
 					//error_log($attachment['url']);
 					//error_log($path);
 					//error_log($content);
+					$files["attachment{$k}"] = new CURLFile($path, $attachment['type'], "attachment{$k}." . mime2ext($attachment['type']));
 				}
-				else if(isset($attachment['uri']))	// It's a local file (hopefully)
-				{
-					file_put_contents($path, $attachment['uri']);
-				}
-				$files["attachment{$k}"] = new CURLFile($path, $attachment['type'], "attachment{$k}." . mime2ext($attachment['type']));
+
 			}
 		}
 		//error_log(var_export($files, true));
