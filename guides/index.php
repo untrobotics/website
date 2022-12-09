@@ -41,8 +41,6 @@ head('Guides', true);
 							<a href="https://www.tutorialspoint.com/arduino/arduino_installation.htm" >Setting up Arduino IDE</a><br>
 							<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" >Making a lightsaber</a><br>
 						</div>
-
-
 					</div>
 				</div>
 			</div>
