@@ -1,6 +1,6 @@
 <!--Adds page header-->
 <?php
-require('../../template/top.php');
+require('../template/top.php');
 head('Intro-to-embedded-programming', true);
 ?>
 
@@ -25,5 +25,5 @@ head('Intro-to-embedded-programming', true);
 </main>
 <!--Adds page footer-->
 <?php
-require ('../../template/footer.php');
+require('../../template/footer.php');
 ?>

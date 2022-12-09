@@ -35,11 +35,13 @@ head('Guides', true);
 						<div class="inset-lg-left-25 inset-md-left-15 inset-sm-left-0">
 							<a href="our-guides/embedded-programming" >Intro to embedded programming</a><br>
 						</div>
+						<br>
 						<h3>External Guides</h3>
 						<p>While not affiliated with UNT Robotics, we think these guides will be just as helpful!</p>
 						<div class="inset-lg-left-25 inset-md-left-15 inset-sm-left-0">
 							<a href="https://www.tutorialspoint.com/arduino/arduino_installation.htm" >Setting up Arduino IDE</a><br>
 							<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" >Making a lightsaber</a><br>
+							<a href="https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up">Setting up a Raspberry Pi</a>
 						</div>
 					</div>
 				</div>
