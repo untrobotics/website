@@ -104,7 +104,7 @@ class DiscordBot {
 				}
 
 				// CURLFile is a file with a bunch of delimiters in the binary so it can be sent as Form-data
-				$files["attachment{$k}"] = new CURLFile($path, $file_mime, "attachments{$k}" . $file_type);
+				$files["attachment{$k}"] = new CURLFile($path, $file_mime, "attachments{$k}." . $file_type);
 			}
 		}
 		//error_log(var_export($files, true));
