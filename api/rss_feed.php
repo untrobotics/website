@@ -50,7 +50,7 @@ class rss_feed
 	 * @param bool $use_DateTime If true, posts' dates in this object will use DateTime; if false, posts' dates will be represented as a string
 	 * @param string $DateTime_format The format the publication dates are in the RSS feed. This is NOT the format in which they will be stored in this object.
 	 */
-	function __construct(string $url, bool $use_DateTime, string $DateTime_format = 'D, d M Y H:i:s e')
+	function __construct(string $url, bool $use_DateTime = false, string $DateTime_format = 'D, d M Y H:i:s e')
 	{
 		if (!($x = simplexml_load_file($url)))
 			return;
@@ -132,7 +132,7 @@ class rss_feed
 	 * @param string $guid The ID of the post to find
 	 * @return bool
 	 */
-	public function has_post($guid): bool
+	public function has_post(string $guid): bool
 	{
 		foreach($this->posts as $post)
 		{
