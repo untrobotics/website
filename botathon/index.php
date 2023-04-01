@@ -153,7 +153,7 @@ head('Botathon Info', true);
                             <li><a href="#register" class="text-content">Register</a></li>
                             <!--<li><a href="#rules" class="text-content">Rules</a></li>-->
                             <li><a href="#schedule" class="text-content">Schedule</a></li>
-                            <li><a href="#field-preview" class="text-content">Field Preview</a></li>
+                            <!--<li><a href="#field-preview" class="text-content">Field Preview</a></li>-->
                             <li><a href="#parts-list" class="text-content">Parts List</a></li>
                             <li><a href="#teams" class="text-content">Teams</a></li>
                             <!--<li><a href="#tshirts" class="text-content">T-Shirts</a></li>-->
@@ -176,15 +176,15 @@ head('Botathon Info', true);
                         <h2>What is Botathon?</h2>
 
                         <p>Botathon is an annual event hosted by UNT Robotics where all UNT students are invited to compete in a one-day design,
-                            test, build and compete marathon!<p>
+                            test, build, and compete marathon!<p>
 
-                        <p>This year students will be building and programming remote-controlled cars, followed by a racing tournament.</p>
+                        <p>This year students will be building and programming remote-controlled cars to compete in a racing tournament!</p>
 
                         <p>
                             We provide everything you will need on the day, including parts, kits, tools, guides, mentorship,
                             and fantastic food (lunch & dinner) for a packed day of robot building and competing. The event is open to all students,
-                            regardless of skill level. While it's aimed at entry level students looking to get involved with and learn about robotics,
-							there’s plenty of fun opportunities for advanced students too!
+                            regardless of skill level. Whether you're an entry-level student looking to get involved
+							with and learn about robotics or an advanced robot technician, there's plenty of fun for everyone!
                         </p>
 
                         <p>Botathon is all about teamwork and friendly competition. Our mission is to build knowledge and skills while promoting
@@ -203,7 +203,7 @@ head('Botathon Info', true);
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <h2>Registration</h2>
 
-                        <p>Registration for Season 4 <em>is open now!</em> for all currently enrolled UNT students.</p>
+                        <p>Registration for Season 4 <em>is open now</em> for all currently enrolled UNT students.</p>
 
                         <div class="cell-md-8 cell-lg-9">
                             <h4><strong>Mar. 31:</strong> Registration Opened</h4>
@@ -302,13 +302,13 @@ head('Botathon Info', true);
 <!--                                                             class="img-responsive"/>-->
 <!--                            <h6><a href="/images/botathon-photos/season-3/field1.png">The goal posts</a></h6>-->
 <!--                        </div>-->
-<!--                        <!--<div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img-->
+                        <!--<div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img-->
 <!--                                    src="/images/botathon-photos/robots-square.jpg"-->
 <!--                                    alt="" width="485" height="555"-->
 <!--                                    class="img-responsive"/>-->
 <!--                            <h6><a href="/images/botathon-photos/robots-square.jpg">Demo robots squaring off</a>-->
 <!--                            </h6>-->
-<!--                        </div>-->-->
+<!--                        </div>-->
 <!---->
 <!--                    </div>-->
 <!--                </div>-->
@@ -462,9 +462,8 @@ head('Botathon Info', true);
 
 
                         <h4 style="margin-top: 40px;">Upgrades</h4>
-                        <p>These parts are able to be bought with botbucks (in-game currency) and will be in addition
-                            to the base kits parts that you are given freely. Each team is given 500 botbucks of
-                            in-game currency.</p>
+                        <p>You can buy these parts with botbucks (in-game currency) and will be in addition
+                            to the base kits parts that you're given freely. Each team is given 500 botbucks.</p>
                         <table class="parts upgrades">
                             <tr>
                                 <th>Part Name</th>
@@ -558,7 +557,7 @@ head('Botathon Info', true);
                             botbucks of in-game currency to buy upgrade parts for their robot. Participants are
                             encouraged to form their crew prior to registration, but a team building event will
                             be held on the morning of the event to help find teammates.</p>
-                        <p>There will be mentors to assist teams during the build process in our <a href="/join/discord">Discord</a> as well as in person. </p>
+                        <p>There will be mentors to assist teams during the build process in our <a href="/join/discord">Discord</a>, as well as in person. </p>
                     </div>
                 </div>
             </div>
@@ -586,7 +585,7 @@ head('Botathon Info', true);
                 <div class="cell-md-8 cell-lg-9">
                     <div class="sponsors">
                         <p>Our sponsors are absolutely imperative to the success of UNT Robotics. We rely on our
-                            sponsors so we can continue to bring quality engineering experience to our members and the
+                            sponsors so we can continue to bring quality engineering experiences to our members and the
                             community. Every company provides us with invaluable support through both monetary and part
                             donations. Your support will be greatly appreciated and we will be flexible with connecting
                             our members with your company's message. </p>
