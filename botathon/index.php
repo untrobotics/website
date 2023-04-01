@@ -171,24 +171,24 @@ head('Botathon Info', true);
             <div class="range range-md-justify">
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <h1><strong>Botathon</strong> - <em>Season 3 (2022)</em></h1>
+                        <h1><strong>Botathon</strong> - <em>Season 4 (2023)</em></h1>
 
                         <h2>What is Botathon?</h2>
 
                         <p>Botathon is an annual event hosted by UNT Robotics where all UNT students are invited to compete in a one-day design,
                             test, build and compete marathon!<p>
 
-                        <p>This year students will be building remote-controlled robots capable of playing soccer, followed by a mini tournament.</p>
+                        <p>This year students will be building and programming remote-controlled cars, followed by a racing tournament.</p>
 
                         <p>
                             We provide everything you will need on the day, including parts, kits, tools, guides, mentorship,
                             and fantastic food (lunch & dinner) for a packed day of robot building and competing. The event is open to all students,
-                            regardless of skill level, the event is aimed at entry level students looking to get involved with and learn about robotics,
-                            and there’s plenty of fun opportunities for advanced students too!
+                            regardless of skill level. While it's aimed at entry level students looking to get involved with and learn about robotics,
+							there’s plenty of fun opportunities for advanced students too!
                         </p>
 
-                        <p>Botathon is all about teamwork and friendly competition, our mission is to build knowledge and skills while promoting
-                            creativity and camaraderie amongst all participants. </p>
+                        <p>Botathon is all about teamwork and friendly competition. Our mission is to build knowledge and skills while promoting
+                            creativity and camaraderie among all participants. </p>
 
                     </div>
                 </div>
@@ -203,10 +203,10 @@ head('Botathon Info', true);
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <h2>Registration</h2>
 
-                        <p>Registration for Season 3 <em>is open now!</em> for all currently enrolled UNT students.</p>
+                        <p>Registration for Season 4 <em>is open now!</em> for all currently enrolled UNT students.</p>
 
                         <div class="cell-md-8 cell-lg-9">
-                            <h4><strong>Feb. 19:</strong> Registration Opened</h4>
+                            <h4><strong>Mar. 31:</strong> Registration Opened</h4>
                             <h4><strong>Apr. 8:</strong> Registration Ends</h4>
                             <h4><strong>Apr. 9:</strong> Day of Event</h4>
                         </div>
@@ -267,9 +267,9 @@ head('Botathon Info', true);
                             <tr><td>&nbsp;9:00 am</td><td>Check In Opens</td></tr>
                             <tr><td>&nbsp;10:00 am</td><td>Team Finding Event</td></tr>
                             <tr><td>&nbsp;10:30 am</td><td>Build Time!</td></tr>
-                            <tr><td>&nbsp;1:00 pm</td><td>Lunch (Which Wich)</td></tr>
+                            <tr><td>&nbsp;1:00 pm</td><td>Lunch</td></tr>
                             <tr><td>&nbsp;5:00 pm</td><td>Competition Begins</td></tr>
-                            <tr><td>&nbsp;6:30 pm</td><td>Dinner (Guiseppe's Italian)</td></tr>
+                            <tr><td>&nbsp;6:30 pm</td><td>Dinner</td></tr>
                             <tr><td>&nbsp;9:00 pm</td><td>Closing Ceremony & Winners Announced</td></tr>
                         </table>
                     </div>
@@ -278,44 +278,44 @@ head('Botathon Info', true);
         </div>
     </section>
 
-    <section class="section-50" id="field-preview">
-        <div class="shell">
-            <h2>Field preview</h2>
-            <div class="range">
-                <div class="cell-md-8 cell-lg-9">
-                    <div class="inset-md-right-30 inset-lg-right-0 field-preview">
-                        <h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>
-                        <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img
-                                    src="/images/botathon-photos/season-3/field2.png"
-                                    alt="" width="485" height="555"
-                                    class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/season-3/field2.png">Arena birds-eye view</a></h6>
-                        </div>
-                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img
-                                    src="/images/botathon-photos/season-3/field3.png"
-                                    alt="" width="485" height="555"
-                                    class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/season-3/field3.png">Overfield of the competition field</a></h6>
-                        </div>
-                        <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/season-3/field1.png" alt=""
-                                                             width="485" height="555"
-                                                             class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/season-3/field1.png">The goal posts</a></h6>
-                        </div>
-                        <!--<div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img
-                                    src="/images/botathon-photos/robots-square.jpg"
-                                    alt="" width="485" height="555"
-                                    class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/robots-square.jpg">Demo robots squaring off</a>
-                            </h6>
-                        </div>-->
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
+<!--    <section class="section-50" id="field-preview">-->
+<!--        <div class="shell">-->
+<!--            <h2>Field preview</h2>-->
+<!--            <div class="range">-->
+<!--                <div class="cell-md-8 cell-lg-9">-->
+<!--                    <div class="inset-md-right-30 inset-lg-right-0 field-preview">-->
+<!--                        <h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>-->
+<!--                        <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img-->
+<!--                                    src="/images/botathon-photos/season-3/field2.png"-->
+<!--                                    alt="" width="485" height="555"-->
+<!--                                    class="img-responsive"/>-->
+<!--                            <h6><a href="/images/botathon-photos/season-3/field2.png">Arena birds-eye view</a></h6>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img-->
+<!--                                    src="/images/botathon-photos/season-3/field3.png"-->
+<!--                                    alt="" width="485" height="555"-->
+<!--                                    class="img-responsive"/>-->
+<!--                            <h6><a href="/images/botathon-photos/season-3/field3.png">Overfield of the competition field</a></h6>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/season-3/field1.png" alt=""-->
+<!--                                                             width="485" height="555"-->
+<!--                                                             class="img-responsive"/>-->
+<!--                            <h6><a href="/images/botathon-photos/season-3/field1.png">The goal posts</a></h6>-->
+<!--                        </div>-->
+<!--                        <!--<div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img-->
+<!--                                    src="/images/botathon-photos/robots-square.jpg"-->
+<!--                                    alt="" width="485" height="555"-->
+<!--                                    class="img-responsive"/>-->
+<!--                            <h6><a href="/images/botathon-photos/robots-square.jpg">Demo robots squaring off</a>-->
+<!--                            </h6>-->
+<!--                        </div>-->-->
+<!---->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!---->
+<!--        </div>-->
+<!--    </section>-->
 
     <section class="section-50" id="parts-list">
         <div class="shell">
