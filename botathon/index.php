@@ -182,13 +182,13 @@ head('Botathon Info', true);
 
                         <p>
                             We provide everything you will need on the day, including parts, kits, tools, guides, mentorship,
-                            and fantastic food (lunch & dinner) for a packed day of robot building and competing. The event is open to all students,
+                            and fantastic food (lunch, dinner, and snacks) for a packed day of robot building and competing. The event is open to all students,
                             regardless of skill level. Whether you're an entry-level student looking to get involved
 							with and learn about robotics or an advanced robot technician, there's plenty of fun for everyone!
                         </p>
 
                         <p>Botathon is all about teamwork and friendly competition. Our mission is to build knowledge and skills while promoting
-                            creativity and camaraderie among all participants. </p>
+                            creativity and camaraderie among all participants.</p>
 
                     </div>
                 </div>
@@ -277,45 +277,6 @@ head('Botathon Info', true);
             </div>
         </div>
     </section>
-
-<!--    <section class="section-50" id="field-preview">-->
-<!--        <div class="shell">-->
-<!--            <h2>Field preview</h2>-->
-<!--            <div class="range">-->
-<!--                <div class="cell-md-8 cell-lg-9">-->
-<!--                    <div class="inset-md-right-30 inset-lg-right-0 field-preview">-->
-<!--                        <h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>-->
-<!--                        <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img-->
-<!--                                    src="/images/botathon-photos/season-3/field2.png"-->
-<!--                                    alt="" width="485" height="555"-->
-<!--                                    class="img-responsive"/>-->
-<!--                            <h6><a href="/images/botathon-photos/season-3/field2.png">Arena birds-eye view</a></h6>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img-->
-<!--                                    src="/images/botathon-photos/season-3/field3.png"-->
-<!--                                    alt="" width="485" height="555"-->
-<!--                                    class="img-responsive"/>-->
-<!--                            <h6><a href="/images/botathon-photos/season-3/field3.png">Overfield of the competition field</a></h6>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/season-3/field1.png" alt=""-->
-<!--                                                             width="485" height="555"-->
-<!--                                                             class="img-responsive"/>-->
-<!--                            <h6><a href="/images/botathon-photos/season-3/field1.png">The goal posts</a></h6>-->
-<!--                        </div>-->
-                        <!--<div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img-->
-<!--                                    src="/images/botathon-photos/robots-square.jpg"-->
-<!--                                    alt="" width="485" height="555"-->
-<!--                                    class="img-responsive"/>-->
-<!--                            <h6><a href="/images/botathon-photos/robots-square.jpg">Demo robots squaring off</a>-->
-<!--                            </h6>-->
-<!--                        </div>-->
-<!---->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!---->
-<!--        </div>-->
-<!--    </section>-->
 
     <section class="section-50" id="parts-list">
         <div class="shell">
