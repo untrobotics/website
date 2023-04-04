@@ -30,6 +30,7 @@ head('Our Team', true);
                 <div class="range">
                     <div class="cell-lg-6">
                         <h1>Our Team</h1>
+                        <small><em>Last updated: <?php echo date ("F d Y", filemtime(__FILE__)); ?></em></small>
                         <h6>These people are the reason for our success and expertise.</h6>
                     </div>
                 </div>

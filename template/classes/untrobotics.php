@@ -74,8 +74,20 @@ class untrobotics {
 	public function get_current_term() {
 		return $this->get_term_from_date(time());
 	}
-    public function get_next_term() {
-        if ($this->get_current_term() == Semester::SPRING) {
+    public function get_next_term($term = null) {
+	    if (is_null($term)) {
+	        $term = $this->get_current_term();
+        }
+        if ($term == Semester::SPRING) {
+            return Semester::AUTUMN;
+        }
+        return Semester::SPRING;
+    }
+    public function get_prev_term($term = null) {
+        if (is_null($term)) {
+            $term = $this->get_current_term();
+        }
+        if ($term == Semester::SPRING) {
             return Semester::AUTUMN;
         }
         return Semester::SPRING;

@@ -39,7 +39,7 @@ if (isset($_POST['submit'])) {
 				<?php
 				if (is_current_user_authenticated()) {
 
-				    if ($authorise_user) {
+				    if (@$authorise_user) {
 				        ?>
                         <p>Thank you for your submission! Now please make sure your Discord account is linked with your UNT Robotics account by clicking here:</p>
                         <a href="/join/w/discord">Click here to update your Discord account status.</a>

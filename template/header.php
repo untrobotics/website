@@ -157,8 +157,8 @@
                     <ul class="rd-navbar-dropdown">
                   	  <li><a href="/botathon">Info</a></li>
                       <li><a href="/botathon/register">Register</a></li>
-                      <!--<li><a href="/botathon/brackets">Brackets</a></li>
-                      <li><a href="/botathon/botathon-teams">Teams</a></li>-->
+                      <li><a href="/botathon/brackets">Brackets</a></li>
+                      <!--<li><a href="/botathon/botathon-teams">Teams</a></li>-->
                     </ul>
                   </li>
                   <li><a href="/contact">Contact us</a></li>

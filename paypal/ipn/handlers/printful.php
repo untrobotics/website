@@ -14,7 +14,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 	
 	$printfulapi = new PrintfulCustomAPI();
 
-	$duesDiscount = in_array('paid-with-dues', @$custom['discounts']);
+	$duesDiscount = @in_array('paid-with-dues', @$custom['discounts']);
 
 	$amount_paid = $payment_info->mc_gross;
 	$amount_revenue = $payment_info->mc_gross - $payment_info->mc_fee;
