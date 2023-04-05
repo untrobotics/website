@@ -93,14 +93,14 @@ if ($verified) {
 				require_once('./ipn/handlers/printful.php');
 
 				handled_tx($txn_id, $source);
-				handle_payment_notification($ipn, $payment_info, $custom_obj);
+				PRINTFUL\handle_payment_notification($ipn, $payment_info, $custom_obj);
 				break;
 			case Source::DUES:
 				payment_log("[{$txn_id}] Handling IPN with the DUES handler");			
 				require_once('./ipn/handlers/dues.php');
 
 				handled_tx($txn_id, $source);
-				handle_payment_notification($ipn, $payment_info, $custom_obj);
+				DUES\handle_payment_notification($ipn, $payment_info, $custom_obj);
 				break;
 			default:
 				payment_log("[{$txn_id}] Unhandled IPN! Raw source: {$source}");	

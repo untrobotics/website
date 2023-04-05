@@ -1,4 +1,10 @@
 <?php
+namespace PRINTFUL;
+use AdminBot;
+use IPNHandlerException;
+use PrintfulCustomAPI;
+use PrintfulOrderStatus;
+use \stdClass;
 require_once(BASE . '/api/printful/printful.php');
 
 function handle_payment_notification($ipn, $payment_info, $custom) {
@@ -7,7 +13,9 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 	payment_log("[{$payment_info->txn_id}] Hello from within the PRINTFUL handler");
 	
 	$printfulapi = new PrintfulCustomAPI();
-	
+
+	$duesDiscount = in_array('paid-with-dues', @$custom['discounts']);
+
 	$amount_paid = $payment_info->mc_gross;
 	$amount_revenue = $payment_info->mc_gross - $payment_info->mc_fee;
 	$quantity = $payment_info->quantity;
@@ -27,7 +35,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		
 		// confirm the amount paid matches the the price
 		if (is_numeric($price) && $price > 0 && is_numeric($amount_paid) && $amount_paid > 0) {
-			if ($price != $amount_paid) {
+			if ($price > $amount_paid && !$duesDiscount) {
 				throw new IPNHandlerException("[{$payment_info->txn_id}]: The amount paid is incorrect (cost: {$price}) (paid: {$amount_paid}) (quantity: {$quantity})");
 			}
 		} else {
@@ -53,7 +61,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		$shipping_address['email'] = $payment_info->payer_email;
 		
 		$order_options = array();
-		$order_options[0] = new stdClass();
+		$order_options[0] = new \stdClass();
 		$order_options[0]->txid = $payment_info->txn_id;
 		
 		$draft_order = $printfulapi->create_order_single($payment_info->address_name, $shipping_address, $amount_paid, $payment_info->quantity, $variant_id, $payment_info->txn_id, $amount_paid);
@@ -62,14 +70,14 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		
 		// check the draft order cost (because of shipping, tax, etc.) is still below the amount of revenue
 		$profit = $amount_revenue - $cost;
-		if ($cost >= $amount_revenue) {
+		if ($cost >= $amount_revenue && !$duesDiscount) {
 			throw new IPNHandlerException("[{$payment_info->txn_id}]: The price of the fulfillment is higher than the revenue amount (cost: {$cost}) (revenue: {$amount_revenue}) (profit: {$profit})");
 		}
 		payment_log("[{$payment_info->txn_id}] Confirmed fulfillment cost is less than the revenue amount (cost: {$cost}) (revenue: {$amount_revenue}) (profit: {$profit})");
 		
 		$email_send_status = email(
 			$payment_info->payer_email,
-			"Receipt for your purchase of " . $payment_info->options[1][1],
+			"Receipt for your purchase of " . $order_name,
 			
 			"<div style=\"position: relative;max-width: 100vw;text-align:center;\">" .
 			'<img src="cid:untrobotics-email-header">' .
@@ -78,7 +86,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 			
 			'<div style="text-align: left; max-width: 500px; display: inline-block;">' .
 			"	<p>Dear " . $payment_info->first_name . ' ' . $payment_info->last_name . ",</p>" .
-			"	<p>Thank you for your purchase of <strong>{$payment_info->options[1][1]} - {$payment_info->options[2][1]}</strong> from our store. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>" .
+			"	<p>Thank you for your purchase of <strong>{$order_name} - {$order_variant_name}</strong> from our store. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>" .
 			'</div>' .
 			
 			'	<div></div>' .
@@ -165,6 +173,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 			}
 		} else {
 			payment_log("[{$payment_info->txn_id}] Not confirming order because this is a sandbox order.");
+            AdminBot::send_message("(IPN) Alert: Not confirming order because this is a sandbox order.");
 		}
 	} else {
 		// Alerting! this is some type of reversal

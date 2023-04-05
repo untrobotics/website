@@ -12,17 +12,8 @@ head('My Profile', true, true);
                 <div class="range">
                     <div class="cell-md-preffix-2 cell-lg-9 cell-md-10 cell-xl-8">
                         <h1>Your Profile</h1>
-                        <h6>Stuff?</h6>
-                        <p>Profile info.</p>
-                    </div>
-                    <div class="cell-xs-12">
-                        <div class="left-aside"><span class="small text-darker text-uppercase text-bold text-spacing-340"><?php echo $userinfo['name']; ?></span>
-                            <div class="divider-custom veil reveal-md-block"></div>
-                            <ul class="list text-md-center">
-                                <li><a href="#" class="ioon icon-sm icon-darker fa-check"></a></li>
-                                <li><a href="#" class="ioon icon-sm icon-darker fa-times"></a></li>
-                            </ul>
-                        </div>
+                        <p>Help needed! We are in need of a new Webmaster to help us build this page. If you're interested, contact Seb in the discord or post in the #help-and-support channel!</p>
+                        <small><em>Last updated: 9/21/2022</em></small>
                     </div>
                 </div>
             </div>

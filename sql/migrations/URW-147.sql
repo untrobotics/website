@@ -1,0 +1,1 @@
+INSERT INTO dues_config (`key`, value) VALUES ("t_shirt_dues_purchase_price", 15);
