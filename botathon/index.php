@@ -207,8 +207,8 @@ head('Botathon Info', true);
 
                         <div class="cell-md-8 cell-lg-9">
                             <h4><strong>Mar. 31:</strong> Registration Opened</h4>
-                            <h4><strong>Apr. 8:</strong> Registration Ends</h4>
-                            <h4><strong>Apr. 9:</strong> Day of Event</h4>
+                            <h4><strong>Apr. 15:</strong> Registration Ends</h4>
+                            <h4><strong>Apr. 16:</strong> Day of Event</h4>
                         </div>
 
                         <div class="well-custom">
@@ -262,7 +262,7 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <div>Event Date: <strong>April 9, 2022</strong></div>
+                        <div>Event Date: <strong>April 16, 2022</strong></div>
                         <table id="schedule">
                             <tr><td>&nbsp;9:00 am</td><td>Check-in Opens</td></tr>
                             <tr><td>&nbsp;9:30 am</td><td>Team Finding Event</td></tr>
