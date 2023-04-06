@@ -264,13 +264,13 @@ head('Botathon Info', true);
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <div>Event Date: <strong>April 9, 2022</strong></div>
                         <table id="schedule">
-                            <tr><td>&nbsp;9:00 am</td><td>Check In Opens</td></tr>
-                            <tr><td>&nbsp;10:00 am</td><td>Team Finding Event</td></tr>
-                            <tr><td>&nbsp;10:30 am</td><td>Build Time!</td></tr>
+                            <tr><td>&nbsp;9:00 am</td><td>Check-in Opens</td></tr>
+                            <tr><td>&nbsp;9:30 am</td><td>Team Finding Event</td></tr>
+                            <tr><td>&nbsp;10:00 am</td><td>Building Begins!</td></tr>
                             <tr><td>&nbsp;1:00 pm</td><td>Lunch</td></tr>
-                            <tr><td>&nbsp;5:00 pm</td><td>Competition Begins</td></tr>
-                            <tr><td>&nbsp;6:30 pm</td><td>Dinner</td></tr>
-                            <tr><td>&nbsp;9:00 pm</td><td>Closing Ceremony & Winners Announced</td></tr>
+                            <tr><td>&nbsp;4:00 pm</td><td>Tournament Begins</td></tr>
+                            <tr><td>&nbsp;6:00 pm</td><td>Dinner</td></tr>
+                            <tr><td>&nbsp;7:00 pm</td><td>Closing Ceremony & Winners Announced</td></tr>
                         </table>
                     </div>
                 </div>
@@ -552,8 +552,8 @@ head('Botathon Info', true);
                             our members with your company's message. </p>
                         <p><strong>If you would like to become a UNT Robotics sponsor, please <a href="/contact">contact
                                     us</a>!</strong></p>
-                        <div class="sponsor"><img src="/images/sponsor-logos/botathon/eagles-nest.jpg"
-                                                  alt="eagle's nest logo"/></div>
+                        <!--<div class="sponsor"><img src="/images/sponsor-logos/botathon/eagles-nest.jpg"
+                                                  alt="eagle's nest logo"/></div>-->
                     </div>
                 </div>
             </div>
