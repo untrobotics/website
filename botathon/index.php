@@ -149,16 +149,16 @@ head('Botathon Info', true);
                     <div class="well-custom-1">
                         <h4 class="text-regular">Navigation</h4>
                         <ul class="list-xs list-marked">
-                            <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
-                            <li><a href="#register" class="text-content">Register</a></li>
+                            <li class="active" id="nav-info"><a href="#info" class="text-content">What is Botathon</a></li>
+                            <li id="nav-register"><a href="#register" class="text-content">Register</a></li>
                             <!--<li><a href="#rules" class="text-content">Rules</a></li>-->
-                            <li><a href="#schedule" class="text-content">Schedule</a></li>
+                            <li id="nav-schedule"><a href="#schedule" class="text-content">Schedule</a></li>
                             <!--<li><a href="#field-preview" class="text-content">Field Preview</a></li>-->
-                            <li><a href="#parts-list" class="text-content">Parts List</a></li>
-                            <li><a href="#teams" class="text-content">Teams</a></li>
+                            <li id="nav-parts-list"><a href="#parts-list" class="text-content">Parts List</a></li>
+                            <li id="nav-teams"><a href="#teams" class="text-content">Teams</a></li>
                             <!--<li><a href="#tshirts" class="text-content">T-Shirts</a></li>-->
-                            <li><a href="#" class="text-content">Event Sponsors</a></li>
-                            <li><a href="#contacts" class="text-content">Contact Info</a></li>
+                            <li id="nav-sponsors"><a href="#sponsors" class="text-content">Event Sponsors</a></li>
+                            <li id="nav-contacts"><a href="#contacts" class="text-content">Contact Info</a></li>
                             <!--<li><a href="brackets" class="text-content">Gameday Brackets</a></li>-->
                         </ul>
                     </div>
@@ -171,14 +171,14 @@ head('Botathon Info', true);
             <div class="range range-md-justify">
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <h1><strong>Botathon</strong> - <em>Season 4 (2023)</em></h1>
+                        <h1><strong>Botathon</strong> - <em>Season <?php echo BOTATHON_SEASON?> (2024)</em></h1>
 
                         <h2>What is Botathon?</h2>
 
                         <p>Botathon is an annual event hosted by UNT Robotics where all UNT students are invited to compete in a one-day design,
                             test, build, and compete marathon!<p>
 
-                        <p>This year students will be building and programming remote-controlled cars to compete in a racing tournament!</p>
+                        <p>Stay tuned for this year's theme!</p>
 
                         <p>
                             We provide everything you will need on the day, including parts, kits, tools, guides, mentorship,
@@ -202,13 +202,12 @@ head('Botathon Info', true);
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <h2>Registration</h2>
-
-                        <p>Registration for Season 4 <em>is open now</em> for all currently enrolled UNT students.</p>
+                        <p>Registration for Season  <?php echo BOTATHON_SEASON?><em>is open now</em> for all currently enrolled UNT students.</p>
 
                         <div class="cell-md-8 cell-lg-9">
-                            <h4><strong>Mar. 31:</strong> Registration Opened</h4>
-                            <h4><strong>Apr. 15:</strong> Registration Ends</h4>
-                            <h4><strong>Apr. 16:</strong> Day of Event</h4>
+                            <h4><strong>Mar. 8:</strong> Registration Opened</h4>
+                            <h4><strong>Mar. 22:</strong> Registration Ends</h4>
+                            <h4><strong>Mar. 30:</strong> Day of Event</h4>
                         </div>
 
                         <div class="well-custom">
@@ -583,10 +582,68 @@ head('Botathon Info', true);
 footer(false);
 ?>
 <script>
-    $("#botathon-navigation ul li a").click(function (e) {
-        $("#botathon-navigation ul li.active").removeClass("active");
-        $(this).parent().addClass("active");
-    });
+	// var currentNav = "#nav-info"
+	// var currentAnchor = '#info'
+	var anchors = ['info','register','schedule','parts-list','teams','sponsors','contacts']
+	var curIndex = 0
+	var lastScrollTop = $(window).scrollTop()
+	const downTolerance = 0.25
+	const upTolerance = 0.5
+
+	$(window).scroll(function(){
+		windoo = $(this)
+		let currentScrollTop = windoo.scrollTop()
+		let windowHeight = windoo.height()
+		let scrollBottom = currentScrollTop + windowHeight
+		function elementInView(elem)
+		{
+			let elemTop = $(elem).offset().top + parseInt($(elem).css('padding-top'),10)
+			var elemBottom = elemTop + $(elem).height()
+			return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
+		}
+		function getTop(e){return $(e).offset().top + parseInt($(e).css('padding-top'),10)}
+		function getBottom(e) {return getTop(e)+ $(e).height()}
+		function switchActive(e,i){
+			$('#nav-'.concat(anchors[curIndex])).removeClass('active')
+			$('#nav-'.concat(e)).addClass('active')
+			curIndex = i
+		}
+
+		if(currentScrollTop > lastScrollTop){ // scrolled down
+			if(curIndex!==6 && Math.floor(getBottom('footer'))<= scrollBottom)
+			{
+				switchActive('contacts',6)
+				lastScrollTop = currentScrollTop
+				return
+			}
+			if(getBottom('#'.concat(anchors[curIndex]))<= currentScrollTop +windowHeight*downTolerance){
+				if(curIndex===6) {
+					lastScrollTop = currentScrollTop
+					return
+				}
+				for(let i = curIndex+1;i<7;i++){
+					if(elementInView('#'.concat(anchors[i]))){
+						switchActive(anchors[i],i)
+						break
+					}
+				}
+			}
+		} else{ // scrolled up
+			if(getTop('#'.concat(anchors[curIndex]))>=currentScrollTop+windowHeight*(1-upTolerance)){
+				if(curIndex===0) {
+					lastScrollTop = currentScrollTop
+					return
+				}
+				for(let i = curIndex-1;i>=0;i--){
+						if (elementInView('#'.concat(anchors[i]))) {
+							switchActive(anchors[i], i)
+							break
+						}
+				}
+			}
+		}
+		lastScrollTop = currentScrollTop
+	});
 
     $(document).ready(function () {
         // Add smooth scrolling to all links
