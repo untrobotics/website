@@ -61,30 +61,52 @@ class DiscordBot {
 	        $data = $message;
         }
 
+		// Add files to array
 		$files = array();
 		if ($attachments) {
-            foreach ($attachments as $k => $attachment) {
-                $file = tmpfile();
-                $path = stream_get_meta_data($file)['uri'];
+			foreach ($attachments as $k => $attachment) {
+				if(isset($attachment['bin']))	// Function caller passed the raw data to the arg
+				{
+					// Since we have the data, we need to create a tmpfile to store that data for the CURLFile
+					$file = tmpfile();
+					$path = stream_get_meta_data($file)['uri'];
+					file_put_contents($path,$attachment['bin']);
+					$file_type = $attachment['type'];
+					$file_mime = ext2mime($file_type);
+				}
+				else if(isset($attachment['path']))	// File exists on local machine
+				{
+					$path = $attachment['path'];
+					$file_type = $attachment['type'];
+					$file_mime = ext2mime($file_type);
+				}
+				else	// We assume the attachment is an online file that we need to download
+				{	// sebastian only insane people put curly braces on the same line
+					//$content = file_get_contents($attachment['url']);
+					$file = tmpfile();
+					$path = stream_get_meta_data($file)['uri'];
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, $attachment['url']);
+					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					$content = curl_exec($ch);
 
-                //$content = file_get_contents($attachment['url']);
+					//error_log($content);
 
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $attachment['url']);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                $content = curl_exec($ch);
+					file_put_contents($path, $content);
+					$file_mime = $attachment['type'];
+					$file_type = mime2ext($file_mime);
+					//error_log($attachment['url']);
+					//error_log($path);
+					//error_log($content);
 
-                //error_log($content);
+					/*$files["attachment{$k}"] = new CURLFile($path, $attachment['type'], "attachment{$k}." . mime2ext($attachment['type']));*/
+				}
 
-                file_put_contents($path, $content);
-                //error_log($attachment['url']);
-                //error_log($path);
-                //error_log($content);
-
-                $files["attachment{$k}"] = new CURLFile($path, $attachment['type'], "attachment{$k}." . mime2ext($attachment['type']));
-            }
-        }
+				// CURLFile is a file with a bunch of delimiters in the binary so it can be sent as Form-data
+				$files["attachment{$k}"] = new CURLFile($path, $file_mime, "attachments{$k}." . $file_type);
+			}
+		}
 		//error_log(var_export($files, true));
 		
 		return static::send_api_request("/channels/{$channel_id}/messages", 'POST', 'multipart/form-data', $data, $files);
