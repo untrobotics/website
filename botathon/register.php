@@ -3,7 +3,6 @@ require('../template/top.php');
 require('../template/functions/botathon-funcs.php');
 
 head('Botathon Registration', true);
-
 ?>
 <style>
 	.checkbox-container {
@@ -99,7 +98,7 @@ head('Botathon Registration', true);
               <div class="cell-lg-6">
                 <h1>Register</h1>
                   <!--<h6>Registration is over for the year. Information about season 3 will be relased during the spring semester 2022. </h6>-->
-                  <h6>You may sign up for our <strong>Botathon Season 3</strong> competition below.</h6>
+                  <h6>You may sign up for our <strong>Botathon Season <?php echo BOTATHON_SEASON;?></strong> competition below.</h6>
               </div>
 				
 				<div>

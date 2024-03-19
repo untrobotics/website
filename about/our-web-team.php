@@ -121,7 +121,7 @@ head('Our Team', true);
                         <div class="cell-md-6">
                             <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
                                 <h6 id="henry-legay" class="h6-with-small"><a href="#henry-legay">Henry Legay</a>
-                                            class="small text-silver-chalice">Team Member</span></h6>
+                                            <span class="small text-silver-chalice">Team Member</span></h6>
                                 <p> Henry Legay is a Computer Science Student at UNT focused on web development. He is a
                                     web developer in Robotics with ready applicable experience and a willingness to
                                     learn.</p>
@@ -207,7 +207,7 @@ head('Our Team', true);
                     </div>
                 </div>
 
-              <!-- David Thompson -->
+                <!-- David Thompson -->
                 <div class="cell-lg-12 bio-area">
                     <div id="david-thompson" class="bio-anchor"></div>
                     <div class="range range-sm-middle">
@@ -231,7 +231,7 @@ head('Our Team', true);
                     </div>
                 </div>
 
-              <!-- Samin Yasar -->
+                <!-- Samin Yasar -->
                 <div class="cell-lg-12 bio-area">
                     <div id="samin-yasar" class="bio-anchor"></div>
                     <div class="range range-sm-middle">
@@ -253,7 +253,35 @@ head('Our Team', true);
                         </div>
                     </div>
                 </div>
-                                      
+
+                <!-- Kenneth Chen -->
+                <div class="cell-lg-12 bio-area">
+                    <div id="kenneth-chen" class="bio-anchor"></div>
+                    <div class="range range-sm-middle">
+                        <div class="cell-md-3"><img src="/images/bio-pics/kenneth-chen.jpg" alt="" width="360"
+                                                    height="404" class="img-responsive"/>
+                        </div>
+                        <div class="cell-md-6">
+                            <div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">
+                                <h6 id="kenneth-chen" class="h6-with-small"><a href="#kenneth-chen"> Kenneth Chen</a><span class="small text-silver-chalice">Team Member</span></h6>
+                                <p>Kenneth Chen is a Computer Science and Accounting student at UNT.
+                                    As part of UNT Robotics, he's programmed helpful things, such as the controller
+                                    connections for Botathon Season 3. He is also the financial director of UNT
+                                    Robotics. He enjoys learnings and helping others and hopes to make the website more accessible. </p>
+                                <ul class="list-inline-lg">
+                                    <li>
+                                        <a href="https://www.linkedin.com/in/kenwc"
+                                           class="icon icon-sm text-primary fa-linkedin"></a>
+                                    </li>
+                                    <li>
+                                        <a href="https://www.github.com/chenneth"
+                                           class="icon icon-sm text-primary fa-github"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Template NOTE: images must be 360 by 404 px, and take up less than -->
                 <!--            <div class="cell-lg-12 bio-area">-->
                 <!--            <div id="first-last" class="bio-anchor"></div> -->

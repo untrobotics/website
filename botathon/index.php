@@ -149,16 +149,16 @@ head('Botathon Info', true);
                     <div class="well-custom-1">
                         <h4 class="text-regular">Navigation</h4>
                         <ul class="list-xs list-marked">
-                            <li class="active"><a href="#info" class="text-content">What is Botathon</a></li>
-                            <li><a href="#register" class="text-content">Register</a></li>
+                            <li class="active" id="nav-info"><a href="#info" class="text-content">What is Botathon</a></li>
+                            <li id="nav-register"><a href="#register" class="text-content">Register</a></li>
                             <!--<li><a href="#rules" class="text-content">Rules</a></li>-->
-                            <li><a href="#schedule" class="text-content">Schedule</a></li>
-                            <li><a href="#field-preview" class="text-content">Field Preview</a></li>
-                            <li><a href="#parts-list" class="text-content">Parts List</a></li>
-                            <li><a href="#teams" class="text-content">Teams</a></li>
+                            <li id="nav-schedule"><a href="#schedule" class="text-content">Schedule</a></li>
+                            <!--<li><a href="#field-preview" class="text-content">Field Preview</a></li>-->
+                            <li id="nav-parts-list"><a href="#parts-list" class="text-content">Parts List</a></li>
+                            <li id="nav-teams"><a href="#teams" class="text-content">Teams</a></li>
                             <!--<li><a href="#tshirts" class="text-content">T-Shirts</a></li>-->
-                            <li><a href="#" class="text-content">Event Sponsors</a></li>
-                            <li><a href="#contacts" class="text-content">Contact Info</a></li>
+                            <li id="nav-sponsors"><a href="#sponsors" class="text-content">Event Sponsors</a></li>
+                            <li id="nav-contacts"><a href="#contacts" class="text-content">Contact Info</a></li>
                             <!--<li><a href="brackets" class="text-content">Gameday Brackets</a></li>-->
                         </ul>
                     </div>
@@ -171,24 +171,24 @@ head('Botathon Info', true);
             <div class="range range-md-justify">
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <h1><strong>Botathon</strong> - <em>Season 3 (2022)</em></h1>
+                        <h1><strong>Botathon</strong> - <em>Season <?php echo BOTATHON_SEASON?> (2024)</em></h1>
 
                         <h2>What is Botathon?</h2>
 
                         <p>Botathon is an annual event hosted by UNT Robotics where all UNT students are invited to compete in a one-day design,
-                            test, build and compete marathon!<p>
+                            test, build, and compete marathon!<p>
 
-                        <p>This year students will be building remote-controlled robots capable of playing soccer, followed by a mini tournament.</p>
+                        <p>Stay tuned for this year's theme!</p>
 
                         <p>
                             We provide everything you will need on the day, including parts, kits, tools, guides, mentorship,
-                            and fantastic food (lunch & dinner) for a packed day of robot building and competing. The event is open to all students,
-                            regardless of skill level, the event is aimed at entry level students looking to get involved with and learn about robotics,
-                            and there’s plenty of fun opportunities for advanced students too!
+                            and fantastic food (lunch, dinner, and snacks) for a packed day of robot building and competing. The event is open to all students,
+                            regardless of skill level. Whether you're an entry-level student looking to get involved
+							with and learn about robotics or an advanced robot technician, there's plenty of fun for everyone!
                         </p>
 
-                        <p>Botathon is all about teamwork and friendly competition, our mission is to build knowledge and skills while promoting
-                            creativity and camaraderie amongst all participants. </p>
+                        <p>Botathon is all about teamwork and friendly competition. Our mission is to build knowledge and skills while promoting
+                            creativity and camaraderie among all participants.</p>
 
                     </div>
                 </div>
@@ -202,13 +202,12 @@ head('Botathon Info', true);
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <h2>Registration</h2>
-
-                        <p>Registration for Season 3 <em>is open now!</em> for all currently enrolled UNT students.</p>
+                        <p>Registration for Season  <?php echo BOTATHON_SEASON?><em>is open now</em> for all currently enrolled UNT students.</p>
 
                         <div class="cell-md-8 cell-lg-9">
-                            <h4><strong>Feb. 19:</strong> Registration Opened</h4>
-                            <h4><strong>Apr. 8:</strong> Registration Ends</h4>
-                            <h4><strong>Apr. 9:</strong> Day of Event</h4>
+                            <h4><strong>Mar. 8:</strong> Registration Opened</h4>
+                            <h4><strong>Mar. 22:</strong> Registration Ends</h4>
+                            <h4><strong>Mar. 30:</strong> Day of Event</h4>
                         </div>
 
                         <div class="well-custom">
@@ -262,58 +261,19 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <div>Event Date: <strong>April 9, 2022</strong></div>
+                        <div>Event Date: <strong>April 16, 2022</strong></div>
                         <table id="schedule">
-                            <tr><td>&nbsp;9:00 am</td><td>Check In Opens</td></tr>
-                            <tr><td>&nbsp;10:00 am</td><td>Team Finding Event</td></tr>
-                            <tr><td>&nbsp;10:30 am</td><td>Build Time!</td></tr>
-                            <tr><td>&nbsp;1:00 pm</td><td>Lunch (Which Wich)</td></tr>
-                            <tr><td>&nbsp;5:00 pm</td><td>Competition Begins</td></tr>
-                            <tr><td>&nbsp;6:30 pm</td><td>Dinner (Guiseppe's Italian)</td></tr>
-                            <tr><td>&nbsp;9:00 pm</td><td>Closing Ceremony & Winners Announced</td></tr>
+                            <tr><td>&nbsp;9:00 am</td><td>Check-in Opens</td></tr>
+                            <tr><td>&nbsp;9:30 am</td><td>Team Finding Event</td></tr>
+                            <tr><td>&nbsp;10:00 am</td><td>Building Begins!</td></tr>
+                            <tr><td>&nbsp;1:00 pm</td><td>Lunch</td></tr>
+                            <tr><td>&nbsp;4:00 pm</td><td>Tournament Begins</td></tr>
+                            <tr><td>&nbsp;6:00 pm</td><td>Dinner</td></tr>
+                            <tr><td>&nbsp;7:00 pm</td><td>Closing Ceremony & Winners Announced</td></tr>
                         </table>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section class="section-50" id="field-preview">
-        <div class="shell">
-            <h2>Field preview</h2>
-            <div class="range">
-                <div class="cell-md-8 cell-lg-9">
-                    <div class="inset-md-right-30 inset-lg-right-0 field-preview">
-                        <h5 style="padding: 10px;">The arena is 30 ft. x 12 ft.</h5>
-                        <div class="col-md-6 col-sm-12 offset-top-40 offset-sm-top-0"><img
-                                    src="/images/botathon-photos/season-3/field2.png"
-                                    alt="" width="485" height="555"
-                                    class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/season-3/field2.png">Arena birds-eye view</a></h6>
-                        </div>
-                        <div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img
-                                    src="/images/botathon-photos/season-3/field3.png"
-                                    alt="" width="485" height="555"
-                                    class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/season-3/field3.png">Overfield of the competition field</a></h6>
-                        </div>
-                        <div class="col-md-6 col-sm-12"><img src="/images/botathon-photos/season-3/field1.png" alt=""
-                                                             width="485" height="555"
-                                                             class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/season-3/field1.png">The goal posts</a></h6>
-                        </div>
-                        <!--<div class="col-md-6 col-sm-12 offset-top-40 offset-md-top-0"><img
-                                    src="/images/botathon-photos/robots-square.jpg"
-                                    alt="" width="485" height="555"
-                                    class="img-responsive"/>
-                            <h6><a href="/images/botathon-photos/robots-square.jpg">Demo robots squaring off</a>
-                            </h6>
-                        </div>-->
-
-                    </div>
-                </div>
-            </div>
-
         </div>
     </section>
 
@@ -462,9 +422,8 @@ head('Botathon Info', true);
 
 
                         <h4 style="margin-top: 40px;">Upgrades</h4>
-                        <p>These parts are able to be bought with botbucks (in-game currency) and will be in addition
-                            to the base kits parts that you are given freely. Each team is given 500 botbucks of
-                            in-game currency.</p>
+                        <p>You can buy these parts with botbucks (in-game currency) and will be in addition
+                            to the base kits parts that you're given freely. Each team is given 500 botbucks.</p>
                         <table class="parts upgrades">
                             <tr>
                                 <th>Part Name</th>
@@ -558,7 +517,7 @@ head('Botathon Info', true);
                             botbucks of in-game currency to buy upgrade parts for their robot. Participants are
                             encouraged to form their crew prior to registration, but a team building event will
                             be held on the morning of the event to help find teammates.</p>
-                        <p>There will be mentors to assist teams during the build process in our <a href="/join/discord">Discord</a> as well as in person. </p>
+                        <p>There will be mentors to assist teams during the build process in our <a href="/join/discord">Discord</a>, as well as in person. </p>
                     </div>
                 </div>
             </div>
@@ -586,14 +545,14 @@ head('Botathon Info', true);
                 <div class="cell-md-8 cell-lg-9">
                     <div class="sponsors">
                         <p>Our sponsors are absolutely imperative to the success of UNT Robotics. We rely on our
-                            sponsors so we can continue to bring quality engineering experience to our members and the
+                            sponsors so we can continue to bring quality engineering experiences to our members and the
                             community. Every company provides us with invaluable support through both monetary and part
                             donations. Your support will be greatly appreciated and we will be flexible with connecting
                             our members with your company's message. </p>
                         <p><strong>If you would like to become a UNT Robotics sponsor, please <a href="/contact">contact
                                     us</a>!</strong></p>
-                        <div class="sponsor"><img src="/images/sponsor-logos/botathon/eagles-nest.jpg"
-                                                  alt="eagle's nest logo"/></div>
+                        <!--<div class="sponsor"><img src="/images/sponsor-logos/botathon/eagles-nest.jpg"
+                                                  alt="eagle's nest logo"/></div>-->
                     </div>
                 </div>
             </div>
@@ -623,10 +582,68 @@ head('Botathon Info', true);
 footer(false);
 ?>
 <script>
-    $("#botathon-navigation ul li a").click(function (e) {
-        $("#botathon-navigation ul li.active").removeClass("active");
-        $(this).parent().addClass("active");
-    });
+	// var currentNav = "#nav-info"
+	// var currentAnchor = '#info'
+	var anchors = ['info','register','schedule','parts-list','teams','sponsors','contacts']
+	var curIndex = 0
+	var lastScrollTop = $(window).scrollTop()
+	const downTolerance = 0.25
+	const upTolerance = 0.5
+
+	$(window).scroll(function(){
+		windoo = $(this)
+		let currentScrollTop = windoo.scrollTop()
+		let windowHeight = windoo.height()
+		let scrollBottom = currentScrollTop + windowHeight
+		function elementInView(elem)
+		{
+			let elemTop = $(elem).offset().top + parseInt($(elem).css('padding-top'),10)
+			var elemBottom = elemTop + $(elem).height()
+			return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
+		}
+		function getTop(e){return $(e).offset().top + parseInt($(e).css('padding-top'),10)}
+		function getBottom(e) {return getTop(e)+ $(e).height()}
+		function switchActive(e,i){
+			$('#nav-'.concat(anchors[curIndex])).removeClass('active')
+			$('#nav-'.concat(e)).addClass('active')
+			curIndex = i
+		}
+
+		if(currentScrollTop > lastScrollTop){ // scrolled down
+			if(curIndex!==6 && Math.floor(getBottom('footer'))<= scrollBottom)
+			{
+				switchActive('contacts',6)
+				lastScrollTop = currentScrollTop
+				return
+			}
+			if(getBottom('#'.concat(anchors[curIndex]))<= currentScrollTop +windowHeight*downTolerance){
+				if(curIndex===6) {
+					lastScrollTop = currentScrollTop
+					return
+				}
+				for(let i = curIndex+1;i<7;i++){
+					if(elementInView('#'.concat(anchors[i]))){
+						switchActive(anchors[i],i)
+						break
+					}
+				}
+			}
+		} else{ // scrolled up
+			if(getTop('#'.concat(anchors[curIndex]))>=currentScrollTop+windowHeight*(1-upTolerance)){
+				if(curIndex===0) {
+					lastScrollTop = currentScrollTop
+					return
+				}
+				for(let i = curIndex-1;i>=0;i--){
+						if (elementInView('#'.concat(anchors[i]))) {
+							switchActive(anchors[i], i)
+							break
+						}
+				}
+			}
+		}
+		lastScrollTop = currentScrollTop
+	});
 
     $(document).ready(function () {
         // Add smooth scrolling to all links
