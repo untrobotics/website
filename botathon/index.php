@@ -582,9 +582,25 @@ head('Botathon Info', true);
 footer(false);
 ?>
 <script>
-	// var currentNav = "#nav-info"
-	// var currentAnchor = '#info'
-	var anchors = ['info','register','schedule','parts-list','teams','sponsors','contacts']
+	var anchors = [
+		$("#info"),
+		$("#register"),
+		$("#schedule"),
+		$("#parts-list"),
+		$("#teams"),
+		$("#sponsors"),
+		$("#contacts"),
+	]
+	var navAnchors = [
+		document.querySelector("#nav-info"),
+		document.querySelector("#nav-register"),
+		document.querySelector("#nav-schedule"),
+		document.querySelector("#nav-parts-list"),
+		document.querySelector("#nav-teams"),
+		document.querySelector("#nav-sponsors"),
+		document.querySelector("#nav-contacts"),
+	]
+	var footer = $('footer')
 	var curIndex = 0
 	var lastScrollTop = $(window).scrollTop()
 	const downTolerance = 0.25
@@ -597,46 +613,46 @@ footer(false);
 		let scrollBottom = currentScrollTop + windowHeight
 		function elementInView(elem)
 		{
-			let elemTop = $(elem).offset().top + parseInt($(elem).css('padding-top'),10)
-			var elemBottom = elemTop + $(elem).height()
+			let elemTop = elem.offset().top + parseInt(elem.css('padding-top'),10)
+			var elemBottom = elemTop + elem.height()
 			return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
 		}
-		function getTop(e){return $(e).offset().top + parseInt($(e).css('padding-top'),10)}
-		function getBottom(e) {return getTop(e)+ $(e).height()}
-		function switchActive(e,i){
-			$('#nav-'.concat(anchors[curIndex])).removeClass('active')
-			$('#nav-'.concat(e)).addClass('active')
-			curIndex = i
+		function getTop(e){return e.offset().top + parseInt(e.css('padding-top'),10)}
+		function getBottom(e) {return getTop(e)+ e.height()}
+		function switchActive(e){
+			navAnchors[curIndex].classList.remove('active')
+			navAnchors[e].classList.add('active')
+			curIndex = e
 		}
 
 		if(currentScrollTop > lastScrollTop){ // scrolled down
-			if(curIndex!==6 && Math.floor(getBottom('footer'))<= scrollBottom)
+			if(curIndex!==6 && Math.floor(getBottom(footer))<= scrollBottom)
 			{
-				switchActive('contacts',6)
+				switchActive(6)
 				lastScrollTop = currentScrollTop
 				return
 			}
-			if(getBottom('#'.concat(anchors[curIndex]))<= currentScrollTop +windowHeight*downTolerance){
+			if(getBottom(anchors[curIndex])<= currentScrollTop +windowHeight*downTolerance){
 				if(curIndex===6) {
 					lastScrollTop = currentScrollTop
 					return
 				}
 				for(let i = curIndex+1;i<7;i++){
-					if(elementInView('#'.concat(anchors[i]))){
-						switchActive(anchors[i],i)
+					if(elementInView(anchors[i])){
+						switchActive(i)
 						break
 					}
 				}
 			}
 		} else{ // scrolled up
-			if(getTop('#'.concat(anchors[curIndex]))>=currentScrollTop+windowHeight*(1-upTolerance)){
+			if(getTop(anchors[curIndex])>=currentScrollTop+windowHeight*(1-upTolerance)){
 				if(curIndex===0) {
 					lastScrollTop = currentScrollTop
 					return
 				}
 				for(let i = curIndex-1;i>=0;i--){
-						if (elementInView('#'.concat(anchors[i]))) {
-							switchActive(anchors[i], i)
+						if (elementInView(anchors[i])) {
+							switchActive(i)
 							break
 						}
 				}
