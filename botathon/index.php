@@ -582,76 +582,59 @@ head('Botathon Info', true);
 footer(false);
 ?>
 <script>
-	var anchors = [
-		$("#info"),
-		$("#register"),
-		$("#schedule"),
-		$("#parts-list"),
-		$("#teams"),
-		$("#sponsors"),
-		$("#contacts"),
-	]
-	var navAnchors = [
-		document.querySelector("#nav-info"),
-		document.querySelector("#nav-register"),
-		document.querySelector("#nav-schedule"),
-		document.querySelector("#nav-parts-list"),
-		document.querySelector("#nav-teams"),
-		document.querySelector("#nav-sponsors"),
-		document.querySelector("#nav-contacts"),
-	]
-	var footer = $('footer')
-	var curIndex = 0
-	var lastScrollTop = $(window).scrollTop()
+	let anchorSelectors = [$("#info"), $("#register"), $("#schedule"), $("#parts-list"), $("#teams"), $("#sponsors"), $("#contacts"),]
+	let navSelectors = [document.querySelector("#nav-info"), document.querySelector("#nav-register"), document.querySelector("#nav-schedule"), document.querySelector("#nav-parts-list"), document.querySelector("#nav-teams"), document.querySelector("#nav-sponsors"), document.querySelector("#nav-contacts"),]
+	let footerSelector = $('footer')
+	let curIndex = 0
+	let windowSelector = $(window)
+	let lastScrollTop = windowSelector.scrollTop()
 	const downTolerance = 0.25
 	const upTolerance = 0.5
-
 	$(window).scroll(function(){
-		windoo = $(this)
-		let currentScrollTop = windoo.scrollTop()
-		let windowHeight = windoo.height()
+		let currentScrollTop = windowSelector.scrollTop()
+		let windowHeight = windowSelector.height()
 		let scrollBottom = currentScrollTop + windowHeight
 		function elementInView(elem)
 		{
 			let elemTop = elem.offset().top + parseInt(elem.css('padding-top'),10)
-			var elemBottom = elemTop + elem.height()
+			let elemBottom = elemTop + elem.height()
 			return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
 		}
-		function getTop(e){return e.offset().top + parseInt(e.css('padding-top'),10)}
-		function getBottom(e) {return getTop(e)+ e.height()}
-		function switchActive(e){
-			navAnchors[curIndex].classList.remove('active')
-			navAnchors[e].classList.add('active')
-			curIndex = e
+		function getTop(elem){return elem.offset().top + parseInt(elem.css('padding-top'),10)}
+		function getBottom(elem) {return getTop(elem)+ elem.height()}
+		function switchActive(i){
+			navSelectors[curIndex].classList.remove('active')
+			navSelectors[i].classList.add('active')
+			curIndex = i
 		}
 
 		if(currentScrollTop > lastScrollTop){ // scrolled down
-			if(curIndex!==6 && Math.floor(getBottom(footer))<= scrollBottom)
+			if(curIndex!==6 && Math.floor(getBottom(footerSelector))<= scrollBottom)
 			{
 				switchActive(6)
 				lastScrollTop = currentScrollTop
 				return
 			}
-			if(getBottom(anchors[curIndex])<= currentScrollTop +windowHeight*downTolerance){
+			if(getBottom(anchorSelectors[curIndex])<= currentScrollTop +windowHeight*downTolerance){
 				if(curIndex===6) {
 					lastScrollTop = currentScrollTop
 					return
 				}
 				for(let i = curIndex+1;i<7;i++){
-					if(elementInView(anchors[i])){
+					if(elementInView(anchorSelectors[i])){
 						switchActive(i)
 						break
 					}
 				}
 			}
 		} else{ // scrolled up
-			if(getTop(anchors[curIndex])>=currentScrollTop+windowHeight*(1-upTolerance)){
+			if(getTop(anchorSelectors[curIndex])>=currentScrollTop+windowHeight*(1-upTolerance)){
 				if(curIndex===0) {
 					lastScrollTop = currentScrollTop
 					return
 				}
 				for(let i = curIndex-1;i>=0;i--){
-						if (elementInView(anchors[i])) {
+						if (elementInView(anchorSelectors[i])) {
 							switchActive(i)
 							break
 						}
@@ -684,5 +667,6 @@ footer(false);
                 });
             } // End if
         });
+		
     });
 </script>
