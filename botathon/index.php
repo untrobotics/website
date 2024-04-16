@@ -590,59 +590,7 @@ footer(false);
 	let lastScrollTop = windowSelector.scrollTop()
 	const downTolerance = 0.25
 	const upTolerance = 0.5
-	$(window).scroll(function(){
-		let currentScrollTop = windowSelector.scrollTop()
-		let windowHeight = windowSelector.height()
-		let scrollBottom = currentScrollTop + windowHeight
-		function elementInView(elem)
-		{
-			let elemTop = elem.offset().top + parseInt(elem.css('padding-top'),10)
-			let elemBottom = elemTop + elem.height()
-			return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
-		}
-		function getTop(elem){return elem.offset().top + parseInt(elem.css('padding-top'),10)}
-		function getBottom(elem) {return getTop(elem)+ elem.height()}
-		function switchActive(i){
-			navSelectors[curIndex].classList.remove('active')
-			navSelectors[i].classList.add('active')
-			curIndex = i
-		}
-
-		if(currentScrollTop > lastScrollTop){ // scrolled down
-			if(curIndex!==6 && Math.floor(getBottom(footerSelector))<= scrollBottom)
-			{
-				switchActive(6)
-				lastScrollTop = currentScrollTop
-				return
-			}
-			if(getBottom(anchorSelectors[curIndex])<= currentScrollTop +windowHeight*downTolerance){
-				if(curIndex===6) {
-					lastScrollTop = currentScrollTop
-					return
-				}
-				for(let i = curIndex+1;i<7;i++){
-					if(elementInView(anchorSelectors[i])){
-						switchActive(i)
-						break
-					}
-				}
-			}
-		} else{ // scrolled up
-			if(getTop(anchorSelectors[curIndex])>=currentScrollTop+windowHeight*(1-upTolerance)){
-				if(curIndex===0) {
-					lastScrollTop = currentScrollTop
-					return
-				}
-				for(let i = curIndex-1;i>=0;i--){
-						if (elementInView(anchorSelectors[i])) {
-							switchActive(i)
-							break
-						}
-				}
-			}
-		}
-		lastScrollTop = currentScrollTop
-	});
+	$(window).scroll(navChange);
 
     $(document).ready(function () {
         // Add smooth scrolling to all links
@@ -667,6 +615,71 @@ footer(false);
                 });
             } // End if
         });
-		
+		let scrollTop = windowSelector.scrollTop()
+		let scrollBottom = scrollTop + windowSelector.height()
+		for(let i = 0; i < 7; i++){
+			let anchor = anchorSelectors[i];
+			if(elementInView(anchor,scrollTop,scrollBottom)){
+				switchActive(i)
+				break
+			}
+		}
     });
+	
+	function navChange(){
+		let currentScrollTop = windowSelector.scrollTop()
+		let windowHeight = windowSelector.height()
+		let scrollBottom = currentScrollTop + windowHeight
+
+		function getTop(elem){return elem.offset().top + parseInt(elem.css('padding-top'),10)}
+		function getBottom(elem) {return getTop(elem)+ elem.height()}
+
+
+		if(currentScrollTop > lastScrollTop){ // scrolled down
+			if(curIndex!==6 && Math.floor(getBottom(footerSelector))<= scrollBottom)
+			{
+				switchActive(6)
+				lastScrollTop = currentScrollTop
+				return
+			}
+			if(getBottom(anchorSelectors[curIndex])<= currentScrollTop +windowHeight*downTolerance){
+				if(curIndex===6) {
+					lastScrollTop = currentScrollTop
+					return
+				}
+				for(let i = curIndex+1;i<7;i++){
+					if(elementInView(anchorSelectors[i]),currentScrollTop,scrollBottom){
+						switchActive(i)
+						break
+					}
+				}
+			}
+		} else{ // scrolled up
+			if(getTop(anchorSelectors[curIndex])>=currentScrollTop+windowHeight*(1-upTolerance)){
+				if(curIndex===0) {
+					lastScrollTop = currentScrollTop
+					return
+				}
+				for(let i = curIndex-1;i>=0;i--){
+					if (elementInView(anchorSelectors[i],currentScrollTop,scrollBottom)) {
+						switchActive(i)
+						break
+					}
+				}
+			}
+		}
+		lastScrollTop = currentScrollTop
+	}
+
+	function elementInView(elem,currentScrollTop,scrollBottom)
+	{
+		let elemTop = elem.offset().top + parseInt(elem.css('padding-top'),10)
+		let elemBottom = elemTop + elem.height()
+		return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
+	}
+	function switchActive(i){
+		navSelectors[curIndex].classList.remove('active')
+		navSelectors[i].classList.add('active')
+		curIndex = i
+	}
 </script>
