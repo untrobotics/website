@@ -1,5 +1,5 @@
 <?php
-
+require(BASE . '/api/api-cache.php');
 class PrintfulCustomAPI {
     private $api_key;
 
@@ -8,12 +8,24 @@ class PrintfulCustomAPI {
     }
 
     protected function send_request($URI, $data = false) {
+        $endpoint = 'https://api.printful.com/' . $URI;
+        $isOrder =substr($URI, 0, 6) == 'orders';
+        if(!$isOrder){ // check cache, ignore orders because they shouldn't be cached
+            $r = getCached($endpoint);
+            if($r!== null){ // endpoint is in cache
+                if($r !== false){
+                    return json_decode($r['content']);
+                }
+            }
+
+        }
+
         $ch = curl_init();
 
         $headers = array();
         $headers[] = 'Authorization: Bearer ' . $this->api_key;
 
-        curl_setopt($ch, CURLOPT_URL, 'https://api.printful.com/' . $URI);
+        curl_setopt($ch, CURLOPT_URL, $endpoint);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         if ($data !== false) {
@@ -41,7 +53,9 @@ class PrintfulCustomAPI {
         }
 
         curl_close($ch);
-
+        if(!$isOrder){
+            insertCached($endpoint, $result, 1);
+        }
         return json_decode($result);
     }
 
@@ -98,6 +112,7 @@ class PrintfulCustomAPI {
         if (!empty($search_string)) {
             $search_string = "&search=" . $search_string;
         }
+        echo 'test';
         $products_results = $this->send_request("store/products?limit=5" . $search_string);
         $parsed_products_results = $this->parse_results($products_results);
 

@@ -1,4 +1,6 @@
+SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `outgoing_request_cache_config`;
+SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE `outgoing_request_cache_config`(
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `ttl` int(6) NOT NULL, -- ttl measured in seconds
