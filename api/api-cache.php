@@ -1,4 +1,11 @@
 <?php
+// these functions use $db, so scripts referencing them need to define it
+
+/**
+ * Gets the first entry from the API cache that has a matching endpoint.
+ * @param string $endpoint The endpoint for the API request
+ * @return array|null The first entry that matches or null if no entry exists
+ */
 function getFromApiCacheTable(string $endpoint)
 {
     global $db;
@@ -10,6 +17,11 @@ function getFromApiCacheTable(string $endpoint)
     return null;
 }
 
+/**
+ * Gets the first entry from the API cache that has a matching endpoint. Will not return if the entry is expired.
+ * @param string $endpoint The endpoint for the API request
+ * @return array|false|null The first entry that matches, false if the entry is expired, or null if no entry exists
+ */
 function getCached(string $endpoint)
 {
     global $db;
@@ -27,6 +39,12 @@ function getCached(string $endpoint)
     return null;
 }
 
+/**
+ * Adds or updates an entry into the cache table.
+ * @param string $endpoint The endpoint for the API request
+ * @param string $content The content of API request's response
+ * @param int|string $config The ID of the config or its name in the config table
+ */
 function insertCached(string $endpoint, string $content, $config)
 {
     global $db;
@@ -58,6 +76,10 @@ function insertCached(string $endpoint, string $content, $config)
     }
 }
 
+/**
+ * Deletes an entry from the cache or deletes all entries from the cache.
+ * @param string|null $endpoint The endpoint of the API request to be removed. If null, empties the cache
+ */
 function clearCached(string $endpoint = null){
     global $db;
     if ($endpoint) {
@@ -71,6 +93,12 @@ function clearCached(string $endpoint = null){
     }
 }
 
+/**
+ * Adds a new cache config to the config table.
+ * @param int $ttl The time to live for cached entries, measured in seconds
+ * @param string|null $config_name (optional) The name of the config
+ * @return bool|mysqli_result The results of the MySQLi query
+ */
 function addNewCacheConfig(int $ttl, $config_name = null)
 {
     global $db;
@@ -80,6 +108,12 @@ function addNewCacheConfig(int $ttl, $config_name = null)
     return $db->query('INSERT INTO outgoing_request_cache_config (ttl) VALUES (' . $ttl . ')');
 }
 
+/**
+ * Updates the information of one of the cache configs. Does nothing if both $config_name and $ttl are null
+ * @param int $id The ID of the config to be updated
+ * @param string|null $config_name (optional) The name of the config
+ * @param int|null $ttl (optional) The time to live for cached entries, measured in seconds
+ */
 function updateCacheConfig(int $id, $config_name = null, $ttl = null){
     global $db;
     if($config_name === null){
