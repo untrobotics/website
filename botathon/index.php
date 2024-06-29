@@ -583,7 +583,7 @@ footer(false);
 ?>
 <script>
 	let anchorSelectors = [$("#info"), $("#register"), $("#schedule"), $("#parts-list"), $("#teams"), $("#sponsors"), $("#contacts"),]
-	let navSelectors = [document.querySelector("#nav-info"), document.querySelector("#nav-register"), document.querySelector("#nav-schedule"), document.querySelector("#nav-parts-list"), document.querySelector("#nav-teams"), document.querySelector("#nav-sponsors"), document.querySelector("#nav-contacts"),]
+	let navSelectors = [$("#nav-info"), $("#nav-register"), $("#nav-schedule"), $("#nav-parts-list"), $("#nav-teams"), $("#nav-sponsors"), $("#nav-contacts"),]
 	let footerSelector = $('footer')
 	let curIndex = 0
 	let windowSelector = $(window)
@@ -678,8 +678,8 @@ footer(false);
 		return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
 	}
 	function switchActive(i){
-		navSelectors[curIndex].classList.remove('active')
-		navSelectors[i].classList.add('active')
+		navSelectors[curIndex].removeClass('active')
+		navSelectors[i].addClass('active')
 		curIndex = i
 	}
 </script>
