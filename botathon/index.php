@@ -95,14 +95,17 @@ head('Botathon Info', true);
 
     .robot-kit-row {
     }
+
     .robot-kit-entry > div {
         height: 100%;
         border: 1px dotted black;
         margin: 2px;
     }
+
     .robot-kit-entry h4 {
         text-align: center;
     }
+
     .robot-kit-list li {
         background-color: #e1e1e1;
         padding: 5px;
@@ -149,7 +152,8 @@ head('Botathon Info', true);
                     <div class="well-custom-1">
                         <h4 class="text-regular">Navigation</h4>
                         <ul class="list-xs list-marked">
-                            <li class="active" id="nav-info"><a href="#info" class="text-content">What is Botathon</a></li>
+                            <li class="active" id="nav-info"><a href="#info" class="text-content">What is Botathon</a>
+                            </li>
                             <li id="nav-register"><a href="#register" class="text-content">Register</a></li>
                             <!--<li><a href="#rules" class="text-content">Rules</a></li>-->
                             <li id="nav-schedule"><a href="#schedule" class="text-content">Schedule</a></li>
@@ -171,23 +175,29 @@ head('Botathon Info', true);
             <div class="range range-md-justify">
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <h1><strong>Botathon</strong> - <em>Season <?php echo BOTATHON_SEASON?> (2024)</em></h1>
+                        <h1><strong>Botathon</strong> - <em>Season <?php echo BOTATHON_SEASON ?> (2024)</em></h1>
 
                         <h2>What is Botathon?</h2>
 
-                        <p>Botathon is an annual event hosted by UNT Robotics where all UNT students are invited to compete in a one-day design,
-                            test, build, and compete marathon!<p>
+                        <p>Botathon is an annual event hosted by UNT Robotics where all UNT students are invited to
+                            compete in a one-day design,
+                            test, build, and compete marathon!
+                        <p>
 
                         <p>Stay tuned for this year's theme!</p>
 
                         <p>
-                            We provide everything you will need on the day, including parts, kits, tools, guides, mentorship,
-                            and fantastic food (lunch, dinner, and snacks) for a packed day of robot building and competing. The event is open to all students,
+                            We provide everything you will need on the day, including parts, kits, tools, guides,
+                            mentorship,
+                            and fantastic food (lunch, dinner, and snacks) for a packed day of robot building and
+                            competing. The event is open to all students,
                             regardless of skill level. Whether you're an entry-level student looking to get involved
-							with and learn about robotics or an advanced robot technician, there's plenty of fun for everyone!
+                            with and learn about robotics or an advanced robot technician, there's plenty of fun for
+                            everyone!
                         </p>
 
-                        <p>Botathon is all about teamwork and friendly competition. Our mission is to build knowledge and skills while promoting
+                        <p>Botathon is all about teamwork and friendly competition. Our mission is to build knowledge
+                            and skills while promoting
                             creativity and camaraderie among all participants.</p>
 
                     </div>
@@ -202,7 +212,8 @@ head('Botathon Info', true);
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <h2>Registration</h2>
-                        <p>Registration for Season  <?php echo BOTATHON_SEASON?><em>is open now</em> for all currently enrolled UNT students.</p>
+                        <p>Registration for Season <?php echo BOTATHON_SEASON ?><em>is open now</em> for all currently
+                            enrolled UNT students.</p>
 
                         <div class="cell-md-8 cell-lg-9">
                             <h4><strong>Mar. 8:</strong> Registration Opened</h4>
@@ -263,13 +274,34 @@ head('Botathon Info', true);
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <div>Event Date: <strong>April 16, 2022</strong></div>
                         <table id="schedule">
-                            <tr><td>&nbsp;9:00 am</td><td>Check In Opens</td></tr>
-                            <tr><td>&nbsp;10:00 am</td><td>Team Finding Event</td></tr>
-                            <tr><td>&nbsp;10:30 am</td><td>Build Time!</td></tr>
-                            <tr><td>&nbsp;1:00 pm</td><td>Lunch</td></tr>
-                            <tr><td>&nbsp;5:00 pm</td><td>Competition Begins</td></tr>
-                            <tr><td>&nbsp;6:30 pm</td><td>Dinner</td></tr>
-                            <tr><td>&nbsp;9:00 pm</td><td>Closing Ceremony & Winners Announced</td></tr>
+                            <tr>
+                                <td>&nbsp;9:00 am</td>
+                                <td>Check In Opens</td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;10:00 am</td>
+                                <td>Team Finding Event</td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;10:30 am</td>
+                                <td>Build Time!</td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;1:00 pm</td>
+                                <td>Lunch</td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;5:00 pm</td>
+                                <td>Competition Begins</td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;6:30 pm</td>
+                                <td>Dinner</td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;9:00 pm</td>
+                                <td>Closing Ceremony & Winners Announced</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -294,7 +326,8 @@ head('Botathon Info', true);
                                     <h4>MECANUM WHEEL CAR ROBOT</h4>
 
                                     <div class="botPics">
-                                        <img src="/images/botathon-photos/mecanum-wheeled-robot.jpg" alt="Mecanum wheeled robot" class="img-responsive"/>
+                                        <img src="/images/botathon-photos/mecanum-wheeled-robot.jpg"
+                                             alt="Mecanum wheeled robot" class="img-responsive"/>
                                     </div>
 
                                     <ul class="robot-kit-list">
@@ -337,7 +370,8 @@ head('Botathon Info', true);
                                     <h4>RUBBER WHEEL CAR ROBOT</h4>
 
                                     <div class="botPics">
-                                        <img src="/images/botathon-photos/traditionally-wheeled-robot.jpg" alt="Traditionally wheeled robot" class="img-responsive"/>
+                                        <img src="/images/botathon-photos/traditionally-wheeled-robot.jpg"
+                                             alt="Traditionally wheeled robot" class="img-responsive"/>
                                     </div>
 
                                     <ul class="robot-kit-list">
@@ -383,7 +417,8 @@ head('Botathon Info', true);
                                     <h4>TANK TRACK ROBOT</h4>
 
                                     <div class="botPics">
-                                        <img src="/images/botathon-photos/tank-tracked-robot.jpg" alt="Tank track robot" class="img-responsive"/>
+                                        <img src="/images/botathon-photos/tank-tracked-robot.jpg" alt="Tank track robot"
+                                             class="img-responsive"/>
                                     </div>
 
                                     <ul class="robot-kit-list">
@@ -517,7 +552,8 @@ head('Botathon Info', true);
                             botbucks of in-game currency to buy upgrade parts for their robot. Participants are
                             encouraged to form their crew prior to registration, but a team building event will
                             be held on the morning of the event to help find teammates.</p>
-                        <p>There will be mentors to assist teams during the build process in our <a href="/join/discord">Discord</a>, as well as in person. </p>
+                        <p>There will be mentors to assist teams during the build process in our <a
+                                    href="/join/discord">Discord</a>, as well as in person. </p>
                     </div>
                 </div>
             </div>
@@ -582,15 +618,15 @@ head('Botathon Info', true);
 footer(false);
 ?>
 <script>
-	let anchorSelectors = [$("#info"), $("#register"), $("#schedule"), $("#parts-list"), $("#teams"), $("#sponsors"), $("#contacts"),]
-	let navSelectors = [$("#nav-info"), $("#nav-register"), $("#nav-schedule"), $("#nav-parts-list"), $("#nav-teams"), $("#nav-sponsors"), $("#nav-contacts"),]
-	let footerSelector = $('footer')
-	let curIndex = 0
-	let windowSelector = $(window)
-	let lastScrollTop = windowSelector.scrollTop()
-	const downTolerance = 0.25
-	const upTolerance = 0.5
-	$(window).scroll(navChange);
+    // these are ordered top to bottom in the page layout
+    let anchorSelectors = [$("#info"), $("#register"), $("#schedule"), $("#parts-list"), $("#teams"), $("#sponsors"), $("#contacts"),]
+    let navSelectors = [$("#nav-info"), $("#nav-register"), $("#nav-schedule"), $("#nav-parts-list"), $("#nav-teams"), $("#nav-sponsors"), $("#nav-contacts"),]
+    let footerSelector = $('footer')
+    let windowSelector = $(window)
+    let lastScrollTop = windowSelector.scrollTop()
+    const downTolerance = 0.25
+    const upTolerance = 0.5
+    $(window).scroll(navChange);
 
     $(document).ready(function () {
         // Add smooth scrolling to all links
@@ -609,77 +645,82 @@ footer(false);
                 $('html, body').animate({
                     scrollTop: $(hash).offset().top
                 }, 800, function () {
-
                     // Add hash (#) to URL when done scrolling (default click behavior)
                     window.location.hash = hash;
                 });
             } // End if
         });
-		let scrollTop = windowSelector.scrollTop()
-		let scrollBottom = scrollTop + windowSelector.height()
-		for(let i = 0; i < 7; i++){
-			let anchor = anchorSelectors[i];
-			if(elementInView(anchor,scrollTop,scrollBottom)){
-				switchActive(i)
-				break
-			}
-		}
+        let scrollTop = windowSelector.scrollTop()
+        let scrollBottom = scrollTop + windowSelector.height()
+        for (let i = 0; i < 7; i++) {
+            let anchor = anchorSelectors[i];
+            if (elementInView(anchor, scrollTop, scrollBottom)) {
+                switchActive(i, 0)
+                break
+            }
+        }
     });
-	
-	function navChange(){
-		let currentScrollTop = windowSelector.scrollTop()
-		let windowHeight = windowSelector.height()
-		let scrollBottom = currentScrollTop + windowHeight
 
-		function getTop(elem){return elem.offset().top + parseInt(elem.css('padding-top'),10)}
-		function getBottom(elem) {return getTop(elem)+ elem.height()}
+    function navChange() {
+        let currentScrollTop = windowSelector.scrollTop()
+        let windowHeight = windowSelector.height()
+        let scrollBottom = currentScrollTop + windowHeight
 
+        function getTop(elem) {
+            return elem.offset().top + parseInt(elem.css('padding-top'), 10)
+        }
 
-		if(currentScrollTop > lastScrollTop){ // scrolled down
-			if(curIndex!==6 && Math.floor(getBottom(footerSelector))<= scrollBottom)
-			{
-				switchActive(6)
-				lastScrollTop = currentScrollTop
-				return
-			}
-			if(getBottom(anchorSelectors[curIndex])<= currentScrollTop +windowHeight*downTolerance){
-				if(curIndex===6) {
-					lastScrollTop = currentScrollTop
-					return
-				}
-				for(let i = curIndex+1;i<7;i++){
-					if(elementInView(anchorSelectors[i]),currentScrollTop,scrollBottom){
-						switchActive(i)
-						break
-					}
-				}
-			}
-		} else{ // scrolled up
-			if(getTop(anchorSelectors[curIndex])>=currentScrollTop+windowHeight*(1-upTolerance)){
-				if(curIndex===0) {
-					lastScrollTop = currentScrollTop
-					return
-				}
-				for(let i = curIndex-1;i>=0;i--){
-					if (elementInView(anchorSelectors[i],currentScrollTop,scrollBottom)) {
-						switchActive(i)
-						break
-					}
-				}
-			}
-		}
-		lastScrollTop = currentScrollTop
-	}
+        function getBottom(elem) {
+            return getTop(elem) + elem.height()
+        }
 
-	function elementInView(elem,currentScrollTop,scrollBottom)
-	{
-		let elemTop = elem.offset().top + parseInt(elem.css('padding-top'),10)
-		let elemBottom = elemTop + elem.height()
-		return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
-	}
-	function switchActive(i){
-		navSelectors[curIndex].removeClass('active')
-		navSelectors[i].addClass('active')
-		curIndex = i
-	}
+        if (currentScrollTop > lastScrollTop) { // scrolled down
+            for (let i = 0; i < anchorSelectors.length; i++){
+                if(navSelectors[i].hasClass('active')){
+                    if(getBottom(anchorSelectors[i])<= currentScrollTop +windowHeight*downTolerance) {  // checks if the scroll caused the active section to leave
+                        if (Math.floor(getBottom(footerSelector)) <= scrollBottom) {  // sets last link as active if bottom of footer is scrolled into view
+                            switchActive(navSelectors.length-1, i)
+                        }
+                        else {
+                            for (let j = i; j < anchorSelectors.length; j++) {  // find the first section that's in view
+                                if (elementInView(anchorSelectors[j], currentScrollTop, scrollBottom)){
+                                    switchActive(j, i)
+                                    break
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        } else { // scrolled up
+            // for loops iterate backwards since upward scroll can only bring in previous elements
+            for(let i = anchorSelectors.length-1; i >= 0 ;i--){
+                if(navSelectors[i].hasClass('active')){
+
+                    if (getTop(anchorSelectors[i]) >= currentScrollTop + windowHeight * (1 - upTolerance)) { // if the scroll caused the active section to leave
+                        for(let j = i; j >= 0; j--){
+                            if (elementInView(anchorSelectors[j], currentScrollTop, scrollBottom)) {
+                                switchActive(j,i);
+                                break
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        lastScrollTop = currentScrollTop
+    }
+
+    function elementInView(elem, currentScrollTop, scrollBottom) {
+        let elemTop = elem.offset().top + parseInt(elem.css('padding-top'), 10)
+        let elemBottom = elemTop + elem.height()
+        return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
+    }
+
+    function switchActive(newIndex, oldIndex) {
+        navSelectors[oldIndex].removeClass('active')
+        navSelectors[newIndex].addClass('active')
+    }
 </script>
