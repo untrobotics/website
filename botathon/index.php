@@ -155,9 +155,9 @@ head('Botathon Info', true);
                             <li class="active" id="nav-info"><a href="#info" class="text-content">What is Botathon</a>
                             </li>
                             <li id="nav-register"><a href="#register" class="text-content">Register</a></li>
-                            <!--<li><a href="#rules" class="text-content">Rules</a></li>-->
+                            <!--<li ><a href="#rules" class="text-content">Rules</a></li>-->
                             <li id="nav-schedule"><a href="#schedule" class="text-content">Schedule</a></li>
-                            <!--<li><a href="#field-preview" class="text-content">Field Preview</a></li>-->
+                            <!--<li><a href="#field-preview" class="navigation-link text-content">Field Preview</a></li>-->
                             <li id="nav-parts-list"><a href="#parts-list" class="text-content">Parts List</a></li>
                             <li id="nav-teams"><a href="#teams" class="text-content">Teams</a></li>
                             <!--<li><a href="#tshirts" class="text-content">T-Shirts</a></li>-->
@@ -618,9 +618,13 @@ head('Botathon Info', true);
 footer(false);
 ?>
 <script>
-    // these are ordered top to bottom in the page layout
-    let anchorSelectors = [$("#info"), $("#register"), $("#schedule"), $("#parts-list"), $("#teams"), $("#sponsors"), $("#contacts"),]
-    let navSelectors = [$("#nav-info"), $("#nav-register"), $("#nav-schedule"), $("#nav-parts-list"), $("#nav-teams"), $("#nav-sponsors"), $("#nav-contacts"),]
+    // these should be ordered top to bottom in the page layout, hopefully
+    const navSelectors = $('.botathon-navigation li').toArray()
+    let anchorSelectors = []
+    navSelectors.forEach((element)=>{
+        anchorSelectors.push($(element.id.replace('nav-','#')))
+    })
+
     let footerSelector = $('footer')
     let windowSelector = $(window)
     let lastScrollTop = windowSelector.scrollTop()
@@ -676,7 +680,7 @@ footer(false);
 
         if (currentScrollTop > lastScrollTop) { // scrolled down
             for (let i = 0; i < anchorSelectors.length; i++){
-                if(navSelectors[i].hasClass('active')){
+                if(navSelectors[i].classList.contains('active')){
                     if(getBottom(anchorSelectors[i])<= currentScrollTop +windowHeight*downTolerance) {  // checks if the scroll caused the active section to leave
                         if (Math.floor(getBottom(footerSelector)) <= scrollBottom) {  // sets last link as active if bottom of footer is scrolled into view
                             switchActive(navSelectors.length-1, i)
@@ -696,7 +700,7 @@ footer(false);
         } else { // scrolled up
             // for loops iterate backwards since upward scroll can only bring in previous elements
             for(let i = anchorSelectors.length-1; i >= 0 ;i--){
-                if(navSelectors[i].hasClass('active')){
+                if(navSelectors[i].classList.contains('active')){
 
                     if (getTop(anchorSelectors[i]) >= currentScrollTop + windowHeight * (1 - upTolerance)) { // if the scroll caused the active section to leave
                         for(let j = i; j >= 0; j--){
@@ -720,7 +724,7 @@ footer(false);
     }
 
     function switchActive(newIndex, oldIndex) {
-        navSelectors[oldIndex].removeClass('active')
-        navSelectors[newIndex].addClass('active')
+        navSelectors[oldIndex].classList.remove('active')
+        navSelectors[newIndex].classList.add('active')
     }
 </script>
