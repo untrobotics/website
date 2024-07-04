@@ -4,7 +4,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE `outgoing_request_cache_config`(
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `ttl` int(6) NOT NULL, -- ttl measured in seconds
-    `config_name` varchar(255) DEFAULT NULL,
+    `config_name` varchar(255) NOT NULL,
     PRIMARY KEY (id)
 )AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
@@ -19,4 +19,4 @@ CREATE TABLE `api_cache`(
     `content` text NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (config_id) REFERENCES outgoing_request_cache_config(id)
-)AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+)AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;

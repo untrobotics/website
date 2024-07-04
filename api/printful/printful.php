@@ -1,5 +1,5 @@
 <?php
-require(BASE . '/api/api-cache.php');
+require('../api-cache.php');
 class PrintfulCustomAPI {
     private $api_key;
     private const PRINTFUL_CACHE_CONFIG_ID = 1;

@@ -108,15 +108,7 @@ function insert_cached(string $endpoint, string $content, int $config_id)
                             retry_count = 0, 
                             content =\'' . $db->real_escape_string($content) . '\'
                         WHERE id = ' . $id;
-
     } else {
-
-//        $queryString = "INSERT INTO
-//                            api_cache
-//                        (endpoint, last_successfully_retrieved, last_attempted_retrieval, config_id, content)
-//                        values
-//                            ('" . $db->real_escape_string($endpoint) . "', UTC_TIMESTAMP,
-//                            UTC_TIMESTAMP," . $config_id . ", '" . $db->real_escape_string($content) . "')";
         $queryString = "INSERT INTO
                             api_cache
                             (endpoint, last_successfully_retrieved, last_attempted_retrieval, config_id, content)
