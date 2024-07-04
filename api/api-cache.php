@@ -84,7 +84,7 @@ function get_valid_cache_entry(string $endpoint, $ch, $configId = null)
     $result = curl_exec($ch);
     // add to cache if no errors and HTTP OK
     if (!curl_errno($ch) && curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
-        insertCached($endpoint, $result, $configId);
+        insert_cached($endpoint, $result, $configId);
     }
 
     return new CacheResult(curl_exec($ch),true,curl_getinfo($ch,CURLINFO_HTTP_CODE),curl_errno($ch));}
@@ -95,7 +95,7 @@ function get_valid_cache_entry(string $endpoint, $ch, $configId = null)
  * @param string $content The content of API request's response
  * @param int $config_id The ID of the config or its name in the config table
  */
-function insertCached(string $endpoint, string $content, int $config_id)
+function insert_cached(string $endpoint, string $content, int $config_id)
 {
     global $db;
     $r = get_cached_api_response($endpoint);
@@ -153,7 +153,7 @@ function insertCached(string $endpoint, string $content, int $config_id)
  * @param string $config_name The name of the config
  * @return bool|mysqli_result The results of the MySQLi query
  */
-function addNewCacheConfig(int $ttl, string $config_name)
+function add_new_cache_config(int $ttl, string $config_name)
 {
     global $db;
     return $db->query('INSERT INTO outgoing_request_cache_config (ttl, config_name) VALUES (' . $ttl . ', "' . $db->real_escape_string($config_name) . '")');
@@ -165,7 +165,7 @@ function addNewCacheConfig(int $ttl, string $config_name)
  * @param string|null $config_name (optional) The name of the config
  * @param int|null $ttl (optional) The time to live for cached entries, measured in seconds
  */
-function updateCacheConfig(int $id, $config_name = null, $ttl = null)
+function update_cache_config(int $id, $config_name = null, $ttl = null)
 {
     global $db;
     if ($config_name === null) {
