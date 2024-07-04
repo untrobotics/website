@@ -2,29 +2,17 @@
 require(BASE . '/api/api-cache.php');
 class PrintfulCustomAPI {
     private $api_key;
-
+    private const PRINTFUL_CACHE_CONFIG_ID = 1;
     public function __construct($printful_api_key = PRINTFUL_API_KEY) {
         $this->api_key = $printful_api_key;
     }
 
     protected function send_request($URI, $data = false) {
-        $endpoint = 'https://api.printful.com/' . $URI;
-        $isOrder =substr($URI, 0, 6) == 'orders';
-        if(!$isOrder){ // check cache, ignore orders because they shouldn't be cached
-            $r = getCached($endpoint);
-            if($r!== null){ // endpoint is in cache
-                if($r !== false){
-                    return json_decode($r['content']);
-                }
-            }
-
-        }
 
         $ch = curl_init();
-
         $headers = array();
         $headers[] = 'Authorization: Bearer ' . $this->api_key;
-
+        $endpoint = 'https://api.printful.com/' . $URI;
         curl_setopt($ch, CURLOPT_URL, $endpoint);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
@@ -38,25 +26,23 @@ class PrintfulCustomAPI {
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        $result = curl_exec($ch);
+        $cache_result = get_valid_cache_entry($endpoint, $ch, $this::PRINTFUL_CACHE_CONFIG_ID);
 
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if($cache_result->curl_executed) {
+            if ($cache_result->curl_errno) {
+                //echo 'Error:' . curl_error($ch);
+                // TODO: handle errors
+                throw new PrintfulCustomAPIException("Encountered an error executing the API request at {$URI}: " . curl_error($ch), 1);
+            }
 
-        if (curl_errno($ch)) {
-            //echo 'Error:' . curl_error($ch);
-            // TODO: handle errors
-            throw new PrintfulCustomAPIException("Encountered an error executing the API request at {$URI}: " . curl_error($ch), 1);
-        }
-
-        if ($httpcode != 200) {
-            throw new PrintfulCustomAPIException("Received non-success response from the API request at {$URI}: {$httpcode} --- RAW: {$result}", 2);
+            if ($cache_result->httpcode != 200) {
+                throw new PrintfulCustomAPIException("Received non-success response from the API request at {$URI}: {$cache_result->httpcode} --- RAW: {$cache_result->content}", 2);
+            }
         }
 
         curl_close($ch);
-        if(!$isOrder){
-            insertCached($endpoint, $result, 1);
-        }
-        return json_decode($result);
+
+        return json_decode($cache_result->content);
     }
 
     public function create_order_single($name, $shipping_address, $item_price, $quantity, $sync_variant_id, $options = null, $amount_paid = null) {
@@ -112,7 +98,6 @@ class PrintfulCustomAPI {
         if (!empty($search_string)) {
             $search_string = "&search=" . $search_string;
         }
-        echo 'test';
         $products_results = $this->send_request("store/products?limit=5" . $search_string);
         $parsed_products_results = $this->parse_results($products_results);
 
