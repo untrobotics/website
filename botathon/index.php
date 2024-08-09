@@ -619,15 +619,15 @@ footer(false);
 ?>
 <script>
     // these should be ordered top to bottom in the page layout, hopefully
-    const navSelectors = $('.botathon-navigation li').toArray()
-    let anchorSelectors = []
-    navSelectors.forEach((element)=>{
-        anchorSelectors.push($(element.id.replace('nav-','#')))
+    const navLinks = $('.botathon-navigation li').toArray()
+    let pageAnchors = []
+    navLinks.forEach((element)=>{
+        pageAnchors.push($(element.id.replace('nav-','#')))
     })
 
-    let footerSelector = $('footer')
-    let windowSelector = $(window)
-    let lastScrollTop = windowSelector.scrollTop()
+    let footer = $('footer')
+    let _window = $(window)
+    let lastScrollTop = _window.scrollTop()
     const downTolerance = 0.25
     const upTolerance = 0.5
     $(window).scroll(navChange);
@@ -654,10 +654,10 @@ footer(false);
                 });
             } // End if
         });
-        let scrollTop = windowSelector.scrollTop()
-        let scrollBottom = scrollTop + windowSelector.height()
-        for (let i = 0; i < 7; i++) {
-            let anchor = anchorSelectors[i];
+        let scrollTop = _window.scrollTop()
+        let scrollBottom = scrollTop + _window.height()
+        for (let i = 0; i < pageAnchors.length; i++) {
+            let anchor = pageAnchors[i];
             if (elementInView(anchor, scrollTop, scrollBottom)) {
                 switchActive(i, 0)
                 break
@@ -666,8 +666,8 @@ footer(false);
     });
 
     function navChange() {
-        let currentScrollTop = windowSelector.scrollTop()
-        let windowHeight = windowSelector.height()
+        let currentScrollTop = _window.scrollTop()
+        let windowHeight = _window.height()
         let scrollBottom = currentScrollTop + windowHeight
 
         function getTop(elem) {
@@ -679,15 +679,15 @@ footer(false);
         }
 
         if (currentScrollTop > lastScrollTop) { // scrolled down
-            for (let i = 0; i < anchorSelectors.length; i++){
-                if(navSelectors[i].classList.contains('active')){
-                    if(getBottom(anchorSelectors[i])<= currentScrollTop +windowHeight*downTolerance) {  // checks if the scroll caused the active section to leave
-                        if (Math.floor(getBottom(footerSelector)) <= scrollBottom) {  // sets last link as active if bottom of footer is scrolled into view
-                            switchActive(navSelectors.length-1, i)
+            for (let i = 0; i < pageAnchors.length; i++){
+                if(navLinks[i].classList.contains('active')){
+                    if(getBottom(pageAnchors[i])<= currentScrollTop +windowHeight*downTolerance) {  // checks if the scroll caused the active section to leave
+                        if (Math.floor(getBottom(footer)) <= scrollBottom) {  // sets last link as active if bottom of footer is scrolled into view
+                            switchActive(navLinks.length-1, i)
                         }
                         else {
-                            for (let j = i; j < anchorSelectors.length; j++) {  // find the first section that's in view
-                                if (elementInView(anchorSelectors[j], currentScrollTop, scrollBottom)){
+                            for (let j = i; j < pageAnchors.length; j++) {  // find the first section that's in view
+                                if (elementInView(pageAnchors[j], currentScrollTop, scrollBottom)){
                                     switchActive(j, i)
                                     break
                                 }
@@ -699,12 +699,12 @@ footer(false);
             }
         } else { // scrolled up
             // for loops iterate backwards since upward scroll can only bring in previous elements
-            for(let i = anchorSelectors.length-1; i >= 0 ;i--){
-                if(navSelectors[i].classList.contains('active')){
+            for(let i = pageAnchors.length-1; i >= 0 ;i--){
+                if(navLinks[i].classList.contains('active')){
 
-                    if (getTop(anchorSelectors[i]) >= currentScrollTop + windowHeight * (1 - upTolerance)) { // if the scroll caused the active section to leave
+                    if (getTop(pageAnchors[i]) >= currentScrollTop + windowHeight * (1 - upTolerance)) { // if the scroll caused the active section to leave
                         for(let j = i; j >= 0; j--){
-                            if (elementInView(anchorSelectors[j], currentScrollTop, scrollBottom)) {
+                            if (elementInView(pageAnchors[j], currentScrollTop, scrollBottom)) {
                                 switchActive(j,i);
                                 break
                             }
@@ -724,7 +724,7 @@ footer(false);
     }
 
     function switchActive(newIndex, oldIndex) {
-        navSelectors[oldIndex].classList.remove('active')
-        navSelectors[newIndex].classList.add('active')
+        navLinks[oldIndex].classList.remove('active')
+        navLinks[newIndex].classList.add('active')
     }
 </script>
