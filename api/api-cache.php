@@ -1,8 +1,6 @@
 <?php
 require_once('../template/top.php');
 
-// RegEx to match certain endpoints we want to ignore, e.g., orders
-const IGNORED_ENDPOINTS = '/(?:orders)/i';
 /**
  * Gets the first entry from the API cache that has a matching endpoint.
  * @param string $endpoint The endpoint for the API request
@@ -25,9 +23,9 @@ class CacheResult{
      */
     public $content;
     /**
-     * @var bool $curl_executed true if curl_exec was called, false otherwise
+     * @var bool $fetched_new_content true if curl_exec was called, false otherwise
      */
-    public $curl_executed;
+    public $fetched_new_content;
     /**
      * @var int|null $httpcode HTTP response code from cURL. Null if curl_exec wasn't called
      * @var int|null $curl_errno cURL error number. Null if curl_exec wasn't called
@@ -36,43 +34,44 @@ class CacheResult{
 
     /**
      * @param string $content
-     * @param bool $curl_executed Defaults to false
+     * @param bool $fetched_new_content Defaults to false
      * @param int|null $httpcode (optional)
      * @param int|null $curl_errno (optional)
      */
-    public function __construct(string $content, bool $curl_executed = false, $httpcode = null, $curl_errno = null)
+    public function __construct(string $content, bool $fetched_new_content = false, $httpcode = null, $curl_errno = null)
     {
         $this->content = $content;
-        $this->curl_executed = $curl_executed;
+        $this->fetched_new_content = $fetched_new_content;
         $this->httpcode = $httpcode;
         $this->curl_errno = $curl_errno;
     }
 }
 
 /**
- * Gets the first entry from the API cache that has a matching endpoint. Will not return if the entry is expired.
+ * Gets the first entry from the API cache that has a matching endpoint. If the entry is expired or does not exist, returns the results from executing cURL
  * @param string $endpoint The endpoint for the API request
  * @param resource|CurlHandle $ch The Curl Handle to send the request
- * @param int|null $configId (optional) The config ID for the cached response. Optional if result won't be cached
  * @return CacheResult An object containing the response content, and some cURL info if curl_exec was called
  */
-function get_valid_cache_entry(string $endpoint, $ch, $configId = null)
+function get_valid_cache_entry(string $endpoint, $ch)
 {
     global $db;
-    if (preg_match(IGNORED_ENDPOINTS, $endpoint)) {
-        return new CacheResult(curl_exec($ch),true,curl_getinfo($ch,CURLINFO_HTTP_CODE),curl_errno($ch));
-    }
     $q = $db->query("SELECT
                                 * 
                             FROM 
                                 api_cache
-                            JOIN 
+                            LEFT JOIN 
                                 outgoing_request_cache_config 
                             ON 
                                 api_cache.config_id = outgoing_request_cache_config.id 
                             WHERE 
                                 endpoint = '{$db->real_escape_string($endpoint)}'");
-    if ($q) {
+    if($q===false){
+        error_log("Failed to retrieve endpoint \"{$endpoint}\" from cache table: {$db->error}");
+        return null;
+    }
+    $isInCache = $q && $q->num_rows > 0;
+    if ($isInCache) {
         $r = $q->fetch_array(MYSQLI_ASSOC);
         $ttl = $r['ttl'];
         $now = time();
@@ -80,14 +79,16 @@ function get_valid_cache_entry(string $endpoint, $ch, $configId = null)
         if ($retrievalTime !== null && $now - strtotime($retrievalTime . 'UTC') < $ttl) {
             return new CacheResult($r['content']);
         }
+        $configId = $r['config_id'];
     }
     $result = curl_exec($ch);
-    // add to cache if no errors and HTTP OK
-    if (!curl_errno($ch) && curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
+    // add to cache if old cache entry, no errors, and HTTP OK
+    $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    if ($isInCache && !curl_errno($ch) && $responseCode >= 200 && $responseCode <=299) {
         insert_cached($endpoint, $result, $configId);
     }
 
-    return new CacheResult(curl_exec($ch),true,curl_getinfo($ch,CURLINFO_HTTP_CODE),curl_errno($ch));}
+    return new CacheResult(curl_exec($ch),true, $responseCode,curl_errno($ch));}
 
 /**
  * Adds or updates an entry into the cache table.

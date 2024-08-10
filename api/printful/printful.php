@@ -1,14 +1,13 @@
 <?php
-require('../api-cache.php');
+require_once(__DIR__ . '/../../template/top.php');
+require_once(__DIR__ . '/../api-cache.php');
 class PrintfulCustomAPI {
     private $api_key;
-    private const PRINTFUL_CACHE_CONFIG_ID = 1;
     public function __construct($printful_api_key = PRINTFUL_API_KEY) {
         $this->api_key = $printful_api_key;
     }
 
     protected function send_request($URI, $data = false) {
-
         $ch = curl_init();
         $headers = array();
         $headers[] = 'Authorization: Bearer ' . $this->api_key;
@@ -26,11 +25,10 @@ class PrintfulCustomAPI {
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        $cache_result = get_valid_cache_entry($endpoint, $ch, $this::PRINTFUL_CACHE_CONFIG_ID);
+        $cache_result = get_valid_cache_entry($endpoint, $ch);
 
-        if($cache_result->curl_executed) {
+        if($cache_result->fetched_new_content) {
             if ($cache_result->curl_errno) {
-                //echo 'Error:' . curl_error($ch);
                 // TODO: handle errors
                 throw new PrintfulCustomAPIException("Encountered an error executing the API request at {$URI}: " . curl_error($ch), 1);
             }
