@@ -11,8 +11,6 @@ class PrintfulCustomAPI {
         $ch = curl_init();
         $headers = array();
         $headers[] = 'Authorization: Bearer ' . $this->api_key;
-        $endpoint = 'https://api.printful.com/' . $URI;
-        curl_setopt($ch, CURLOPT_URL, $endpoint);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         if ($data !== false) {
@@ -25,7 +23,7 @@ class PrintfulCustomAPI {
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        $cache_result = get_valid_cache_entry($endpoint, $ch);
+        $cache_result = get_valid_cache_entry('https://api.printful.com/' . $URI, $ch);
 
         if($cache_result->fetched_new_content) {
             if ($cache_result->curl_errno) {
@@ -33,8 +31,8 @@ class PrintfulCustomAPI {
                 throw new PrintfulCustomAPIException("Encountered an error executing the API request at {$URI}: " . curl_error($ch), 1);
             }
 
-            if ($cache_result->httpcode != 200) {
-                throw new PrintfulCustomAPIException("Received non-success response from the API request at {$URI}: {$cache_result->httpcode} --- RAW: {$cache_result->content}", 2);
+            if ($cache_result->http_code != 200) {
+                throw new PrintfulCustomAPIException("Received non-success response from the API request at {$URI}: {$cache_result->http_code} --- RAW: {$cache_result->content}", 2);
             }
         }
 
