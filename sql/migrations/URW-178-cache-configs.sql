@@ -1,0 +1,1 @@
+INSERT INTO outgoing_request_cache_config (ttl, config_name) VALUES (86400, 'Printful')
