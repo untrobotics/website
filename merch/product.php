@@ -68,7 +68,7 @@ if ($product_can_be_handled) {
 }
 
 function get_variant_variant($variant_name) {
-    return preg_replace("@.* - (.+)$@i", "$1", $variant_name);
+	return preg_replace("@.* - (.+)$@i", "$1", $variant_name);
 }
 ?>
 <style>
@@ -292,18 +292,11 @@ function get_variant_variant($variant_name) {
 										$payment_button->set_currency($product->get_product_currency());
 									}
 									$payment_button->set_custom($custom);
-
 									$payment_button->set_opt_names(array('Type', 'Product', 'Variant'));
-
-									$variant_variant_name = get_variant_variant($selected_variant->get_name());
-									if ($product->get_name() == $selected_variant->get_name()) {
-									    $variant_variant_name = $catalog_product->get_type_name();
-                                    }
-
 									$payment_button->set_opt_vals(array(
 										$catalog_product->get_type_name(),
 										$product->get_name(),
-                                        $variant_variant_name
+										get_variant_variant($selected_variant->get_name())
 									));
 									$payment_button->set_complete_return_uri('/merch/buy/complete');
 
@@ -327,6 +320,7 @@ function get_variant_variant($variant_name) {
 									//echo $button['btn'];
 									$button = $payment_button->get_button();
 									if ($button->error === false) {
+									    echo "button success";
 										echo $payment_button->get_button()->button;
 									} else {
 										// TODO: Alert

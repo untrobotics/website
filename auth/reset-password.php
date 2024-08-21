@@ -34,7 +34,7 @@ if (isset($_GET['token'])) {
                 } else if ($password1 !== $password2) {
                     $error = "The passwords you entered do not match";
                     break;
-                } else if ($email != $r['email']) {
+                } else if (strcasecmp($email, $r['email']) != 0) {
                     $error = "The e-mail address you entered is not valid for this reset link";
                     break;
                 } else {
