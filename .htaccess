@@ -21,6 +21,7 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
 RewriteCond %{DOCUMENT_ROOT}/$1.php -f
 RewriteRule ^(([^/]+/)*[^.]+)$ /$1.php [L]
 
+RewriteRule ^discord$ /auth/join-discord.php [L]
 RewriteRule ^join/discord$ /auth/join-discord.php [L]
 RewriteRule ^join/w/discord$ /auth/join-with-authorization-discord.php [L]
 RewriteRule ^join/campuslabs$ /auth/join-campuslabs.php [L]
@@ -38,3 +39,6 @@ RewriteRule ^aero/sponsor$ /downloads/nasa-sli-sponsorship-2022.pdf [R=301,L]
 
 RewriteRule ^b4$ /botathon [R=301,L]
 RewriteRule ^b4r$ /botathon/register [R=301,L]
+
+RewriteRule ^b$ /botathon [R=301,L]
+RewriteRule ^br$ /botathon/register [R=301,L]
