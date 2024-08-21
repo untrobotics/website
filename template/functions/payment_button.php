@@ -25,9 +25,8 @@ class PaymentButton {
 	private $allow_custom_amount = false;
 	
 	public function __construct($item_name, $amount, $text = "Buy Now", $cbt = null, $type = "BUYNOW") {
-        $this->item_name = $item_name;
-        $this->amount = $amount;
-
+		$this->item_name = $item_name;
+		$this->amount = $amount;
 		$this->text = $text;
 		$this->cbt = $cbt;
 		$this->type = $type;
@@ -111,10 +110,10 @@ class PaymentButton {
 		require_once(BASE . '/paypal/PP-BM-SDK/vendor/autoload.php');
 
 		$buttonVar = array();
+		$buttonVar[] = 'item_name=' . $this->item_name;
+		$buttonVar[] = 'amount=' . $this->amount;
+		$buttonVar[] = 'quantity=' . $this->quantity;
 
-        $buttonVar[] = "item_name=" . $this->item_name;
-        $buttonVar[] = "amount=" . $this->amount;
-        $buttonVar[] = "quantity=" . $this->quantity;
 		foreach ($this->opt_names as $key => $val) {
 			$buttonVar[] = 'on' . $key . '=' . $this->opt_names[$key];
 			$buttonVar[] = 'os' . $key . '=' . $this->opt_vals[$key];
@@ -155,17 +154,19 @@ class PaymentButton {
 			$createButtonResponse = $paypalService->BMCreateButton($createButtonReq);
 		} catch (Exception $ex) {
 			$response->error = "An error has occured, E#1";
+			var_dump($ex);
 			//require 'buttonmanager-sdk-php/samples/Error.php';
 			//exit;
 		}
 		if (isset($createButtonResponse)) {
 			if ($createButtonResponse->Errors === NULL) {
-				$response->button = '<div class="paypal-button-container">' .
-									'<div class="paypal-button-overlay">' .
-										'<img src="/images/paypal-button.png">' .
-										'<button type="submit" id="buy-product-now" class="btn btn-primary">' . $this->text . '</button></div>' . 
-									'<div class="actual-paypal-button">' . $createButtonResponse->Website . '</div>' .
-								 '</div>';
+			    echo "We are unable to accept payments via our website at this time, we are in need of a new webmaster to write a new payment integration, if you're interested please email hello@untrobotics.com";
+//				$response->button = '<div class="paypal-button-container">' .
+//									'<div class="paypal-button-overlay">' .
+//										'<img src="/images/paypal-button.png">' .
+//										'<button type="submit" id="buy-product-now" class="btn btn-primary">' . $this->text . '</button></div>' .
+//									'<div class="actual-paypal-button">' . $createButtonResponse->Website . '</div>' .
+//								 '</div>';
 			} else {
 				$response->error = "An error has occured, E#2";
 			}
@@ -178,89 +179,89 @@ class PaymentButton {
 	}
 }
 
-function payment_button(
-	$item_name,
-	$amount,
-	$currency = 'USD',
-	$custom = '',
-	$opt_names = array(),
-	$opt_vals = array(),
-	$quantity = 1,
-	$complete_return_uri = PAYPAL_DEFAULT_RETURN_URL,
-	$cancel_return_uri = NULL
-) {
-	if (is_null($cancel_return_uri)) {
-		$cancel_return_uri = $_SERVER['REQUEST_URI'];
-	}
-	
-	$return = array();
-	$return['error'] = false;
-	$return['btn'] = '';
-
-	if ($untrobotics->get_sandbox()) {
-		require_once(BASE . '/paypal/PP-BM-SDK/Sandbox.Configuration.php');
-	} else {
-		require_once(BASE . '/paypal/PP-BM-SDK/Configuration.php');
-	}
-	require_once(BASE . '/paypal/PP-BM-SDK/vendor/autoload.php');
-
-	$buttonVar = array();
-	$buttonVar[] = 'item_name=' . $item_name;
-	$buttonVar[] = 'amount=' . $amount;
-	$buttonVar[] = 'quantity=' . $quantity;
-
-	foreach ($opt_names as $key => $val) {
-		$buttonVar[] = 'on' . $key . '=' . $opt_names[$key];
-		$buttonVar[] = 'os' . $key . '=' . $opt_vals[$key];
-	}
-
-	$buttonVar[] = 'return=' . WEBSITE_URL . '/' . $complete_return_uri;
-	$buttonVar[] = 'rm=2';
-	$buttonVar[] = 'cancel_return='. WEBSITE_URL . '/' . $cancel_return_uri;
-	
-	if ($untrobotics->get_sandbox()) {
-		$buttonVar[] = 'business=' . PAYPAL_SANDBOX_BUSINESS_ID;
-	} else {
-		$buttonVar[] = 'business=' . PAYPAL_BUSINESS_ID;
-	}
-	
-	$buttonVar[] = 'notify_url=' . PAYPAL_IPN_URL;
-	//$buttonVar[] = 'no_shipping=1';
-	$buttonVar[] = 'currency_code=' . $currency;
-	$buttonVar[] = 'image_url=' . PAYPAL_IMAGE_LOGO;
-	$buttonVar[] = 'custom=' . $custom;
-
-	//var_dump($buttonVar);
-
-	$createButtonRequest = new BMCreateButtonRequestType();
-	$createButtonRequest->ButtonCode = 'ENCRYPTED';
-	$createButtonRequest->ButtonType = 'BUYNOW';
-	$createButtonRequest->ButtonVar = $buttonVar;
-	$createButtonReq = new BMCreateButtonReq();
-	$createButtonReq->BMCreateButtonRequest = $createButtonRequest;
-
-	$paypalService = new ButtonManagerService(Configuration::getAcctAndConfig());
-	try {
-		$createButtonResponse = $paypalService->BMCreateButton($createButtonReq);
-	} catch (Exception $ex) {
-		$return['error'] = "An error has occured, E#1";
-		//require 'buttonmanager-sdk-php/samples/Error.php';
-		//exit;
-	}
-	if (isset($createButtonResponse)) {
-		if ($createButtonResponse->Errors === NULL) {
-			$return['btn'] = '<div class="paypal-button-container">' .
-								'<div class="paypal-button-overlay"></div>' . 
-								'<div class="actual-paypal-button">' . $createButtonResponse->Website . '</div>' .
-							 '</div>';
-		} else {
-			$return['error'] = "An error has occured, E#2 (" . $createButtonResponse->Errors . ")";
-		}
-	} else {
-		$return['error'] = "An error has occured, E#3";
-	}
-	//require_once('buttonmanager-sdk-php/samples/Response.php');
-	
-	return $return;
-}
+//function payment_button(
+//	$item_name,
+//	$amount,
+//	$currency = 'USD',
+//	$custom = '',
+//	$opt_names = array(),
+//	$opt_vals = array(),
+//	$quantity = 1,
+//	$complete_return_uri = PAYPAL_DEFAULT_RETURN_URL,
+//	$cancel_return_uri = NULL
+//) {
+//	if (is_null($cancel_return_uri)) {
+//		$cancel_return_uri = $_SERVER['REQUEST_URI'];
+//	}
+//
+//	$return = array();
+//	$return['error'] = false;
+//	$return['btn'] = '';
+//
+//	if ($untrobotics->get_sandbox()) {
+//		require_once(BASE . '/paypal/PP-BM-SDK/Sandbox.Configuration.php');
+//	} else {
+//		require_once(BASE . '/paypal/PP-BM-SDK/Configuration.php');
+//	}
+//	require_once(BASE . '/paypal/PP-BM-SDK/vendor/autoload.php');
+//
+//	$buttonVar = array();
+//	$buttonVar[] = 'item_name=' . $item_name;
+//	$buttonVar[] = 'amount=' . $amount;
+//	$buttonVar[] = 'quantity=' . $quantity;
+//
+//	foreach ($opt_names as $key => $val) {
+//		$buttonVar[] = 'on' . $key . '=' . $opt_names[$key];
+//		$buttonVar[] = 'os' . $key . '=' . $opt_vals[$key];
+//	}
+//
+//	$buttonVar[] = 'return=' . WEBSITE_URL . '/' . $complete_return_uri;
+//	$buttonVar[] = 'rm=2';
+//	$buttonVar[] = 'cancel_return='. WEBSITE_URL . '/' . $cancel_return_uri;
+//
+//	if ($untrobotics->get_sandbox()) {
+//		$buttonVar[] = 'business=' . PAYPAL_SANDBOX_BUSINESS_ID;
+//	} else {
+//		$buttonVar[] = 'business=' . PAYPAL_BUSINESS_ID;
+//	}
+//
+//	$buttonVar[] = 'notify_url=' . PAYPAL_IPN_URL;
+//	//$buttonVar[] = 'no_shipping=1';
+//	$buttonVar[] = 'currency_code=' . $currency;
+//	$buttonVar[] = 'image_url=' . PAYPAL_IMAGE_LOGO;
+//	$buttonVar[] = 'custom=' . $custom;
+//
+//	//var_dump($buttonVar);
+//
+//	$createButtonRequest = new BMCreateButtonRequestType();
+//	$createButtonRequest->ButtonCode = 'ENCRYPTED';
+//	$createButtonRequest->ButtonType = 'BUYNOW';
+//	$createButtonRequest->ButtonVar = $buttonVar;
+//	$createButtonReq = new BMCreateButtonReq();
+//	$createButtonReq->BMCreateButtonRequest = $createButtonRequest;
+//
+//	$paypalService = new ButtonManagerService(Configuration::getAcctAndConfig());
+//	try {
+//		$createButtonResponse = $paypalService->BMCreateButton($createButtonReq);
+//	} catch (Exception $ex) {
+//		$return['error'] = "An error has occured, E#1";
+//		//require 'buttonmanager-sdk-php/samples/Error.php';
+//		//exit;
+//	}
+//	if (isset($createButtonResponse)) {
+//		if ($createButtonResponse->Errors === NULL) {
+//			$return['btn'] = '<div class="paypal-button-container">' .
+//								'<div class="paypal-button-overlay"></div>' .
+//								'<div class="actual-paypal-button">' . $createButtonResponse->Website . '</div>' .
+//							 '</div>';
+//		} else {
+//			$return['error'] = "An error has occured, E#2 (" . $createButtonResponse->Errors . ")";
+//		}
+//	} else {
+//		$return['error'] = "An error has occured, E#3";
+//	}
+//	//require_once('buttonmanager-sdk-php/samples/Response.php');
+//
+//	return $return;
+//}
 ?>

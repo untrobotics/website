@@ -151,7 +151,7 @@ head('Botathon Info', true);
                         <ul class="list-xs list-marked">
                             <li class="active" id="nav-info"><a href="#info" class="text-content">What is Botathon</a></li>
                             <li id="nav-register"><a href="#register" class="text-content">Register</a></li>
-                            <!--<li><a href="#rules" class="text-content">Rules</a></li>-->
+                            <li id="nav-gameplay"><a href="#gameplay" class="text-content">Gameplay</a></li>
                             <li id="nav-schedule"><a href="#schedule" class="text-content">Schedule</a></li>
                             <!--<li><a href="#field-preview" class="text-content">Field Preview</a></li>-->
                             <li id="nav-parts-list"><a href="#parts-list" class="text-content">Parts List</a></li>
@@ -178,7 +178,7 @@ head('Botathon Info', true);
                         <p>Botathon is an annual event hosted by UNT Robotics where all UNT students are invited to compete in a one-day design,
                             test, build, and compete marathon!<p>
 
-                        <p>Stay tuned for this year's theme!</p>
+                        <!--<p>Stay tuned for this year's theme!</p>-->
 
                         <p>
                             We provide everything you will need on the day, including parts, kits, tools, guides, mentorship,
@@ -189,6 +189,9 @@ head('Botathon Info', true);
 
                         <p>Botathon is all about teamwork and friendly competition. Our mission is to build knowledge and skills while promoting
                             creativity and camaraderie among all participants.</p>
+
+                        <p></p>
+                        <iframe width="100%" height="400" src="https://www.youtube.com/embed/H0xerrP6yag?si=5Vda6rnb3ycf2i8j" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
                     </div>
                 </div>
@@ -206,7 +209,7 @@ head('Botathon Info', true);
 
                         <div class="cell-md-8 cell-lg-9">
                             <h4><strong>Mar. 8:</strong> Registration Opened</h4>
-                            <h4><strong>Mar. 22:</strong> Registration Ends</h4>
+                            <h4><strong>Mar. 28:</strong> Registration Ends</h4>
                             <h4><strong>Mar. 30:</strong> Day of Event</h4>
                         </div>
 
@@ -237,23 +240,29 @@ head('Botathon Info', true);
         </div>
     </section>-->
 
-    <!--<section class="section-50" id="rules">
+    <section class="section-50" id="gameplay">
         <div class="shell">
-            <h2>Rules</h2>
+            <h2>Gameplay</h2>
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
-                    <div class="inset-md-right-30 inset-lg-right-0">
-                        <p>Teams of up to four students will be given a robot kit <em>(consult the parts list below to see what these contain)</em>, and 2 weeks in which they may build a robot ship. The robot ship will then be submitted for inspection where UNT Robotics will hold it until competition day.</p>
-                        <p><strong>The challenge: </strong>Collaborate with an opposing pirate crew to fire cannons and defeat The Kraken as quickly as possible, gaining access to The Treasure Room. From there it's an all out race against the opposing crew to collect the most treasure.</p>
-                        <p>Stage 1 consists of The Kraken room. It contains The Kraken, and 3 elevated platforms with cannons on them. The objective is to work together with the opposing pirate crew to fire all 3 of the cannons, effectively disabling the Kraken and unlocking The Treasure Room. Pirate crews will be given the same score in this stage, which depends on the time taken to take down The Kraken.</p>
-                        <p>The second stage consists of The Treasure Room. This room is randomly filled with an assortment of treasure, with the highest quality treasure being on raised platforms. The objective in this stage is to push treasure into your Coffer located on one side of the field. Points will be based on both the quantity and quality of treasure collected. </p>
-                        <p>For information about contact and penalties, please consult the <a href="/downloads/botathon/botathon-info-packet-s2.pdf">information packet</a>.</p>
-                    </div>
+                    <p class="inset-md-right-30 inset-lg-right-0">
+                        <p>Botathon Season 5 will be a capture the flag style event, where robots will face off 1v1 and must capture blocks from the opposing team. The blue side must capture the red blocks, and the red side must capture the blue blocks.</p>
+                        <p>These blocks will be of two types:</p>
+                        <p>
+                            <ol>
+                                <li>• 1” square wooden blocks, worth 1 point each</li>
+                                <li>• 1” square nickel (magnetic) blocks, worth 2 points each <em>(electromagnets will be provided too with your robot kits)</em></li>
+                            </ol>
+                        </p>
+                        <p>To capture a block, it must be placed on the robot’s home side within a marked boundary called the ‘capture area’ (marked using tape) and remain within the boundary at the end of the match.</p>
+                        <p>A secondary capture area atop a ramp will provide the team one extra point per block. So, a wooden block in the secondary capture area will be worth 2 points, and a nickel block worth 3 points.</p>
+                        <p>Each round will have a 3 minute time limit. At the end of the match, a referee will count all of the blocks in each area and determine the scores and winner. In the case of a tie, a sudden death round will occur with a single block placed in the center of the field and the first team to capture the block and place it into one of their capture areas will be the winner.</p>
+                        <div><img src="/images/botathon-photos/season-5/botathon-2024-field.jpg" alt="Mecanum wheeled robot" class="img-responsive"/></div>
+                    </p>
                 </div>
             </div>
         </div>
     </section>
--->
 
     <section class="section-50" id="schedule">
         <div class="shell">
@@ -261,15 +270,15 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <div>Event Date: <strong>April 16, 2022</strong></div>
+                        <div>Event Date: <strong>March 30, 2024</strong></div>
                         <table id="schedule">
-                            <tr><td>&nbsp;9:00 am</td><td>Check In Opens</td></tr>
-                            <tr><td>&nbsp;10:00 am</td><td>Team Finding Event</td></tr>
-                            <tr><td>&nbsp;10:30 am</td><td>Build Time!</td></tr>
+                            <tr><td>&nbsp;9:00 am</td><td>Check-in Opens</td></tr>
+                            <tr><td>&nbsp;9:30 am</td><td>Team Finding Event</td></tr>
+                            <tr><td>&nbsp;10:00 am</td><td>Building Begins!</td></tr>
                             <tr><td>&nbsp;1:00 pm</td><td>Lunch</td></tr>
-                            <tr><td>&nbsp;5:00 pm</td><td>Competition Begins</td></tr>
-                            <tr><td>&nbsp;6:30 pm</td><td>Dinner</td></tr>
-                            <tr><td>&nbsp;9:00 pm</td><td>Closing Ceremony & Winners Announced</td></tr>
+                            <tr><td>&nbsp;4:00 pm</td><td>Tournament Begins</td></tr>
+                            <tr><td>&nbsp;6:00 pm</td><td>Dinner</td></tr>
+                            <tr><td>&nbsp;7:00 pm</td><td>Closing Ceremony & Winners Announced</td></tr>
                         </table>
                     </div>
                 </div>
@@ -291,7 +300,7 @@ head('Botathon Info', true);
 
                             <div class="col-lg-4 col-sm-12 robot-kit-entry">
                                 <div>
-                                    <h4>MECANUM WHEEL CAR ROBOT</h4>
+                                    <h4>MECANUM WHEEL<br />CAR ROBOT</h4>
 
                                     <div class="botPics">
                                         <img src="/images/botathon-photos/mecanum-wheeled-robot.jpg" alt="Mecanum wheeled robot" class="img-responsive"/>
@@ -334,7 +343,7 @@ head('Botathon Info', true);
 
                             <div class="col-lg-4 col-sm-12 robot-kit-entry">
                                 <div>
-                                    <h4>RUBBER WHEEL CAR ROBOT</h4>
+                                    <h4>RUBBER WHEEL<br />CAR ROBOT</h4>
 
                                     <div class="botPics">
                                         <img src="/images/botathon-photos/traditionally-wheeled-robot.jpg" alt="Traditionally wheeled robot" class="img-responsive"/>
@@ -380,10 +389,10 @@ head('Botathon Info', true);
 
                             <div class="col-lg-4 col-sm-12 robot-kit-entry">
                                 <div>
-                                    <h4>TANK TRACK ROBOT</h4>
+                                    <h4>TANK TRACK<br />ROBOT</h4>
 
                                     <div class="botPics">
-                                        <img src="/images/botathon-photos/tank-tracked-robot.jpg" alt="Tank track robot" class="img-responsive"/>
+                                        <img src="/images/botathon-photos/tank-tracked-robot-actual.jpg" alt="Tank track robot" class="img-responsive"/>
                                     </div>
 
                                     <ul class="robot-kit-list">
@@ -584,7 +593,7 @@ footer(false);
 <script>
 	// var currentNav = "#nav-info"
 	// var currentAnchor = '#info'
-	var anchors = ['info','register','schedule','parts-list','teams','sponsors','contacts']
+	var anchors = ['info','register','gameplay','schedule','parts-list','teams','sponsors','contacts']
 	var curIndex = 0
 	var lastScrollTop = $(window).scrollTop()
 	const downTolerance = 0.25

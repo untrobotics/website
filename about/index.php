@@ -1,7 +1,7 @@
 <?php
 require('../template/top.php');
 require(BASE . '/api/discord/bots/admin.php');
-require(BASE . '/api/google/count_majors.php');
+//require(BASE . '/api/google/count_majors.php');
 
 head('About Us', true);
 ?>
@@ -28,7 +28,8 @@ head('About Us', true);
               <div class="cell-md-8 cell-lg-7 cell-xl-6">
                 <div class="inset-md-right-30 inset-lg-right-0">
                   <h1>What We Do</h1>
-		  <h3>Overview</h3>
+                    <small><em>Last updated: <?php echo date ("F d Y", filemtime(__FILE__)); ?></em></small>
+		            <h3>Overview</h3>
                   <p>UNT Robotics is a broad engineering student organisation at the <a href="https://www.unt.edu/">University of North Texas</a>.</p>
 				  <p>We focus on developing student's skills in engineering &amp; robotics, which involves a range of beginner workshops, industry talks, robotics-based hackathons, recreational projects and competitions.</p>
                   <div class="well-custom">
