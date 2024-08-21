@@ -95,14 +95,17 @@ head('Botathon Info', true);
 
     .robot-kit-row {
     }
+
     .robot-kit-entry > div {
         height: 100%;
         border: 1px dotted black;
         margin: 2px;
     }
+
     .robot-kit-entry h4 {
         text-align: center;
     }
+
     .robot-kit-list li {
         background-color: #e1e1e1;
         padding: 5px;
@@ -591,68 +594,19 @@ head('Botathon Info', true);
 footer(false);
 ?>
 <script>
-	// var currentNav = "#nav-info"
-	// var currentAnchor = '#info'
-	var anchors = ['info','register','gameplay','schedule','parts-list','teams','sponsors','contacts']
-	var curIndex = 0
-	var lastScrollTop = $(window).scrollTop()
-	const downTolerance = 0.25
-	const upTolerance = 0.5
+    // these should be ordered top to bottom in the page layout, hopefully
+    const navLinks = $('.botathon-navigation li').toArray()
+    let pageAnchors = []
+    navLinks.forEach((element)=>{
+        pageAnchors.push($(element.id.replace('nav-','#')))
+    })
 
-	$(window).scroll(function(){
-		windoo = $(this)
-		let currentScrollTop = windoo.scrollTop()
-		let windowHeight = windoo.height()
-		let scrollBottom = currentScrollTop + windowHeight
-		function elementInView(elem)
-		{
-			let elemTop = $(elem).offset().top + parseInt($(elem).css('padding-top'),10)
-			var elemBottom = elemTop + $(elem).height()
-			return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
-		}
-		function getTop(e){return $(e).offset().top + parseInt($(e).css('padding-top'),10)}
-		function getBottom(e) {return getTop(e)+ $(e).height()}
-		function switchActive(e,i){
-			$('#nav-'.concat(anchors[curIndex])).removeClass('active')
-			$('#nav-'.concat(e)).addClass('active')
-			curIndex = i
-		}
-
-		if(currentScrollTop > lastScrollTop){ // scrolled down
-			if(curIndex!==6 && Math.floor(getBottom('footer'))<= scrollBottom)
-			{
-				switchActive('contacts',6)
-				lastScrollTop = currentScrollTop
-				return
-			}
-			if(getBottom('#'.concat(anchors[curIndex]))<= currentScrollTop +windowHeight*downTolerance){
-				if(curIndex===6) {
-					lastScrollTop = currentScrollTop
-					return
-				}
-				for(let i = curIndex+1;i<7;i++){
-					if(elementInView('#'.concat(anchors[i]))){
-						switchActive(anchors[i],i)
-						break
-					}
-				}
-			}
-		} else{ // scrolled up
-			if(getTop('#'.concat(anchors[curIndex]))>=currentScrollTop+windowHeight*(1-upTolerance)){
-				if(curIndex===0) {
-					lastScrollTop = currentScrollTop
-					return
-				}
-				for(let i = curIndex-1;i>=0;i--){
-						if (elementInView('#'.concat(anchors[i]))) {
-							switchActive(anchors[i], i)
-							break
-						}
-				}
-			}
-		}
-		lastScrollTop = currentScrollTop
-	});
+    let footer = $('footer')
+    let _window = $(window)
+    let lastScrollTop = _window.scrollTop()
+    const downTolerance = 0.25
+    const upTolerance = 0.5
+    $(window).scroll(navChange);
 
     $(document).ready(function () {
         // Add smooth scrolling to all links
@@ -671,11 +625,82 @@ footer(false);
                 $('html, body').animate({
                     scrollTop: $(hash).offset().top
                 }, 800, function () {
-
                     // Add hash (#) to URL when done scrolling (default click behavior)
                     window.location.hash = hash;
                 });
             } // End if
         });
+        let scrollTop = _window.scrollTop()
+        let scrollBottom = scrollTop + _window.height()
+        for (let i = 0; i < pageAnchors.length; i++) {
+            let anchor = pageAnchors[i];
+            if (elementInView(anchor, scrollTop, scrollBottom)) {
+                switchActive(i, 0)
+                break
+            }
+        }
     });
+
+    function navChange() {
+        let currentScrollTop = _window.scrollTop()
+        let windowHeight = _window.height()
+        let scrollBottom = currentScrollTop + windowHeight
+
+        function getTop(elem) {
+            return elem.offset().top + parseInt(elem.css('padding-top'), 10)
+        }
+
+        function getBottom(elem) {
+            return getTop(elem) + elem.height()
+        }
+
+        if (currentScrollTop > lastScrollTop) { // scrolled down
+            for (let i = 0; i < pageAnchors.length; i++){
+                if(navLinks[i].classList.contains('active')){
+                    if(getBottom(pageAnchors[i])<= currentScrollTop +windowHeight*downTolerance) {  // checks if the scroll caused the active section to leave
+                        if (Math.floor(getBottom(footer)) <= scrollBottom) {  // sets last link as active if bottom of footer is scrolled into view
+                            switchActive(navLinks.length-1, i)
+                        }
+                        else {
+                            for (let j = i; j < pageAnchors.length; j++) {  // find the first section that's in view
+                                if (elementInView(pageAnchors[j], currentScrollTop, scrollBottom)){
+                                    switchActive(j, i)
+                                    break
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        } else { // scrolled up
+            // for loops iterate backwards since upward scroll can only bring in previous elements
+            for(let i = pageAnchors.length-1; i >= 0 ;i--){
+                if(navLinks[i].classList.contains('active')){
+
+                    if (getTop(pageAnchors[i]) >= currentScrollTop + windowHeight * (1 - upTolerance)) { // if the scroll caused the active section to leave
+                        for(let j = i; j >= 0; j--){
+                            if (elementInView(pageAnchors[j], currentScrollTop, scrollBottom)) {
+                                switchActive(j,i);
+                                break
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        lastScrollTop = currentScrollTop
+    }
+
+    function elementInView(elem, currentScrollTop, scrollBottom) {
+        let elemTop = elem.offset().top + parseInt(elem.css('padding-top'), 10)
+        let elemBottom = elemTop + elem.height()
+        return (elemTop <= currentScrollTop && elemBottom >= currentScrollTop) || (elemTop >= currentScrollTop && elemTop <= scrollBottom) || (elemBottom >= currentScrollTop && elemBottom <= scrollBottom)
+    }
+
+    function switchActive(newIndex, oldIndex) {
+        navLinks[oldIndex].classList.remove('active')
+        navLinks[newIndex].classList.add('active')
+    }
 </script>
