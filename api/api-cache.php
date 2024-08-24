@@ -9,7 +9,18 @@ require_once('../template/top.php');
 function get_cached_api_response(string $endpoint): ?array
 {
     global $db;
-    $q = $db->query('SELECT * FROM api_cache WHERE endpoint = "' . $db->real_escape_string($endpoint) . '"');
+    $q = $db->query('
+                    SELECT 
+                        * 
+                    FROM 
+                        api_cache
+                    LEFT JOIN
+                        outgoing_request_cache_config
+                    ON 
+                        api_cache.config_id = outgoing_request_cache_config.id
+                    WHERE 
+                        endpoint = "' . $db->real_escape_string($endpoint) . '"
+                    ');
     if ($q) {
         $r = $q->fetch_array(MYSQLI_ASSOC);
         return $r;
@@ -56,43 +67,47 @@ class CacheResult{
 function get_valid_cache_entry(string $endpoint, $ch)
 {
     global $db;
-    $q = $db->query("SELECT
-                                * 
-                            FROM 
-                                api_cache
-                            LEFT JOIN 
-                                outgoing_request_cache_config 
-                            ON 
-                                api_cache.config_id = outgoing_request_cache_config.id 
-                            WHERE 
-                                endpoint = '{$db->real_escape_string($endpoint)}'");
+    $q = $db->query("
+                    SELECT
+                        outgoing_request_cache_config.id as conf_id, ttl, content, last_successfully_retrieved
+                    FROM 
+                        outgoing_request_cache_config
+                    LEFT JOIN 
+                        api_cache 
+                    ON 
+                        outgoing_request_cache_config.id = api_cache.config_id
+                    WHERE 
+                        endpoint = '{$db->real_escape_string($endpoint)}'
+                    ");
     if($q===false){
         error_log("Failed to retrieve endpoint \"{$endpoint}\" from cache table: {$db->error}");
         return null;
     }
-    $is_in_cache = $q && $q->num_rows > 0;
-    if ($is_in_cache) {
+    $can_be_cached = $q && $q->num_rows > 0;
+    if ($can_be_cached) {
         $r = $q->fetch_array(MYSQLI_ASSOC);
-        $ttl = $r['ttl'];
-        $now = time();
-        $retrieval_time = $r['last_successfully_retrieved'];
-        if ($retrieval_time !== null && $now - strtotime($retrieval_time . 'UTC') < $ttl) {
-            return new CacheResult($r['content']);
+        if($r['content']!==null){
+            $ttl = $r['ttl'];
+            $now = time();
+            $retrieval_time = $r['last_successfully_retrieved'];
+            if ($retrieval_time !== null && $now - strtotime($retrieval_time . 'UTC') < $ttl) {
+                return new CacheResult($r['content']);
+            }
         }
-        $config_id = $r['config_id'];
+        $config_id = $r['conf_id'];
     }
     curl_setopt($ch, CURLOPT_URL, $endpoint);
     $result = curl_exec($ch);
     // add to cache if old cache entry, no errors, and HTTP OK
     $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    if ($is_in_cache && !curl_errno($ch) && $response_code >= 200 && $response_code <=299) {
+    if ($can_be_cached && !curl_errno($ch) && $response_code >= 200 && $response_code <=299) {
         insert_cached($endpoint, $result, $config_id);
     }
 
     return new CacheResult(curl_exec($ch),true, $response_code,curl_errno($ch));}
 
 /**
- * Adds or updates an entry into the cache table.
+ * Adds or updates an entry into the cache table. Does not check if data should be cached
  * @param string $endpoint The endpoint for the API request
  * @param string $content The content of API request's response
  * @param int $config_id The ID of the config or its name in the config table
@@ -104,24 +119,51 @@ function insert_cached(string $endpoint, string $content, int $config_id)
     $query_string = "";
     if ($r) {
         $id = $r['id'];
-        $query_string = 'UPDATE api_cache 
-                        SET last_successfully_retrieved = UTC_TIMESTAMP, 
+        $query_string = '
+                        UPDATE
+                            api_cache 
+                        SET 
+                            last_successfully_retrieved = UTC_TIMESTAMP, 
                             last_attempted_retrieval = UTC_TIMESTAMP, 
                             retry_count = 0, 
                             content =\'' . $db->real_escape_string($content) . '\'
-                        WHERE id = ' . $id;
+                        WHERE 
+                            id = ' . $id;
     } else {
-        $query_string = "INSERT INTO
+        $query_string = "
+                        INSERT INTO
                             api_cache
-                            (endpoint, last_successfully_retrieved, last_attempted_retrieval, config_id, content)
+                            (last_successfully_retrieved, last_attempted_retrieval, config_id, content)
                         VALUES
-                            ('{$db->real_escape_string($endpoint)}', UTC_TIMESTAMP, UTC_TIMESTAMP,
+                            (UTC_TIMESTAMP, UTC_TIMESTAMP,
                              {$config_id}, '{$db->real_escape_string($content)}')";
     }
     $q = $db->query($query_string);
     if (!$q) {
         error_log("Failed to update API cache for endpoint \"{$endpoint}\": " . $db->error);
     }
+}
+
+/**
+ * Checks if an endpoint should be cached
+ * @param string $endpoint The endpoint to check
+ * @return bool|null Returns null on error. Returns true if the endpoint should be cached. Returns false if the endpoint should not be cached
+ */
+function is_cachable(string $endpoint): ?bool{
+    global $db;
+    $q = $db->query("
+                    SELECT
+                        id
+                    FROM 
+                        outgoing_request_cache_config
+                    WHERE
+                        endpoint = '{$db->real_escape_string($endpoint)}'
+                    ");
+    if($q===false){
+        error_log("Failed to retrieve endpoint {$endpoint} from cache config table: {$db->error}");
+        return null;
+    }
+    return $q->num_rows > 0;
 }
 
 ///**
@@ -145,12 +187,18 @@ function insert_cached(string $endpoint, string $content, int $config_id)
  * Adds a new cache config to the config table.
  * @param int $ttl The time to live for cached entries, measured in seconds
  * @param string $config_name The name of the config
+ * @param string $endpoint The endpoint for the config
  * @return bool|mysqli_result The results of the MySQLi query
  */
-function add_new_cache_config(int $ttl, string $config_name)
+function add_new_cache_config(int $ttl, string $config_name, string $endpoint)
 {
     global $db;
-    return $db->query('INSERT INTO outgoing_request_cache_config (ttl, config_name) VALUES (' . $ttl . ', "' . $db->real_escape_string($config_name) . '")');
+    return $db->query("
+                        INSERT INTO 
+                            outgoing_request_cache_config (ttl, config_name, endpoint) 
+                        VALUES 
+                            ({$ttl}, '{$db->real_escape_string($config_name)}', '{$db->real_escape_string($endpoint)}')
+                        ");
 }
 
 /**
@@ -165,11 +213,28 @@ function update_cache_config(int $id, $config_name = null, $ttl = null)
     if ($config_name === null) {
         if ($ttl === null)
             return;
-        $query_string = 'UPDATE outgoing_request_cache_config SET ttl = ' . $ttl . ' WHERE id = ' . $id;
+        $query_string = '
+                        UPDATE 
+                            outgoing_request_cache_config
+                        SET 
+                            ttl = ' . $ttl . ' 
+                        WHERE 
+                            id = ' . $id;
     } else if ($ttl === null) {
-        $query_string = "UPDATE outgoing_request_cache_config SET config_name = '{$db->real_escape_string($config_name)}' WHERE id = {$id}";
+        $query_string = "
+                        UPDATE 
+                            outgoing_request_cache_config 
+                        SET 
+                            config_name = '{$db->real_escape_string($config_name)}' 
+                        WHERE 
+                            id = {$id}";
     } else {
-        $query_string = "UPDATE outgoing_request_cache_config SET ttl= {$ttl}, config_name = '{$db->real_escape_string($config_name)}' WHERE id = {$id}";
+        $query_string = "UPDATE 
+                            outgoing_request_cache_config 
+                        SET 
+                            ttl= {$ttl}, config_name = '{$db->real_escape_string($config_name)}' 
+                        WHERE 
+                            id = {$id}";
     }
     $q = $db->query($query_string);
     if (!$q) {
