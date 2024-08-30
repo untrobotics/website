@@ -7,7 +7,7 @@ class PrintfulCustomAPI {
         $this->api_key = $printful_api_key;
     }
 
-    protected function send_request($URI, $data = false) {
+    protected function send_request($URI, $data = false, ...$args) {
         $ch = curl_init();
         $headers = array();
         $headers[] = 'Authorization: Bearer ' . $this->api_key;
@@ -23,7 +23,7 @@ class PrintfulCustomAPI {
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        $cache_result = get_valid_cache_entry('https://api.printful.com/' . $URI, $ch);
+        $cache_result = get_valid_cache_entry('https://api.printful.com/' . $URI, $ch, ...$args);
 
         if($cache_result->fetched_new_content) {
             if ($cache_result->curl_errno) {
@@ -82,7 +82,7 @@ class PrintfulCustomAPI {
     }
 
     public function confirm_order($order_id) {
-        $create_order_results = $this->send_request("orders/{$order_id}/confirm", null);
+        $create_order_results = $this->send_request("orders/$1/confirm", null, $order_id);
         $parsed_created_order_results = $this->parse_results($create_order_results);
 
         $order = new PrintfulOrder($parsed_created_order_results->get_results());
@@ -94,7 +94,7 @@ class PrintfulCustomAPI {
         if (!empty($search_string)) {
             $search_string = "&search=" . $search_string;
         }
-        $products_results = $this->send_request("store/products?limit=5" . $search_string);
+        $products_results = $this->send_request("store/products$1", false, "?limit=10" . $search_string);
         $parsed_products_results = $this->parse_results($products_results);
 
         foreach ($parsed_products_results->get_results() as $product) {
@@ -109,7 +109,7 @@ class PrintfulCustomAPI {
             throw new PrintfulCustomAPIException("Null or empty product id passed.");
         }
 
-        $product_results = $this->send_request("store/products/{$product_id}");
+        $product_results = $this->send_request("store/products/$1", false, $product_id);
         $parsed_product_results = $this->parse_results($product_results);
 
         if ($parsed_product_results->get_results()) {
@@ -124,7 +124,7 @@ class PrintfulCustomAPI {
             throw new PrintfulCustomAPIException("Null or empty sync variant id passed.");
         }
 
-        $sync_variant_results = $this->send_request("store/variants/{$sync_variant_id}");
+        $sync_variant_results = $this->send_request("store/variants/$1", false, $sync_variant_id);
         $parsed_sync_variant_results = $this->parse_results($sync_variant_results);
 
         if ($parsed_sync_variant_results->get_results()) {
@@ -145,7 +145,7 @@ class PrintfulCustomAPI {
             throw new PrintfulCustomAPIException("Null or empty variant id passed.");
         }
 
-        $variant_results = $this->send_request("products/variant/{$variant_id}");
+        $variant_results = $this->send_request("products/variant/$1", false, $variant_id);
         $parsed_variant_results = $this->parse_results($variant_results);
 
         if ($parsed_variant_results->get_results()) {
@@ -160,7 +160,7 @@ class PrintfulCustomAPI {
             throw new PrintfulCustomAPIException("Null or empty product id passed.");
         }
 
-        $product_results = $this->send_request("products/{$product_id}");
+        $product_results = $this->send_request("products/$1", false, $product_id);
         $parsed_product_results = $this->parse_results($product_results);
 
         if ($parsed_product_results->get_results()) {
