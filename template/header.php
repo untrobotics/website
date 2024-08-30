@@ -144,7 +144,7 @@
                   </li>
                   <li><a href="/guides">Guides</a></li>
 				  <li><a href="/equipment" class="stacked">Checkout<br>Equipment</a></li>-->
-				  <li><a href="/dues">Pay Dues</a></li>
+				  <!--<li><a href="/dues">Pay Dues</a></li>-->
 				  <li><a href="/merch">Merch</a>
                     <ul class="rd-navbar-dropdown">
                   	    <li><a href="/merch/shirts-hoodies">Shirts &amp; Hoodies</a></li>
@@ -157,8 +157,8 @@
                     <ul class="rd-navbar-dropdown">
                   	  <li><a href="/botathon">Info</a></li>
                       <li><a href="/botathon/register">Register</a></li>
-                      <!--<li><a href="/botathon/brackets">Brackets</a></li>
-                      <li><a href="/botathon/botathon-teams">Teams</a></li>-->
+                      <!--<li><a href="/botathon/brackets">Brackets</a></li>-->
+                      <!--<li><a href="/botathon/botathon-teams">Teams</a></li>-->
                     </ul>
                   </li>
                   <li><a href="/contact">Contact us</a></li>

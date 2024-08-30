@@ -1,8 +1,18 @@
 <?php
 require("../template/top.php");
 
-$term = $untrobotics->get_current_term();
-$year = $untrobotics->get_current_year();
+$term = @$_GET['term'];
+$year = @$_GET['year'];
+if (strlen($term) == 0) {
+    $term = $untrobotics->get_current_term();
+} else {
+    $term = intval($term);
+}
+if (empty($year)) {
+    $year = $untrobotics->get_current_year();
+} else {
+    $year = intval($year);
+}
 
 $q = $db->query("SELECT * FROM dues_payments WHERE dues_term = '$term' AND dues_year = '$year' ORDER BY payment_timestamp DESC");
 
@@ -71,7 +81,10 @@ if (isset($_GET['download'])) {
         </span>
     </div>
 
-    <strong>Total: <?php echo $q->num_rows; ?></strong>
+    <strong style="font-size: 18px;">Viewing Term: <?php echo Semester::get_name_from_value($term); ?> - <?php echo $year; ?></strong> --
+    <a href="?term=<?php echo $untrobotics->get_prev_term($term); ?>&year=<?php echo $year-1; ?>">view previous</a>, <a href="?term=<?php echo $untrobotics->get_next_term($term); ?>&year=<?php echo $year+1; ?>">view next</a>
+    <br />
+    Total: <?php echo $q->num_rows; ?>
 
     <table>
         <tr>

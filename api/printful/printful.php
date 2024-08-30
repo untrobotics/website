@@ -94,6 +94,7 @@ class PrintfulCustomAPI {
         if (!empty($search_string)) {
             $search_string = "&search=" . $search_string;
         }
+
         $products_results = $this->send_request("store/products$1", false, "?limit=10" . $search_string);
         $parsed_products_results = $this->parse_results($products_results);
 
