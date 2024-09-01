@@ -1,6 +1,7 @@
 <?php
 require_once(__DIR__ . '/../../template/config.php');
 require_once(__DIR__ . '/../../template/constants.php');
+require_once(__DIR__ . '/api-json-objects.php');
 
 class PayPalCustomApi
 {
@@ -48,8 +49,9 @@ class PayPalCustomApi
      * @param string $method
      * @return void
      */
-    public function send_request(string $method)
+    public function send_request(string $method = "GET", $data = false)
     {
+        // get the access token if it hasn't already been retrieved
         if(!isset($this->access_token)){
             try {
                 $this->get_access_token();
@@ -58,8 +60,21 @@ class PayPalCustomApi
                 return null;
             }
         }
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+
+        $headers = array();
+        if($method !== "GET"){
+            if($data !== false){
+                curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+                $headers[] = "Content-Type: application/json";
+            }
+        }
 
 
+        $headers[] = "Authorization: Bearer {$this->access_token}";
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     }
 
     /**
@@ -103,7 +118,7 @@ class PayPalCustomApi
 
         curl_close($ch);
         /**
-         * Result should look like this:
+         * $result should look like this:
          *  {
          *      "scope"         : "https://uri.paypal.com/.... https://uri.paypal.com/.... ....",
          *      "access_token"  : "token",
@@ -117,17 +132,17 @@ class PayPalCustomApi
         $this->access_token = $result["access_token"];
     }
 
+    public function create_order() {
+
+    }
+
     /**
      * Gives the proper base PayPal URL for the environment
      * @return string Returns the API URL based on environment
      */
     private static function get_api_url(): string{
-        /*if(ENVIRONMENT == Environment::DEVELOPMENT){
-
-        }*/
         return ENVIRONMENT == Environment::DEVELOPMENT ? self::SANDBOX_API_BASE_URL : self::PRODUCTION_API_BASE_URL;
     }
-
 }
 
 class PayPalCustomApiException extends Exception
