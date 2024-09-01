@@ -17,7 +17,7 @@ CREATE TABLE `api_cache`(
     `last_attempted_retrieval` timestamp DEFAULT CURRENT_TIMESTAMP,
     `retry_count` int DEFAULT 0,
     `endpoint_args` varchar(4000) NOT NULL, -- args used to fill '{}'s in endpoint (e.g., https://api.printful.com/store/$1/$2/not-a-real-endpoint?$3) delimited with a '|'
-    `content` text NOT NULL,
+    `content` mediumtext NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (config_id) REFERENCES outgoing_request_cache_config(id)
 )AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
