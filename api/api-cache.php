@@ -11,7 +11,13 @@ function get_cached_api_response(string $endpoint, ...$args): ?array {
     global $db;
     $q = $db->query("
                 SELECT
-                    *
+                    id, 
+                    config_id, 
+                    last_sucessfully_retrieved,
+                    last_attempted_retrieval,
+                    retry_count,
+                    endpoint_args,
+                    UNCOMPRESS(content) AS content
                 FROM
                     api_cache
                 INNER JOIN 
@@ -70,7 +76,10 @@ function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
     global $db;
     $q = $db->query("
                     SELECT
-                        outgoing_request_cache_config.id as conf_id, ttl, content, last_successfully_retrieved
+                        outgoing_request_cache_config.id AS conf_id, 
+                        ttl, 
+                        UNCOMPRESS(content) AS content, 
+                        last_successfully_retrieved
                     FROM 
                         outgoing_request_cache_config
                     LEFT JOIN 
@@ -142,7 +151,7 @@ function insert_cached(string $endpoint, string $content, int $config_id, ...$ar
                             last_successfully_retrieved = UTC_TIMESTAMP, 
                             last_attempted_retrieval = UTC_TIMESTAMP, 
                             retry_count = 0, 
-                            content =\'' . $db->real_escape_string($content) . '\'
+                            content = COMPRESS(\'' . $db->real_escape_string($content) . '\')
                         WHERE 
                             id = ' . $id;
     } else {
@@ -161,7 +170,7 @@ function insert_cached(string $endpoint, string $content, int $config_id, ...$ar
                              UTC_TIMESTAMP, 
                              UTC_TIMESTAMP, 
                              '{$a}',
-                             '{$db->real_escape_string($content)}')";
+                             COMPRESS('{$db->real_escape_string($content)}'))";
     }
     $q = $db->query($query_string);
     if (!$q) {
