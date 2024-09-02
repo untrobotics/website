@@ -36,17 +36,19 @@ class PayPalOrder extends JsonNoEmptyFieldSerializable
     //public $payer;
 
     /**
-     * @var PayPalPaymentSource May be empty todo: haven't figured out if we need this
+     * @var PayPalPaymentSource Used to define which payment provider used to complete the order. Also used to set
      */
     public $payment_source;
 
-    // all fields in this object are deprecated, use $payment_source fields instead
-    /*private $application_context;*/
+    /**
+     * @deprecated all fields in this object are deprecated, use {@see $payment_source} instead. See also {@see PayPalPaymentSourceGeneric::$experience_context} or {@see PayPalPaymentSourcePayPal::$experience_context}
+     */
+    private $application_context;
 
     /**
-     * @param PayPalPurchaseUnit[] $purchase_units
-     * @param string $intent
-     * @param PayPalPaymentSource|null $payment_source
+     * @param PayPalPurchaseUnit[] $purchase_units An array of {@see PayPalPurchaseUnit}s for this order
+     * @param string $intent Whether payment will be captured immediately or delayed until after the order is created
+     * @param PayPalPaymentSource|null $payment_source Information about the payment source. Consider using if you want to customize the checkout experience (e.g., setting return and cancellation URLs)
      */
     public function __construct(array $purchase_units, string $intent, PayPalPaymentSource $payment_source = null)
     {
@@ -54,6 +56,29 @@ class PayPalOrder extends JsonNoEmptyFieldSerializable
         $this->intent = $intent;
         $this->payment_source = $payment_source;
     }
+}
+
+/**
+ * Used for confirm_order requests. Only used in more advanced transactions
+ */
+class PayPalOrderConfirmation extends JsonNoEmptyFieldSerializable
+{
+    /**
+     * @var string The instruction to process an order. Defaults to NO_INSTRUCTION.
+     *  Accepted values are 'ORDER_COMPLETE_ON_PAYMENT_APPROVAL' - PayPal automatically completes the order on payer approval; and
+     * 'NO_INSTRUCTION' - API caller will capture or authorize payment after payer approves the order
+     *
+     */
+    public $processing_instruction;
+    /**
+     * @var PayPalApplicationContext Customizes the payer confirmation experience. Not to be confused with {@see PayPalExperienceContext} which is used in the order creation process
+     */
+    public $application_context;
+
+    /**
+     * @var PayPalPaymentSource The payment source definition.
+     */
+    public $payment_source;
 }
 
 class PayPalPaymentSource extends JsonNoEmptyFieldSerializable
@@ -88,6 +113,24 @@ class PayPalPaymentSource extends JsonNoEmptyFieldSerializable
     public $apple_pay;
     public $google_pay;
     public $venmo;
+
+    /**
+     * Set only one of the PaymentSources
+     * @param PayPalPaymentSourcePayPal|null $paypal Set this if payment will proceed through PayPal Wallet
+     * @param PayPalToken|null $token Tokenized payment. Use this if the token has been generated for payment already
+     * @param null $apple_pay Set this if payment will proceed through Apple Pay
+     * @param null $google_pay Set this if payment will proceed through Google Pay
+     * @param null $venmo Set this if payment will proceed through Venmo (which is completely separate from PayPal for some reason)
+     */
+    public function __construct(PayPalPaymentSourcePayPal $paypal = null, PayPalToken $token = null, $apple_pay = null, $google_pay = null, $venmo = null)
+    {
+        $this->google_pay = $google_pay;
+        $this->apple_pay = $apple_pay;
+        $this->paypal = $paypal;
+        $this->token = $token;
+        $this->venmo = $venmo;
+    }
+
 
 }
 
@@ -163,52 +206,141 @@ class PayPalPaymentSourcePayPal extends JsonNoEmptyFieldSerializable
      * @var PayPalWalletAttributes Additional attributes associated with the use of this wallet
      */
     public $attributes;
+
+    /**
+     * @param PayPalExperienceContext $experience_context
+     * @param string|null $billing_agreement_id
+     * @param string|null $vault_id
+     * @param string|null $email_address
+     * @param PayPalName|null $name
+     * @param PayPalPhone|null $phone
+     * @param string|null $birth_date
+     * @param PayPalTaxInfo|null $tax_info
+     * @param PayPalAddress|null $address
+     * @param PayPalWalletAttributes|null $attributes
+     */
+    public function __construct(PayPalExperienceContext $experience_context, string $billing_agreement_id = null, string $vault_id = null, string $email_address = null, PayPalName $name = null, PayPalPhone $phone = null, string $birth_date = null, PayPalTaxInfo $tax_info = null, PayPalAddress $address = null, PayPalWalletAttributes $attributes = null)
+    {
+        $this->experience_context = $experience_context;
+        $this->billing_agreement_id = $billing_agreement_id;
+        $this->vault_id = $vault_id;
+        $this->email_address = $email_address;
+        $this->name = $name;
+        $this->phone = $phone;
+        $this->birth_date = $birth_date;
+        $this->tax_info = $tax_info;
+        $this->address = $address;
+        $this->attributes = $attributes;
+    }
+
+
 }
 
-/**
- * This class allows you to customize the PayPal checkout experience
- */
-class PayPalExperienceContext extends JsonNoEmptyFieldSerializable
+class PayPalApplicationContext extends JsonNoEmptyFieldSerializable
 {
+
     /**
      * @var string|null (1-127 chars) Overrides the business name in PayPal
      */
     public $brand_name;
-    /**
-     * @var string|null (1-24 chars) The location from which the shipping address is derived. Defaults to GET_FROM_FILE.
-     * Values: "GET_FROM_FILE", "NO_SHIPPING", and "SET_PROVIDED_ADDRESS"
-     * See {@see https://developer.paypal.com/docs/api/orders/v2/#orders_create!path=payment_source/p24/experience_context/shipping_preference&t=request docs} for more details
-     */
-    public $shipping_preference;
+
     /**
      * @var string (2-10 chars) The BCP 47-formatted locale of pages that the PayPal payment experience shows. PayPal
      *  supports a five-character code
      */
     public $locale;
     /**
-     * @var string URL the customer is redirected to upon payment approval
+     * @var string URL the customer is redirected to upon payment approval.
+     *  Note: PayPal will also attach the checkout token as a GET parameter, 'token', so you may use that to check if the transaction went through
      */
     public $return_url;
     /**
-     * @var string URL the customer is redirected to upon payment cancellation
+     * @var string URL the customer is redirected to upon payment cancellation.
+     *  Note: PayPal will also attach the checkout token as a GET parameter, 'token', so you may use that to restart the same transaction
      */
     public $cancel_url;
 
+//    /**
+//     * @var
+//     */
+//    public $stored_payment_source; // removed because we aren't storing this data
+
     /**
-     * @param $brand_name string|null
-     * @param $shipping_preference string|null
-     * @param $locale string|null
-     * @param $return_url string|null
-     * @param $cancel_url string|null
+     * @param string|null $brand_name The brand/store/company name to show on the checkout page. Overrides the name set in PayPal
+     * @param string $locale Should be in BCP 47-format (e.g., "en-US" and "en-UK")
+     * @param string $return_url The URL the customer is redirected to upon payment approval
+     * @param string $cancel_url The URL the customer is redirected to upon cancellation
      */
-    public function __construct($brand_name = null, $shipping_preference = null, $locale = 'en-US', $return_url = 'https://untrobotics.com/', $cancel_url = 'https://untrobotics.com/')
+    public function __construct(?string $brand_name, string $locale, string $return_url, string $cancel_url)
     {
         $this->brand_name = $brand_name;
-        $this->shipping_preference = $shipping_preference;
         $this->locale = $locale;
         $this->return_url = $return_url;
         $this->cancel_url = $cancel_url;
     }
+
+
+}
+
+/**
+ * This class allows you to customize the PayPal checkout experience
+ */
+class PayPalExperienceContext extends PayPalApplicationContext
+{
+    /**
+     * @var string|null (1-24 chars) The location from which the shipping address is derived. Defaults to GET_FROM_FILE.
+     * Values: "GET_FROM_FILE", "NO_SHIPPING", and "SET_PROVIDED_ADDRESS".
+     * Note: If GET_FROM_FILE is specified during the create_order process, an empty PayPalPaymentSource can be provided during the capture_payment process because users are also asked to approve payment with the shipping information.
+     * See {@see https://developer.paypal.com/docs/api/orders/v2/#orders_create!path=payment_source/p24/experience_context/shipping_preference&t=request docs} for more details
+     */
+    public $shipping_preference;
+
+    /**
+     * @var string The type of landing page to show on the PayPal site for customer checkout. Defaults to 'NO_PREFERENCE'.
+     * Valid values are 'LOGIN' - user is redirected to a PayPal log-in page;
+     * 'GUEST_CHECKOUT' - user is redirected to a page to fill out billing and shipping information without logging in; and 'NO_PREFERENCE' - user is brought to a page asking if they want to log in or continue without logging into PayPal
+     */
+    public $landing_page;
+
+    /**
+     * @var string Configures a Continue or Pay Now checkout flow. Defaults to 'CONTINUE'.
+     * Valid values are 'CONTINUE' and 'PAY_NOW'
+     */
+    public $user_action;
+
+    /**
+     * @var string The merchant-preferred payment methods. Defaults to 'UNRESTRICTED'.
+     * Valid values are 'UNRESTRICTED' and 'IMMEDIATE_PAYMENT_REQUIRED' - Only accepts instantaneous payments like credit card, PayPal balance, and instant ACH
+     */
+    public $payment_method_preference;
+
+
+    // no enums makes this so much worse... should I make a bunch of constants?
+
+    /**
+     * @param string|null $brand_name The brand/store/company name to show on the checkout page. Overrides the name set in PayPal
+     * @param string|null $shipping_preference Where to get shipping information. Valid values are 'GET_FROM_FILE', 'NO_SHIPPING', and 'SET_PROVIDED_ADDRESS'. If 'SET_PROVIDED_ADDRESS', all {@see PayPalPurchaseUnit::$shipping} properties will need to be set
+     * @param string $landing_page The landing page to show on PayPal. Valid values are 'LOGIN', GUEST_CHECKOUT', and 'NO_PREFERENCE'
+     * @param string $user_action Whether to require payment now or continue. Valid values are 'CONTINUE' and 'PAY_NOW'
+     * @param string $payment_method_preference The type of payment accepted. Valid values are 'UNRESTRICTED' and 'IMMEDIATE_PAYMENT_REQUIRED'
+     * @param string $locale Should be in BCP 47-format (e.g., "en-US" and "en-UK")
+     * @param string $return_url The URL the customer is redirected to upon payment approval
+     * @param string $cancel_url The URL the customer is redirected to upon cancellation
+     */
+    public function __construct(?string $brand_name = null, ?string $shipping_preference = 'GET_FROM_FILE', string $landing_page = 'NO_PREFERENCE', string $user_action = 'CONTINUE', string $payment_method_preference = 'UNRESTRICTED', string $locale = 'en-US', string $return_url = 'https://untrobotics.com', string $cancel_url = 'https://untrobotics.com')
+    {
+//        $this->brand_name = $brand_name;
+        $this->shipping_preference = $shipping_preference;
+        $this->landing_page = $landing_page;
+        $this->user_action = $user_action;
+        $this->payment_method_preference = $payment_method_preference;
+//        $this->locale = $locale;
+//        $this->return_url = $return_url;
+//        $this->cancel_url = $cancel_url;
+        parent::__construct($brand_name, $locale, $return_url, $cancel_url);
+    }
+
+
 }
 
 class PayPalPurchaseUnit extends JsonNoEmptyFieldSerializable
@@ -267,8 +399,8 @@ class PayPalPurchaseUnit extends JsonNoEmptyFieldSerializable
     //public $supplemental_data;
     /**
      * @param PayPalItemsTotal $amount
-     * @param PayPalShipping $shipping
      * @param PayPalItem[] $items
+     * @param PayPalShipping|null $shipping
      * @param string|null $description
      * @param string|null $reference_id
      * @param string|null $custom_id
@@ -277,7 +409,7 @@ class PayPalPurchaseUnit extends JsonNoEmptyFieldSerializable
      * @param PayPalMerchant|null $payee
      * @param PayPalPaymentInstruction|null $payment_instruction
      */
-    public function __construct(PayPalItemsTotal $amount, PayPalShipping $shipping, array $items,
+    public function __construct(PayPalItemsTotal $amount, array $items, PayPalShipping $shipping = null,
                                 string           $description = null, string $reference_id = null, string $custom_id = null,
                                 string           $invoice_id = null, string $soft_descriptor = null,
                                 PayPalMerchant   $payee = null, PayPalPaymentInstruction $payment_instruction = null)
@@ -350,18 +482,18 @@ class PayPalItem extends JsonNoEmptyFieldSerializable
      * @param string $name
      * @param string $quantity
      * @param PayPalCurrencyField|null $unit_amount
+     * @param PayPalCurrencyField|null $tax
      * @param string|null $description
      * @param string|null $sku
      * @param string|null $url
      * @param string|null $category
      * @param string|null $image_url
-     * @param PayPalCurrencyField|null $tax
      * @param PayPalUPCField|null $upc
      */
-    public function __construct(string         $name, string $quantity, PayPalCurrencyField $unit_amount,
-                                string         $description = null, string $sku = null, string $url = null,
-                                string         $category = null, string $image_url = null, PayPalCurrencyField $tax = null,
-                                PayPalUPCField $upc = null)
+    public function __construct(string              $name, string $quantity, PayPalCurrencyField $unit_amount,
+                                PayPalCurrencyField $tax = null, string $description = null, string $sku = null,
+                                string              $url = null, string $category = null, string $image_url = null,
+                                PayPalUPCField      $upc = null)
     {
         $this->name = $name;
         $this->quantity = $quantity;
