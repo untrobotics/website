@@ -9,11 +9,11 @@ class PayPalCustomApi
     /**
      * Base URL for sandbox (development) API calls. Does not include trailing slash
      */
-    private const SANDBOX_API_BASE_URL = 'https://api-m.sandbox.paypal.com';
+    private const SANDBOX_API_BASE_URL = 'https://api.sandbox.paypal.com';
     /**
      * Base URL for production API calls. Does not include trailing slash
      */
-    private const PRODUCTION_API_BASE_URL = 'https://api-m.paypal.com';
+    private const PRODUCTION_API_BASE_URL = 'https://api.paypal.com';
 
 
     /**
@@ -46,10 +46,14 @@ class PayPalCustomApi
     }
 
     /**
-     * @param string $method
-     * @return void
+     * @param string $URI The API endpoint, including starting forward slash (e.g., /v2/checkout/orders)
+     * @param string $method The HTTP method to use. Should be passable to the CURLOPT_CUSTOMREQUEST option
+     * @param string|false $data Data to be sent with the request
+     * @param array|null $headers Additional headers to send with the request. The access token is already provided, and content type is set to json
+     * @return bool|string
+     * @throws PayPalCustomApiException
      */
-    public function send_request(string $method = "GET", $data = false)
+    public function send_request(string $URI, string $method = "GET", $data = false, array $headers = null)
     {
         // get the access token if it hasn't already been retrieved
         if(!isset($this->access_token)){
@@ -59,12 +63,22 @@ class PayPalCustomApi
                 error_log($e);
                 return null;
             }
+
         }
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 
-        $headers = array();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, self::get_api_url() . $URI);
+        curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION,CURL_HTTP_VERSION_1_1);
+        curl_setopt($ch, CURLOPT_ENCODING,'');
+
+        if(!isset($headers)){
+            $headers = array();
+        }
+
         if($method !== "GET"){
             if($data !== false){
                 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -72,9 +86,64 @@ class PayPalCustomApi
             }
         }
 
-
-        $headers[] = "Authorization: Bearer {$this->access_token}";
+        $headers[] = "Authorization: Bearer $this->access_token";
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if (curl_errno($ch)) {
+            throw new PayPalCustomApiException("Encountered an error executing an API request for PayPal at".self::get_api_url() ."{$URI}: " . curl_error($ch));
+        }
+        if ($httpcode < 200 || $httpcode >= 300) {
+            if($httpcode >= 400 && $httpcode <= 403){
+                throw new PayPalCustomApiException("Received non-success response from the PayPal API at ".self::get_api_url() ."{$URI} for bearer token '{$this->access_token}': {$httpcode}");
+            }
+            throw new PayPalCustomApiException("Received non-success response from the PayPal API at ".self::get_api_url() ."{$URI}: {$httpcode}");
+        }
+        curl_close($ch);
+        return $result;
+    }
+
+    /**
+     * @param PayPalItem[] $items An array containing all items' info
+     * @param string[] $shipping_info An associative array containing necessary shipping info. Expected keys are 'full_name' 'phone_country_code' 'phone_number' 'address_1' 'address_2' 'address_country_code' 'postal_code' 'admin_area_1' 'admin_area_2'
+     * @return string|bool
+     */
+    public function create_order(array $items, string $total, string $subtotal, string $total_tax, array $shipping_info) {
+        if(count($items)<1) return false;
+        $currency_code = $items[0]->unit_amount->currency_code;
+        $data = new PayPalOrder(
+            [
+                new PayPalPurchaseUnit(
+                    new PayPalItemsTotal(
+                        $currency_code,
+                        $total,
+                        new PayPalBreakdown(
+                            new PayPalCurrencyField($currency_code, $subtotal),
+                            new PayPalCurrencyField($currency_code, $total_tax)
+                        )
+                    ),
+                    new PayPalShipping(
+                        new PayPalName($shipping_info['full_name']),
+                        new PayPalPhoneNumber($shipping_info['phone_country_code'],$shipping_info['phone_number']),
+                        new PayPalAddress(
+                            $shipping_info['address_1'],
+                            $shipping_info['admin_area_1'],
+                            $shipping_info['address_country_code'],
+                            $shipping_info['postal_code'],
+                            $shipping_info['address_2'],
+                            $shipping_info['admin_area_2']
+                        ),
+                        'SHIPPING'
+                    ),
+                    $items
+                )
+            ],
+            'CAPTURE'
+        );
+
+        return $this->send_request('/v2/checkout/orders', 'POST', $data);
     }
 
     /**
@@ -98,17 +167,16 @@ class PayPalCustomApi
         $headers = array();
         $headers[] = 'Content-Type: application/x-www-form-urlencoded';
 
-        curl_setopt($ch, CURLOPT_URL, self::get_api_url() . 'v1/oauth2/token');
+        curl_setopt($ch, CURLOPT_URL, self::get_api_url() . '/v1/oauth2/token');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, 'grant_type=client_credentials');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_USERPWD, $this->client_id . ':' . $this->client_secret);
-
+        curl_setopt($ch, CURLOPT_ENCODING,'');
         $result = curl_exec($ch);
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        var_dump($result);
         if (curl_errno($ch)) {
             throw new PayPalCustomApiException('Encountered an error while trying to retrieve access token: ' . curl_error($ch));
         }
@@ -128,12 +196,8 @@ class PayPalCustomApi
          *      "nonce"         : "nonce"
          *  }
          */
-        $result = json_decode($result);
+        $result = json_decode($result,true);
         $this->access_token = $result["access_token"];
-    }
-
-    public function create_order() {
-
     }
 
     /**
