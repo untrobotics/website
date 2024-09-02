@@ -46,13 +46,14 @@ class PayPalCustomApi
 
     /**
      * @param PayPalItem[] $items An array containing all items' info
-     * @param string[] $shipping_info An associative array containing necessary shipping info. Expected keys are 'full_name' 'phone_country_code' 'phone_number' 'address_1' 'address_2' 'address_country_code' 'postal_code' 'admin_area_1' 'admin_area_2'
-     * @return string|bool
+     * @param bool|string[] $shipping_info Set to true if shipping info will be given during the payment process. Set to false if there is no shipping. If information is already stored, set to
+     *  an associative array containing necessary shipping info. Expected keys are 'full_name' 'phone_country_code' 'phone_number' 'address_1' 'address_2' 'address_country_code' 'postal_code' 'admin_area_1' 'admin_area_2'
+     * @return string|null The results of the order creation or null if an error occurred
      */
-    public function create_order(array $items, string $total, string $subtotal, string $total_tax, array $shipping_info = null) {
+    public function create_order(array $items, string $total, string $subtotal, string $total_tax, $shipping_info = false): ?string {
         if (count($items) < 1) return false;
         $currency_code = $items[0]->unit_amount->currency_code;
-        if ($shipping_info !== null) {
+        if (is_array($shipping_info)) {
             $shipping_info = new PayPalShipping(
                 new PayPalName($shipping_info['full_name']),
                 new PayPalPhoneNumber($shipping_info['phone_country_code'], $shipping_info['phone_number']),
@@ -67,8 +68,10 @@ class PayPalCustomApi
                 'SHIPPING'
             );
             $shipping_pref = 'SET_PROVIDED_ADDRESS';
-        } else {
+        } else if ($shipping_info) {
             $shipping_pref = 'GET_FROM_FILE';
+        } else {
+            $shipping_pref = 'NO_SHIPPING';
         }
 
         $data = new PayPalOrder(
@@ -96,8 +99,12 @@ class PayPalCustomApi
                     )
                 ))
         );
-
-        return $this->send_request('/v2/checkout/orders', 'POST', $data);
+        try {
+            return $this->send_request('/v2/checkout/orders', 'POST', $data);
+        } catch (PayPalCustomApiException $e) {
+            error_log("Error trying to create an order: " . $e->getMessage());
+            return null;
+        }
     }
 
     /**
