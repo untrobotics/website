@@ -54,7 +54,7 @@ class PayPalCustomApi
         if (count($items) < 1) return false;
         $currency_code = $items[0]->unit_amount->currency_code;
         if (is_array($shipping_info)) {
-            $shipping_info = new PayPalShipping(
+            $shipping_info_obj = new PayPalShipping(
                 new PayPalName($shipping_info['full_name']),
                 new PayPalPhoneNumber($shipping_info['phone_country_code'], $shipping_info['phone_number']),
                 new PayPalAddress(
@@ -68,10 +68,13 @@ class PayPalCustomApi
                 'SHIPPING'
             );
             $shipping_pref = 'SET_PROVIDED_ADDRESS';
-        } else if ($shipping_info) {
-            $shipping_pref = 'GET_FROM_FILE';
         } else {
-            $shipping_pref = 'NO_SHIPPING';
+            $shipping_info_obj = null;
+            if ($shipping_info) {
+                $shipping_pref = 'GET_FROM_FILE';
+            } else {
+                $shipping_pref = 'NO_SHIPPING';
+            }
         }
 
         $data = new PayPalOrder(
@@ -86,7 +89,7 @@ class PayPalCustomApi
                         )
                     ),
                     $items,
-                    $shipping_info
+                    $shipping_info_obj
                 )
             ],
             'CAPTURE',
@@ -128,10 +131,10 @@ class PayPalCustomApi
 
         }
         $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $full_url = self::get_api_url() . insert_args($URI, ...$args);
         curl_setopt($ch, CURLOPT_URL, $full_url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -273,6 +276,9 @@ class PayPalCustomApiException extends Exception
 }
 
 function insert_args(string $endpoint, ...$args): string {
+    if (count($args) === 0) {
+        return $endpoint;
+    }
     $search = array();
     for ($i = 1; $i <= count($args); $i++) {
         $search[] = '$' . $i;
