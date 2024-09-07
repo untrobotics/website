@@ -36,7 +36,8 @@ function get_cached_api_response(string $endpoint, ...$args): ?array {
     return null;
 }
 
-class CacheResult {
+class CacheResult
+{
     /**
      * @var string $content The response content
      */
@@ -69,7 +70,7 @@ class CacheResult {
  * Gets the first entry from the API cache that has a matching endpoint. If the entry is expired or does not exist, returns the results from executing cURL. Updates the cache with fetched results if the entry existed
  * @param string $endpoint The endpoint for the API request
  * @param resource|CurlHandle $ch The Curl Handle to send the request
- * @param mixed ...$args  Endpoint args
+ * @param mixed ...$args Endpoint args
  * @return CacheResult An object containing the response content, and some cURL info if curl_exec was called
  */
 function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
@@ -91,13 +92,13 @@ function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
                     AND
                         endpoint_args = '{$db->real_escape_string(implode('|',$args))}'
                     ");
-    if($q === false) {
-        error_log("Failed to retrieve endpoint \"". insert_args($endpoint, ...$args) ."\" from cache table: {$db->error}");
+    if ($q === false) {
+        error_log("Failed to retrieve endpoint \"" . insert_args($endpoint, ...$args) . "\" from cache table: {$db->error}");
         return null;
     }
     if ($q && $q->num_rows > 0) {
         $r = $q->fetch_array(MYSQLI_ASSOC);
-        if($r['content'] !== null) {
+        if ($r['content'] !== null) {
             $ttl = $r['ttl'];
             $now = time();
             $retrieval_time = $r['last_successfully_retrieved'];
@@ -115,20 +116,20 @@ function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
     $result = curl_exec($ch);
     // add to cache if old cache entry, no errors, and HTTP OK
     $response_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    if(!isset($can_be_cached)) { // if set, specific endpoint is already in db, so we can try to cache
+    if (!isset($can_be_cached)) { // if set, specific endpoint is already in db, so we can try to cache
         $config_id = get_config_id($endpoint);
-        if($config_id === null) {
+        if ($config_id === null) {
             error_log("Failed to check cachability of endpoint \"{$endpoint_full}\". Result not cached.");
-            return new CacheResult(curl_exec($ch),true, $response_code,curl_errno($ch));
+            return new CacheResult(curl_exec($ch), true, $response_code, curl_errno($ch));
         }
         // $config_id should be false if the endpoint can't be cached, otherwise it should be an int
         $can_be_cached = $config_id !== false;
     }
-    if ($can_be_cached && !curl_errno($ch) && $response_code >= 200 && $response_code <=299) {
+    if ($can_be_cached && !curl_errno($ch) && $response_code >= 200 && $response_code <= 299) {
         insert_cached($endpoint, $result, $config_id, ...$args);
     }
 
-    return new CacheResult(curl_exec($ch),true, $response_code,curl_errno($ch));
+    return new CacheResult(curl_exec($ch), true, $response_code, curl_errno($ch));
 }
 
 /**
@@ -143,7 +144,6 @@ function insert_cached(string $endpoint, string $content, int $config_id, ...$ar
     $r = get_cached_api_response($endpoint, ...$args);
     if ($r) {
         $id = $r['id'];
-
         $query_string = '
                         UPDATE
                             api_cache 
@@ -155,8 +155,6 @@ function insert_cached(string $endpoint, string $content, int $config_id, ...$ar
                         WHERE 
                             id = ' . $id;
     } else {
-        $b = implode('|', $args);
-        $a = $db->real_escape_string($b);
         $query_string = "
                         INSERT INTO
                             api_cache
@@ -169,7 +167,7 @@ function insert_cached(string $endpoint, string $content, int $config_id, ...$ar
                             ({$config_id}, 
                              UTC_TIMESTAMP, 
                              UTC_TIMESTAMP, 
-                             '{$a}',
+                             '{$db->real_escape_string(implode('|', $args))}',
                              COMPRESS('{$db->real_escape_string($content)}'))";
     }
     $q = $db->query($query_string);
@@ -194,12 +192,12 @@ function get_config_id(string $endpoint) {
                     WHERE
                         endpoint = '{$db->real_escape_string($endpoint)}'
                     ");
-    if($q === false) {
+    if ($q === false) {
         error_log("Failed to retrieve endpoint {$endpoint} from cache config table: {$db->error}");
         return null;
     }
     // return $q->fetch_column(0);
-    if($q->num_rows < 1)
+    if ($q->num_rows < 1)
         return false;
     return $q->fetch_row()[0];
 }
@@ -274,7 +272,7 @@ function update_cache_config(int $id, $config_name = null, $ttl = null) {
     }
     $q = $db->query($query_string);
     if (!$q) {
-        error_log('Failed to update API cache config: ' . $db->error);
+        error_log("Failed to update API cache config, ID {$id}: {$db->error}");
     }
 }
 
@@ -288,7 +286,7 @@ function update_cache_config(int $id, $config_name = null, $ttl = null) {
  */
 function insert_args(string $endpoint, ...$args): string {
     $search = array();
-    for($i = 1; $i <= count($args); $i++) {
+    for ($i = 1; $i <= count($args); $i++) {
         $search[] = '$' . $i;
     }
     return str_replace($search, $args, $endpoint);
