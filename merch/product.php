@@ -300,23 +300,6 @@ function get_variant_variant($variant_name) {
 									));
 									$payment_button->set_complete_return_uri('/merch/buy/complete');
 
-									/*
-									$button = payment_button(
-											'T-Shirt', 
-											$product->get_product_price(),
-											$product->get_product_currency(),
-											$custom = $custom,
-											$opt_names = array('Type', 'Product', 'Variant'),
-											$opt_vals = array(
-												$catalog_product->get_type_name(),
-												$product->get_name(),
-												get_variant_variant($selected_variant->get_name())
-											),
-											$quantity = 1,
-											$complete_return_uri = '/merch/buy/complete'
-										);
-									*/
-
 									//echo $button['btn'];
 									$button = $payment_button->get_button();
 									if ($button->error === false) {
