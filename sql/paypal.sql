@@ -16,8 +16,9 @@ CREATE TABLE `paypal_items`(
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `item_type` enum('dues', 'printful_product', 'donation'),
     `sales_price` decimal(15,2) NOT NULL,
+    `tax`   decimal(15,2) NOT NULL,
     `cost` decimal(15,2) NOT NULL,  -- how much the item costs us... dues are $0, whereas a t-shirt might be $15
-    `item_name` varchar(255) NOT NULL,
+    `item_name` varchar(255) NOT NULL UNIQUE,
     PRIMARY KEY (`id`)
 )  ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
 

@@ -1,24 +1,6 @@
 <?php
 // this file contains various helper functions
 
-function printful_item(): PayPalItem {
-    require_once(__DIR__ . "/../api/paypal/api-json-objects.php");
-    require_once(__DIR__ . "/../config.php");
-
-    $item = new PayPalItem();
-
-    return $item;
-}
-
-function dues_item(): PayPalItem {
-    require_once(__DIR__ . "/../api/paypal/api-json-objects.php");
-    require_once(__DIR__ . "/../config.php");
-
-    $item = new PayPalItem();
-
-    return $item;
-}
-
 /**
  * @param string $text Text to display on the button
  * @param string[] $item_identifiers

@@ -479,14 +479,14 @@ class PayPalItem extends JsonNoEmptyFieldSerializable
     public $upc;
 
     /**
-     * @param string $name
-     * @param string $quantity
-     * @param PayPalCurrencyField|null $unit_amount
-     * @param PayPalCurrencyField|null $tax
-     * @param string|null $description
-     * @param string|null $sku
-     * @param string|null $url
-     * @param string|null $category
+     * @param string $name The item name or title
+     * @param string $quantity Number of this item
+     * @param PayPalCurrencyField|null $unit_amount Price per unit. $quantity * $unit_amount should give the subtotal for this PayPalItem
+     * @param PayPalCurrencyField|null $tax Tax per unit
+     * @param string|null $description The description of the item. Shown to the customer
+     * @param string|null $sku Stock keeping unit
+     * @param string|null $url The URL to the item
+     * @param string|null $category Type of item (DIGITAL_GOODS, PHYSICAL_GOODS, DONATION)
      * @param string|null $image_url
      * @param PayPalUPCField|null $upc
      */
@@ -534,8 +534,6 @@ class PayPalCurrencyField extends JsonNoEmptyFieldSerializable
         $this->currency_code = $currency_code;
         $this->value = $value;
     }
-
-
 }
 
 class PayPalUPCField extends JsonNoEmptyFieldSerializable
