@@ -1,9 +1,11 @@
 <?php
 
+/**
+ * Helper class that overrides the json_encode function to not output any empty or null fields
+ */
 class JsonNoEmptyFieldSerializable implements JsonSerializable
 {
-    public function jsonSerialize(): array
-    {
+    public function jsonSerialize(): array {
         $a = array();
         foreach ($this as $key => $val) {
             if (isset($val)) {
@@ -15,6 +17,7 @@ class JsonNoEmptyFieldSerializable implements JsonSerializable
 }
 
 /**
+ * The object sent in the request body to create an order.
  * See {@see https://developer.paypal.com/docs/api/orders/v2/#orders_create PayPal's API documentation} for more details
  */
 class PayPalOrder extends JsonNoEmptyFieldSerializable
@@ -50,8 +53,7 @@ class PayPalOrder extends JsonNoEmptyFieldSerializable
      * @param string $intent Whether payment will be captured immediately or delayed until after the order is created
      * @param PayPalPaymentSource|null $payment_source Information about the payment source. Consider using if you want to customize the checkout experience (e.g., setting return and cancellation URLs)
      */
-    public function __construct(array $purchase_units, string $intent, PayPalPaymentSource $payment_source = null)
-    {
+    public function __construct(array $purchase_units, string $intent, PayPalPaymentSource $payment_source = null) {
         $this->purchase_units = $purchase_units;
         $this->intent = $intent;
         $this->payment_source = $payment_source;
@@ -81,6 +83,9 @@ class PayPalOrderConfirmation extends JsonNoEmptyFieldSerializable
     public $payment_source;
 }
 
+/**
+ * Defines where payment comes from and customizes the checkout experience
+ */
 class PayPalPaymentSource extends JsonNoEmptyFieldSerializable
 {
     // not including because we don't want to process the numbers
@@ -103,7 +108,7 @@ class PayPalPaymentSource extends JsonNoEmptyFieldSerializable
 //    public $eps;
 //public $giropay;
 //public $ideal;
-// // MyBank has locations in Maryland
+// // MyBank only has locations in Maryland
 //public $mybank;
 //public $p24;
 //public $sofort;   // european
@@ -122,18 +127,18 @@ class PayPalPaymentSource extends JsonNoEmptyFieldSerializable
      * @param null $google_pay Set this if payment will proceed through Google Pay
      * @param null $venmo Set this if payment will proceed through Venmo (which is completely separate from PayPal for some reason)
      */
-    public function __construct(PayPalPaymentSourcePayPal $paypal = null, PayPalToken $token = null, $apple_pay = null, $google_pay = null, $venmo = null)
-    {
+    public function __construct(PayPalPaymentSourcePayPal $paypal = null, PayPalToken $token = null, $apple_pay = null, $google_pay = null, $venmo = null) {
         $this->google_pay = $google_pay;
         $this->apple_pay = $apple_pay;
         $this->paypal = $paypal;
         $this->token = $token;
         $this->venmo = $venmo;
     }
-
-
 }
 
+/**
+ * Parent class since these attributes are in all PaymentSource objects
+ */
 class PayPalPaymentSourceGeneric extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -151,6 +156,9 @@ class PayPalPaymentSourceGeneric extends JsonNoEmptyFieldSerializable
 
 }
 
+/**
+ * PayPal payment source. Used if payments will be made through PayPal (as opposed to something like Apple Pay)
+ */
 class PayPalPaymentSourcePayPal extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -219,8 +227,7 @@ class PayPalPaymentSourcePayPal extends JsonNoEmptyFieldSerializable
      * @param PayPalAddress|null $address
      * @param PayPalWalletAttributes|null $attributes
      */
-    public function __construct(PayPalExperienceContext $experience_context, string $billing_agreement_id = null, string $vault_id = null, string $email_address = null, PayPalName $name = null, PayPalPhone $phone = null, string $birth_date = null, PayPalTaxInfo $tax_info = null, PayPalAddress $address = null, PayPalWalletAttributes $attributes = null)
-    {
+    public function __construct(PayPalExperienceContext $experience_context, string $billing_agreement_id = null, string $vault_id = null, string $email_address = null, PayPalName $name = null, PayPalPhone $phone = null, string $birth_date = null, PayPalTaxInfo $tax_info = null, PayPalAddress $address = null, PayPalWalletAttributes $attributes = null) {
         $this->experience_context = $experience_context;
         $this->billing_agreement_id = $billing_agreement_id;
         $this->vault_id = $vault_id;
@@ -232,10 +239,11 @@ class PayPalPaymentSourcePayPal extends JsonNoEmptyFieldSerializable
         $this->address = $address;
         $this->attributes = $attributes;
     }
-
-
 }
 
+/**
+ * Customizes the checkout experience. Should only be used in confirm_order API calls because it's deprecated in create_order
+ */
 class PayPalApplicationContext extends JsonNoEmptyFieldSerializable
 {
 
@@ -271,15 +279,12 @@ class PayPalApplicationContext extends JsonNoEmptyFieldSerializable
      * @param string $return_url The URL the customer is redirected to upon payment approval
      * @param string $cancel_url The URL the customer is redirected to upon cancellation
      */
-    public function __construct(?string $brand_name, string $locale, string $return_url, string $cancel_url)
-    {
+    public function __construct(?string $brand_name, string $locale, string $return_url, string $cancel_url) {
         $this->brand_name = $brand_name;
         $this->locale = $locale;
         $this->return_url = $return_url;
         $this->cancel_url = $cancel_url;
     }
-
-
 }
 
 /**
@@ -327,8 +332,7 @@ class PayPalExperienceContext extends PayPalApplicationContext
      * @param string $return_url The URL the customer is redirected to upon payment approval
      * @param string $cancel_url The URL the customer is redirected to upon cancellation
      */
-    public function __construct(?string $brand_name = null, ?string $shipping_preference = 'GET_FROM_FILE', string $landing_page = 'NO_PREFERENCE', string $user_action = 'CONTINUE', string $payment_method_preference = 'UNRESTRICTED', string $locale = 'en-US', string $return_url = 'https://untrobotics.com', string $cancel_url = 'https://untrobotics.com')
-    {
+    public function __construct(?string $brand_name = null, ?string $shipping_preference = 'GET_FROM_FILE', string $landing_page = 'NO_PREFERENCE', string $user_action = 'CONTINUE', string $payment_method_preference = 'UNRESTRICTED', string $locale = 'en-US', string $return_url = 'https://untrobotics.com', string $cancel_url = 'https://untrobotics.com') {
 //        $this->brand_name = $brand_name;
         $this->shipping_preference = $shipping_preference;
         $this->landing_page = $landing_page;
@@ -339,10 +343,11 @@ class PayPalExperienceContext extends PayPalApplicationContext
 //        $this->cancel_url = $cancel_url;
         parent::__construct($brand_name, $locale, $return_url, $cancel_url);
     }
-
-
 }
 
+/**
+ * Each purchase unit is a separate transactional unit. {@see PayPalOrder} encapsulates multiple purchase units.
+ */
 class PayPalPurchaseUnit extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -395,25 +400,24 @@ class PayPalPurchaseUnit extends JsonNoEmptyFieldSerializable
      * @var PayPalShipping The name and address of the person to whom to ship the items
      */
     public $shipping;
-    // This field is used if we directly process card payments
+    // This field is used if we directly process card payments, which we won't
     //public $supplemental_data;
     /**
-     * @param PayPalItemsTotal $amount
-     * @param PayPalItem[] $items
-     * @param PayPalShipping|null $shipping
-     * @param string|null $description
-     * @param string|null $reference_id
-     * @param string|null $custom_id
-     * @param string|null $invoice_id
-     * @param string|null $soft_descriptor
-     * @param PayPalMerchant|null $payee
-     * @param PayPalPaymentInstruction|null $payment_instruction
+     * @param PayPalItemsTotal $amount The total order amount. If multiple items are present, {@see PayPalItemsTotal::$breakdown} must be specified
+     * @param PayPalItem[] $items An array of items in the purchase unit
+     * @param PayPalShipping|null $shipping Shipping information for the purchase unit
+     * @param string|null $description Description of the purchase unit (visible to customer)
+     * @param string|null $reference_id An API-caller-provided ID to reference to specific orders for updating orders or updating/cancelling tracking information
+     * @param string|null $custom_id An API-caller-provided ID to reconcile client transactions with PayPal transactions. Not visible to customer
+     * @param string|null $invoice_id API-caller-provided invoice number of the order. Visible to customer
+     * @param string|null $soft_descriptor Descriptor shown on card statements. Limited to 22 characters. Excess is truncated
+     * @param PayPalMerchant|null $payee The merchant that receives the payment. Only use if the API caller is not the recipient of the payment
+     * @param PayPalPaymentInstruction|null $payment_instruction Additional payment instructions. Used for Confirm/Authorize Order
      */
     public function __construct(PayPalItemsTotal $amount, array $items, PayPalShipping $shipping = null,
                                 string           $description = null, string $reference_id = null, string $custom_id = null,
                                 string           $invoice_id = null, string $soft_descriptor = null,
-                                PayPalMerchant   $payee = null, PayPalPaymentInstruction $payment_instruction = null)
-    {
+                                PayPalMerchant   $payee = null, PayPalPaymentInstruction $payment_instruction = null) {
         $this->reference_id = $reference_id;
         $this->description = $description;
         $this->custom_id = $custom_id;
@@ -427,6 +431,9 @@ class PayPalPurchaseUnit extends JsonNoEmptyFieldSerializable
     }
 }
 
+/**
+ * A separate item for a {@see PayPalPurchaseUnit}. Can specify the quantity
+ */
 class PayPalItem extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -487,14 +494,13 @@ class PayPalItem extends JsonNoEmptyFieldSerializable
      * @param string|null $sku Stock keeping unit
      * @param string|null $url The URL to the item
      * @param string|null $category Type of item (DIGITAL_GOODS, PHYSICAL_GOODS, DONATION)
-     * @param string|null $image_url
-     * @param PayPalUPCField|null $upc
+     * @param string|null $image_url Image URL of the item
+     * @param PayPalUPCField|null $upc The UPC
      */
     public function __construct(string              $name, string $quantity, PayPalCurrencyField $unit_amount,
                                 PayPalCurrencyField $tax = null, string $description = null, string $sku = null,
                                 string              $url = null, string $category = null, string $image_url = null,
-                                PayPalUPCField      $upc = null)
-    {
+                                PayPalUPCField      $upc = null) {
         $this->name = $name;
         $this->quantity = $quantity;
         $this->description = $description;
@@ -506,8 +512,6 @@ class PayPalItem extends JsonNoEmptyFieldSerializable
         $this->tax = $tax;
         $this->upc = $upc;
     }
-
-
 }
 
 /**
@@ -526,16 +530,18 @@ class PayPalCurrencyField extends JsonNoEmptyFieldSerializable
     public $value;
 
     /**
-     * @param string $currency_code
-     * @param string $value
+     * @param string $currency_code The 3 character currency code (e.g., JPY)
+     * @param string $value The amount of currency. Do not include symbols, except for decimal points (if applicable)
      */
-    public function __construct(string $currency_code, string $value)
-    {
+    public function __construct(string $currency_code, string $value) {
         $this->currency_code = $currency_code;
         $this->value = $value;
     }
 }
 
+/**
+ * Unused
+ */
 class PayPalUPCField extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -549,6 +555,9 @@ class PayPalUPCField extends JsonNoEmptyFieldSerializable
     public $code;
 }
 
+/**
+ * Used for {@see PayPalOrder}. Contains the total of the order and the breakdown of the total
+ */
 class PayPalItemsTotal extends PayPalCurrencyField
 {
     /**
@@ -561,14 +570,15 @@ class PayPalItemsTotal extends PayPalCurrencyField
      * @param string $value The total of the order, including tax
      * @param PayPalBreakdown|null $breakdown Optional. Breakdown of the order. Required if {@see PayPalItem::$unit_amount} or {@see PayPalItem::$quantity} is specified for a {@see PayPalOrder}
      */
-    public function __construct(string $currency_code, string $value, PayPalBreakdown $breakdown = null)
-    {
+    public function __construct(string $currency_code, string $value, PayPalBreakdown $breakdown = null) {
         parent::__construct($currency_code, $value);
         $this->breakdown = $breakdown;
     }
-
 }
 
+/**
+ * Components of the total of an order. Has the subtotal, shipping, handling, discounts, shipping discounts, and taxes
+ */
 class PayPalBreakdown extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -608,8 +618,7 @@ class PayPalBreakdown extends JsonNoEmptyFieldSerializable
      * @param PayPalCurrencyField|null $handling The handling fee for all items in the PayPalPurchaseUnit
      * @param PayPalCurrencyField|null $shipping_discount The shipping discount for all items in the PayPalPurchaseUnit
      */
-    public function __construct(PayPalCurrencyField $item_total, PayPalCurrencyField $tax_total = null, PayPalCurrencyField $discount = null, PayPalCurrencyField $shipping = null, PayPalCurrencyField $handling = null, PayPalCurrencyField $shipping_discount = null)
-    {
+    public function __construct(PayPalCurrencyField $item_total, PayPalCurrencyField $tax_total = null, PayPalCurrencyField $discount = null, PayPalCurrencyField $shipping = null, PayPalCurrencyField $handling = null, PayPalCurrencyField $shipping_discount = null) {
         $this->item_total = $item_total;
         $this->shipping = $shipping;
         $this->handling = $handling;
@@ -617,9 +626,12 @@ class PayPalBreakdown extends JsonNoEmptyFieldSerializable
         $this->shipping_discount = $shipping_discount;
         $this->discount = $discount;
     }
-
 }
 
+/**
+ * Unused. Refers to a specific PayPal merchant
+ * Used if the recipient of the order payment is not the store owner (i.e., the API caller)
+ */
 class PayPalMerchant extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -634,6 +646,10 @@ class PayPalMerchant extends JsonNoEmptyFieldSerializable
     public $merchant_id;
 }
 
+/**
+ * Unused.
+ * Used to provide additional payment instructions, like platform fees or whether to delay payment or not
+ */
 class PayPalPaymentInstruction extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -659,10 +675,12 @@ class PayPalPaymentInstruction extends JsonNoEmptyFieldSerializable
      * Must be of value "INSTANT" or "DELAYED". Defaults to INSTANT if not specified
      */
     public $disbursement_mode;
-
 }
 
-// todo may rename if used elsewhere
+/**
+ * Unused.
+ * Used for determining who gets platform fees
+ */
 class PayPalPlatformFee extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -675,6 +693,9 @@ class PayPalPlatformFee extends JsonNoEmptyFieldSerializable
     public $payee;
 }
 
+/**
+ * Use if you already have shipping information on file or part of your payment process
+ */
 class PayPalShipping extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -713,17 +734,19 @@ class PayPalShipping extends JsonNoEmptyFieldSerializable
      * @param string|null $type Only set $type or $options
      * @param PayPalShippingOption[] $options Only set $type or $options
      */
-    public function __construct(PayPalName $name, PayPalPhoneNumber $phone_number, PayPalAddress $address, string $type = null, array $options = null)
-    {
+    public function __construct(PayPalName $name, PayPalPhoneNumber $phone_number, PayPalAddress $address, string $type = null, array $options = null) {
         $this->type = $type;
         $this->options = $options;
         $this->name = $name;
         $this->phone_number = $phone_number;
         $this->address = $address;
     }
-
 }
 
+/**
+ * Unused.
+ * Use to show customers different shipping options, such as FedEx Express Saver or USPS Priority Mail
+ */
 class PayPalShippingOption extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -755,7 +778,10 @@ class PayPalShippingOption extends JsonNoEmptyFieldSerializable
     public $amount;
 }
 
-// todo: this object has more options
+/**
+ * Unused.
+ * Used for the customer's info. In general, can be excluded since PayPal can capture the information during the checkout process
+ */
 class PayPalName extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -780,16 +806,16 @@ class PayPalName extends JsonNoEmptyFieldSerializable
      * @param string|null $given_name
      * @param string|null $surname
      */
-    public function __construct(string $full_name = null, string $given_name = null, string $surname = null)
-    {
+    public function __construct(string $full_name = null, string $given_name = null, string $surname = null) {
         $this->full_name = $full_name;
         $this->given_name = $given_name;
         $this->surname = $surname;
     }
-
 }
 
 /**
+ * Unused because PayPal can capture this info in the checkout process
+ * Phone number with the number and phone type (e.g., fax or mobile)
  * Not to be confused with {@see PayPalPhoneNumber}
  */
 class PayPalPhone extends JsonNoEmptyFieldSerializable
@@ -807,6 +833,8 @@ class PayPalPhone extends JsonNoEmptyFieldSerializable
 }
 
 /**
+ * Unused because PayPal can capture this info in the checkout process
+ * Phone number with the number and the country code separated
  * Not to be confused with {@see PayPalPhone}, which uses this class
  */
 class PayPalPhoneNumber extends JsonNoEmptyFieldSerializable
@@ -824,14 +852,15 @@ class PayPalPhoneNumber extends JsonNoEmptyFieldSerializable
      * @param string $country_code
      * @param string $national_number
      */
-    public function __construct(string $country_code, string $national_number)
-    {
+    public function __construct(string $country_code, string $national_number) {
         $this->country_code = $country_code;
         $this->national_number = $national_number;
     }
-
 }
 
+/**
+ *  Unused because PayPal can capture this info in the checkout process
+ */
 class PayPalAddress extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -874,8 +903,7 @@ class PayPalAddress extends JsonNoEmptyFieldSerializable
      * @param string|null $address_line_2
      * @param string|null $admin_area_2
      */
-    public function __construct(string $address_line_1, string $admin_area_1, string $country_code, string $postal_code = null, string $address_line_2 = null, string $admin_area_2 = null)
-    {
+    public function __construct(string $address_line_1, string $admin_area_1, string $country_code, string $postal_code = null, string $address_line_2 = null, string $admin_area_2 = null) {
         $this->address_line_1 = $address_line_1;
         $this->address_line_2 = $address_line_2;
         $this->admin_area_1 = $admin_area_1;
@@ -883,9 +911,11 @@ class PayPalAddress extends JsonNoEmptyFieldSerializable
         $this->postal_code = $postal_code;
         $this->country_code = $country_code;
     }
-
 }
 
+/**
+ *  Unused because this information isn't necessary. Not even sure why PayPal can capture it with orders
+ */
 class PayPalTaxInfo extends JsonNoEmptyFieldSerializable
 {
     /**
@@ -898,13 +928,18 @@ class PayPalTaxInfo extends JsonNoEmptyFieldSerializable
     public $tax_id_type;
 }
 
+/**
+ * Unused, consider removing
+ */
 class PayPalWalletAttributes extends JsonNoEmptyFieldSerializable
 {
-    //todo: implement this
     public $customer;
     public $vault;
 }
 
+/**
+ * For tokenized payments
+ */
 class PayPalToken extends JsonNoEmptyFieldSerializable
 {
     /**

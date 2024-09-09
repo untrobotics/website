@@ -3,8 +3,13 @@ require_once(__DIR__ . '/../../template/config.php');
 require_once(__DIR__ . '/../../template/constants.php');
 require_once(__DIR__ . '/api-json-objects.php');
 
+/**
+ * Class to interact with the PayPal API
+ */
 class PayPalCustomApi
 {
+
+    // PayPal gives 2 hostnames for both API URLs: "api-m" and "api". I have not noticed a difference between them nor is this documented anywhere in the documentation
 
     /**
      * Base URL for sandbox (development) API calls. Does not include trailing slash
@@ -14,7 +19,6 @@ class PayPalCustomApi
      * Base URL for production API calls. Does not include trailing slash
      */
     private const PRODUCTION_API_BASE_URL = 'https://api.paypal.com';
-
 
     /**
      * @var string The client ID
@@ -31,20 +35,21 @@ class PayPalCustomApi
     private $access_token;
 
 
+    // This was supposed to store the scope of the OAuth token, but we can't really do much with it
     //private $scope;
 
     /**
-     * @param $paypal_client_id
-     * @param $paypal_client_secret
+     * Creates an object to interact with the PayPal API. Client secret and ID defaults are based on ENVIRONMENT
+     * @param $paypal_client_id null|string The client ID. Defaults to the value stored in config.php
+     * @param $paypal_client_secret null|string The client secret. Defaults to the value stored in config.php
      */
-
-    public function __construct($paypal_client_id = PAYPAL_SANDBOX_API_CLIENT_ID, $paypal_client_secret = PAYPAL_SANDBOX_API_SECRET_KEY_1) {
-        // insert stuff needed here
-        $this->client_id = $paypal_client_id;
-        $this->client_secret = $paypal_client_secret;
+    public function __construct(?string $paypal_client_id = null, ?string $paypal_client_secret = null) {
+        $this->client_id = isset($paypal_client_id) ? $paypal_client_id : ENVIRONMENT == Environment::DEVELOPMENT ? PAYPAL_SANDBOX_API_CLIENT_ID : PAYPAL_API_CLIENT_ID;
+        $this->client_secret = isset($paypal_client_secret) ? $paypal_client_secret : ENVIRONMENT == Environment::DEVELOPMENT ? PAYPAL_SANDBOX_API_SECRET_KEY_1 : PAYPAL_API_SECRET_KEY_1;
     }
 
     /**
+     * Creates an order and returns the JSON response
      * @param PayPalItem[] $items An array containing all items' info
      * @param string $total The total amount owed for the order ($subtotal + $total_tax)
      * @param string $subtotal The amount owed for the order, excluding tax and discounts
@@ -54,12 +59,16 @@ class PayPalCustomApi
      * @param string|null $discount The discount taken from the order, in currency amounts (i.e., not percentage of the price)
      * @param string $return_url URL to return the user upon order approval
      * @param string $cancel_url URL to return the user upon order cancellation
-     * @return string|null The results of the order creation or null if an error occurred
+     * @return string|null JSON-encoded string with order creation details or null if an access token couldn't be retrieved
      * @throws PayPalCustomApiException Error if non-success code from PayPal API
      */
     public function create_order(array $items, string $total, string $subtotal, string $total_tax, $shipping_info = false, ?string $discount = null, string $return_url = 'https://untrobotics.com/', string $cancel_url = 'https://untrobotics.com/'): ?string {
+        // don't create an order if no items are given
         if (count($items) < 1) return false;
+        // assume all items have the same currency code
         $currency_code = $items[0]->unit_amount->currency_code;
+
+        // use the provided shipping info if given, otherwise set shipping to be obtained during checkout process or not at all based on the $shipping_info as a boolean
         if (is_array($shipping_info)) {
             $shipping_info_obj = new PayPalShipping(
                 new PayPalName($shipping_info['full_name']),
@@ -84,6 +93,7 @@ class PayPalCustomApi
             }
         }
 
+        // request body
         $data = new PayPalOrder(
             [
                 new PayPalPurchaseUnit(
@@ -93,7 +103,7 @@ class PayPalCustomApi
                         new PayPalBreakdown(
                             new PayPalCurrencyField($currency_code, $subtotal),
                             new PayPalCurrencyField($currency_code, $total_tax),
-                            isset($discount)?new PayPalCurrencyField($currency_code, $discount):null
+                            isset($discount) ? new PayPalCurrencyField($currency_code, $discount) : null
                         )
                     ),
                     $items,
@@ -110,19 +120,63 @@ class PayPalCustomApi
                     )
                 ))
         );
+
+        // send request and return the response
         return $this->send_request('/v2/checkout/orders', 'POST', $data);
     }
 
     /**
+     * Gets order details
+     * @param string $order_id ID of the order to retrieve
+     * @param string|null ...$fields Specific fields to retrieve. If none are provided, the entire order detail will be returned
+     * @return string|null JSON-encoded string with order details or null if an access token couldn't be retrieved
+     * @throws PayPalCustomApiException Throws an error on cURL error or non-success response is received from PayPal
+     */
+    public function get_order_info(string $order_id, ?string ...$fields): ?string {
+        $uri = '/v2/checkout/orders/$1$2';
+        if (isset($fields) && count($fields) !== 0) {
+            $query_params = '?fields=' . implode(',', $fields);
+        }
+        $headers = ['Content-Type: application/json'];
+        if (isset($query_params))
+            return $this->send_request($uri, 'GET', false, $headers, $order_id, $query_params);
+        return $this->send_request($uri, 'GET', false, $headers, $order_id);
+    }
+
+    /**
+     * Captures payment for an order. Requires payment to have already been approved by the payer.
+     * If payment is not captured, the customer will not be charged anything, and the order will be deleted from PayPal and not show up in transaction history
+     * @param string $order_id The ID of the order to capture payment from
+     * @param bool $return_minimal Set to true to return minimum info (order id, order status, HATEOAS links)
+     * @return string|null JSON-encoded string with order details or null if an access token couldn't be retrieved
+     * @throws PayPalCustomApiException Throws an error on cURL error or non-success response is received from PayPal
+     */
+    public function capture_payment(string $order_id, bool $return_minimal = true): ?string {
+        echo $order_id;
+        $headers = array();
+        if ($return_minimal) {
+            $headers[] = 'Prefer: return=minimal';
+        } else {
+            $headers[] = 'Prefer: return=representation';
+        }
+        $data = new PayPalPaymentSource(
+            new PayPalPaymentSourcePayPal(new PayPalExperienceContext())
+        );
+
+        return $this->send_request('/v2/checkout/orders/$1/capture', 'POST', $data, $headers, $order_id);
+    }
+
+    /**
+     * Sends a request to the PayPal API. Gets a new access token if one isn't already set
      * @param string $URI The API endpoint, including starting forward slash (e.g., /v2/checkout/orders)
      * @param string $method The HTTP method to use. Should be passable to the CURLOPT_CUSTOMREQUEST option
      * @param string|false $data Data to be sent with the request
      * @param array|null $headers Additional headers to send with the request. The access token is already provided, and content type is set to json
      * @param string ...$args Args to insert into $URI (replaces $1, $2, $3... with args[0], args[1], args[2]...)
-     * @return bool|string
-     * @throws PayPalCustomApiException
+     * @return string|null JSON-encoded string from the response body or null if an access token couldn't be retrieved
+     * @throws PayPalCustomApiException Throws an error if cURL fails or a non-success response is returned
      */
-    public function send_request(string $URI, string $method = "GET", $data = false, array $headers = null, ...$args) {
+    public function send_request(string $URI, string $method = "GET", $data = false, array $headers = null, ...$args): ?string {
         // get the access token if it hasn't already been retrieved
         if (!isset($this->access_token)) {
             try {
@@ -175,20 +229,11 @@ class PayPalCustomApi
         return $result;
     }
 
-    /*
-        public function confirm_order(string $id, bool $minimal_return = true)
-        {
-            $headers = array();
-            $data = null;
-    //        $this->send_request('/v2/checkout/orders/$1/confirm-payment-source', 'POST', $headers,);
-        }*/
-
     /**
-     * Sets the access token for the
-     * @return void
-     * @throws PayPalCustomApiException
+     * Gets an OAuth access token for the object
+     * @throws PayPalCustomApiException Error if cURL fails or if PayPal doesn't return the expected success code (200)
      */
-    public function get_access_token() {
+    public function get_access_token(): void {
         /**
          * The cURL command looks like:
          *      curl -v -X POST "https://api-m.sandbox.paypal.com/v1/oauth2/token"\
@@ -238,35 +283,24 @@ class PayPalCustomApi
 
     /**
      * Gives the proper base PayPal URL for the environment
-     * @return string Returns the API URL based on environment
+     * @return string Returns the API URL based on ENVIRONMENT
      */
     private static function get_api_url(): string {
         return ENVIRONMENT == Environment::DEVELOPMENT ? self::SANDBOX_API_BASE_URL : self::PRODUCTION_API_BASE_URL;
     }
 
-    /**
-     * @param string $order_id
-     * @param bool $return_minimal
-     * @return bool|string|null
-     * @throws PayPalCustomApiException
-     */
-    public function capture_payment(string $order_id, bool $return_minimal = true) {
-        echo $order_id;
-        $headers = array();
-        if ($return_minimal) {
-            $headers[] = 'Prefer: return=minimal';
-        } else {
-            $headers[] = 'Prefer: return=representation';
-        }
-        $data = new PayPalPaymentSource(
-            new PayPalPaymentSourcePayPal(new PayPalExperienceContext())
-        );
+    /*
+        public function confirm_order(string $id, bool $minimal_return = true)
+        {
+            $headers = array();
+            $data = null;
+    //        $this->send_request('/v2/checkout/orders/$1/confirm-payment-source', 'POST', $headers,);
+        }*/
 
-        return $this->send_request('/v2/checkout/orders/$1/capture', 'POST', $data, $headers, $order_id);
-    }
 
 }
 
+// is this really necessary?
 class PayPalCustomApiException extends Exception
 {
     public function __construct($message = "", $code = 0, Throwable $previous = null) {
