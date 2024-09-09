@@ -77,11 +77,13 @@ class Currency
      * @throws Exception Throws an error if the operand doesn't have the same currency code or the currency code of the current object isn't implemented
      */
     public static function subtract_(Currency $minuend, Currency ...$subtrahends): Currency {
+        $c = new Currency($minuend->whole_number, $minuend->fraction, $minuend->currency_code);
+
         foreach ($subtrahends as $subtrahend) {
-            $minuend->subtract($subtrahend);
+            $c->subtract($subtrahend);
         }
 
-        return $minuend;
+        return $c;
     }
 
     /**

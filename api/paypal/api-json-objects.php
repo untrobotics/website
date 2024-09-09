@@ -601,12 +601,12 @@ class PayPalBreakdown extends JsonNoEmptyFieldSerializable
     public $discount;
 
     /**
-     * @param PayPalCurrencyField $item_total
-     * @param PayPalCurrencyField|null $tax_total
-     * @param PayPalCurrencyField|null $discount
-     * @param PayPalCurrencyField|null $shipping
-     * @param PayPalCurrencyField|null $handling
-     * @param PayPalCurrencyField|null $shipping_discount
+     * @param PayPalCurrencyField $item_total Subtotal for all items in the PayPalPurchaseUnit. Must equal the sum of (items[].unit_amount * items[].quantity) for all items
+     * @param PayPalCurrencyField|null $tax_total The total tax for all items in the PayPalPurchaseUnit. Must equal the sum (items[].tax * items[].quantity) for all items
+     * @param PayPalCurrencyField|null $discount The discount for all items in the PayPalPurchaseUnit
+     * @param PayPalCurrencyField|null $shipping The total shipping fee for all items in the PayPalPurchaseUnit
+     * @param PayPalCurrencyField|null $handling The handling fee for all items in the PayPalPurchaseUnit
+     * @param PayPalCurrencyField|null $shipping_discount The shipping discount for all items in the PayPalPurchaseUnit
      */
     public function __construct(PayPalCurrencyField $item_total, PayPalCurrencyField $tax_total = null, PayPalCurrencyField $discount = null, PayPalCurrencyField $shipping = null, PayPalCurrencyField $handling = null, PayPalCurrencyField $shipping_discount = null)
     {
