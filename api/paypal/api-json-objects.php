@@ -603,12 +603,12 @@ class PayPalBreakdown extends JsonNoEmptyFieldSerializable
     /**
      * @param PayPalCurrencyField $item_total
      * @param PayPalCurrencyField|null $tax_total
+     * @param PayPalCurrencyField|null $discount
      * @param PayPalCurrencyField|null $shipping
      * @param PayPalCurrencyField|null $handling
      * @param PayPalCurrencyField|null $shipping_discount
-     * @param PayPalCurrencyField|null $discount
      */
-    public function __construct(PayPalCurrencyField $item_total, PayPalCurrencyField $tax_total = null, PayPalCurrencyField $shipping = null, PayPalCurrencyField $handling = null, PayPalCurrencyField $shipping_discount = null, PayPalCurrencyField $discount = null)
+    public function __construct(PayPalCurrencyField $item_total, PayPalCurrencyField $tax_total = null, PayPalCurrencyField $discount = null, PayPalCurrencyField $shipping = null, PayPalCurrencyField $handling = null, PayPalCurrencyField $shipping_discount = null)
     {
         $this->item_total = $item_total;
         $this->shipping = $shipping;

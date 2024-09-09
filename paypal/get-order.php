@@ -5,7 +5,7 @@ require_once('../template/classes/currency.php');
 global $db;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // read request body
-    $request = json_decode(file_get_contents("php://input"));
+    $request = json_decode(file_get_contents("php://input"),true);
     $item_names = $request['item_identifiers'];
 
     // combines the item names in a comma-delimited string for MySQL query
@@ -17,29 +17,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Queries the item info for items requested... match is based on item name
     $query = "SELECT 
-                    item_type, sales_price, item_name 
+                    item_type, sales_price, item_name, discount, discount_required_item
                 FROM 
                     paypal_items 
                 WHERE 
-                    item_name in {$item_names_str}";
+                    item_name in ({$item_names_str})";
 
     $q = $db->query($query);
 
     // send 500 if the query fails
     if ($q === false) {
-        error_log("PayPal item db query failed: {$db->error}");
+        error_log("PayPal item db query failed: {$db->error}, {$query}");
         http_response_code(500);
         die();
     }
     // list of PayPalItems
     $items = array();
     $subtotal = new Currency(0, 0);
+    $discounts = [];
     // since we don't have sales tax nexus in the US, we assume tax = 0
     $r = $q->fetch_assoc();
     $physical_goods = ['printful_product'];
     $shipping_required = false;
+    $item_types = ['dues' => 0, 'printful_product' => 0, 'donation' => 0];
+    $required_discount_item_types = [];
     while ($r !== null) {
         $item_type = $r["item_type"];
+        $item_types[$item_type]++;
         if (in_array($item_type, $physical_goods)) {
             $category = 'PHYSICAL_GOODS';
             $shipping_required = true;
@@ -56,23 +60,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             null,
             /*""*/ null, null, null, $category
         );
+        $subtotal->add(Currency::from_string($r['sales_price']));
+        if ($r['discount'] !== '0.00') {
+            $discounts[] = Currency::from_string($r['discount']);
+            $required_discount_item_types[] = $r['discount_required_item'];
+        }
+
         $r = $q->fetch_assoc();
     }
 
+    $discount = new Currency(0, 0);
+    for ($i = 0; $i < count($discounts); $i++) {
+        if ($item_types[$required_discount_item_types[$i]] > 0) {
+            $discount->add($discounts[$i]);
+            $item_types[$required_discount_item_types[$i]]--;
+        }
+    }
+    // create order
     $p = new PayPalCustomApi();
-    $order = json_decode($p->create_order($items, (string)$subtotal, (string)$subtotal, $shipping_required), true);
+    try {
+        $order = json_decode($p->create_order(
+            $items,
+            (string)Currency::subtract_($subtotal, $discount),
+            (string)$subtotal,
+            new Currency(0,0),
+            $shipping_required,
+            $discount->is_zero() ? null : $discount),
+        true);
+    } catch (Exception $ex) {
+        http_response_code(500);
+        error_log("Failed to create order: {$ex->getMessage()}");
+        die();
+    }
+
+    // get the checkout link
     foreach ($order['links'] as $link) {
         if ($link['rel'] == 'payer-action' || $link['rel'] == 'approve') {
             $redirect = $link['href'];
             break;
         }
     }
+    // if no checkout link found, send 500
     if (!isset($redirect)) {
         //  confirm order? I'm not sure when PayPal gives a no approve or payer-action link
         http_response_code(500);
         die();
     }
-
+    // send 201 and return redirect link
     http_response_code(201);
     echo "{{\"redirect_url\":\"$redirect\"}}";
+    error_log("PayPal order created");
+}
+else{
+    error_log($_SERVER['REQUEST_METHOD']);
 }

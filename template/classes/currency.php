@@ -2,6 +2,7 @@
 
 class Currency
 {
+
     /**
      * @var int Whole number amount of the currency (i.e., left of the decimal)
      */
@@ -96,6 +97,14 @@ class Currency
         $this->fraction -= $y->fraction;
         $this->whole_number -= $y->whole_number;
         self::get_valid_currency($this);
+    }
+
+    /**
+     * Tells you if the Currency object is zero
+     * @return bool True if the amount is zero. False otherwise
+     */
+    public function is_zero(): bool {
+        return $this->fraction === 0 && $this->whole_number === 0;
     }
 
 

@@ -51,9 +51,10 @@ class PayPalCustomApi
      * @param string $total_tax The total amount of tax owed for the order
      * @param bool|string[] $shipping_info Set to true if shipping info will be given during the payment process. Set to false if there is no shipping. If information is already stored, set to
      *  an associative array containing necessary shipping info. Expected keys are 'full_name' 'phone_country_code' 'phone_number' 'address_1' 'address_2' 'address_country_code' 'postal_code' 'admin_area_1' 'admin_area_2'
+     * @param string|null $discount The discount taken from the order, in currency amounts (i.e., not percentage of the price)
      * @return string|null The results of the order creation or null if an error occurred
      */
-    public function create_order(array $items, string $total, string $subtotal, string $total_tax, $shipping_info = false): ?string {
+    public function create_order(array $items, string $total, string $subtotal, string $total_tax, $shipping_info = false, ?string $discount = null): ?string {
         if (count($items) < 1) return false;
         $currency_code = $items[0]->unit_amount->currency_code;
         if (is_array($shipping_info)) {
@@ -88,7 +89,8 @@ class PayPalCustomApi
                         $total,
                         new PayPalBreakdown(
                             new PayPalCurrencyField($currency_code, $subtotal),
-                            new PayPalCurrencyField($currency_code, $total_tax)
+                            new PayPalCurrencyField($currency_code, $total_tax),
+                            isset($discount)?new PayPalCurrencyField($currency_code, $discount):null
                         )
                     ),
                     $items,
