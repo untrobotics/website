@@ -6,8 +6,12 @@ global $db;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // read request body
     $request = json_decode(file_get_contents("php://input"),true);
+    if(isset($request['order_id'])){
+        //todo: get order stuff from this instead of making a new one
+    }
     $item_names = $request['item_identifiers'];
-
+    $return_url = $request['return_url'];
+    $cancel_url = $request['cancel_url'];
     // combines the item names in a comma-delimited string for MySQL query
     $item_names_str = '';
     foreach ($item_names as $item_name) {
@@ -27,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // send 500 if the query fails
     if ($q === false) {
-        error_log("PayPal item db query failed: {$db->error}, {$query}");
+        error_log("PayPal item db query failed: {$db->error}");
         http_response_code(500);
         die();
     }
@@ -104,13 +108,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($redirect)) {
         //  confirm order? I'm not sure when PayPal gives a no approve or payer-action link
         http_response_code(500);
+        error_log('Could not find a redirect link: ' . $order);
         die();
     }
     // send 201 and return redirect link
     http_response_code(201);
-    echo "{{\"redirect_url\":\"$redirect\"}}";
+    $response_body = new stdClass();
+    $response_body->redirect_url = $redirect;
+    echo json_encode($response_body);
     error_log("PayPal order created");
-}
-else{
-    error_log($_SERVER['REQUEST_METHOD']);
+} else{
+    http_response_code(403);
 }

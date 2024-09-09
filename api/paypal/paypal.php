@@ -52,10 +52,12 @@ class PayPalCustomApi
      * @param bool|string[] $shipping_info Set to true if shipping info will be given during the payment process. Set to false if there is no shipping. If information is already stored, set to
      *  an associative array containing necessary shipping info. Expected keys are 'full_name' 'phone_country_code' 'phone_number' 'address_1' 'address_2' 'address_country_code' 'postal_code' 'admin_area_1' 'admin_area_2'
      * @param string|null $discount The discount taken from the order, in currency amounts (i.e., not percentage of the price)
+     * @param string $return_url URL to return the user upon order approval
+     * @param string $cancel_url URL to return the user upon order cancellation
      * @return string|null The results of the order creation or null if an error occurred
      * @throws PayPalCustomApiException Error if non-success code from PayPal API
      */
-    public function create_order(array $items, string $total, string $subtotal, string $total_tax, $shipping_info = false, ?string $discount = null): ?string {
+    public function create_order(array $items, string $total, string $subtotal, string $total_tax, $shipping_info = false, ?string $discount = null, string $return_url = 'https://untrobotics.com/', string $cancel_url = 'https://untrobotics.com/'): ?string {
         if (count($items) < 1) return false;
         $currency_code = $items[0]->unit_amount->currency_code;
         if (is_array($shipping_info)) {
@@ -104,7 +106,7 @@ class PayPalCustomApi
                     new PayPalExperienceContext(
                         null, $shipping_pref, 'NO_PREFERENCE',
                         'PAY_NOW', 'UNRESTRICTED', 'en-US',
-                        'https://dev.untrobotics.com/botathon/test-post', 'https://dev.untrobotics.com/botathon/test-post'
+                        $return_url, $cancel_url
                     )
                 ))
         );

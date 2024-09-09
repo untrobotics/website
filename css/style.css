@@ -47958,7 +47958,7 @@ header nav.rd-navbar-static.rd-navbar-secondary .rd-navbar-nav > li.thin {
     text-align: right;
 	position: relative;
     z-index: 2;
-	pointer-events: none;
+
 	border: 1px solid #c1c1c1;
     padding: 10px;
     border-radius: 10px;
