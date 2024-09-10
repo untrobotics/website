@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS paypal_order_item;
+DROP TABLE IF EXISTS paypal_items;
+DROP TABLE IF EXISTS paypal_orders;
 CREATE TABLE `paypal_orders`
 (
     `id`                   int(11)      NOT NULL AUTO_INCREMENT,
@@ -24,7 +27,7 @@ CREATE TABLE `paypal_items`
     `cost`                   decimal(5, 2) UNSIGNED NOT NULL,                            -- how much the item costs us... dues are $0, whereas a t-shirt might be $15
 #   `currency_code` enum ('USD')  NOT NULL DEFAULT 'USD',
 #   `description` varchar(127),
-    'external_id'            varchar(128)           NULL,
+    `external_id`            varchar(128)           NULL,
     `item_name`              varchar(255)           NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
