@@ -1,4 +1,5 @@
 <?php
+// this file is the PayPal webhook endpoint
 require_once('../api/discord/bots/admin.php');
 require_once('../api/paypal/webhook.php');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
@@ -11,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
             $verified = $event->verify_internal();
         }
     } catch (Exception $e) {
-        // catch all exceptions so we can send a 400 in case the issue was with PayPal
+        // catch all exceptions, we assume the issue is with PayPal
         http_response_code(400);
         throw $e;
     }
@@ -43,4 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
             error_log("Unknown or unhandled PayPal webhook event: {$event->payload['event_type']}");
         }
     }
+} else{
+    http_response_code(403);
 }

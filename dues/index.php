@@ -3,6 +3,7 @@ require('../template/top.php');
 require(BASE . '/api/discord/bots/admin.php');
 head('Pay Dues', true);
 
+global $db, $untrobotics, $userinfo;
 $q = $db->query("SELECT `key`,`value` FROM dues_config WHERE `key` = 'semester_price' OR `key` = 't_shirt_dues_purchase_price'");
 if (!$q || $q->num_rows !== 2) {
     AdminBot::send_message("Unable to determine the dues payment price");
@@ -25,7 +26,7 @@ $full_year_dues_price = $single_semester_dues_price * 2;
 $current_term = $untrobotics->get_current_term();
 $next_term = $untrobotics->get_next_term();
 
-// only allow the user to pay for the full year it is the autumn semester
+// only allow the user to pay for the full year if it is the autumn semester
 $permit_full_year_payment = $current_term == Semester::AUTUMN;
 ?>
 
@@ -83,7 +84,7 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                             <div class="offset-top-20">
                                 <div class="form-group">
                                     <label class="checkbox-container"> Pay for both Spring &amp; Fall?
-                                        <input autocomplete="off" name="full-year" type="checkbox" class="form-control form-control-has-validation form-control-last-child checkbox-custom" value="1"><span class="checkbox-custom-dummy"></span>
+                                        <input id="full-year" autocomplete="off" name="full-year" type="checkbox" class="form-control form-control-has-validation form-control-last-child checkbox-custom" value="1"><span class="checkbox-custom-dummy"></span>
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
@@ -97,14 +98,22 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                                         </div>
                                         <select id="include-tshirt" name="include-tshirt" class="">
                                             <option value="" selected="selected">No T-shirt</option>
-                                            <option value="632b8e41a865f1">XS</option>
+                                            <!--<option value="632b8e41a865f1">XS</option>
                                             <option value="632b8e41a86664">S</option>
                                             <option value="632b8e41a866a1">M</option>
                                             <option value="632b8e41a866e2">L</option>
                                             <option value="632b8e41a86724">XL</option>
                                             <option value="632b8e41a86761">2XL</option>
                                             <option value="632b8e41a867a9">3XL</option>
-                                            <option value="632b8e41a867e6">4XL</option>
+                                            <option value="632b8e41a867e6">4XL</option>-->
+                                            <option value="Dues Shirt XS">XS</option>
+                                            <option value="Dues Shirt S">S</option>
+                                            <option value="Dues Shirt M">M</option>
+                                            <option value="Dues Shirt L">L</option>
+                                            <option value="Dues Shirt XL">XL</option>
+                                            <option value="Dues Shirt 2XL">2XL</option>
+                                            <option value="Dues Shirt 3XL">3XL</option>
+                                            <option value="Dues Shirt 4XL">4XL</option>
                                         </select>
                                     </label>
                                 </div>
@@ -115,9 +124,13 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
 
                         <p><strong style="font-size: 20px;"><pre style="display: inline-block;border-radius: 10px;">Cost: <span id="dues_cost">$<?php echo $single_semester_dues_price; ?></span></pre></strong></p>
 
-					<div class="dues-payment-button">
+                        <?php
+                        require_once('../template/functions/paypal.php');
+                        get_payment_button('Pay Now', ['#include-tshirt','#full-year'], 'dues/paid', 'dues' );
+                        ?>
+					<!--<div class="dues-payment-button">
                         Loading...
-					</div>
+					</div>-->
 
 					<?php
 					} else {
@@ -173,6 +186,8 @@ footer(false);
 
     $(document).ready(function() {
         setNewButton();
+        $('input[name="full-year"]').attr('item', 'Dues 1 Semester')
+        $('#include-tshirt').attr('item',"")
     })
 
     function getDuesCost() {
@@ -191,12 +206,19 @@ footer(false);
 	$('input[name="full-year"]').on("change", function(e) {
         fullYear = !!$(this).is(':checked');
         $("#dues_cost").text("$" + getDuesCost());
-        setNewButton();
+        // setNewButton();
+        if(fullYear) {
+            $(this).attr('item', 'Dues 2 Semester')
+        } else{
+            $(this).attr('item', 'Dues 1 Semester')
+        }
     });
 
 	$('#include-tshirt').on('change', function(e) {
 	    tShirt = e.target.value || null;
         $("#dues_cost").text("$" + getDuesCost());
-	    setNewButton();
+	    if(tShirt){
+            $(this).attr('item', e.target.value)
+        }
     })
 </script>

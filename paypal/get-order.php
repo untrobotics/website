@@ -4,10 +4,21 @@ require_once('../api/paypal/paypal.php');
 require_once('../template/classes/currency.php');
 global $db;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // read request body
+
+        // read request body
     $request = json_decode(file_get_contents("php://input"),true);
+    error_log(var_export($request,true));
     if(isset($request['order_id'])){
-        //todo: get order stuff from this instead of making a new one
+        $p = new PayPalCustomApi();
+        try {
+            $response = json_decode($p->get_order_info($request['order_id']), true);
+        } catch(PayPalCustomApiException $e){
+            http_response_code(404);
+            error_log("Could not find order with ID {$request['order_id']}: {$e->getMessage()}");
+            die();
+        }
+        http_response_code(200);
+
     }
     $item_names = $request['item_identifiers'];
     $return_url = $request['return_url'];
@@ -26,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     paypal_items 
                 WHERE 
                     item_name in ({$item_names_str})";
-
+    error_log($query);
     $q = $db->query($query);
 
     // send 500 if the query fails
@@ -73,6 +84,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $r = $q->fetch_assoc();
     }
 
+    // prevent order with dues from being created if user isn't logged in
+    if($item_types['dues']>0){
+        $auth = auth();
+        if (!$auth){
+            http_response_code(403);
+            die();
+        }
+    }
+
     $discount = new Currency(0, 0);
     for ($i = 0; $i < count($discounts); $i++) {
         if ($item_types[$required_discount_item_types[$i]] > 0) {
@@ -89,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             (string)$subtotal,
             new Currency(0,0),
             $shipping_required,
-            $discount->is_zero() ? null : $discount),
+            $discount->is_zero() ? null : $discount,$return_url,$cancel_url),
         true);
     } catch (Exception $ex) {
         http_response_code(500);
