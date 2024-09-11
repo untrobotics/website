@@ -41,7 +41,6 @@ class PaypalWebhookEvent extends PayPalCustomApi
 
         // verify a cert URL was sent
         if (!isset($this->headers['PAYPAL-CERT-URL'])) {
-            http_response_code(400);
             throw new PayPalCustomApiException('Tried to verify a PayPal Webhook event via CRC but no cert-url was passed to the endpoint.');
         }
         // verify that the url is from one of PayPal's api domains

@@ -7,7 +7,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // read request body
     $request = json_decode(file_get_contents("php://input"),true);
-    error_log(var_export($request,true));
     if(isset($request['order_id'])){
         $p = new PayPalCustomApi();
         try {
@@ -20,9 +19,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         http_response_code(200);
 
     }
+
     $item_names = $request['item_identifiers'];
-    $return_url = $request['return_url'];
-    $cancel_url = $request['cancel_url'];
+
     // combines the item names in a comma-delimited string for MySQL query
     $item_names_str = '';
     foreach ($item_names as $item_name) {
@@ -32,12 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Queries the item info for items requested... match is based on item name
     $query = "SELECT 
-                    item_type, sales_price, item_name, discount, discount_required_item
+                    id, item_type, sales_price, item_name, discount, discount_required_item
                 FROM 
                     paypal_items 
                 WHERE 
                     item_name in ({$item_names_str})";
-    error_log($query);
     $q = $db->query($query);
 
     // send 500 if the query fails
@@ -48,15 +46,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     // list of PayPalItems
     $items = array();
+    // subtotal of order
     $subtotal = new Currency(0, 0);
+    // any discounts that might be applicable
     $discounts = [];
-    // since we don't have sales tax nexus in the US, we assume tax = 0
+    // item IDs in the paypal_items table
+    $item_ids = [];
+
     $r = $q->fetch_assoc();
     $physical_goods = ['printful_product'];
     $shipping_required = false;
     $item_types = ['dues' => 0, 'printful_product' => 0, 'donation' => 0];
     $required_discount_item_types = [];
+
+    // keep fetching next row until no more
     while ($r !== null) {
+        $item_ids[] = $r['id'];
         $item_type = $r["item_type"];
         $item_types[$item_type]++;
         if (in_array($item_type, $physical_goods)) {
@@ -100,21 +105,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $item_types[$required_discount_item_types[$i]]--;
         }
     }
-    // create order
+
     $p = new PayPalCustomApi();
     try {
+        // create order
         $order = json_decode($p->create_order(
             $items,
             (string)Currency::subtract_($subtotal, $discount),
             (string)$subtotal,
             new Currency(0,0),
             $shipping_required,
-            $discount->is_zero() ? null : $discount,$return_url,$cancel_url),
+            $discount->is_zero() ? null : $discount, $request['return_url'], $request['cancel_url']),
         true);
     } catch (Exception $ex) {
         http_response_code(500);
         error_log("Failed to create order: {$ex->getMessage()}");
         die();
+    }
+
+    // add order to db
+    if(isset($auth)){ // should only be set when dues are purchased
+        $query = "INSERT INTO paypal_orders(uid, paypal_order_id) VALUES('{$auth[0]['id']}', '{$db->real_escape_string($order['id'])}')";
+    } else {
+        $query = "INSERT INTO paypal_orders(paypal_order_id) VALUES('{$db->real_escape_string($order['id'])}')";
+    }
+    $q = $db->query($query);
+    if($q === false){
+        http_response_code(500);
+        error_log("Error trying to add an order to the db: {$db->error}");
+        die();
+    }
+
+    // get paypal_orders ID (not PayPal's ID of the order) for each paypal_order_item
+    $q = $db->query("SELECT id FROM paypal_orders WHERE paypal_order_id='{$db->real_escape_string($order['id'])}'");
+    if($q === false){
+        http_response_code(500);
+        error_log("Error trying to fetch ID of paypal order from the db: {$db->error}");
+        die();
+    }
+    $db_order_id = $q->fetch_assoc()['id'];
+
+    foreach ($item_ids as $item_id){
+        $query = "INSERT INTO paypal_order_item (item_id,order_id) VALUES({$item_id}, {$db_order_id})";
+        $q = $db->query($query);
+        if($q === false){
+            error_log("Error adding item to order {$order['id']}, internal ID {$db_order_id}. Item ID {$item_id}: {$db->error}");
+            http_response_code(500);
+            die();
+        }
     }
 
     // get the checkout link
@@ -136,7 +174,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $response_body = new stdClass();
     $response_body->redirect_url = $redirect;
     echo json_encode($response_body);
-    error_log("PayPal order created");
 } else{
     http_response_code(403);
 }

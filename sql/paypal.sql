@@ -5,7 +5,7 @@ CREATE TABLE `paypal_orders`
 (
     `id`                   int(11)      NOT NULL AUTO_INCREMENT,
     `uid`                  int(11)      NULL,     -- The User ID this order belongs to. Can be null for merch, but shouldn't be null for dues
-    `custom_id`            varchar(255) NOT NULL, -- This is the ID that PayPal receives for transactions; we generate this
+#     `custom_id`            varchar(255) NOT NULL, -- This is the ID that PayPal receives for transactions; we generate this
     `paypal_order_id`      varchar(255) NOT NULL, -- This is the order ID that PayPal generates
     `creation_date`        datetime     NOT NULL DEFAULT NOW(),
     `payment_received`     bool         NOT NULL DEFAULT FALSE,
@@ -36,11 +36,12 @@ CREATE TABLE `paypal_items`
 
 CREATE TABLE `paypal_order_item`
 (
-    `id`                 int(11)                                                     NOT NULL AUTO_INCREMENT,
-    `item_id`            int(11)                                                     NOT NULL,
-    `order_id`           int(11)                                                     NOT NULL,
-    `custom_data`        text                                                        NULL,                             -- Custom info e.g., Printful product ID
-    `fulfillment_status` enum ('await_payment', 'in-progress' ,'fulfilled', 'error') NOT NULL DEFAULT 'await_payment', -- fulfilled means we've completed our side of the transaction (e.g., made a Printful order or gave the user Good Standing status
+    `id`                 int(11)                                                                       NOT NULL AUTO_INCREMENT,
+    `item_id`            int(11)                                                                       NOT NULL,
+    `count`              int(3)                                                                        NOT NULL DEFAULT 1, -- how many units we owe (e.g., 3 shirts)
+    `order_id`           int(11)                                                                       NOT NULL,
+    `custom_data`        text                                                                          NULL,                              -- Custom info e.g., Printful product ID
+    `fulfillment_status` enum ('await_approval', 'await_payment' ,'in-progress' ,'fulfilled', 'error') NOT NULL DEFAULT 'await_approval', -- fulfilled means we've completed our side of the transaction (e.g., made a Printful order or gave the user Good Standing status
     PRIMARY KEY (`id`),
     FOREIGN KEY (`item_id`) REFERENCES paypal_items (id),
     FOREIGN KEY (`order_id`) REFERENCES paypal_orders (id)
@@ -48,3 +49,4 @@ CREATE TABLE `paypal_order_item`
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 47
   DEFAULT CHARSET = latin1;
+
