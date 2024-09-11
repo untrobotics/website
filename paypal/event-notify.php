@@ -29,13 +29,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
         // event is sent when payer approves an order
         case 'CHECKOUT.ORDER.APPROVED':
         {
-            AdminBot::send_message('Trying to capture payment', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
+            require_once('../template/top.php');
+            global $db;
+            $order_id = $event->payload['resource']['id'];
+
+            // change order status to approved
+            if (!$db->query("UPDATE paypal_orders SET status = 'approved' where paypal_order_id = '{$order_id}'")) {
+                error_log("Failed to update PayPal order {$order_id} status to captured: {$db->error}");
+            }
+
             // capture payment
+            AdminBot::send_message('Trying to capture payment', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
+
             require_once('../api/paypal/paypal.php');
             $paypal = new PayPalCustomApi();
-            $result = json_decode($paypal->capture_payment($event->payload['resource']['id']), true);
+            $result = json_decode($paypal->capture_payment($order_id), true);
+
             if ($result['status'] !== 'COMPLETED') {
-                error_log("Issue capturing payment for order ID {$event->payload['resource']['id']}. Order status is {$result['status']}");
+                error_log("Issue capturing payment for order ID {$order_id}. Order status is {$result['status']} instead of COMPLETED");
                 http_response_code(500);
             } else {
                 http_response_code(200);
@@ -47,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
         case 'PAYMENT.CAPTURE.COMPLETED':
         {
             // get items
-            error_log(var_export($event->payload,true));
+            error_log(var_export($event->payload, true));
             $order_id = $event->payload['resource']['supplementary_data']['related_ids']['order_id'];
             require_once('../template/top.php');
             global $db;
@@ -72,6 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                 error_log("Paypal Order not found for order ID {$order_id}");
                 die();
             }
+            if (!$db->query("UPDATE paypal_orders SET status = 'captured' where paypal_order_id = '{$order_id}'")) {
+                error_log("Failed to update PayPal order {$order_id} status to captured: {$db->error}");
+            }
             $item = $rows->fetch_assoc();
             while ($item !== null) {
                 switch ($item['item_type']) {
@@ -85,7 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
 //                        AdminBot::send_message('Creating Printful order', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
                         break;
                     }
-                    case 'donation':{
+                    case 'donation':
+                    {
 //                        AdminBot::send_message('Received donation. Doing nothing', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
 //                        http_response_code(200);
 //                        die();

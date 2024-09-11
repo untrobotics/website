@@ -1,15 +1,17 @@
 DROP TABLE IF EXISTS paypal_order_item;
 DROP TABLE IF EXISTS paypal_items;
 DROP TABLE IF EXISTS paypal_orders;
+DROP EVENT IF EXISTS remove_expired_orders;
 CREATE TABLE `paypal_orders`
 (
-    `id`                   int(11)      NOT NULL AUTO_INCREMENT,
-    `uid`                  int(11)      NULL,     -- The User ID this order belongs to. Can be null for merch, but shouldn't be null for dues
+    `id`                   int(11)                                  NOT NULL AUTO_INCREMENT,
+    `uid`                  int(11)                                  NULL,                       -- The User ID this order belongs to. Can be null for merch, but shouldn't be null for dues
 #     `custom_id`            varchar(255) NOT NULL, -- This is the ID that PayPal receives for transactions; we generate this
-    `paypal_order_id`      varchar(255) NOT NULL, -- This is the order ID that PayPal generates
-    `creation_date`        datetime     NOT NULL DEFAULT NOW(),
-    `payment_received`     bool         NOT NULL DEFAULT FALSE,
-    `payment_receipt_date` datetime     NULL,     -- The datetime when payment was captured
+    `paypal_order_id`      varchar(255)                             NOT NULL,                   -- This is the order ID that PayPal generates
+    `creation_date`        datetime                                 NOT NULL DEFAULT NOW(),
+    `payment_received`     bool                                     NOT NULL DEFAULT FALSE,
+    `payment_receipt_date` datetime                                 NULL,                       -- The datetime when payment was captured
+    `status`               enum ('created', 'approved', 'captured') NOT NULL DEFAULT 'created', -- approved means the buyer approved payment, captured means we captured payment
     PRIMARY KEY (`id`),
     FOREIGN KEY (`uid`) REFERENCES users (id)
 ) ENGINE = InnoDB
@@ -38,7 +40,7 @@ CREATE TABLE `paypal_order_item`
 (
     `id`                 int(11)                                                                       NOT NULL AUTO_INCREMENT,
     `item_id`            int(11)                                                                       NOT NULL,
-    `count`              int(3)                                                                        NOT NULL DEFAULT 1, -- how many units we owe (e.g., 3 shirts)
+    `count`              int(3)                                                                        NOT NULL DEFAULT 1,                -- how many units we owe (e.g., 3 shirts)
     `order_id`           int(11)                                                                       NOT NULL,
     `custom_data`        text                                                                          NULL,                              -- Custom info e.g., Printful product ID
     `fulfillment_status` enum ('await_approval', 'await_payment' ,'in-progress' ,'fulfilled', 'error') NOT NULL DEFAULT 'await_approval', -- fulfilled means we've completed our side of the transaction (e.g., made a Printful order or gave the user Good Standing status
@@ -50,3 +52,24 @@ CREATE TABLE `paypal_order_item`
   AUTO_INCREMENT = 47
   DEFAULT CHARSET = latin1;
 
+DELIMITER |
+CREATE EVENT IF NOT EXISTS
+    remove_expired_orders
+    ON SCHEDULE EVERY 3 DAY
+    ON COMPLETION PRESERVE
+    DO
+    BEGIN
+        DELETE
+        FROM paypal_order_item
+        WHERE order_id
+                  IN (SELECT id
+                      FROM paypal_orders
+                      WHERE status = 'created'
+                        AND creation_date <= SUBDATE(NOW(), INTERVAL 6 HOUR));
+
+        DELETE
+        FROM paypal_orders
+        WHERE status = 'created'
+          AND creation_date <= SUBDATE(NOW(), INTERVAL 6 HOUR);
+    END |
+DELIMITER ;
