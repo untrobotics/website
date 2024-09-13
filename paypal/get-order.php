@@ -40,8 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // send 500 if the query fails
     if ($q === false) {
-        error_log("PayPal item db query failed: {$db->error}");
         http_response_code(500);
+        error_log("PayPal item db query failed: {$db->error}");
         die();
     }
     // list of PayPalItems
@@ -52,28 +52,54 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $discounts = [];
     // item IDs in the paypal_items table
     $item_ids = [];
+    $custom_data = [];
+
 
     $r = $q->fetch_assoc();
     $physical_goods = ['printful_product'];
     $shipping_required = false;
-    $item_types = ['dues' => 0, 'printful_product' => 0, 'donation' => 0];
+    $item_type_count = ['dues' => 0, 'printful_product' => 0, 'donation' => 0];
     $required_discount_item_types = [];
 
+    global $untrobotics;
+    $custom = null;
     // keep fetching next row until no more
     while ($r !== null) {
         $item_ids[] = $r['id'];
         $item_type = $r["item_type"];
-        $item_types[$item_type]++;
+        $item_type_count[$item_type]++;
+
         if (in_array($item_type, $physical_goods)) {
+
+
             $category = 'PHYSICAL_GOODS';
             $shipping_required = true;
+
+            // add custom data stuff for Printful or whatever
+
+            $custom = new stdClass();
+
+
         } else if ($item_type == 'dues') {
+            $custom = new stdClass();
+
             $category = 'DIGITAL_GOODS';
+
+            // get number of semesters for dues from item name
+            $semester_n = null;
+            preg_match('[0-9]+', $r['item_name'],$semester_n);
+            $custom->semester_n = $semester_n[0];
+
+            // set semester and year for the dues
+            $custom->semester = $untrobotics->get_current_term();
+            $custom->year = $untrobotics->get_current_year();
+
         } else if ($item_type == 'donation') {
             $category = 'DONATION';
         } else {
             $category = null;
         }
+        $custom_data[] = json_encode($custom);
         $items[] = new PayPalItem($r['item_name'],
             1,
             new PayPalCurrencyField('USD', $r['sales_price']),
@@ -86,11 +112,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $required_discount_item_types[] = $r['discount_required_item'];
         }
 
+        $custom = null;
         $r = $q->fetch_assoc();
     }
 
     // prevent order with dues from being created if user isn't logged in
-    if($item_types['dues']>0){
+    if($item_type_count['dues']>0){
         $auth = auth();
         if (!$auth){
             http_response_code(403);
@@ -100,9 +127,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $discount = new Currency(0, 0);
     for ($i = 0; $i < count($discounts); $i++) {
-        if ($item_types[$required_discount_item_types[$i]] > 0) {
+        if ($item_type_count[$required_discount_item_types[$i]] > 0) {
             $discount->add($discounts[$i]);
-            $item_types[$required_discount_item_types[$i]]--;
+            $item_type_count[$required_discount_item_types[$i]]--;
         }
     }
 
@@ -145,11 +172,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     $db_order_id = $q->fetch_assoc()['id'];
 
-    foreach ($item_ids as $item_id){
-        $query = "INSERT INTO paypal_order_item (item_id,order_id) VALUES({$item_id}, {$db_order_id})";
+    for($i = 0; $i < count($item_ids); $i++){
+        if($custom_data[$i]!=='null'){
+            $query = "INSERT INTO paypal_order_item (item_id,order_id, custom_data) VALUES({$item_ids[$i]}, {$db_order_id}, '{$db->real_escape_string($custom_data[$i])}')";
+        } else{
+            $query = "INSERT INTO paypal_order_item (item_id,order_id) VALUES({$item_ids[$i]}, {$db_order_id})";
+        }
         $q = $db->query($query);
         if($q === false){
-            error_log("Error adding item to order {$order['id']}, internal ID {$db_order_id}. Item ID {$item_id}: {$db->error}");
+            error_log("Error adding item to order {$order['id']}, internal ID {$db_order_id}. Item ID {$item_ids[$i]}: {$db->error}");
             http_response_code(500);
             die();
         }
@@ -164,7 +195,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     // if no checkout link found, send 500
     if (!isset($redirect)) {
-        //  confirm order? I'm not sure when PayPal gives a no approve or payer-action link
+        //  confirm order? I'm not sure when PayPal gives no approve/payer-action link
         http_response_code(500);
         error_log('Could not find a redirect link: ' . $order);
         die();
