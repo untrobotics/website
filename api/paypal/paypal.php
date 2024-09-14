@@ -120,7 +120,6 @@ class PayPalCustomApi
                     )
                 ))
         );
-
         // send request and return the response
         return $this->send_request('/v2/checkout/orders', 'POST', $data);
     }

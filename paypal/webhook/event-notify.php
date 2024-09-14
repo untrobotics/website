@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                     case 'printful_product':
                     {
                         //todo
-                        $printful_orders[] = \PRINTFUL\handle_payment_notification($event, json_decode($item['custom_data'],true));
+//                        $printful_orders[] = \PRINTFUL\handle_payment_notification($event, json_decode($item['custom_data'],true));
 //                        AdminBot::send_message('Creating Printful order', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
                         break;
                     }
@@ -152,11 +152,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
 
                 $item = $rows->fetch_assoc();
             }
-            $email_send_status = email_receipt($order_info,$printful_orders, isset($dues));
-            if ($email_send_status) {
-                /** @noinspection PhpConditionAlreadyCheckedInspection */
-                payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
-            }
+//            $email_send_status = email_receipt($order_info,$printful_orders, isset($dues));
+//            if ($email_send_status) {
+//                /** @noinspection PhpConditionAlreadyCheckedInspection */
+//                payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
+            //}
             break;
         }
         default:

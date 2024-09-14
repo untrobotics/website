@@ -2,6 +2,7 @@
 require_once('../template/top.php');
 require_once('../api/paypal/paypal.php');
 require_once('../template/classes/currency.php');
+require_once('../api/discord/bots/admin.php');
 global $db;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -23,6 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $item_names = $request['item_identifiers'];
     $variant_names = $request['variant_identifiers'];
 
+
     // combines the item names in a comma-delimited string for MySQL query
     $item_names_str = '';
     $variant_names_str = '';
@@ -31,9 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }*/
     for ($i = 0; $i < count($item_names); $i++) {
         $item_names_str .= "'{$db->real_escape_string($item_names[$i])}',";
-        $variant_names_str = "'{$db->real_escape_string($variant_names[$i])}'";
+        $variant_names_str .= "'{$db->real_escape_string($variant_names[$i])}',";
     }
     $item_names_str = rtrim($item_names_str, ",");
+    $variant_names_str = rtrim($variant_names_str, ",");
+
+
 
     // Queries the item info for items requested... match is based on item name and variant name
     // This query has an issue where if two items have variants with the same name, then multiple variants may be retrieved
@@ -66,7 +71,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $item_ids = [];
     $custom_data = [];
 
-
     $r = $q->fetch_assoc();
     $physical_goods = ['printful_product'];
     $shipping_required = false;
@@ -77,6 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $custom = null;
     // keep fetching next row until no more
     while ($r !== null) {
+
         $item_ids[] = $r['id'];
         $item_type = $r["item_type"];
         $item_type_count[$item_type]++;
@@ -98,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // get number of semesters for dues from variant name
             $semester_count = null;
             preg_match('/^[0-9]+/', $r['variant_name'], $semester_count);
-            $custom->semester_count = (int)$semester_count[1];
+            $custom->semester_count = (int)$semester_count[0];
 
             // set semester and year for the dues
             $custom->semester = $untrobotics->get_current_term();
@@ -170,6 +175,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $shipping_required,
             $discount->is_zero() ? null : $discount, $request['return_url'], $request['cancel_url']),
             true);
+
     } catch (Exception $ex) {
         http_response_code(500);
         error_log("Failed to create order: {$ex->getMessage()}");

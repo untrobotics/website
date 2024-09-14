@@ -110,7 +110,7 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                                                     </a>
                                                 </div>
                                                 <select id="include-tshirt" name="include-tshirt" class="">
-                                                    <option value="" selected="selected">No T-shirt</option>
+                                                    <option value="" selected="selected" variant="">No T-shirt</option>
                                                     <!--<option value="632b8e41a865f1">XS</option>
                                                     <option value="632b8e41a86664">S</option>
                                                     <option value="632b8e41a866a1">M</option>
@@ -241,6 +241,7 @@ footer(false);
         $("#dues_cost").text("$" + getDuesCost());
         if (tShirt) {
             $(this).attr('item', e.target.value)
+            $(this).attr('variant', $(this).find('option:selected').attr('variant'))
         }
     })
 </script>

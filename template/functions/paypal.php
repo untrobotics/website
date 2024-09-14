@@ -276,11 +276,11 @@ function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = fa
         if(count($printful_order_info) > 1) {
             for ($i = 0; $i < count($printful_order_info); $i++) {
                 $item_num = $i + 1;
-                $email_body .= "			<li><strong>Product {$item_num}'s ID</strong> {$printful_order_info[]['variant_id']}</li>" .
+                $email_body .= "			<li><strong>Product {$item_num}'s ID</strong> {$printful_order_info['variant_id']}</li>" .
                     "			<li><strong>Product {$item_num}'s Shipping Service</strong> {$printful_order_info['shipping_service']}</li>";
             }
         } else{
-            $email_body .= "			<li><strong>Product ID</strong> {$printful_order_info[]['variant_id']}</li>" .
+            $email_body .= "			<li><strong>Product ID</strong> {$printful_order_info['variant_id']}</li>" .
                 "			<li><strong>Shipping Service</strong> {$printful_order_info['shipping_service']}</li>";
         }
     }
