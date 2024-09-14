@@ -30,7 +30,8 @@ CREATE TABLE `paypal_items`
 #   `currency_code` enum ('USD')  NOT NULL DEFAULT 'USD',
 #   `description` varchar(127),
     `external_id`            varchar(128)           NULL,
-    `item_name`              varchar(255)           NOT NULL,
+    `item_name`              varchar(255)           NOT NULL,   -- generic name, like "Dues" or "Dues Shirt"
+    `variant_name`          varchar(255)            NULL,           -- Variant name, like "2 semesters" or "XL"
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 47

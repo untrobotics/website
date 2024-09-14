@@ -5,13 +5,13 @@ require_once('../template/classes/currency.php');
 global $db;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        // read request body
-    $request = json_decode(file_get_contents("php://input"),true);
-    if(isset($request['order_id'])){
+    // read request body
+    $request = json_decode(file_get_contents("php://input"), true);
+    if (isset($request['order_id'])) {
         $p = new PayPalCustomApi();
         try {
             $response = json_decode($p->get_order_info($request['order_id']), true);
-        } catch(PayPalCustomApiException $e){
+        } catch (PayPalCustomApiException $e) {
             http_response_code(404);
             error_log("Could not find order with ID {$request['order_id']}: {$e->getMessage()}");
             die();
@@ -21,21 +21,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $item_names = $request['item_identifiers'];
+    $variant_names = $request['variant_identifiers'];
 
     // combines the item names in a comma-delimited string for MySQL query
     $item_names_str = '';
-    foreach ($item_names as $item_name) {
+    $variant_names_str = '';
+    /*foreach ($item_names as $item_name) {
         $item_names_str .= "'{$db->real_escape_string($item_name)}',";
+    }*/
+    for ($i = 0; $i < count($item_names); $i++) {
+        $item_names_str .= "'{$db->real_escape_string($item_names[$i])}',";
+        $variant_names_str = "'{$db->real_escape_string($variant_names[$i])}'";
     }
     $item_names_str = rtrim($item_names_str, ",");
 
-    // Queries the item info for items requested... match is based on item name
+    // Queries the item info for items requested... match is based on item name and variant name
+    // This query has an issue where if two items have variants with the same name, then multiple variants may be retrieved
+    // Not sure how to fix it easily
     $query = "SELECT 
-                    id, item_type, sales_price, item_name, discount, discount_required_item
+                    id, item_type, sales_price, item_name, discount, discount_required_item, variant_name
                 FROM 
                     paypal_items 
                 WHERE 
-                    item_name in ({$item_names_str})";
+                    item_name in ({$item_names_str})
+                AND
+                    variant_name in ({$variant_names_str})
+                ORDER BY 
+                    item_type DESC";
     $q = $db->query($query);
 
     // send 500 if the query fails
@@ -70,8 +82,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $item_type_count[$item_type]++;
 
         if (in_array($item_type, $physical_goods)) {
-
-
             $category = 'PHYSICAL_GOODS';
             $shipping_required = true;
 
@@ -85,14 +95,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $category = 'DIGITAL_GOODS';
 
-            // get number of semesters for dues from item name
-            $semester_n = null;
-            preg_match('[0-9]+', $r['item_name'],$semester_n);
-            $custom->semester_n = $semester_n[0];
+            // get number of semesters for dues from variant name
+            $semester_count = null;
+            preg_match('/^[0-9]+/', $r['variant_name'], $semester_count);
+            $custom->semester_count = (int)$semester_count[1];
 
             // set semester and year for the dues
             $custom->semester = $untrobotics->get_current_term();
             $custom->year = $untrobotics->get_current_year();
+
+            // add another semester
+            if ($custom->semester_count > 0) {
+                $custom->extra_semester = $untrobotics->get_next_term();
+
+                // set year to next year if the next term is Spring
+                $custom->extra_year = $custom->extra_semester < $custom->semester ? $custom->year : $untrobotics->get_next_year();
+            }
+
+            if ($item_type_count['printful_product'] > 0) {
+                $custom->include_tshirt = true;
+            } else {
+                $custom->include_tshirt = false;
+            }
+
+
 
         } else if ($item_type == 'donation') {
             $category = 'DONATION';
@@ -117,9 +143,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // prevent order with dues from being created if user isn't logged in
-    if($item_type_count['dues']>0){
+    if ($item_type_count['dues'] > 0) {
         $auth = auth();
-        if (!$auth){
+        if (!$auth) {
             http_response_code(403);
             die();
         }
@@ -140,10 +166,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $items,
             (string)Currency::subtract_($subtotal, $discount),
             (string)$subtotal,
-            new Currency(0,0),
+            new Currency(0, 0),
             $shipping_required,
             $discount->is_zero() ? null : $discount, $request['return_url'], $request['cancel_url']),
-        true);
+            true);
     } catch (Exception $ex) {
         http_response_code(500);
         error_log("Failed to create order: {$ex->getMessage()}");
@@ -151,13 +177,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // add order to db
-    if(isset($auth)){ // should only be set when dues are purchased
+    if (isset($auth)) { // should only be set when dues are purchased
         $query = "INSERT INTO paypal_orders(uid, paypal_order_id) VALUES('{$auth[0]['id']}', '{$db->real_escape_string($order['id'])}')";
     } else {
         $query = "INSERT INTO paypal_orders(paypal_order_id) VALUES('{$db->real_escape_string($order['id'])}')";
     }
     $q = $db->query($query);
-    if($q === false){
+    if ($q === false) {
         http_response_code(500);
         error_log("Error trying to add an order to the db: {$db->error}");
         die();
@@ -165,21 +191,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // get paypal_orders ID (not PayPal's ID of the order) for each paypal_order_item
     $q = $db->query("SELECT id FROM paypal_orders WHERE paypal_order_id='{$db->real_escape_string($order['id'])}'");
-    if($q === false){
+    if ($q === false) {
         http_response_code(500);
         error_log("Error trying to fetch ID of paypal order from the db: {$db->error}");
         die();
     }
     $db_order_id = $q->fetch_assoc()['id'];
 
-    for($i = 0; $i < count($item_ids); $i++){
-        if($custom_data[$i]!=='null'){
+    for ($i = 0; $i < count($item_ids); $i++) {
+        if ($custom_data[$i] !== 'null') {
             $query = "INSERT INTO paypal_order_item (item_id,order_id, custom_data) VALUES({$item_ids[$i]}, {$db_order_id}, '{$db->real_escape_string($custom_data[$i])}')";
-        } else{
+        } else {
             $query = "INSERT INTO paypal_order_item (item_id,order_id) VALUES({$item_ids[$i]}, {$db_order_id})";
         }
         $q = $db->query($query);
-        if($q === false){
+        if ($q === false) {
             error_log("Error adding item to order {$order['id']}, internal ID {$db_order_id}. Item ID {$item_ids[$i]}: {$db->error}");
             http_response_code(500);
             die();
@@ -205,6 +231,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $response_body = new stdClass();
     $response_body->redirect_url = $redirect;
     echo json_encode($response_body);
-} else{
+} else {
     http_response_code(403);
 }

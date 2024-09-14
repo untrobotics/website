@@ -1,26 +1,33 @@
 <?php
 namespace DUES;
 use AdminBot;
-use IPNHandlerException;
-use PrintfulCustomAPI;
 use Semester;
 use \stdClass;
-
 require_once(__DIR__ . "/printful.php");
 
-function handle_payment_notification($ipn, $payment_info, $custom) {
+/**
+ *
+ * @param array $order_info PayPal order info. JSON-decoded associative array. After function call, adds a field called "term_string"
+ * @param mixed $custom Custom data for the order
+ * @param int $uid The user ID the dues payment is associated with
+ * @param string $order_id The order ID of the order
+ * @return void
+ * @throws \WebhookEventHandlerException Throws if there are issues with the database or data validation fails
+ */
+function handle_payment_notification(array &$order_info, $custom, int $uid, string $order_id) {
 
 	global $db, $untrobotics;
 
-
+    // get dues config price to verify payment amount
     $q = $db->query("SELECT `key`,`value` FROM dues_config WHERE `key` = 'semester_price' OR `key` = 't_shirt_dues_purchase_price'");
     if (!$q || $q->num_rows !== 2) {
-        AdminBot::send_message("Unable to determine the dues payment price (IPN)");
-        throw new IPNHandlerException("Unable to determine dues payment price (IPN)");
+        AdminBot::send_message("Unable to determine the dues payment price (Webhook Event)");
+        throw new \WebhookEventHandlerException("Unable to determine dues payment price (Webhook Event)");
     }
 
     $r = $q->fetch_all(MYSQLI_ASSOC);
 
+    // convert the rows fetched into a single associative array
     $mapped_config = array();
     array_walk(
         $r,
@@ -33,15 +40,15 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
     $t_shirt_dues_purchase_price = $mapped_config['t_shirt_dues_purchase_price'];
     $single_semester_dues_price = $mapped_config['semester_price'];
 
-    $tshirt_size = $custom['include-tshirt'];
-    $is_tshirt_included = !empty($custom['include-tshirt']) && $custom['include-tshirt'] != false;
+    $is_tshirt_included = !empty($custom['include_tshirt']) && $custom['include_tshirt'] != false;
     var_dump($custom, $is_tshirt_included);
 
+    // array to store info on each term (semester) paid for
     $paid_for_terms = array();
 
-	$dues_term = $payment_info->options[0][1];
-    $dues_term_n = constant("Semester::{$payment_info->options[0][1]}");
-	$dues_year = $payment_info->options[1][1];
+    $dues_term = $custom['semester'];
+    $dues_term_n = constant("Semester::{$dues_term}");
+    $dues_year = $custom['year'];
 
     $paid_for_terms[0] = new \stdClass();
     $paid_for_terms[0]->dues_term = $dues_term;
@@ -50,18 +57,20 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 
     $term_string = ucfirst(strtolower($dues_term)) . ' ' . $dues_year;
 
+
     $expected_amount = 0;
     if ($is_tshirt_included) {
         $expected_amount += $t_shirt_dues_purchase_price;
     }
 	$expected_amount += $single_semester_dues_price;
-	if (isset($payment_info->options[2]) && isset($payment_info->options[3])) {
+//	if (isset($payment_info->options[2]) && isset($payment_info->options[3])) {
+    if(isset($custom['extra_semester'])){
 	    // dues have been paid for the full year
         $expected_amount += $single_semester_dues_price;
 
-        $extra_dues_term = $payment_info->options[2][1];
-        $extra_dues_term_n = constant("Semester::{$payment_info->options[2][1]}");
-        $extra_dues_year = $payment_info->options[3][1];
+        $extra_dues_term = $custom['extra_semester'];
+        $extra_dues_term_n = constant("Semester::{$extra_dues_term}");
+        $extra_dues_year = $custom['extra_year'];
 
         $paid_for_terms[1] = new stdClass();
         $paid_for_terms[1]->dues_term = $extra_dues_term;
@@ -70,26 +79,29 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 
         $term_string .= ' & ' . ucfirst(strtolower($extra_dues_term)) . ' ' . $extra_dues_year;
     }
-	
-	$amount_paid = $payment_info->mc_gross;
-	$fee = $payment_info->mc_fee;
-	$txid =  $payment_info->txn_id;
-	
-	$uid = $custom['uid'];
-	
+    $order_info['term_string'] = $term_string;
+    $payment_capture = $order_info['purchase_units']['payments']['captures'][0];
+    $amount_paid = $payment_capture['seller_receivable_breakdown']['gross_amount']['value'];
+	$fee = $payment_capture['seller_receivable_breakdown']['paypal_fee']['value'];
+
+    // customers can search for transactions by the payment ID
+    // customers can't use the order ID
+    // we can't get the transaction ID
+    $payment_id = $payment_capture['id'];
+
+    // get user from db. Throw error if query fails or if uid isn't unique
 	$q = $db->query('SELECT * FROM users WHERE id = "' . $db->real_escape_string($uid) . '"');
 	if (!$q) {
-		throw new IPNHandlerException("[{$payment_info->txn_id}]: Unable to retrieve matching user from database for dues payment (uid: {$uid}) (error: {$db->error})");
+		throw new \WebhookEventHandlerException("[{$order_id}]: Unable to retrieve matching user from database for dues payment (uid: {$uid}) (error: {$db->error})");
 	}
 	if ($q->num_rows !== 1) {
-		throw new IPNHandlerException("[{$payment_info->txn_id}]: Query for matching user for dues payment returned non-singular result (uid: {$uid}) (count: {$q->num_rows})");
+		throw new \WebhookEventHandlerException("[{$order_id}]: Query for matching user for dues payment returned non-singular result (uid: {$uid}) (count: {$q->num_rows})");
 	}
 	$r = $q->fetch_array(MYSQLI_ASSOC);
 
 	if ($amount_paid > 0) {
-
 	    if ($amount_paid != $expected_amount) {
-            throw new IPNHandlerException("[{$payment_info->txn_id}]: Amount paid did not match the expected amount ({$amount_paid} vs {$expected_amount})");
+            throw new \WebhookEventHandlerException("[{$order_id}]: Amount paid did not match the expected amount ({$amount_paid} vs {$expected_amount})");
         }
 
 	    foreach ($paid_for_terms as $term) {
@@ -100,66 +112,21 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
             "' . $db->real_escape_string($r['unteuid']) . '",
             "' . $db->real_escape_string($single_semester_dues_price) . '",
             "' . $db->real_escape_string($fee) . '",
-            "' . $db->real_escape_string($txid) . '",
+            "' . $db->real_escape_string($order_id) . '",
             "' . $db->real_escape_string($term->dues_term_n) . '",
             "' . $db->real_escape_string($term->dues_year) . '",
             "' . $db->real_escape_string($uid) . '"
             )');
 
             if (!$q) {
-                throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to insert dues payment record into Good Standing database (uid: {$uid}) (count: {$db->error})");
+                throw new \WebhookEventHandlerException("[{$order_id}]: Failed to insert dues payment record into Good Standing database (uid: {$uid}) (count: {$db->error})");
             } else {
-                payment_log("[{$payment_info->txn_id}] Successfully created entry in the dues payments table (q: " . intval($q) . ") for term ({$term->dues_term} {$term->dues_year})");
+                payment_log("[{$order_id}] Successfully created entry in the dues payments table (q: " . intval($q) . ") for term ({$term->dues_term} {$term->dues_year})");
             }
         }
-
-		$email_send_status = email(
-			$payment_info->payer_email,
-			"Receipt for your UNT Robotics dues payment",
-			
-			"<div style=\"position: relative;max-width: 100vw;text-align:center;\">" .
-			'<img src="cid:untrobotics-email-header">' .
-			
-			'	<div></div>' .
-			
-			'<div style="text-align: left; max-width: 500px; display: inline-block;">' .
-			"	<p>Dear " . $payment_info->first_name . ' ' . $payment_info->last_name . ",</p>" .
-			"	<p>Thank you for paying your UNT Robotics dues. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role.</p>" .
-			'</div>' .
-			
-			'	<div></div>' .
-			
-			"	<div style=\"display: inline-block;padding: 15px;border: 1px solid #bdbdbd;border-radius: 10px;text-align: left;\">" .
-			"		<h5 style=\"font-size: 12pt;margin: 0;font-weight: 600;\">ðŸ§¾ Payment Receipt</h5>" .
-			"		<ul>" .
-			"			<li><strong>PayPal Transaction ID</strong> <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id={$payment_info->txn_id}\">{$payment_info->txn_id}</a></li>" .
-			"			<li><strong>Date/Time</strong> " . date('l jS \of F Y h:i:s A T', strtotime($payment_info->payment_date)) . "</li>" .
-			"			<li><strong>Payment Amount</strong> \${$amount_paid}</li>" .
-			"			<li><strong>Name</strong> {$payment_info->first_name} {$payment_info->last_name}</li>" .
-			"			<li><strong>Order Name</strong> {$payment_info->item_name}</li>" .
-			"			<li><strong>Semester</strong> {$term_string}</li>" .
-			"		</ul>" .
-			"	</div>" .
-			"	<p></p>" .
-			"	<p>If you need any assistance with your payment or with receiving the correct role, please reach out to <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a> or contact us <a href=\"" . DISCORD_INVITE_URL . "\">on Discord</a>.</p>" .
-			"</div>",
-			
-			false,
-			null,
-			[
-				[
-					'content' => base64_encode(file_get_contents('../images/unt-robotics-email-header.jpg')),
-					'type' => 'image/jpeg',
-					'filename' => 'unt-robotics-email-header.jpg',
-					'disposition' => 'inline',
-					'content_id' => 'untrobotics-email-header'
-				]
-			]
-		);
-		
-		if ($email_send_status) {
-			payment_log("[{$payment_info->txn_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
-            AdminBot::send_message("(IPN) Alert: Successfully received dues payment from {$r['name']} (#$uid), paid for by {$payment_info->first_name} {$payment_info->last_name}. # Semesters: " . count($paid_for_terms));
+        $payer = $order_info['payer'];
+        /*$payer['name']['given_name'] . ' ' . $payer['name']['surname']*/
+        AdminBot::send_message("(IPN) Alert: Successfully received dues payment from {$r['name']} (#$uid), paid for by {$payer['name']['given_name']} {$payer['name']['surname']}. # Semesters: " . count($paid_for_terms));
 
             $sum = "UNKNOWN";
             if ($untrobotics->get_current_term() == Semester::AUTUMN) {
@@ -199,9 +166,8 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
             }
             AdminBot::send_message("Amount received in dues so far this academic year: \${$sum}");
 
-            var_dump($is_tshirt_included);
             // process t-shirt order
-            if ($is_tshirt_included) {
+            /*if ($is_tshirt_included) {
                 AdminBot::send_message("Processing T-shirt order with this dues payment: @{$tshirt_size}");
                 $printful_custom = array(
                     'variant'=>"@{$tshirt_size}",
@@ -220,15 +186,10 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
                 $payment_info->options[1][1] = $sync_variant->get_name();
                 $payment_info->options[2][1] = "Standard";
                 \PRINTFUL\handle_payment_notification($ipn, $payment_info, $printful_custom);
-            }
+            }*/
 
-		} else {
-			//throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
-			payment_log("[{$payment_info->txn_id}] Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
-			AdminBot::send_message("(IPN) Alert: Failed to send e-mail receipt for dues payment [{$payment_info->txn_id}].");
-		}
-		
 	} else {
-        AdminBot::send_message("(IPN) Alert: Received a negative or zero amount IPN. This usually indicates some kind of reversal/refund. [{$payment_info->txn_id}].");
+        // Might be removable. This may be sent by another PayPal webhook event
+        AdminBot::send_message("(IPN) Alert: Received a negative or zero amount payment capture. This usually indicates some kind of reversal/refund. Order ID: [{$order_id}].");
 	}
 }

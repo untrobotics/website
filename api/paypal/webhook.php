@@ -20,6 +20,9 @@ class PaypalWebhookEvent extends PayPalCustomApi
     public $payload;
     public $headers;
 
+
+    private $is_sandbox;
+
     /**
      * @param string $raw The raw data sent to the webhook. The data can be obtained from php://input by using {@see file_get_contents()}
      * @param string $paypal_client_id The client ID
@@ -84,5 +87,29 @@ class PaypalWebhookEvent extends PayPalCustomApi
         $result = json_decode($this->send_request(self::VERIFY_URI, 'POST', $data), true);
 
         return $result["verification_status"] === "SUCCESS";
+    }
+
+    public function is_sandbox(): bool{
+        if(isset($this->is_sandbox)) {
+            return $this->is_sandbox;
+        }
+        foreach($this->payload['links'] as $link){
+            if($link['rel']==='self'){  // self refers to the API endpoint that caused the event
+                $this->is_sandbox =preg_match('/^https?:\/\/api(?:-m)?\.sandbox\.paypal\.com/i',$link['href']);
+                return $this->is_sandbox;
+            }
+        }
+        $this->is_sandbox = false;
+        return false;
+    }
+}
+
+class WebhookEventHandlerException extends Exception {
+    public function __construct($message, $code = 0, Exception $previous = null) {
+        parent::__construct($message, $code, $previous);
+    }
+
+    public function __toString() {
+        return __CLASS__ . ": [{$this->code}]: {$this->message}" . PHP_EOL;
     }
 }

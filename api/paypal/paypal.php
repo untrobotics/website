@@ -128,18 +128,12 @@ class PayPalCustomApi
     /**
      * Gets order details
      * @param string $order_id ID of the order to retrieve
-     * @param string|null ...$fields Specific fields to retrieve. If none are provided, the entire order detail will be returned
      * @return string|null JSON-encoded string with order details or null if an access token couldn't be retrieved
      * @throws PayPalCustomApiException Throws an error on cURL error or non-success response is received from PayPal
      */
-    public function get_order_info(string $order_id, ?string ...$fields): ?string {
-        $uri = '/v2/checkout/orders/$1$2';
-        if (isset($fields) && count($fields) !== 0) {
-            $query_params = '?fields=' . implode(',', $fields);
-        }
+    public function get_order_info(string $order_id): ?string {
+        $uri = '/v2/checkout/orders/$1';
         $headers = ['Content-Type: application/json'];
-        if (isset($query_params))
-            return $this->send_request($uri, 'GET', false, $headers, $order_id, $query_params);
         return $this->send_request($uri, 'GET', false, $headers, $order_id);
     }
 
@@ -164,6 +158,17 @@ class PayPalCustomApi
         );
 
         return $this->send_request('/v2/checkout/orders/$1/capture', 'POST', $data, $headers, $order_id);
+    }
+
+    /**
+     * Gets payment details
+     * @param string $payment_id The PayPal-generated ID for the captured payment.
+     * @return string|null JSON-encoded string with order details or null if an access token couldn't be retrieved
+     * @throws PayPalCustomApiException Throws an error on cURL error or non-success response is received from PayPal
+     */
+    public function get_payment_details(string $payment_id): ?string{
+        $headers = ['Content-Type: application/json'];
+        return $this->send_request('/v2/payments/captures/$1', 'GET', false, $headers, $payment_id);
     }
 
     /**
