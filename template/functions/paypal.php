@@ -213,19 +213,20 @@ function get_order_status_internal(string $order_id): ?string {
  * @param $has_dues bool A boolean representing whether this order has dues or not. Defaults to false
  * @return bool True if the email received an HTTP success code. False otherwise. See {@see email()} for more information
  */
-function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = false): bool {
+function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = false) {
     $payer = $paypal_order_info['payer'];
-    $payment_capture = $paypal_order_info['purchase_units']['payments']['captures'][0];
+    $payment_capture = $paypal_order_info['purchase_units'][0]['payments']['captures'][0];
     $amount_paid = $payment_capture['seller_receivable_breakdown']['gross_amount']['value'];
     $payment_id = $payment_capture['id'];
     $term_string = $paypal_order_info['term_string'];
 
     // gets a comma-delimited string with the item names to use as "Order Name" in the receipt
     $item_names = [];
-    foreach ($paypal_order_info['purchase_units']['items'] as $item) {
+    foreach ($paypal_order_info['purchase_units'][0]['items'] as $item) {
         $item_names[] = $item['name'];
     }
     $item_names_str = implode(', ', $item_names);
+    $item_names_str = rtrim($item_names_str,', ');
 
     // this part is the same regardless of order type
     $email_body = "<div style=\"position: relative;max-width: 100vw;text-align:center;\">" .
@@ -238,7 +239,7 @@ function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = fa
 
     // sets the email subject and the thank you line for the email body based on order type
     if ($has_dues) {
-        if (isset($printful_order_info)) {
+        if (isset($printful_order_info) && count($printful_order_info) > 0) {
             $subject = "Receipt for your UNT Robotics dues payment and purchase of {$printful_order_info['order_name']}";
             $email_body .= "	<p>Thank you for paying your UNT Robotics dues and <strong>{$printful_order_info['order_name']} - {$printful_order_info['order_variant_name']}</strong> from our store. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>";
         } else {
@@ -269,7 +270,7 @@ function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = fa
         $email_body .= "			<li><strong>Semester</strong> {$term_string}</li>";
     }
     // add Product ID and Shipping Service to the receipt if there's a Printful order
-    if (isset($printful_order_info)) {
+    if (isset($printful_order_info) && count($printful_order_info) > 0) {
         //todo: create the printful_order_info array in handlers/printful
 
         // Numbers the products if there are multiple
@@ -295,7 +296,7 @@ function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = fa
         $email_body .= "	<p>If you need any assistance with your payment or with receiving the correct role, please reach out to <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a> or contact us <a href=\"" . DISCORD_INVITE_URL . "\">on Discord</a>.</p>";
 
     }
-    if (isset($printful_order_info)) {
+    if (isset($printful_order_info) && count($printful_order_info) > 0) {
         $email_body .= " <p>If you need any assistance with your merchandise order, please reach out to <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a>.</p>";
     }
 
@@ -318,4 +319,5 @@ function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = fa
             ]
         ]
     );
+
 }

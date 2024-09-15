@@ -100,7 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                                     item_name, 
                                     external_id,
                                     uid,
-                                    custom_data
+                                    custom_data, 
+                                    status
                                 FROM 
                                     paypal_orders 
                                 LEFT JOIN 
@@ -129,6 +130,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
             $printful_orders = [];
             // go over each item and handle it
             $item = $rows->fetch_assoc();
+            if($item['status']==='captured'){
+//                AdminBot::send_message("Received a duplicate webhook event for order ID {$order_id}. Ignoring");
+                die();
+            }
             while ($item !== null) {
                 switch ($item['item_type']) {
                     case 'dues':
@@ -158,11 +163,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
 
                 $item = $rows->fetch_assoc();
             }
-//            $email_send_status = email_receipt($order_info,$printful_orders, isset($dues));
-//            if ($email_send_status) {
-//                /** @noinspection PhpConditionAlreadyCheckedInspection */
-//                payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
-            //}
+            $email_send_status = email_receipt($order_info,$printful_orders, isset($dues));
+            if ($email_send_status) {
+                /** @noinspection PhpConditionAlreadyCheckedInspection */
+                payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
+            }
             break;
         }
         default:
