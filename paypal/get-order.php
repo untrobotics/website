@@ -110,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $custom->year = $untrobotics->get_current_year();
 
             // add another semester
-            if ($custom->semester_count > 0) {
+            if ($custom->semester_count > 1) {
                 $custom->extra_semester = $untrobotics->get_next_term();
 
                 // set year to next year if the next term is Spring
