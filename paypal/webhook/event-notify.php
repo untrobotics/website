@@ -1,20 +1,24 @@
 <?php
 // this file is the PayPal webhook endpoint
-function payment_log($message) {
-    file_put_contents('logs/ipn.log', '[' . date('c', time()) . '] ' . $message . PHP_EOL, FILE_APPEND);
+
+/**
+ * Puts a message in the PayPal webhook log file
+ * @param $message mixed Message to put in the log file. Should be interpretable as a string
+ */
+function payment_log($message): void {
+    file_put_contents('logs/paypal-webhook.log', '[' . date('c', time()) . '] ' . $message . PHP_EOL, FILE_APPEND);
 }
 
-require_once('../../api/discord/bots/admin.php');
-require_once('../../api/paypal/webhook.php');
-require_once('../../template/functions/paypal.php');
-require_once('../../template/top.php');
+require_once('../../api/discord/bots/admin.php');   // used to send messages to the officer channel. Specifically, for donation notifications
+require_once('../../api/paypal/webhook.php');   // used to verify the webhook event with PayPal's API
+require_once('../../template/functions/paypal.php'); // used to email a receipt to the payer
+require_once('../../template/top.php'); // used for access to $db
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
 
     // get event
     $event = new PaypalWebhookEvent(file_get_contents('php://input'));
 
-//    AdminBot::send_message("Received message on webhook: {$event->raw}", DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
     // verify the event. Tries with PayPal's API before using the CRC
     try {
         try {
@@ -35,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
         error_log("Received a webhook event that couldn't be verified. Webhook event ID: {$event->payload['id']}. Payload: " . print_r($event->payload, true));
         die();
     }
-//    AdminBot::send_message('Message verified', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
 
     // perform actions based on what event occurred
     switch ($event->payload['event_type']) {
@@ -49,12 +52,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
 
             // db error
             if ($status === null) {
+                // send an error status since PayPal will resend webhook events a couple of times if a non-success is returned
                 http_response_code(500);
                 error_log("Failed to fetch PayPal order {$order_id} status from the db: {$db->error}");
                 die();
             }
+
             // order doesn't exist in the db
             if (!$status) {
+                // don't send an error status to PayPal since this can't be fixed with a webhook event resend. This may need to alert a financial officer to fix it
                 error_log("Could not find PayPal order {$order_id} in the db.");
                 die();
             }
@@ -67,21 +73,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
 
             // change order status to approved
             if (!$db->query("UPDATE paypal_orders SET status = 'approved' where paypal_order_id = '{$order_id}'")) {
+                http_response_code(500);
                 error_log("Failed to update PayPal order {$order_id} status to captured: {$db->error}");
+                die();
             }
 
             // capture payment
-//            AdminBot::send_message('Trying to capture payment', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
-
             $paypal = new PayPalCustomApi();
             $result = json_decode($paypal->capture_payment($order_id), true);
 
             if ($result['status'] !== 'COMPLETED') {
+                http_response_code(500);    // not sure if a 500 is correct since it may be an issue with the API
                 error_log("Issue capturing payment for order ID {$order_id}. Order status is {$result['status']} instead of COMPLETED");
-                http_response_code(500);
             } else {
                 http_response_code(200);
-//                AdminBot::send_message('Payment captured', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
             }
             break;
         }
@@ -93,7 +98,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
             // this info is used in the handlers, but we need to fetch order details to get the payment ID so there's no reason to pass it
             /*$order_total = Currency::from_string($event->payload['resource']['supplementary_data']['seller_receivable_breakdown']['gross_amount']['value']);
             $paypal_fee =  Currency::from_string($event->payload['resource']['supplementary_data']['seller_receivable_breakdown']['paypal_fee']['value']);*/
+
+
             global $db;
+            // fetch our commitments to fulfill for the order
             $rows = $db->query("SELECT 
                                     paypal_items.id AS item_id, 
                                     item_type, 
@@ -118,31 +126,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                 error_log("Paypal Order not found for order ID {$order_id}");
                 die();
             }
-            if (!$db->query("UPDATE paypal_orders SET status = 'captured' where paypal_order_id = '{$order_id}'")) {
-                error_log("Failed to update PayPal order {$order_id} status to captured: {$db->error}");
-            }
+
+
+            // attempt to get info for this order
             try {
                 $order_info = json_decode($event->get_order_info($order_id), true);
             } catch (PayPalCustomApiException $e) {
                 error_log("Failed to fetch order information for ID {$order_id}: {$e->getMessage()}");
                 die();
             }
+
+            // attempt to update status of order in our database
+            if (!$db->query("UPDATE paypal_orders SET status = 'captured' where paypal_order_id = '{$order_id}'")) {
+                error_log("Failed to update PayPal order {$order_id} status to captured: {$db->error}");
+            }
+
+            // array of Printful orders info returned by the Printful payment handler
             $printful_orders = [];
-            // go over each item and handle it
             $item = $rows->fetch_assoc();
-            if($item['status']==='captured'){
-//                AdminBot::send_message("Received a duplicate webhook event for order ID {$order_id}. Ignoring");
+
+            // don't do anything if the order has already been marked as captured in the db
+            if ($item['status'] === 'captured') {
                 die();
             }
+            // go over each item and handle it
             while ($item !== null) {
                 switch ($item['item_type']) {
                     case 'dues':
                     {
                         require_once('handlers/dues.php');
                         $dues = true;
-//                        AdminBot::send_message("Handling dues payment in order {$order_id}",DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
                         \DUES\handle_payment_notification($order_info, json_decode($item['custom_data'], true), $item['uid'], $order_id);
-//                        AdminBot::send_message('Adding Good Standing role', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
                         break;
                     }
                     case 'printful_product':
@@ -150,20 +164,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                         require_once('handlers/printful.php');
                         //todo
 //                        $printful_orders[] = \PRINTFUL\handle_payment_notification($event, json_decode($item['custom_data'],true));
-//                        AdminBot::send_message('Creating Printful order', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
                         break;
                     }
                     case 'donation':
                     {
-//                        AdminBot::send_message('Received donation. Doing nothing', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
-//                        http_response_code(200);
-//                        die();
+                        AdminBot::send_message("Received donation from {$order_info['payer']['name']['given_name']} {$order_info['payer']['name']['surname']} ({$order_info['payer']['email_address']}).");
                     }
                 }
 
                 $item = $rows->fetch_assoc();
             }
-            $email_send_status = email_receipt($order_info,$printful_orders, isset($dues));
+
+            // email payer the receipt
+            $email_send_status = email_receipt($order_info, $printful_orders, isset($dues));
             if ($email_send_status) {
                 /** @noinspection PhpConditionAlreadyCheckedInspection */
                 payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");

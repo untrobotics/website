@@ -13,11 +13,11 @@ use WebhookEventHandlerException;
 require_once(__DIR__ . "/printful.php");
 
 /**
- *
- * @param array $order_info PayPal order info. JSON-decoded associative array. After function call, adds a field called "term_string"
- * @param mixed $custom Custom data for the order
+ * Handles a dues payment notification. Adds information to the dues_payments table and sends some messages to the officer Discord channel
+ * @param array $order_info PayPal order info as a JSON-decoded associative array. Use {@see \PayPalCustomApi::get_order_info()} to easily get the order info. After function call, adds a field called "term_string" to the array.
+ * @param mixed $custom Custom data for the order. Used fields are 'include_tshirt', 'semester', 'year', 'extra_year' and 'extra_semester'. If 'extra_semester' is not set, 'extra_year' is ignored
  * @param int $uid The user ID the dues payment is associated with
- * @param string $order_id The order ID of the order
+ * @param string $order_id The PayPal order ID of the order. This is not the ID of the order in the paypal_orders table; this is the ID that PayPal generates
  * @return void
  * @throws WebhookEventHandlerException Throws if there are issues with the database or data validation fails
  */
@@ -25,7 +25,7 @@ function handle_payment_notification(array &$order_info, $custom, int $uid, stri
 
     global $db, $untrobotics;
 
-    // get dues config price to verify payment amount
+    // get dues price from dues_config table to verify payment amount
     $q = $db->query("SELECT `key`,`value` FROM dues_config WHERE `key` = 'semester_price' OR `key` = 't_shirt_dues_purchase_price'");
     if (!$q || $q->num_rows !== 2) {
         AdminBot::send_message("Unable to determine the dues payment price (Webhook Event)");
@@ -43,38 +43,46 @@ function handle_payment_notification(array &$order_info, $custom, int $uid, stri
         }
     );
 
+    // puts the expected prices in variables
     $t_shirt_dues_purchase_price = $mapped_config['t_shirt_dues_purchase_price'];
     $single_semester_dues_price = $mapped_config['semester_price'];
 
+    // determine if a dues shirt was bought
     $is_tshirt_included = !empty($custom['include_tshirt']) && $custom['include_tshirt'] != false;
-    var_dump($custom, $is_tshirt_included);
+    var_dump($custom, $is_tshirt_included); // not sure what this does
 
     // array to store info on each term (semester) paid for
     $paid_for_terms = array();
 
+    // dues_term_n refers to the semester number, based on Semester constants (see template/classes/untrobotics.php)
     $dues_term_n = $custom['semester'];
     $dues_term = Semester::get_name_from_value($dues_term_n);
-    $dues_year = $custom['year'];
+    $dues_year = $custom['year'];   // year the dues payment is for
 
+    // paid_for_terms is used to insert rows into the dues_payments table
     $paid_for_terms[0] = new \stdClass();
     $paid_for_terms[0]->dues_term = $dues_term;
     $paid_for_terms[0]->dues_term_n = $dues_term_n;
     $paid_for_terms[0]->dues_year = $dues_year;
 
+    // term_string is used for the receipt to tell the payer which semester(s) they paid for
     $term_string = ucfirst(strtolower($dues_term)) . ' ' . $dues_year;
 
-
+    // expected payment amount. This is gross - discounts i.e., excludes fees, taxes, and CoGS
     $expected_amount = 0;
+    // add dues shirt price to expected payment amount
     if ($is_tshirt_included) {
         $expected_amount += $t_shirt_dues_purchase_price;
     }
+    // add a single semester's dues price to the expected payment amount
     $expected_amount += $single_semester_dues_price;
-//	if (isset($payment_info->options[2]) && isset($payment_info->options[3])) {
+
+    // extra_semester is only used if the user paid for Spring and Fall
+    // add info for another dues payment
     if (isset($custom['extra_semester'])) {
-        // dues have been paid for the full year
         $expected_amount += $single_semester_dues_price;
 
-       $extra_dues_year = $custom['extra_year'];
+        $extra_dues_year = $custom['extra_year'];
         $extra_dues_term_n = $custom['extra_semester'];
         $extra_dues_term = Semester::get_name_from_value($extra_dues_term_n);
         $paid_for_terms[1] = new stdClass();
@@ -82,9 +90,10 @@ function handle_payment_notification(array &$order_info, $custom, int $uid, stri
         $paid_for_terms[1]->dues_term_n = $extra_dues_term_n;
         $paid_for_terms[1]->dues_year = $extra_dues_year;
 
+        // append another semester to term_string
         $term_string .= ' & ' . ucfirst(strtolower($extra_dues_term)) . ' ' . $extra_dues_year;
     }
-    $c = count($order_info);
+    // sets term_string in order_info so that it can be used for the receipt
     $order_info['term_string'] = $term_string;
 
     $payment_capture = $order_info['purchase_units'][0]['payments']['captures'][0];
@@ -101,11 +110,14 @@ function handle_payment_notification(array &$order_info, $custom, int $uid, stri
     }
     $r = $q->fetch_array(MYSQLI_ASSOC);
 
+    // ignore if the amount paid is nonzero
     if ($amount_paid > 0) {
+        // throw an error if the user didn't pay the expected amount
         if ($amount_paid != $expected_amount) {
             throw new WebhookEventHandlerException("[{$order_id}]: Amount paid did not match the expected amount ({$amount_paid} vs {$expected_amount})");
         }
 
+        // add each term to the dues_payments table
         foreach ($paid_for_terms as $term) {
             $q = $db->query('INSERT INTO dues_payments (name, email, euid, amount, fee, txid, dues_term, dues_year, uid)
             VALUES (
@@ -126,10 +138,13 @@ function handle_payment_notification(array &$order_info, $custom, int $uid, stri
                 payment_log("[{$order_id}] Successfully created entry in the dues payments table (q: " . intval($q) . ") for term ({$term->dues_term} {$term->dues_year})");
             }
         }
+
+        // payer is only used to send dues notification message to the officer channel
         $payer = $order_info['payer'];
         /*$payer['name']['given_name'] . ' ' . $payer['name']['surname']*/
         AdminBot::send_message("(Webhook) Alert: Successfully received dues payment from {$r['name']} (#$uid), paid for by {$payer['name']['given_name']} {$payer['name']['surname']}. # Semesters: " . count($paid_for_terms));
 
+        // sends a message to the officer channel with the total dues received for the academic year
         $sum = "UNKNOWN";
         if ($untrobotics->get_current_term() == Semester::AUTUMN) {
             // get dues payments from this semester
@@ -168,7 +183,7 @@ function handle_payment_notification(array &$order_info, $custom, int $uid, stri
         }
         AdminBot::send_message("Amount received in dues so far this academic year: \${$sum}");
     } else {
-        // Might be removable. This may be sent by another PayPal webhook event
+        // todo: Might be removable. This may be sent by another PayPal webhook event. Payment.Capture.Refunded or Payment.Capture.Reversed
         AdminBot::send_message("(Webhook) Alert: Received a negative or zero amount payment capture. This usually indicates some kind of reversal/refund. Order ID: [{$order_id}].");
     }
 }

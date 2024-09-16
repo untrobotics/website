@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . '/../../template/config.php');
-require_once(__DIR__ . '/../../template/constants.php');
+require_once(__DIR__ . '/../../template/constants.php');    // used to get the right API URL based on environment
 require_once(__DIR__ . '/api-json-objects.php');
 
 /**
@@ -35,7 +35,7 @@ class PayPalCustomApi
     private $access_token;
 
 
-    // This was supposed to store the scope of the OAuth token, but we can't really do much with it
+    // This was supposed to store the scope of the OAuth token, but PayPal doesn't have an easy-to-access list of scopes, so it's the same everytime
     //private $scope;
 
     /**
@@ -304,7 +304,9 @@ class PayPalCustomApi
 
 }
 
-// is this really necessary?
+/**
+ * Generic exception class for PayPal API errors.
+ */
 class PayPalCustomApiException extends Exception
 {
     public function __construct($message = "", $code = 0, Throwable $previous = null) {
@@ -316,6 +318,7 @@ class PayPalCustomApiException extends Exception
     }
 }
 
+//todo: delete below when #158 is approved
 function insert_args(string $endpoint, ...$args): string {
     if (count($args) === 0) {
         return $endpoint;

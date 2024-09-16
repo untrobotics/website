@@ -2,11 +2,11 @@
 // this file contains various helper functions
 
 /**
+ * Gets a payment button whose items change due to DOM manipulations. For orders that our based only on the page, see {@see get_payment_button_constant()}
  * @param string $text Text to display on the button
  * @param string[] $dom_selectors Selectors with the item identifiers to add to the order. Item identifiers should be stored in the 'item' attribute
  * @param string $return_uri URI to return the user to after order approval
  * @param string $cancel_uri URI to return the user to after order cancellation
- * @return void
  */
 function get_payment_button(string $text, array $dom_selectors, string $return_uri, string $cancel_uri) {
     echo '<div class="paypal-button-container">
@@ -189,9 +189,9 @@ function get_payment_button_constant(string $text, array $item_names, array $var
 }
 
 /**
- * Gets an order's status from the database
+ * Gets an order's status from our database. Specific table: paypal_orders
  * @param string $order_id PayPal order ID
- * @return false|null|string The order status
+ * @return false|null|string The order status. Null if a database error occurred. False if no order with that ID could be found.
  */
 function get_order_status_internal(string $order_id): ?string {
     require_once(__DIR__ . '/../top.php');
@@ -213,11 +213,12 @@ function get_order_status_internal(string $order_id): ?string {
  * @param $has_dues bool A boolean representing whether this order has dues or not. Defaults to false
  * @return bool True if the email received an HTTP success code. False otherwise. See {@see email()} for more information
  */
-function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = false) {
+function email_receipt(array &$paypal_order_info, ?array $printful_order_info, bool $has_dues = false): bool {
     $payer = $paypal_order_info['payer'];
     $payment_capture = $paypal_order_info['purchase_units'][0]['payments']['captures'][0];
     $amount_paid = $payment_capture['seller_receivable_breakdown']['gross_amount']['value'];
     $payment_id = $payment_capture['id'];
+    // this is set in the dues payment handler
     $term_string = $paypal_order_info['term_string'];
 
     // gets a comma-delimited string with the item names to use as "Order Name" in the receipt
@@ -228,7 +229,7 @@ function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = fa
     $item_names_str = implode(', ', $item_names);
     $item_names_str = rtrim($item_names_str,', ');
 
-    // this part is the same regardless of order type
+    // this part is the same regardless of order type... this is the start of the email body
     $email_body = "<div style=\"position: relative;max-width: 100vw;text-align:center;\">" .
         '<img src="cid:untrobotics-email-header">' .
 
@@ -239,25 +240,32 @@ function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = fa
 
     // sets the email subject and the thank you line for the email body based on order type
     if ($has_dues) {
+        // has printful order
         if (isset($printful_order_info) && count($printful_order_info) > 0) {
             $subject = "Receipt for your UNT Robotics dues payment and purchase of {$printful_order_info['order_name']}";
             $email_body .= "	<p>Thank you for paying your UNT Robotics dues and <strong>{$printful_order_info['order_name']} - {$printful_order_info['order_variant_name']}</strong> from our store. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>";
-        } else {
+        } else { // does not have printful order
             $subject = 'Receipt for your UNT Robotics dues payment';
             $email_body .= "	<p>Thank you for paying your UNT Robotics dues. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role.</p>";
         }
-    } else {
+    } else { // no dues, assume printful
+        // throw error if no printful order info given
+        if(!isset($printful_order_info)){
+            throw new InvalidArgumentException('Unknown order item found when trying to construct receipt email!');
+        }
         $subject = "Receipt for your purchase of {$printful_order_info['order_name']}";
         $email_body .= "	<p>Thank you for your purchase of <strong>{$printful_order_info['order_name']} - {$printful_order_info['order_variant_name']}</strong> from our store. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>";
     }
 
     // this part is the same regardless of order type
+    // Adds the top part of the receipt, including PayPal payment ID, the date/time of the payment capture, amount paid, name of the payer, and the order name
+    // Order name is a comma-delimited list of item names in the order
     $email_body .= '</div>' .
 
         '	<div></div>' .
 
         "	<div style=\"display: inline-block;padding: 15px;border: 1px solid #bdbdbd;border-radius: 10px;text-align: left;\">" .
-        "		<h5 style=\"font-size: 12pt;margin: 0;font-weight: 600;\">ðŸ§¾ Payment Receipt</h5>" .
+        "		<h5 style=\"font-size: 12pt;margin: 0;font-weight: 600;\">🧾 Payment Receipt</h5>" .
         "		<ul>" .
         "			<li><strong>PayPal Payment ID</strong> {$payment_id}</li>" .
         "			<li><strong>Date/Time</strong> " . date('l jS \of F Y h:i:s A T', strtotime($payment_capture['create_time'])) . "</li>" .
@@ -300,6 +308,7 @@ function email_receipt(&$paypal_order_info, $printful_order_info, $has_dues = fa
         $email_body .= " <p>If you need any assistance with your merchandise order, please reach out to <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a>.</p>";
     }
 
+    // final closing tag, specifically closes the div from line 233
     $email_body .= "</div>";
 
     // send email and return the send status

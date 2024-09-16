@@ -1,6 +1,9 @@
 <?php
 require_once(__DIR__ . "/paypal.php");
 
+/**
+ * Class to interact with webhook event request body.
+ */
 class PaypalWebhookEvent extends PayPalCustomApi
 {
 
@@ -13,20 +16,28 @@ class PaypalWebhookEvent extends PayPalCustomApi
      * @var string The raw data sent to the webhook
      */
     public $raw;
+
     /**
      * @var array JSON decoded associative array of the data received. The same data as {@see $raw}, but converted to an array
      */
-
     public $payload;
+
+    /**
+     * @var array|false HTTP headers received. Stores the data returned by {@see getallheaders()}
+     */
     public $headers;
 
 
+    /**
+     * @var bool True if the webhook event is from sandbox (development). False otherwise.
+     * See {@see PaypalWebhookEvent::is_sandbox()} for how this is determined
+     */
     private $is_sandbox;
 
     /**
      * @param string $raw The raw data sent to the webhook. The data can be obtained from php://input by using {@see file_get_contents()}
-     * @param string $paypal_client_id The client ID
-     * @param string $paypal_client_secret The secret key
+     * @param string $paypal_client_id The client ID. Defaults to the constant defined in config.php
+     * @param string $paypal_client_secret The secret key. Defaults to the constant defined in config.php
      */
     public function __construct(string $raw, $paypal_client_id = PAYPAL_SANDBOX_API_CLIENT_ID, $paypal_client_secret = PAYPAL_SANDBOX_API_SECRET_KEY_1) {
         parent::__construct($paypal_client_id, $paypal_client_secret);
@@ -89,13 +100,19 @@ class PaypalWebhookEvent extends PayPalCustomApi
         return $result["verification_status"] === "SUCCESS";
     }
 
-    public function is_sandbox(): bool{
-        if(isset($this->is_sandbox)) {
+    /**
+     * Whether the webhook event is from the sandbox API or production. This is determined by the URL that created the event, which will have 'sandbox' in the subdomain.
+     * If this method has already been called once, then the previous value will be returned.
+     * @return bool True if the webhook event is from sandbox (development). False if it's from production.
+     */
+    public function is_sandbox(): bool {
+        if (isset($this->is_sandbox)) {
             return $this->is_sandbox;
         }
-        foreach($this->payload['links'] as $link){
-            if($link['rel']==='self'){  // self refers to the API endpoint that caused the event
-                $this->is_sandbox =preg_match('/^https?:\/\/api(?:-m)?\.sandbox\.paypal\.com/i',$link['href']);
+        foreach ($this->payload['links'] as $link) {
+            if ($link['rel'] === 'self') {  // self refers to the API endpoint that caused the event
+                // PayPal has an 'api-m' and a 'api' subdomain, although it's not stated what the difference is
+                $this->is_sandbox = preg_match('/^https?:\/\/api(?:-m)?\.sandbox\.paypal\.com/i', $link['href']);
                 return $this->is_sandbox;
             }
         }
@@ -104,7 +121,12 @@ class PaypalWebhookEvent extends PayPalCustomApi
     }
 }
 
-class WebhookEventHandlerException extends Exception {
+/**
+ * Generic exception class for webhook handler errors.
+ * Replaces the IPNHandlerException that was used with the PayPal ButtonManager SDK.
+ */
+class WebhookEventHandlerException extends Exception
+{
     public function __construct($message, $code = 0, Exception $previous = null) {
         parent::__construct($message, $code, $previous);
     }

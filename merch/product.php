@@ -278,6 +278,8 @@ function get_variant_variant($variant_name) {
 							</ul>
 							<div class="offset-top-20">
 								<?php
+                                    require_once('../template/functions/paypal.php');
+                                    get_payment_button_constant('Buy Now', [$product_name],[$variant_name],'/merch/buy/complete',$_SERVER['REQUEST_URI']);/*
 									$custom = serialize(array(
 										'source' => 'PRINTFUL_PRODUCT',
 										'product' => $external_product_id,
@@ -306,11 +308,8 @@ function get_variant_variant($variant_name) {
 									    echo "button success";
 										echo $payment_button->get_button()->button;
 									} else {
-										// TODO: Alert
-										?>
-								<div class="alert alert-danger">An error occurred loading the payment button...</div>
-										<?php
-									}
+										// TODO: Alert*/
+                                    //}
 								?>
 							</div>
 						</div>
