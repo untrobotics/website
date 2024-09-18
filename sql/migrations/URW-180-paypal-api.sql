@@ -27,3 +27,6 @@ VALUES ('printful_product', 25.00, 0.00, 0.00, 'Dues Shirt', 10.00, 'dues', '632
 
 INSERT INTO paypal_items(item_type, sales_price, cost, tax, item_name, discount, discount_required_item, external_id, variant_name)
 VALUES ('printful_product', 25.00, 0.00, 0.00, 'Dues Shirt', 10.00, 'dues', '632b8e41a867e6', '4XL');
+
+INSERT INTO paypal_items_config(ttl, config_name)
+VALUES(86400, 'printful_product');

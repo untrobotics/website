@@ -49,6 +49,7 @@ if ($product_can_be_handled) {
 	foreach ($product->get_variants() as $index => $variant) {
 		if ($variant->get_variant_id() == $variant_id) {
 			$selected_product_variant_index = $index;
+            $this_variant_name = $variant->get_name();
 			break;
 		}
 	}
@@ -63,6 +64,7 @@ if ($product_can_be_handled) {
 	$back_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::BACK);
 	
 	head("Buy {$product->get_name()}", true);
+    insert_paypal_item(['item_name'=>$product->get_name(),'item_type'=>'printful_product','sales_price'=>$product->get_product_price(),'variant_name'=>$this_variant_name, 'cost'=>'0.00','tax'=>'0.00'], 'printful_product');
 } else {
 	head("Invalid Product", true);
 }
@@ -180,6 +182,7 @@ function get_variant_variant($variant_name) {
 				<h1 class="text-center text-lg-left"><?php echo htmlspecialchars($product->get_name()); ?></h1>
 				<div class="product-price"><?php
 					$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
+                    var_dump($product->get_product_price());
 					echo $fmt->formatCurrency($product->get_product_price(), $product->get_product_currency());
 					?><small> &amp; <strong>FREE</strong> SHIPPING</small>
 				</div>
@@ -279,7 +282,7 @@ function get_variant_variant($variant_name) {
 							<div class="offset-top-20">
 								<?php
                                     require_once('../template/functions/paypal.php');
-                                    get_payment_button_constant('Buy Now', [$product_name],[$variant_name],'/merch/buy/complete',$_SERVER['REQUEST_URI']);/*
+                                    get_payment_button_constant('Buy Now', [$product_name],[$this_variant_name],'/merch/buy/complete',$_SERVER['REQUEST_URI']);/*
 									$custom = serialize(array(
 										'source' => 'PRINTFUL_PRODUCT',
 										'product' => $external_product_id,

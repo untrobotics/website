@@ -18,6 +18,17 @@ CREATE TABLE `paypal_orders`
   AUTO_INCREMENT = 47
   DEFAULT CHARSET = latin1;
 
+
+CREATE TABLE `paypal_items_config`
+(
+    `id`          int(11)      NOT NULL AUTO_INCREMENT,
+    `ttl`         int(6)       NOT NULL,
+    `config_name` varchar(255) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 47
+  DEFAULT CHARSET latin1;
+
 CREATE TABLE `paypal_items`
 (
     `id`                     int(11)                NOT NULL AUTO_INCREMENT,
@@ -30,12 +41,16 @@ CREATE TABLE `paypal_items`
 #   `currency_code` enum ('USD')  NOT NULL DEFAULT 'USD',
 #   `description` varchar(127),
     `external_id`            varchar(128)           NULL,
-    `item_name`              varchar(255)           NOT NULL,   -- generic name, like "Dues" or "Dues Shirt"
-    `variant_name`          varchar(255)            NULL,           -- Variant name, like "2 semesters" or "XL"
-    PRIMARY KEY (`id`)
+    `item_name`              varchar(255)           NOT NULL,                            -- generic name, like "Dues" or "Dues Shirt"
+    `variant_name`           varchar(255)           NULL,                                -- Variant name, like "2 semesters" or "XL"
+    `last_updated`           timestamp                                     DEFAULT CURRENT_TIMESTAMP,
+    `config_id`              int(11)                NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`config_id`) REFERENCES paypal_items_config (id)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 47
   DEFAULT CHARSET = latin1;
+
 
 CREATE TABLE `paypal_order_item`
 (
