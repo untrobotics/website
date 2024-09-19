@@ -46,6 +46,7 @@ if (!empty($external_product_id)) {
 }
 
 if ($product_can_be_handled) {
+	$this_variant_name = $product_name;
 	foreach ($product->get_variants() as $index => $variant) {
 		if ($variant->get_variant_id() == $variant_id) {
 			$selected_product_variant_index = $index;
