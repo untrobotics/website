@@ -342,8 +342,22 @@ function insert_paypal_item(array $vals, ?string $config_name = null): ?bool {
     global $db;
 
     // check if item exists
-    $q = $db->query("SELECT paypal_items.id as item_id, ttl, last_updated FROM paypal_items LEFT JOIN paypal_items_config ON config_id = paypal_items_config.id WHERE item_name = {$db->real_escape_string($vals['item_name'])}");
+    $q = $db->query("SELECT 
+                            paypal_items.id as item_id,
+                            ttl, 
+                            last_updated 
+                        FROM 
+                            paypal_items
+                        LEFT JOIN
+                            paypal_items_config 
+                        ON 
+                            config_id = paypal_items_config.id 
+                        WHERE 
+                            item_name = '{$db->real_escape_string($vals['item_name'])}'
+                        AND 
+                            variant_name = '{$db->real_escape_string($vals['variant_name'])}'");
     if(!$q){
+        error_log("Error trying to fetch PayPal item from db: {$db->error}");
         return null;
     }
 
@@ -351,15 +365,20 @@ function insert_paypal_item(array $vals, ?string $config_name = null): ?bool {
         $cols = 'last_updated';
         $insert_vals = 'UTC_TIMESTAMP';
         if(!array_key_exists('config_id', $vals)){
-            $q = $db->query("SELECT id FROM paypal_items_config WHERE config_name = {$db->real_escape_string($config_name)}");
+            $q = $db->query("SELECT id FROM paypal_items_config WHERE config_name = '{$db->real_escape_string($config_name)}'");
             if(!$q){
+                error_log("Error trying to find a PayPal item config with name {$config_name}: {$db->error}");
                 return null;
             }
-            $vals['config_id'] = $q->fetch_assoc()['id'];
+            if($q->num_rows === 0)
+                error_log("Could not find PayPal item config with name {$config_name}");
+            else{
+                $vals['config_id'] = $q->fetch_assoc()['id'];
+            }
         }
         foreach($vals as $key => $val){
             $cols .= ", {$db->real_escape_string($key)}";
-            $insert_vals .= ", {$db->real_escape_string($val)}";
+            $insert_vals .= ", '{$db->real_escape_string($val)}'";
         }
 
         $query = "INSERT INTO paypal_items({$cols}) VALUES({$insert_vals})";
@@ -374,7 +393,7 @@ function insert_paypal_item(array $vals, ?string $config_name = null): ?bool {
 
         $set_vals = 'last_updated = UTC_TIMESTAMP';
         foreach($vals as $key => $val){
-            $set_vals .= ", {$db->real_escape_string($key)}={$db->real_escape_string($val)}";
+            $set_vals .= ", {$db->real_escape_string($key)}='{$db->real_escape_string($val)}'";
         }
 
         $query = "UPDATE paypal_items

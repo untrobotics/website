@@ -59,7 +59,7 @@ class PayPalCustomApi
      * @param string|null $discount The discount taken from the order, in currency amounts (i.e., not percentage of the price)
      * @param string $return_url URL to return the user upon order approval
      * @param string $cancel_url URL to return the user upon order cancellation
-     * @return string|null JSON-encoded string with order creation details or null if an access token couldn't be retrieved
+     * @return string|null|bool JSON-encoded string with order creation details or null if an access token couldn't be retrieved. Returns false if no items are passed
      * @throws PayPalCustomApiException Error if non-success code from PayPal API
      */
     public function create_order(array $items, string $total, string $subtotal, string $total_tax, $shipping_info = false, ?string $discount = null, string $return_url = 'https://untrobotics.com/', string $cancel_url = 'https://untrobotics.com/'): ?string {

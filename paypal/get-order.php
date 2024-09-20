@@ -61,6 +61,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         error_log("PayPal item db query failed: {$db->error}");
         die();
     }
+    if($q->num_rows < 1) {
+        http_response_code(404);
+        error_log("Could not find any items in the database with item and variant names: {$item_names_str}, {$variant_names_str}");
+        die();
+    }
+
     // list of PayPalItems
     $items = array();
     // subtotal of order
@@ -167,15 +173,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $p = new PayPalCustomApi();
     try {
         // create order
-        $order = json_decode($p->create_order(
+        $order = ($p->create_order(
             $items,
             (string)Currency::subtract_($subtotal, $discount),
             (string)$subtotal,
             new Currency(0, 0),
             $shipping_required,
-            $discount->is_zero() ? null : $discount, $request['return_url'], $request['cancel_url']),
-            true);
-
+            $discount->is_zero() ? null : $discount, $request['return_url'], $request['cancel_url']));
+        if(!isset($order)){
+            throw new Exception("Couldn't retrieve access token.");
+        } else if($order === false){
+            throw new Exception('No items found in order');
+        }
+        $order = json_decode($order, true);
     } catch (Exception $ex) {
         http_response_code(500);
         error_log("Failed to create order: {$ex->getMessage()}");

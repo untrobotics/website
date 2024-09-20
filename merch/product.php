@@ -4,6 +4,7 @@ require(BASE . '/api/printful/printful.php');
 require(BASE . '/template/functions/functions.php');
 //require(BASE . '/template/functions/payment_button.php');
 require(BASE . '/template/functions/paypal.php');
+
 $printfulapi = new PrintfulCustomAPI();
 
 $product = null;
@@ -24,7 +25,7 @@ if (!empty($external_product_id)) {
 		$product = $printfulapi->get_product('@' . $external_product_id);
 		//error_log("ID: " . $product->get_variants()[0]->get_product()->get_product_id());
 		$catalog_product = $printfulapi->get_catalog_product($product->get_variants()[0]->get_product()->get_product_id());
-		
+
 		//var_dump($product);
 		if (!empty($product_name)) {
 			$product_description = post_slug($product->get_name());
@@ -38,7 +39,7 @@ if (!empty($external_product_id)) {
 		$product_can_be_handled = false;
 		$validation_error = "Failed to retrieve the requested product.";
 	}
-	
+
 } else {
 	// validation error: null id
 	$product_can_be_handled = false;
@@ -46,24 +47,24 @@ if (!empty($external_product_id)) {
 }
 
 if ($product_can_be_handled) {
-	$this_variant_name = $product_name;
-	foreach ($product->get_variants() as $index => $variant) {
-		if ($variant->get_variant_id() == $variant_id) {
-			$selected_product_variant_index = $index;
-            $this_variant_name = $variant->get_name();
-			break;
-		}
-	}
-	
+    foreach ($product->get_variants() as $index => $variant) {
+        if ($variant->get_variant_id() == $variant_id) {
+            $selected_product_variant_index = $index;
+            break;
+        }
+    }
+
 	$selected_variant = $product->get_variants()[$selected_product_variant_index];
-	
+    // remove product name from variant name
+    $this_variant_name = preg_replace('@^' . preg_quote($product->get_name(),'@') . ' / (.*)$@i', '$1', $selected_variant->get_name());
+
 	$mockup_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::PREVIEW);
 	if ($mockup_file == null) {
 		// TODO
 		$mockup_file = "";
 	}
 	$back_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::BACK);
-	
+
 	head("Buy {$product->get_name()}", true);
     insert_paypal_item(['item_name'=>$product->get_name(),'item_type'=>'printful_product','sales_price'=>$product->get_product_price(),'variant_name'=>$this_variant_name, 'cost'=>'0.00','tax'=>'0.00'], 'printful_product');
 } else {
@@ -91,7 +92,7 @@ function get_variant_variant($variant_name) {
 	.merch-section > div:nth-child(2n) {
 		text-align: right;
 	}
-	
+
 	.merch-image {
 		display: inline-block;
 		max-width: 500px;
@@ -117,7 +118,7 @@ function get_variant_variant($variant_name) {
 		position: absolute;
 		display: inline-block;
 	}
-	
+
 	.blackbg {
 		background: black;
 		z-index: 2;
@@ -171,7 +172,7 @@ function get_variant_variant($variant_name) {
 		</div>
 	  </div>
 	</section>
-	
+
 	<?php if ($product_can_be_handled) { ?>
 	<section class="section-50">
 	  <div class="shell">
@@ -183,7 +184,6 @@ function get_variant_variant($variant_name) {
 				<h1 class="text-center text-lg-left"><?php echo htmlspecialchars($product->get_name()); ?></h1>
 				<div class="product-price"><?php
 					$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
-                    var_dump($product->get_product_price());
 					echo $fmt->formatCurrency($product->get_product_price(), $product->get_product_currency());
 					?><small> &amp; <strong>FREE</strong> SHIPPING</small>
 				</div>
@@ -192,10 +192,10 @@ function get_variant_variant($variant_name) {
 				<p class="merch-tagline"><span class="small">UNT Robotics Merchandise</span><span class="text-darker">Support UNT Robotics &amp; look dapper while doing it!</span></p>
 			</div>
 		</div>
-			  
+
 			<div class="range">
 			  <div class="cell-lg-12 merch-section">
-				  
+
 					<div class="range">
 						<div class="col-lg-6 col-md-12 col-lg-push-6">
 							<div class="merch-image">
@@ -282,8 +282,7 @@ function get_variant_variant($variant_name) {
 							</ul>
 							<div class="offset-top-20">
 								<?php
-                                    require_once('../template/functions/paypal.php');
-                                    get_payment_button_constant('Buy Now', [$product_name],[$this_variant_name],'/merch/buy/complete',$_SERVER['REQUEST_URI']);/*
+                                    get_payment_button_constant('Buy Now', [$product->get_name()],[$this_variant_name],'/merch/buy/complete',$_SERVER['REQUEST_URI']);/*
 									$custom = serialize(array(
 										'source' => 'PRINTFUL_PRODUCT',
 										'product' => $external_product_id,
@@ -318,10 +317,10 @@ function get_variant_variant($variant_name) {
 							</div>
 						</div>
 				  	</div>
-				  
+
 				</div>
 			  </div>
-		
+
 			</div>
 		  </div>
 		</div>
