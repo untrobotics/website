@@ -1,14 +1,15 @@
 <?php
 require('../template/top.php');
-require_once(BASE . '/template/functions/payment_button.php');
+//todo:
+require_once('../template/functions/paypal.php');
 head('Sponsorships', true);
 
-$payment_button = new PaymentButton(
+/*$payment_button = new PaymentButton(
     'UNT Robotics General Sponsorship or Donation',
     null,
     'Donate Now'
-);
-$payment_button->set_complete_return_uri('/sponsorships/donate/thank-you');
+);*/
+//$payment_button->set_complete_return_uri('/sponsorships/donate/thank-you');
 ?>
 <section class="section-50 section-md-75 section-lg-100">
     <div class="shell range-offset-1">
@@ -21,7 +22,7 @@ $payment_button->set_complete_return_uri('/sponsorships/donate/thank-you');
             </div>
         </div>
         <div class="cell-lg-12 offset-lg-top-50">
-            <?php echo $payment_button->get_button()->button; ?>
+<!--            todo: add payment button-->
         </div>
     </div>
 </section>

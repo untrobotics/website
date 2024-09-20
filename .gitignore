@@ -2,7 +2,7 @@ api/endpoint-example/groupme-endpoint-config.php
 template/config.php
 twilio/phone-numbers-config.php
 api/robots/tunnel-status/*
-paypal/logs/ipn.log
+paypal/logs/*.log
 paypal/logs/.htpasswd
 ip2location/*.BIN
 downloads/videos/*

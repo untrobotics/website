@@ -2,7 +2,6 @@
 require('../template/top.php');
 require(BASE . '/api/printful/printful.php');
 require(BASE . '/template/functions/functions.php');
-//require(BASE . '/template/functions/payment_button.php');
 require(BASE . '/template/functions/paypal.php');
 
 $printfulapi = new PrintfulCustomAPI();

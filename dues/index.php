@@ -192,22 +192,7 @@ footer(false);
     let fullYear = false;
     let tShirt = null;
 
-    function setNewButton() {
-        $('.dues-payment-button').html(cssLoader);
-        $.get(`/api/paypal/buttons/generator?t-shirt=${tShirt || ''}&full-year=${fullYear}`, (data) => {
-            if (data.cost !== getDuesCost()) {
-                $('.dues-payment-button').html('<div class="alert alert-danger">Unable to load payment button.</div>');
-                return;
-            }
-            $('.dues-payment-button').html(data.button);
-        })
-            .fail(error => {
-                $('.dues-payment-button').html('<div class="alert alert-danger">Unable to load payment button.</div>');
-            })
-    }
-
     $(document).ready(function () {
-        setNewButton();
         $('input[name="full-year"]').attr('variant', '1 Semester')
         $('#include-tshirt').attr('item', "")
     })

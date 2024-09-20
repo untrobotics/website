@@ -97,61 +97,7 @@ function handle_payment_notification(array $order_info, int $item_index, array $
 			throw new WebhookEventHandlerException("[{$order_id}]: The price of the fulfillment is higher than the revenue amount (cost: {$cost}) (revenue: {$amount_revenue}) (profit: {$profit})");
 		}
 		payment_log("[{$order_id}] Confirmed fulfillment cost is less than the revenue amount (cost: {$cost}) (revenue: {$amount_revenue}) (profit: {$profit})");
-		/*
-		$email_send_status = email(
-			$payment_info->payer_email,
-			"Receipt for your purchase of " . $order_name,
-			
-			"<div style=\"position: relative;max-width: 100vw;text-align:center;\">" .
-			'<img src="cid:untrobotics-email-header">' .
-			
-			'	<div></div>' .
-			
-			'<div style="text-align: left; max-width: 500px; display: inline-block;">' .
-			"	<p>Dear " . $payment_info->first_name . ' ' . $payment_info->last_name . ",</p>" .
-			"	<p>Thank you for your purchase of <strong>{$order_name} - {$order_variant_name}</strong> from our store. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>" .
-			'</div>' .
-			
-			'	<div></div>' .
-			
-			"	<div style=\"display: inline-block;padding: 15px;border: 1px solid #bdbdbd;border-radius: 10px;text-align: left;\">" .
-			"		<h5 style=\"font-size: 12pt;margin: 0;font-weight: 600;\">🧾 Payment Receipt</h5>" .
-			"		<ul>" .
-			"			<li><strong>Order #</strong> {$draft_order->get_id()}</li>" .
-			"			<li><strong>PayPal Transaction ID</strong> <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id={$payment_info->txn_id}\">{$payment_info->txn_id}</a></li>" .
-			"			<li><strong>Date/Time</strong> " . date('l jS \of F Y h:i:s A T', strtotime($payment_info->payment_date)) . "</li>" .
-			"			<li><strong>Payment Amount</strong> \${$amount_paid}</li>" .
-			"			<li><strong>Name</strong> {$payment_info->first_name} {$payment_info->last_name}</li>" .
-			"			<li><strong>Product ID</strong> {$sync_variant->get_external_id()}</li>" .
-			"			<li><strong>Shipping Service</strong> {$draft_order->get_shipping_service_name()}</li>" .
-			"		</ul>" .
-			"	</div>" .
-			"	<p></p>" .
-			"	<p>If you need any assistance with your order, please reach out to <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a>.</p>" .
-			"</div>",
-			
-			false,
-			null,
-			[
-				[
-					'content' => base64_encode(file_get_contents('../images/unt-robotics-email-header.jpg')),
-					'type' => 'image/jpeg',
-					'filename' => 'unt-robotics-email-header.jpg',
-					'disposition' => 'inline',
-					'content_id' => 'untrobotics-email-header'
-				]
-			]
-		);
 
-		if ($email_send_status) {
-			payment_log("[{$payment_info->txn_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
-		} else {
-			//throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
-			payment_log("[{$payment_info->txn_id}] Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
-			AdminBot::send_message("(Webhook) Alert: Failed to send e-mail receipt for order #{$draft_order->get_id()} [{$payment_info->txn_id}].");
-		}*/
-
-		
 		// create association in the database between tx id and printful order id
 		$q = $db->query('INSERT INTO printful_order_tx (txid, printful_order_id) VALUES ("' . $db->real_escape_string($order_id) . '", "' . $db->real_escape_string($draft_order->get_id()) . '")');
 		if (!$q) {
