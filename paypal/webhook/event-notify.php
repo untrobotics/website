@@ -109,7 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                                     external_id,
                                     uid,
                                     custom_data, 
-                                    status
+                                    status,
+                                    item_category,
+                                    variant_name
                                 FROM 
                                     paypal_orders 
                                 LEFT JOIN 
@@ -166,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                         require_once('handlers/printful.php');
                         //todo
                         AdminBot::send_message('Found a printful order!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
-//                        $printful_orders[] = \PRINTFUL\handle_payment_notification($event, json_decode($item['custom_data'],true));
+                        $printful_orders[] = \PRINTFUL\handle_payment_notification($order_info,$current_item_index,$item,$order_id,isset($dues),$event);
                         break;
                     }
                     case 'donation':
