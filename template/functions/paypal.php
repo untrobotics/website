@@ -242,8 +242,15 @@ function email_receipt(array &$paypal_order_info, ?array $printful_order_info, b
     if ($has_dues) {
         // has printful order
         if (isset($printful_order_info) && count($printful_order_info) > 0) {
-            $subject = "Receipt for your UNT Robotics dues payment and purchase of {$printful_order_info['order_name']}";
-            $email_body .= "	<p>Thank you for paying your UNT Robotics dues and <strong>{$printful_order_info['order_name']} - {$printful_order_info['order_variant_name']}</strong> from our store. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>";
+            $printful_order_name = '';
+            $items = '';
+            foreach($printful_order_info as $o){
+                $printful_order_name .= $o['order_name'];
+                $items .= $o['order_name'] . ' - ' . $o['variant_name'] . ', ';
+            }
+            $items = rtrim($items, ', ');
+            $subject = "Receipt for your UNT Robotics dues payment and purchase of {$printful_order_name}";
+            $email_body .= "	<p>Thank you for paying your UNT Robotics dues and <strong>{$items}</strong> from our store. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>";
         } else { // does not have printful order
             $subject = 'Receipt for your UNT Robotics dues payment';
             $email_body .= "	<p>Thank you for paying your UNT Robotics dues. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role.</p>";
@@ -253,8 +260,15 @@ function email_receipt(array &$paypal_order_info, ?array $printful_order_info, b
         if(!isset($printful_order_info)){
             throw new InvalidArgumentException('Unknown order item found when trying to construct receipt email!');
         }
-        $subject = "Receipt for your purchase of {$printful_order_info['order_name']}";
-        $email_body .= "	<p>Thank you for your purchase of <strong>{$printful_order_info['order_name']} - {$printful_order_info['order_variant_name']}</strong> from our store. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>";
+        $printful_order_name = '';
+        $items = '';
+        foreach($printful_order_info as $o){
+            $printful_order_name .= $o['order_name'];
+            $items .= $o['order_name'] . ' - ' . $o['variant_name'] . ', ';
+        }
+        $items = rtrim($items, ', ');
+        $subject = "Receipt for your purchase of {$printful_order_name}";
+        $email_body .= "	<p>Thank you for your purchase of <strong>{$items}</strong> from our store. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>";
     }
 
     // this part is the same regardless of order type
@@ -279,18 +293,18 @@ function email_receipt(array &$paypal_order_info, ?array $printful_order_info, b
     }
     // add Product ID and Shipping Service to the receipt if there's a Printful order
     if (isset($printful_order_info) && count($printful_order_info) > 0) {
-        //todo: create the printful_order_info array in handlers/printful
+
 
         // Numbers the products if there are multiple
         if(count($printful_order_info) > 1) {
             for ($i = 0; $i < count($printful_order_info); $i++) {
                 $item_num = $i + 1;
-                $email_body .= "			<li><strong>Product {$item_num}'s ID</strong> {$printful_order_info['variant_id']}</li>" .
-                    "			<li><strong>Product {$item_num}'s Shipping Service</strong> {$printful_order_info['shipping_service']}</li>";
+                $email_body .= "			<li><strong>Product {$item_num}'s ID</strong> {$printful_order_info[$i]['product_id']}</li>" .
+                    "			<li><strong>Product {$item_num}'s Shipping Service</strong> {$printful_order_info[$i]['shipping']}</li>";
             }
         } else{
-            $email_body .= "			<li><strong>Product ID</strong> {$printful_order_info['variant_id']}</li>" .
-                "			<li><strong>Shipping Service</strong> {$printful_order_info['shipping_service']}</li>";
+            $email_body .= "			<li><strong>Product ID</strong> {$printful_order_info[0]['product_id']}</li>" .
+                "			<li><strong>Shipping Service</strong> {$printful_order_info[0]['shipping']}</li>";
         }
     }
 

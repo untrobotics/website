@@ -66,7 +66,8 @@ if ($product_can_be_handled) {
 	$back_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::BACK);
 
 	head("Buy {$product->get_name()}", true);
-    insert_paypal_item(['item_name'=>$product->get_name(),'item_type'=>'printful_product','sales_price'=>$product->get_product_price(),'variant_name'=>$this_variant_name, 'cost'=>'0.00','tax'=>'0.00'], 'printful_product');
+    /** @noinspection PhpUndefinedVariableInspection */ // this if block is unreachable if catalog_product isn't set
+    insert_paypal_item(['item_name'=>$product->get_name(),'item_type'=>'printful_product','sales_price'=>$product->get_product_price(),'variant_name'=>$this_variant_name,'external_id'=>$selected_variant->get_variant_id(),'item_category'=>$catalog_product->get_type_name(), 'cost'=>'0.00','tax'=>'0.00'], 'printful_product');
 } else {
 	head("Invalid Product", true);
 }

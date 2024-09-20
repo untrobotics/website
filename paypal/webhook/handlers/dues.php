@@ -10,7 +10,6 @@ require_once(__DIR__ . '/../../../api/paypal/webhook.php');
 
 use WebhookEventHandlerException;
 
-require_once(__DIR__ . "/printful.php");
 
 /**
  * Handles a dues payment notification. Adds information to the dues_payments table and sends some messages to the officer Discord channel

@@ -40,9 +40,10 @@ CREATE TABLE `paypal_items`
     `cost`                   decimal(5, 2) UNSIGNED NOT NULL,                            -- how much the item costs us... dues are $0, whereas a t-shirt might be $15
 #   `currency_code` enum ('USD')  NOT NULL DEFAULT 'USD',
 #   `description` varchar(127),
-    `external_id`            varchar(128)           NULL,
+    `external_id`            varchar(128)           NULL,   -- variant ID for Printful
     `item_name`              varchar(255)           NOT NULL,                            -- generic name, like "Dues" or "Dues Shirt"
     `variant_name`           varchar(255)           NULL,                                -- Variant name, like "2 semesters" or "XL"
+    `item_category`         varchar(25)             NOT NULL,   -- item category name, e.g. Hat or T-Shirt
     `last_updated`           timestamp                                     DEFAULT CURRENT_TIMESTAMP,
     `config_id`              int(11)                NULL,
     PRIMARY KEY (`id`),

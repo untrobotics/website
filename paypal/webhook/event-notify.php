@@ -149,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
             if ($item['status'] === 'captured') {
                 die();
             }
+            $current_item_index = 0;
             // go over each item and handle it
             while ($item !== null) {
                 switch ($item['item_type']) {
@@ -156,6 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                     {
                         require_once('handlers/dues.php');
                         $dues = true;
+                        AdminBot::send_message('Found a dues payment!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
                         \DUES\handle_payment_notification($order_info, json_decode($item['custom_data'], true), $item['uid'], $order_id);
                         break;
                     }
@@ -163,6 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                     {
                         require_once('handlers/printful.php');
                         //todo
+                        AdminBot::send_message('Found a printful order!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
 //                        $printful_orders[] = \PRINTFUL\handle_payment_notification($event, json_decode($item['custom_data'],true));
                         break;
                     }
@@ -173,14 +176,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                 }
 
                 $item = $rows->fetch_assoc();
+                $current_item_index++;
             }
 
             // email payer the receipt
-            $email_send_status = email_receipt($order_info, $printful_orders, isset($dues));
-            if ($email_send_status) {
-                /** @noinspection PhpConditionAlreadyCheckedInspection */
-                payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
-            }
+//            $email_send_status = email_receipt($order_info, $printful_orders, isset($dues));
+//            if ($email_send_status) {
+//                /** @noinspection PhpConditionAlreadyCheckedInspection */
+//                payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
+//            }
             break;
         }
         default:
