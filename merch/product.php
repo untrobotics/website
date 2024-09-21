@@ -65,8 +65,12 @@ if ($product_can_be_handled) {
 	$back_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::BACK);
 
 	head("Buy {$product->get_name()}", true);
-    /** @noinspection PhpUndefinedVariableInspection */ // this if block is unreachable if catalog_product isn't set
-    insert_paypal_item(['item_name'=>$product->get_name(),'item_type'=>'printful_product','sales_price'=>$product->get_product_price(),'variant_name'=>$this_variant_name,'external_id'=>$selected_variant->get_variant_id(),'item_category'=>$catalog_product->get_type_name(), 'cost'=>'0.00','tax'=>'0.00'], 'printful_product');
+    // item_category will be the search filter we set in the product name (e.g., "(Hat)" or "(Gear)"
+    $in = insert_paypal_item(['item_name'=>$product->get_name(),'item_type'=>'printful_product','sales_price'=>$product->get_product_price(),'variant_name'=>$this_variant_name,'external_id'=>$selected_variant->get_id(),'item_category'=>substr($product->get_name(),strripos($product->get_name(),'(')), 'cost'=>'0.00','tax'=>'0.00'], 'printful_product');
+    if($in=== null){
+        global $db;
+        error_log("Error adding item to db: {$db->error}");
+    }
 } else {
 	head("Invalid Product", true);
 }
@@ -282,7 +286,7 @@ function get_variant_variant($variant_name) {
 							</ul>
 							<div class="offset-top-20">
 								<?php
-                                    get_payment_button_constant('Buy Now', [$product->get_name()],[$this_variant_name],'/merch/buy/complete',$_SERVER['REQUEST_URI']);/*
+                                    get_payment_button_constant('Buy Now', [$product->get_name()],[$this_variant_name],'merch/buy/complete', $_SERVER['REQUEST_URI']);/*
 									$custom = serialize(array(
 										'source' => 'PRINTFUL_PRODUCT',
 										'product' => $external_product_id,

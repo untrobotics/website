@@ -20,9 +20,9 @@ use WebhookEventHandlerException;
  */
 function handle_payment_notification(array $order_info, int $item_index, array $item_info, string $order_id, bool $duesDiscount, \PaypalWebhookEvent $event): ?array {
 	global $db;
-	
+
 	payment_log("[{$order_id}] Hello from within the PRINTFUL handler");
-	
+
 	$printfulapi = new PrintfulCustomAPI();
     $purchase_unit = $order_info['purchase_units'][0];
     $payment_capture = $purchase_unit['payments']['captures'][0];
@@ -37,16 +37,16 @@ function handle_payment_notification(array $order_info, int $item_index, array $
 	$order_name = $item_info['item_name'];
 	$order_variant_name = $item_info['variant_name'];
 	$currency = $payment_capture['seller_receivable_breakdown']['gross_amount']['currency_code'];
-	
+
 	// ensure price is positive (if negative, it's a reversal)
 	if ($amount_paid > 0) {
 		// get the ID
 		$variant_id = $item_info['external_id'];
-		
+
 		// get the price of this variant for x quantity
 		$sync_variant = $printfulapi->get_variant($variant_id);
 		$price = $sync_variant->get_price() * $quantity;
-		
+
 		// confirm the amount paid matches the the price
 		if (is_numeric($price) && $price > 0 && is_numeric($amount_paid) && $amount_paid > 0) {
 			if ($price > $amount_paid && !$duesDiscount) {
@@ -63,38 +63,43 @@ function handle_payment_notification(array $order_info, int $item_index, array $
 			throw new WebhookEventHandlerException("[{$order_id}]: Shipping address is in a country that isn't the US: {$paypal_shipping_address['country_code']}");
 		}
 		payment_log("[{$order_id}] Successfully validated shipping address");
-		
+
 		// create a draft order -- all other validation passed
 
 		$shipping_address['address1'] = $paypal_shipping_address['address_line_1'];
-		$shipping_address['address2'] = $paypal_shipping_address['address_line_2'];    // will be null if not set
+        if(array_key_exists('address_line_2', $paypal_shipping_address))
+		    $shipping_address['address2'] = $paypal_shipping_address['address_line_2'];
+        else
+            $shipping_address['address2'] = null;
 		$shipping_address['city'] = $paypal_shipping_address['admin_area_2'];
 		$shipping_address['state_code'] = $paypal_shipping_address['admin_area_1'];
 		$shipping_address['country_code'] = $paypal_shipping_address['country_code'];
 		$shipping_address['zip'] = $paypal_shipping_address['postal_code'];
 
-        if(isset($shipping['phone_number'])){
+        if(array_key_exists('phone_number', $shipping)){
             $shipping_address['phone_number'] = $shipping['phone_number']['country_code'] . $shipping['phone_number']['national_number'];
         }
-        elseif(isset($payer['phone']))
+        elseif(array_key_exists('phone',$payer))
 		    $shipping_address['phone'] = $payer['phone']['phone_number']['national_number'];
         else{
             $shipping_address['phone'] = null;
         }
 		$shipping_address['email'] = $payer['email_address'];
-		
+
 		/*$order_options = array();
 		$order_options[0] = new \stdClass();
 		$order_options[0]->txid = $payment_info->txn_id;*/
-		
+
 		$draft_order = $printfulapi->create_order_single($shipping['name']['full_name'], $shipping_address, $amount_paid, $quantity, $variant_id, $order_id, $amount_paid);
-		$cost = $draft_order->get_costs()->get_total();
+        $c = $draft_order->get_costs();
+        $cost = $c->get_total();
 		payment_log("[{$order_id}] Created draft order (id: {$draft_order->get_id()}) (cost: $cost)");
-		
+
 		// check the draft order cost (because of shipping, tax, etc.) is still below the amount of revenue
 		$profit = $amount_revenue - $cost;
 		if ($cost >= $amount_revenue && !$duesDiscount) {
-			throw new WebhookEventHandlerException("[{$order_id}]: The price of the fulfillment is higher than the revenue amount (cost: {$cost}) (revenue: {$amount_revenue}) (profit: {$profit})");
+            AdminBot::send_message("[{$order_id}]: The price of the fulfillment for this order is higher than the revenue amount (total cost: {$cost}) (revenue: {$amount_revenue}) (shipping: {$c->get_shipping()}) (tax: {$c->get_tax()}");
+//			throw new WebhookEventHandlerException("[{$order_id}]: The price of the fulfillment is higher than the revenue amount (cost: {$cost}) (revenue: {$amount_revenue}) (profit: {$profit})");
 		}
 		payment_log("[{$order_id}] Confirmed fulfillment cost is less than the revenue amount (cost: {$cost}) (revenue: {$amount_revenue}) (profit: {$profit})");
 
@@ -105,7 +110,7 @@ function handle_payment_notification(array $order_info, int $item_index, array $
 		} else {
 			payment_log("[{$order_id}] Created tx id and order id association in the database (order id: {$draft_order->get_id()})");
 		}
-		
+
 		$q = $db->query('INSERT INTO printful_order (order_id, first_name, last_name, email_address, order_name, order_variant_name, order_type)
 		VALUES
 		(
@@ -123,7 +128,7 @@ function handle_payment_notification(array $order_info, int $item_index, array $
 		} else {
 			payment_log("[{$order_id}] Created printful order entry in the database (super secret id: {$printful_order_db_id})");
 		}
-		
+
 		// confirm the transaction
 		if ($event->is_sandbox() === false) {
 			$confirmed_order = $printfulapi->confirm_order($draft_order->get_id());
@@ -132,7 +137,7 @@ function handle_payment_notification(array $order_info, int $item_index, array $
 				throw new WebhookEventHandlerException("[{$order_id}]: Confirmation of order returned non-PENDING response (status: {$confirmed_order->get_status()})");
 			}
 			payment_log("[{$order_id}] Order confirmed and sent for fulfillment (status: {$confirmed_order->get_status()})");
-			
+
 			$q = $db->query('UPDATE printful_order SET confirmed = 1 WHERE id = "' . $db->real_escape_string($printful_order_db_id) . '"');
 			if (!$q) {
 				payment_log("[{$order_id}] Failed to confirm order in the database.");
