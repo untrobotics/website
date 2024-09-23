@@ -114,7 +114,7 @@ class PayPalCustomApi
             new PayPalPaymentSource(
                 new PayPalPaymentSourcePayPal(
                     new PayPalExperienceContext(
-                        null, $shipping_pref, 'NO_PREFERENCE',
+                        'UNT Robotics', $shipping_pref, 'NO_PREFERENCE',
                         'PAY_NOW', 'UNRESTRICTED', 'en-US',
                         $return_url, $cancel_url
                     )

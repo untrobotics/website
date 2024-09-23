@@ -99,22 +99,7 @@ class PayPalPaymentSource extends JsonNoEmptyFieldSerializable
      *  to provide additional instructions associated with this choice like vaulting
      */
     public $paypal;
-    // given that we are a Texas organization, I won't implement these
-//    /**
-//     * @var PayPalPaymentSourceGeneric Bancontact is from Belgium
-//     */
-//    public $bancontact;
-//    public $bilk;
-//    public $eps;
-//public $giropay;
-//public $ideal;
-// // MyBank only has locations in Maryland
-//public $mybank;
-//public $p24;
-//public $sofort;   // european
-//public $trustly;  // not necessarily outside of Texas, but still not implementing
 
-//todo: implement apple_pay google_pay and venmo objs
     public $apple_pay;
     public $google_pay;
     public $venmo;
@@ -332,7 +317,7 @@ class PayPalExperienceContext extends PayPalApplicationContext
      * @param string $return_url The URL the customer is redirected to upon payment approval
      * @param string $cancel_url The URL the customer is redirected to upon cancellation
      */
-    public function __construct(?string $brand_name = null, ?string $shipping_preference = 'GET_FROM_FILE', string $landing_page = 'NO_PREFERENCE', string $user_action = 'CONTINUE', string $payment_method_preference = 'UNRESTRICTED', string $locale = 'en-US', string $return_url = 'https://untrobotics.com', string $cancel_url = 'https://untrobotics.com') {
+    public function __construct(?string $brand_name = 'UNT Robotics', ?string $shipping_preference = 'GET_FROM_FILE', string $landing_page = 'NO_PREFERENCE', string $user_action = 'CONTINUE', string $payment_method_preference = 'UNRESTRICTED', string $locale = 'en-US', string $return_url = 'https://untrobotics.com', string $cancel_url = 'https://untrobotics.com') {
 //        $this->brand_name = $brand_name;
         $this->shipping_preference = $shipping_preference;
         $this->landing_page = $landing_page;
