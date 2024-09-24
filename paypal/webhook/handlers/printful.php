@@ -98,7 +98,7 @@ function handle_payment_notification(array $order_info, int $item_index, array $
 		// check the draft order cost (because of shipping, tax, etc.) is still below the amount of revenue
 		$profit = $amount_revenue - $cost;
 		if ($cost >= $amount_revenue && !$duesDiscount) {
-            AdminBot::send_message("[{$order_id}]: The price of the fulfillment for this order is higher than the revenue amount (total cost: {$cost}) (revenue: {$amount_revenue}) (shipping: {$c->get_shipping()}) (tax: {$c->get_tax()}");
+            AdminBot::send_message("[{$order_id}]: The price of the fulfillment for this order is higher than the revenue amount (total cost: {$cost}) (revenue: {$amount_revenue}) (shipping: {$c->get_shipping()}) (tax: {$c->get_tax()})");
 //			throw new WebhookEventHandlerException("[{$order_id}]: The price of the fulfillment is higher than the revenue amount (cost: {$cost}) (revenue: {$amount_revenue}) (profit: {$profit})");
 		}
 		payment_log("[{$order_id}] Confirmed fulfillment cost is less than the revenue amount (cost: {$cost}) (revenue: {$amount_revenue}) (profit: {$profit})");

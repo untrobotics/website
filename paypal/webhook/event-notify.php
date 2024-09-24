@@ -6,13 +6,14 @@
  * @param $message mixed Message to put in the log file. Should be interpretable as a string
  */
 function payment_log($message): void {
-    file_put_contents('logs/paypal-webhook.log', '[' . date('c', time()) . '] ' . $message . PHP_EOL, FILE_APPEND);
+    file_put_contents('../logs/paypal-webhook.log', '[' . date('c', time()) . '] ' . $message . PHP_EOL, FILE_APPEND);
 }
 
 require_once('../../api/discord/bots/admin.php');   // used to send messages to the officer channel. Specifically, for donation notifications
 require_once('../../api/paypal/webhook.php');   // used to verify the webhook event with PayPal's API
 require_once('../../template/functions/paypal.php'); // used to email a receipt to the payer
 require_once('../../template/top.php'); // used for access to $db
+require_once('../../template/constants.php'); // used to send email info in discord instead of actually emailing
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
 
@@ -159,15 +160,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                     {
                         require_once('handlers/dues.php');
                         $dues = true;
-                        AdminBot::send_message('Found a dues payment!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
+//                        AdminBot::send_message('Found a dues payment!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
                         \DUES\handle_payment_notification($order_info, json_decode($item['custom_data'], true), $item['uid'], $order_id);
                         break;
                     }
                     case 'printful_product':
                     {
                         require_once('handlers/printful.php');
-                        //todo
-                        AdminBot::send_message('Found a printful order!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
+//                        AdminBot::send_message('Found a printful order!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
                         $printful_orders[] = \PRINTFUL\handle_payment_notification($order_info,$current_item_index,$item,$order_id,isset($dues),$event);
                         break;
                     }
@@ -181,12 +181,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                 $current_item_index++;
             }
 
-            // email payer the receipt
-//            $email_send_status = email_receipt($order_info, $printful_orders, isset($dues));
-//            if ($email_send_status) {
-//                /** @noinspection PhpConditionAlreadyCheckedInspection */
-//                payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
-//            }
+	        //email payer the receipt
+            $email = email_receipt($order_info, $printful_orders, isset($dues), ENVIRONMENT === Environment::PRODUCTION);
+            if(is_array($email)){
+				AdminBot::send_message('Receipt email for dev PayPal.', DISCORD_DEV_WEB_LOGS_CHANNEL_ID, [['bin'=>json_encode($email),'type'=>'json']]);
+			}
+			else if($email) {
+				payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email, true) . ")");
+            }
             break;
         }
         default:

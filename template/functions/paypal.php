@@ -211,17 +211,16 @@ function get_order_status_internal(string $order_id): ?string {
  * @param $paypal_order_info array The JSON-decoded response for get_order PayPal API call. This should be an associative array
  * @param $printful_order_info array[] An array containing information about the Printful order. Each index represents one Printful order. The required information is "variant_id" and "shipping_service".
  * @param $has_dues bool A boolean representing whether this order has dues or not. Defaults to false
- * @return bool True if the email received an HTTP success code. False otherwise. See {@see email()} for more information
+ * @param $send_email bool Whether to send the email or not. If true, the email will be sent via SendGrid. If false, the email subject and body will be output in a string[]
+ * @return bool|string[] A string array with the email subject and body if $send_email is false. Otherwise, true if the email received an HTTP success code. False otherwise. See {@see email()} for more information
  */
-function email_receipt(array &$paypal_order_info, ?array $printful_order_info, bool $has_dues = false): bool {
+function email_receipt(array &$paypal_order_info, ?array $printful_order_info, bool $has_dues = false, bool $send_email = true) {
     $payer = $paypal_order_info['payer'];
     $payment_capture = $paypal_order_info['purchase_units'][0]['payments']['captures'][0];
     $amount_paid = $payment_capture['seller_receivable_breakdown']['gross_amount']['value'];
     $payment_id = $payment_capture['id'];
-    // this is set in the dues payment handler
-    $term_string = $paypal_order_info['term_string'];
 
-    // gets a comma-delimited string with the item names to use as "Order Name" in the receipt
+	// gets a comma-delimited string with the item names to use as "Order Name" in the receipt
     $item_names = [];
     foreach ($paypal_order_info['purchase_units'][0]['items'] as $item) {
         $item_names[] = $item['name'];
@@ -289,7 +288,7 @@ function email_receipt(array &$paypal_order_info, ?array $printful_order_info, b
 
     // add the "Semester" line to the receipt if dues are paid
     if ($has_dues) {
-        $email_body .= "			<li><strong>Semester</strong> {$term_string}</li>";
+        $email_body .= "			<li><strong>Semester</strong> " . ($paypal_order_info['term_string']) . "</li>";
     }
     // add Product ID and Shipping Service to the receipt if there's a Printful order
     if (isset($printful_order_info) && count($printful_order_info) > 0) {
@@ -324,24 +323,28 @@ function email_receipt(array &$paypal_order_info, ?array $printful_order_info, b
 
     // final closing tag, specifically closes the div from line 233
     $email_body .= "</div>";
-
-    // send email and return the send status
-    return email(
-        $payer['email_address'],
-        $subject,
-        $email_body,
-        false,
-        null,
-        [
-            [
-                'content' => base64_encode(file_get_contents('../images/unt-robotics-email-header.jpg')),
-                'type' => 'image/jpeg',
-                'filename' => 'unt-robotics-email-header.jpg',
-                'disposition' => 'inline',
-                'content_id' => 'untrobotics-email-header'
-            ]
-        ]
-    );
+	if($send_email) {
+		// send email and return the send status
+		return email(
+			$payer['email_address'],
+			$subject,
+			$email_body,
+			false,
+			null,
+			[
+				[
+					'content' => base64_encode(file_get_contents('../images/unt-robotics-email-header.jpg')),
+					'type' => 'image/jpeg',
+					'filename' => 'unt-robotics-email-header.jpg',
+					'disposition' => 'inline',
+					'content_id' => 'untrobotics-email-header'
+				]
+			]
+		);
+	}
+	else{
+		return ['to'=>$payer['email_address'],'subject'=>$subject,'body'=>$email_body];
+	}
 
 }
 
