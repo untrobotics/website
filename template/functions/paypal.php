@@ -249,7 +249,7 @@ function email_receipt(array &$paypal_order_info, ?array $printful_order_info, b
             }
             $items = rtrim($items, ', ');
             $subject = "Receipt for your UNT Robotics dues payment and purchase of {$printful_order_name}";
-            $email_body .= "	<p>Thank you for paying your UNT Robotics dues and <strong>{$items}</strong> from our store. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>";
+            $email_body .= "	<p>Thank you for paying your UNT Robotics dues and purchasing <strong>{$items}</strong> from our store. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role. Please find a receipt for your payment below. A tracking number for your order will be e-mailed to you as soon as it is available.</p>";
         } else { // does not have printful order
             $subject = 'Receipt for your UNT Robotics dues payment';
             $email_body .= "	<p>Thank you for paying your UNT Robotics dues. If you have not yet received the <em>Good Standing</em> role in the Discord server, please go to <a href=\"https://untro.bo/join/discord\">untro.bo/join/discord</a> to be automatically assigned the role.</p>";
