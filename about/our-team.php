@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-require('../template/functions/card.php');
+require_once('card.php');
 head('Our Team', true);
 $members = array();
 
@@ -23,8 +23,6 @@ $members[] = [
         'picture_uri'=>'/images/bio-pics/lauren-caves.jpg',
         'email'=>'president@untrobotics.com',
         'linkedin_url'=>'https://www.linkedin.com/in/lauren-caves',
-//    'github_url'=>'',
-//    'twitter_url'=>''
 ];
 //vice president
 $members[] = [
@@ -35,19 +33,7 @@ $members[] = [
         'email'=>'vice-president@untrobotics.com',
         'linkedin_url'=>'https://www.linkedin.com/in/tyleradammartinez',
         'github_url'=>'https://www.github.com/TylerAdamMartinez',
-    //    'twitter_url'=>''
 ];
-// financial director
-//$officers[] = [
-//        'name'=>'Tyler Adam Martinez',
-//        'title'=>'Vice President and Financial Director',
-//        'description'=>'Tyler is a junior currently studying electrical engineering with a minor in biomedical engineering. He focuses on robotics and automation, and loves designing cool circuits and building electronics.',
-//        'picture_uri'=>'/images/bio-pics/tyler-adam-martinez.jpg',
-//        'email'=>'treasury@untrobotics.com',
-//        'linkedin_url'=>'https://www.linkedin.com/in/tyleradammartinez',
-//        'github_url'=>'https://www.github.com/TylerAdamMartinez',
-//    //    'twitter_url'=>''
-//];
 
 // deputy financial director
 $members[] = [
@@ -56,9 +42,6 @@ $members[] = [
     'description'=>'The Eagle Scout, Black Belt and Rescue scuba diver brings his vast experience keeping the funds up, and in check for the the future development of the robotics club. Andrew Paul is a freshman mechanical engineering student and lover of innovation. New to the scene with charisma to spare and a passion for engineering. He can be found climbing at the UNT Rockwall,  or in his dorm finding out new ways to build and code his next project while assisting in club finances.',
     'picture_uri'=>'/images/bio-pics/andrew-paul.jpg',
     'email'=>'deputy-financial-director@untrobotics.com',
-//    'linkedin_url'=>'',
-//    'github_url'=>'',
-//    'twitter_url'=>''
 ];
 // Public Relations
 $members[] = [
@@ -67,9 +50,6 @@ $members[] = [
     'description'=>'Jacob is a current Computer Science student at UNT.Although he balances school and work he finds time for extracurriculars.He has always enjoyed being apart of different organizations and getting to know new people. He loves using all the different software to model, create and design things for the club or for his own personal projects.',
     'picture_uri'=>'/images/bio-pics/jacob-gomez.jpg',
     'email'=>'public-relations@untrobotics.com',
-//    'linkedin_url'=>'',
-//    'github_url'=>'',
-//    'twitter_url'=>''
 ];
 
 // Event Coordinator
@@ -79,9 +59,6 @@ $members[] = [
     'description'=>"Abdus Samee is an ECE graduate whose love for engineering must be seen to be believed. Being a former Toastmaster, he has a flair for speaking which convinces the listener to accept the facts that he puts forward. His never ending hunger for knowledge has enabled him to achieve a lot in a short time. Education is an ornament in prosperity and a refuge in adversity is what he says. Progress never comes without struggles, but his persistence helped him reach his dream destination. He is also the Vice Chair for UNT IEEE Robotics and Automation Society, and a IEEE Eta Kappa Nu Honor Student. The words of Ford inspired him to keep going. 'When everything seems to be going against you, remember that the airplane takes off against the wind and not with it.",
     'picture_uri'=>'/images/bio-pics/abdus-samee.jpg',
     'email'=>'event-coordinator@untrobotics.com',
-//    'linkedin_url'=>'',
-//    'github_url'=>'',
-//    'twitter_url'=>''
 ];
 
 // Social Media Manager
@@ -91,9 +68,6 @@ $members[] = [
     'description'=>"Ally is a freshman majoring in mechanical engineering technology. She’s been in robotics since high school and is excited to continue it through college. She loves trying new hobbies and making new friends!",
     'picture_uri'=>'/images/bio-pics/ally-flores.jpg',
     'email'=>'corp-relations@untrobotics.com',
-//    'linkedin_url'=>'',
-//    'github_url'=>'',
-//    'twitter_url'=>''
 ];
 
 // (lead) Webmaster
@@ -104,8 +78,6 @@ $members[] = [
     'picture_uri'=>'/images/bio-pics/peyton-thibodeaux.jpg',
     'email'=>'webmaster@untrobotics.com',
     'linkedin_url'=>'https://www.linkedin.com/in/peyton-thibodeaux',
-//    'github_url'=>'',
-//    'twitter_url'=>''
 ];
 
 // Project Manager
@@ -115,9 +87,6 @@ $members[] = [
     'description'=>"Nicholas Tindle is a Computer Engineering student at UNT. He works in software engineering and loves hackathons. You can generally find him wearing a hat and probably a sweatshirt. He has a long history of collaboration with UNT Robotics as the first president, a loyal advisor, and now Project Manager. He has also served as an advisor to the Dean and is currently an officer of Engineering United. Nick has helped host numerous events at the university over the years. In his professional life, he works in data analysis, web development, and python scripting.",
     'picture_uri'=>'/images/bio-pics/nick-tindle.jpg',
     'email'=>'project-manager@untrobotics.com',
-//    'linkedin_url'=>'',
-//    'github_url'=>'',
-//    'twitter_url'=>''
 ];
 
 // Corporate Relations
@@ -127,9 +96,6 @@ $members[] = [
     'description'=>"Ashank is a freshman studying Business Computer Information Systems. He has been interested in robotics since high school. He loves to meet new people and learn new technologies.",
     'picture_uri'=>'/images/bio-pics/ashank-annam.jpg',
     'email'=>'corp-relations@untrobotics.com',
-//    'linkedin_url'=>'',
-//    'github_url'=>'',
-//    'twitter_url'=>''
 ];
 
 // Joe
@@ -139,9 +105,6 @@ $members[] = [
     'description'=>"Joseph is a Junior Mechanical Engineering student. Formerly a US Marine Master Explosive Ordnance Disposal Technician (EOD), he has always tried to tinker with things and figure out how they work and is passionate about establishing and growing our High-Power Rocketry team into a nationally competitive force. Both through STEM outreach efforts and internal events, he hopes to generate interest and encourage everyone to get into hobby rocketry, and the sport of high power rocketry.",
     'picture_uri'=>'/images/bio-pics/joe-moore.jpg',
     'email'=>'aerospace@untrobotics.com',
-//    'linkedin_url'=>'',
-//    'github_url'=>'',
-//    'twitter_url'=>''
 ];
 ?>
     <main class="page-content">
