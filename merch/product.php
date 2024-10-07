@@ -63,6 +63,11 @@ if ($product_can_be_handled) {
 	$back_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::BACK);
 	
 	head("Buy {$product->get_name()}", true);
+    $category_name = strtolower(preg_replace('@^.*\(([^()]+)\)$@i', '$1', $product->get_name()));
+    if($category_name !== 'gear' && $category_name[-1]!=='s'){
+        $category_name .= 's';
+    }
+
 } else {
 	head("Invalid Product", true);
 }
@@ -160,7 +165,7 @@ function get_variant_variant($variant_name) {
 			  <li><a href="/">Home</a></li>
 			  <li><a href="/merch">Merch</a></li>
                 <?php if ($product_can_be_handled) { ?>
-			  <li><a href="/merch/<?php echo strtolower($catalog_product->get_type_name()).'s'; ?>"><?php echo $catalog_product->get_type_name(); ?>s</a></li>
+			  <li><a href="/merch/<?php echo $category_name; ?>"><?php echo $category_name; ?></a></li>
                 <?php } ?>
 			  <li>Product</li>
 			</ul>
