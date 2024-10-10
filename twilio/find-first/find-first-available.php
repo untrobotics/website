@@ -76,7 +76,7 @@ function call_status($sid) {
 
         $data = json_decode($result);
 	
-		error_log("OUTGOING CALL STATUS: " . $data);
+		error_log("OUTGOING CALL STATUS: " . $data->status);
 	
 		return $data->status;
 }
