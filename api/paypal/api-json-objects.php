@@ -530,14 +530,24 @@ class PayPalCurrencyField extends JsonNoEmptyFieldSerializable
 class PayPalUPCField extends JsonNoEmptyFieldSerializable
 {
     /**
-     * @var string (required) (1-5 chars) The UPC type.
-     * UPC Type must match format "^[0-9A-Z_-]+$"
+     * @var string (required) (1-5 chars) The UPC type. Must be a valid UPC type
+     * @see https://developer.paypal.com/docs/api/orders/v2/#orders_create!path=purchase_units/items/upc&t=request
      */
     public $type;
+
     /**
      * @var string (required) (6-17 chars) The UPC product code of the item
      */
     public $code;
+
+    /**
+     * @param string $type The UPC type. Must be a valid UPC type
+     * @param string $code The UPC product code
+     */
+    public function __construct(string $type, string $code) {
+        $this->type = $type;
+        $this->code = $code;
+    }
 }
 
 /**
