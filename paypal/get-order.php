@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 //    $request = $_POST;
 
     $items = $_POST['items'];
+
     if(count($items)<1){
         http_response_code(400);
         die();
@@ -59,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $permit_full_year_payment = $current_term == Semester::AUTUMN;
 
                 // represents whether the payment is for full year dues
-                $fullyear = $item['full_year'] === 'true';
+                $fullyear = isset($item['full_year']) && $item['full_year'] === '1';
 
                 // represents whether a dues t-shirt was included
                 $dues_with_tshirt = $item['t-shirt'] === 'true';
@@ -161,8 +162,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             {
                 $amount = Currency::from_string($item['amount']);
 
-                // ensure amount is positive
-                if ($amount->lt(new Currency('0'))) {
+                // ensure amount is positive and non-zero
+                if ($amount->le(new Currency('0','0'))) {
                     http_response_code(400);
                     die();
                 }

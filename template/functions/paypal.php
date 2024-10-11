@@ -7,33 +7,35 @@
  * @param array[] $items Array of items to be purchased. Format: [['type':'dues', 'full_year':true, 't-shirt':false], ['type':'printful','ext_id':'externalid' , 'variant_id':'variantid'], ['type':'donation', 'amount':'99.99'], ...]
  * @param string $return_uri URI to return the user to after order approval
  * @param string $cancel_uri URI to return the user to after order cancellation
+ * @param null|string $form_elements Extra form elements to append before the button. 'name' should be set to items[<index>][<key>] e.g., items[0]['full_year']. Do not include an index-key here and in $items
  * @return void
  */
-function get_payment_button(string $text, array $items, string $return_uri, string $cancel_uri) {
+function get_payment_button(string $text, array $items, string $return_uri, string $cancel_uri, ?string $form_elements = null) {
     //https://' . "{$_SERVER['SERVER_NAME']}/{$return_uri}
 	$items_json = json_encode($items);
 	if(strlen($items_json) > 127){
 		error_log("Items array for PayPal order is too large. Array: ${items_json}");
 		return;
 	}
-	echo '<div class="paypal-button-container">
-			<form method="post" action="'. "https://{$_SERVER['SERVER_NAME']}/paypal/get-order" . '">
+	echo '<form method="post" action="'. "https://{$_SERVER['SERVER_NAME']}/paypal/get-order" . '">' .
+            $form_elements .
+            '<div class="paypal-button-container">
 				<div class="paypal-button-overlay">
 					<img src="/images/paypal-button.png" alt="">
 					<input type="submit" id="buy-product-now" class="btn btn-primary" value="' . $text . '">';
-//					<input type="hidden" id="paypal-items" name="items" value="' . $items_json . '"/>
-    foreach($items as $i=>$item){
-        foreach($item as $k=>$v){
-            echo '<input type="hidden" id="paypal-items' . $i . $k . '" name="items[' . $i . '][' . $k . ']" value="' . htmlspecialchars(trim(json_encode($v),'"')) . '">';
-        }
-    }
+                    foreach($items as $i=>$item){
+                        foreach($item as $k=>$v){
+                            echo '<input type="hidden" id="paypal-items' . $i . $k . '" name="items[' . $i . '][' . $k . ']" value="' . htmlspecialchars(trim(json_encode($v),'"')) . '">';
+                        }
+                    }
 
     echo            '<input type="hidden" name="return_uri" value="' . $return_uri . '"/>
 					<input type="hidden" name="cancel_uri" value="' . $cancel_uri . '"/>
 				</div>
-            </form>
-        </div>';
+            </div>
+        </form>';
 }
+
 
 /**
  * Gets an order's status from our database. Specific table: paypal_orders

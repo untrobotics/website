@@ -89,10 +89,19 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                                 <?php
                                 if ($permit_full_year_payment) {
                                     ?>
-                                    <div class="offset-top-20">
+
+                                    <?php
+                                }?>
+
+
+                                <?php
+                                require_once('../template/functions/paypal.php');
+                                $form_elements = '';
+                                if($permit_full_year_payment) {
+                                    $form_elements .= '<div class="offset-top-20">
                                         <div class="form-group">
                                             <label class="checkbox-container"> Pay for both Spring &amp; Fall?
-                                                <input id="full-year" autocomplete="off" name="full-year"
+                                                <input id="full-year" autocomplete="off" name="items[0][' . 'full_year' . ']"
                                                        type="checkbox"
                                                        class="form-control form-control-has-validation form-control-last-child checkbox-custom"
                                                        value="1" item="Dues"><span class="checkbox-custom-dummy"></span>
@@ -109,7 +118,7 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                                                         <img src="/images/dues-shirt.png"/>
                                                     </a>
                                                 </div>
-                                                <select id="include-tshirt" name="include-tshirt" class="">
+                                                <select id="include-tshirt" name="items[1][' . 'variant_id' . ']" class="">
                                                     <option value="" selected="selected" variant="">No T-shirt</option>
                                                     <option value="3508512951">XS</option>
                                                     <option value="3508512952">S</option>
@@ -122,21 +131,14 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                                                 </select>
                                             </label>
                                         </div>
-                                    </div>
-                                    <?php
-                                }?>
-                                <p><strong style="font-size: 20px;">
-                                        <pre style="display: inline-block;border-radius: 10px;">Cost: <span
-                                                    id="dues_cost">$<?php echo $single_semester_dues_price; ?></span></pre>
-                                    </strong></p>
-
-                                <?php
-                                require_once('../template/functions/paypal.php');
-                                if($full_year_dues_price) {
-                                    get_payment_button('Pay Now', [['type' => 'dues', 'full_year' => false, 't-shirt' => false],['type'=>'printful','variant_id'=>'','ext_id'=>'632b8e41a86531']], 'dues/paid', 'dues');
-                                } else{
-                                    get_payment_button('Pay Now', [['type' => 'dues', 'full_year' => false, 't-shirt' => false]], 'dues/paid', 'dues');
+                                    </div>';
                                 }
+                                $form_elements .= '<p><strong style="font-size: 20px;">
+                                                        <pre style="display: inline-block;border-radius: 10px;">Cost: <span
+                                                        id="dues_cost">$' . $single_semester_dues_price . '</span></pre>
+                                                    </strong></p>';
+
+                                    get_payment_button('Pay Now', [0=>['type' => 'dues', 't-shirt' => false], 1=>['type'=>'printful','ext_id'=>'632b8e41a86531']], 'dues/paid', 'dues', $form_elements);
                                 ?>
 
                                 <?php
@@ -200,24 +202,18 @@ footer(false);
         return cost;
     }
 
-    $('input[name="full-year"]').on("change", function (e) {
+    $('input[name="items[0][\'full_year\']"]').on("change", function (e) {
         fullYear = !!$(this).is(':checked');
         $("#dues_cost").text("$" + getDuesCost());
-        // setNewButton();
-        $('input#paypal-items0full_year').val(fullYear);
     });
 
     $('#include-tshirt').on('change', function (e) {
         tShirt = e.target.value || null;
         $("#dues_cost").text("$" + getDuesCost());
         if (tShirt) {
-            /*$(this).attr('item', e.target.value)
-            $(this).attr('variant', $(this).find('option:selected').attr('variant'))*/
             $('input#paypal-items0t-shirt').val(true);
-            $('input#paypal-items1variant_id').val($(this).find('option:selected').val());
         } else{
             $('input#paypal-items0t-shirt').val(false);
-            $('input#paypal-items1variant_id').val('');
         }
     })
 </script>

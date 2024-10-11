@@ -60,10 +60,12 @@ class Currency
         $s = explode(".", $string);
         if ($currency_code === null) {
             $matches = array();
-            if (!preg_match("/[a-z]{3}/i", end($s), $matches)) {
+            $end_index = isset($s[1]) ? 1: 0;
+            if (!preg_match("/[a-z]{3}/i", $s[$end_index], $matches)) {
                 $currency_code = "USD";
             } else {
                 $currency_code = $matches[0];
+                $s[$end_index] = preg_replace("/[a-z]{3}/i", "", $s[$end_index]);
             }
         }
         $frac = isset($s[1]) ? intval($s[1]) : 0;
