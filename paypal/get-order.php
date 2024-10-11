@@ -3,14 +3,10 @@ require_once('../template/top.php');
 require_once('../api/paypal/paypal.php');
 require_once('../template/classes/currency.php');
 require_once('../api/discord/bots/admin.php');
-global $db;
-
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // read request body
-//    $request = $_POST;
-
     $items = $_POST['items'];
 
     if(count($items)<1){
@@ -146,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 }
 
-                $data = ['id'=>$item['variant_id']];
+                $data = ['id'=>$item['variant_id'], 'src'=>'printful'];
 
                 $product_url = "https://{$_SERVER['SERVER_NAME']}/product/{$item['ext_id']}/{$parent_product->get_name()}/{$variant->get_product()->get_variant_id()}";
                 $image_url = $variant->get_file_by_type(PrintfulVariantFilesTypes::PREVIEW);

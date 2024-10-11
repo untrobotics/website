@@ -3,13 +3,6 @@ require('../template/top.php');
 //todo:
 require_once('../template/functions/paypal.php');
 head('Sponsorships', true);
-
-/*$payment_button = new PaymentButton(
-    'UNT Robotics General Sponsorship or Donation',
-    null,
-    'Donate Now'
-);*/
-//$payment_button->set_complete_return_uri('/sponsorships/donate/thank-you');
 ?>
 <style>
     .stepper{

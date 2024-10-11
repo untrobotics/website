@@ -54,8 +54,6 @@ if ($product_can_be_handled) {
     }
 
 	$selected_variant = $product->get_variants()[$selected_product_variant_index];
-    // remove product name from variant name
-    $this_variant_name = preg_replace('@^' . preg_quote($product->get_name(),'@') . ' / (.*)$@i', '$1', $selected_variant->get_name());
 
 	$mockup_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::PREVIEW);
 	if ($mockup_file == null) {
@@ -65,12 +63,7 @@ if ($product_can_be_handled) {
 	$back_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::BACK);
 
 	head("Buy {$product->get_name()}", true);
-    // item_category will be the search filter we set in the product name (e.g., "(Hat)" or "(Gear)"
-    $in = insert_paypal_item(['item_name'=>$product->get_name(),'item_type'=>'printful_product','sales_price'=>$product->get_product_price(),'variant_name'=>$this_variant_name,'external_id'=>$selected_variant->get_id(),'item_category'=>substr($product->get_name(),strripos($product->get_name(),'(')), 'cost'=>'0.00','tax'=>'0.00'], 'printful_product');
-    if($in=== null){
-        global $db;
-        error_log("Error adding item to db: {$db->error}");
-    }
+
 } else {
 	head("Invalid Product", true);
 }
@@ -252,13 +245,11 @@ function get_variant_variant($variant_name) {
 
 							<?php
 								preg_match("@^(.+?)•@ims", $catalog_product->get_description(), $m);
-								//var_dump($m);
 								$description = "";
 								if (count($m)) {
 									$description = trim($m[1]);
 								}
 								preg_match_all("@• (.+)\n@i", $catalog_product->get_description(), $m);
-								//var_dump($m);
 								$other_info = array();
 								foreach ($m[1] as $match) {
 									$other_info[] = trim($match);
@@ -287,37 +278,6 @@ function get_variant_variant($variant_name) {
 							<div class="offset-top-20">
 								<?php
                                 get_payment_button('Buy Now', [['type'=>'printful','ext_id'=>$external_product_id,'variant_id'=>$selected_variant->get_id()]],'merch/buy/complete', $_SERVER['REQUEST_URI']);
-                                /*
-									$custom = serialize(array(
-										'source' => 'PRINTFUL_PRODUCT',
-										'product' => $external_product_id,
-										'variant' => $selected_variant->get_id()
-									));
-
-									$payment_button = new PaymentButton(
-										$product->get_name(),
-										$product->get_product_price()
-									);
-									if ($product->get_product_currency() != $payment_button->get_currency()) {
-										$payment_button->set_currency($product->get_product_currency());
-									}
-									$payment_button->set_custom($custom);
-									$payment_button->set_opt_names(array('Type', 'Product', 'Variant'));
-									$payment_button->set_opt_vals(array(
-										$catalog_product->get_type_name(),
-										$product->get_name(),
-										get_variant_variant($selected_variant->get_name())
-									));
-									$payment_button->set_complete_return_uri('/merch/buy/complete');
-
-									//echo $button['btn'];
-									$button = $payment_button->get_button();
-									if ($button->error === false) {
-									    echo "button success";
-										echo $payment_button->get_button()->button;
-									} else {
-										// TODO: Alert*/
-                                    //}
 								?>
 							</div>
 						</div>

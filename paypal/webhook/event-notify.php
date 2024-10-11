@@ -52,10 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
     }
 
     // Ignore the event if it's already been handled
-/*    if($event->already_handled()){
+    if($event->already_handled()){
         http_response_code(200);
         error_log("Ignoring duplicate webhook event transmission. Webhook event ID: {$event->payload['id']}");
-    }*/
+    }
 
     // perform actions based on what event occurred
     switch ($event->payload['event_type']) {
@@ -76,14 +76,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
             }
             break;
         }
-        // do stuff since order is complete... this is sent after PayPal confirms we captured payment
+        // do stuff
         case 'PAYMENT.CAPTURE.COMPLETED':
         {
             // get items
             $order_id = $event->payload['resource']['supplementary_data']['related_ids']['order_id'];
-            // this info is used in the handlers, but we need to fetch order details to get the payment ID so there's no reason to pass it
-            /*$order_total = Currency::from_string($event->payload['resource']['supplementary_data']['seller_receivable_breakdown']['gross_amount']['value']);
-            $paypal_fee =  Currency::from_string($event->payload['resource']['supplementary_data']['seller_receivable_breakdown']['paypal_fee']['value']);*/
+
+            // fetch order info
             $paypal = new PayPalCustomApi();
             try {
                 $order = json_decode($paypal->get_order_info($order_id), true);
@@ -92,9 +91,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                 error_log("(Webhook) Failed to fetch order details for ID {$order_id} while processing captured payment: {$e->getMessage()}");
                 die();
             }
+
             $items = $order['purchase_units'][0]['items'];
+            $printful_orders = [];
             // go over each item and handle it
-            foreach($items as $item) {
+            for($i = 0; $i < count($items); $i++) {
+                $item = $items[$i];
                 $item_type = 'donation';
                 if(isset($item['upc'])){ // upc is used for uid which should only be there for dues
                     $item_type = 'dues';
@@ -112,28 +114,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                         require_once('handlers/dues.php');
                         $dues = true;
 //                        AdminBot::send_message('Found a dues payment!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
-                        \DUES\handle_payment_notification($order_info, $custom, intval($item['upc']['code']), $order_id);
+                        \DUES\handle_payment_notification($order, $custom, intval($item['upc']['code']), $order_id);
                         break;
                     }
                     case 'printful_product':
                     {
                         require_once('handlers/printful.php');
 //                        AdminBot::send_message('Found a printful order!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
-                        $printful_orders[] = \PRINTFUL\handle_payment_notification($order_info, $current_item_index, $item, $order_id, isset($dues), $event);
+                        $printful_orders[] = \PRINTFUL\handle_payment_notification($order, $i, $item, $order_id, isset($dues), $event);
                         break;
                     }
                     case 'donation':
                     {
-                        AdminBot::send_message("Received donation from {$order_info['payer']['name']['given_name']} {$order_info['payer']['name']['surname']} ({$order_info['payer']['email_address']}).");
+                        AdminBot::send_message("Received donation from {$order['payer']['name']['given_name']} {$order['payer']['name']['surname']} ({$order['payer']['email_address']}).");
                     }
                 }
-
-                $item = $rows->fetch_assoc();
-                $current_item_index++;
             }
 
             //email payer the receipt
-            $email = email_receipt($order_info, $printful_orders, isset($dues), ENVIRONMENT === Environment::PRODUCTION);
+            $email = email_receipt($order, $printful_orders, isset($dues), ENVIRONMENT === Environment::PRODUCTION);
             if (is_array($email)) {
                 AdminBot::send_message('Receipt email for dev PayPal.', DISCORD_DEV_WEB_LOGS_CHANNEL_ID, [['bin' => json_encode($email), 'type' => 'json']]);
             } else if ($email) {

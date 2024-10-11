@@ -36,25 +36,6 @@ function get_payment_button(string $text, array $items, string $return_uri, stri
         </form>';
 }
 
-
-/**
- * Gets an order's status from our database. Specific table: paypal_orders
- * @param string $order_id PayPal order ID
- * @return false|null|string The order status. Null if a database error occurred. False if no order with that ID could be found.
- */
-function get_order_status_internal(string $order_id): ?string {
-    require_once(__DIR__ . '/../top.php');
-    global $db;
-    $q = $db->query("SELECT status FROM paypal_orders WHERE paypal_order_id='{$db->real_escape_string($order_id)}'");
-    if (!$q) {
-        return null;
-    }
-    if ($q->num_rows < 0) {
-        return false;
-    }
-    return $q->fetch_assoc()['status'];
-}
-
 /**
  * Emails a receipt for a PayPal order
  * @param $paypal_order_info array The JSON-decoded response for get_order PayPal API call. This should be an associative array
@@ -195,80 +176,4 @@ function email_receipt(array &$paypal_order_info, ?array $printful_order_info, b
 		return ['to'=>$payer['email_address'],'subject'=>$subject,'body'=>$email_body];
 	}
 
-}
-
-/**
- * Adds a new item to the paypal_items table or updates it if the item exists and the cached data hasn't expired
- * @param array $vals An associative array with the columns to insert. Expects item_name, item_type, and sales_price to be set. Valid fields:
- * id, item_type, sales_price, discount, discount_required_item, tax, cost, external_id, item_name, variant_name, config_id
- * @param string|null $config_name The name of the config if the ID is unknown
- * @return bool|null True if inserted, false if not, null if query error
- */
-function insert_paypal_item(array $vals, ?string $config_name = null): ?bool {
-    global $db;
-
-    // check if item exists
-    $q = $db->query("SELECT 
-                            paypal_items.id as item_id,
-                            ttl, 
-                            last_updated 
-                        FROM 
-                            paypal_items
-                        LEFT JOIN
-                            paypal_items_config 
-                        ON 
-                            config_id = paypal_items_config.id 
-                        WHERE 
-                            item_name = '{$db->real_escape_string($vals['item_name'])}'
-                        AND 
-                            variant_name = '{$db->real_escape_string($vals['variant_name'])}'");
-    if(!$q){
-        error_log("Error trying to fetch PayPal item from db: {$db->error}");
-        return null;
-    }
-
-    if($q->num_rows < 1){
-        $cols = 'last_updated';
-        $insert_vals = 'UTC_TIMESTAMP';
-        if(!array_key_exists('config_id', $vals)){
-            $q = $db->query("SELECT id FROM paypal_items_config WHERE config_name = '{$db->real_escape_string($config_name)}'");
-            if(!$q){
-                error_log("Error trying to find a PayPal item config with name {$config_name}: {$db->error}");
-                return null;
-            }
-            if($q->num_rows === 0)
-                error_log("Could not find PayPal item config with name {$config_name}");
-            else{
-                $vals['config_id'] = $q->fetch_assoc()['id'];
-            }
-        }
-        foreach($vals as $key => $val){
-            $cols .= ", {$db->real_escape_string($key)}";
-            $insert_vals .= ", '{$db->real_escape_string($val)}'";
-        }
-
-        $query = "INSERT INTO paypal_items({$cols}) VALUES({$insert_vals})";
-    } else{
-        $r = $q->fetch_assoc();
-
-        // update it only if it's expired
-        $update_time = $r['last_updated'];
-        if ($update_time !== null && time() - strtotime($update_time . 'UTC') < $r['ttl']) {
-            return false;
-        }
-
-        $set_vals = 'last_updated = UTC_TIMESTAMP';
-        foreach($vals as $key => $val){
-            $set_vals .= ", {$db->real_escape_string($key)}='{$db->real_escape_string($val)}'";
-        }
-
-        $query = "UPDATE paypal_items
-                  SET 
-                      {$set_vals}
-                 WHERE id={$r['item_id']}";
-    }
-    if($db->query($query)===false){
-        return null;
-    }
-    return true;
 }
