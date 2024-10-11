@@ -2,189 +2,36 @@
 // this file contains various helper functions
 
 /**
- * Gets a payment button whose items change due to DOM manipulations. For orders that our based only on the page, see {@see get_payment_button_constant()}
+ * Gets a PayPal payment button. To change the items dynamically, set the value of input#paypal-items<index><key> (e.g., input#paypal-items0type.value = 'dues')
  * @param string $text Text to display on the button
- * @param string[] $dom_selectors Selectors with the item identifiers to add to the order. Item identifiers should be stored in the 'item' attribute
- * @param string $return_uri URI to return the user to after order approval
- * @param string $cancel_uri URI to return the user to after order cancellation
- */
-function get_payment_button(string $text, array $dom_selectors, string $return_uri, string $cancel_uri) {
-    echo '<div class="paypal-button-container">
-            <div class="paypal-button-overlay">
-                <img src="/images/paypal-button.png" alt="">
-                <button type="submit" id="buy-product-now" class="btn btn-primary">' . $text . '</button>
-                <script type="text/javascript">
-                    let order_id = new URLSearchParams(window.location.search).get("token");
-                    /*if(order_id === null || order_id === "") {
-                        document.querySelector("button#buy-product-now").addEventListener("click", get_order)    
-                    } else{
-                        document.querySelector("button#buy-product-now").addEventListener("click", get_order_by_id)
-                    }*/
-                    document.querySelector("button#buy-product-now").addEventListener("click", get_order)
-                    async function get_order(){
-                        let button = document.querySelector(".paypal-button-overlay > button")
-                        button.removeEventListener("click", get_order)
-                        button.setAttribute("disabled", "")
-                        button.textContent = "Loading..."
-                        console.log("calling post");
-                        let selectors = ' . json_encode($dom_selectors) . '
-                        let items = []
-                        let variants = []
-                        selectors.forEach(selector => {
-                            let el = document.querySelector(selector)
-                            let item = el.getAttribute("item")
-                            if(item !== null && item !== ""){
-                                items.push(item)
-                                let variant = el.getAttribute("variant")
-                                variants.push(variant) 
-                            }
-                        })
-                        if(items.length === 0)
-                            {
-                            button.addEventListener("click", get_order)
-                            button.removeAttribute("disabled")
-                            console.log(selectors)
-                            return
-                            }
-                        fetch(window.location.origin + "/paypal/get-order",{
-                            method: "POST",
-                            credentials: "include",
-                            body: JSON.stringify({
-                            item_identifiers: items,
-                            variant_identifiers: variants,
-                            return_url: "https://' . "{$_SERVER['SERVER_NAME']}/{$return_uri}" . '",
-                            cancel_url: "https://' . "{$_SERVER['SERVER_NAME']}/{$cancel_uri}" . '"
-                            })
-                        }).then(async (response)=>{
-                           button.removeAttribute("disabled")
-                           if(!response.ok){
-                               button.textContent = "Error try again";
-                               button.addEventListener("click", get_order)
-                               return;
-                           } 
-                           let json = await response.json();
-                           button.onclick = ()=>{window.location.href = json.redirect_url}
-                           window.location.href = json.redirect_url;
-                        },()=>{
-                            button.removeAttribute("disabled")
-                            button.textContent = "Error try again"
-                            button.addEventListener("click", get_order)
-                        })
-                    }
-                    /*async function get_order_by_id(){
-                        let button = document.querySelector(".paypal-button-overlay > button")
-                        button.removeEventListener("click", get_order_by_id)
-                        button.textContent = "Loading..."
-                        console.log("calling post");
-                        let order_id = new URLSearchParams(window.location.search).get("token");
-                        fetch(window.location.origin + "/paypal/get-order",{
-                            method: "POST",
-                            body: JSON.stringify({
-                            id: order_id,
-                            return_url: "' . "{$_SERVER['SERVER_NAME']}/{$return_uri}" . '",
-                            cancel_url: "' . "{$_SERVER['SERVER_NAME']}/{$cancel_uri}" . '"
-                            })
-                        }).then(async (response)=>{
-                           if(!response.ok){
-                               if(response.status === 404){
-                                    button.textContent = "Error. Try Again"       
-                               }
-                               button.textContent = "Error";
-                               return;
-                           } 
-                           let json = await response.json();
-                           button.onclick = ()=>{window.location.href = json.redirect_url}
-                           window.location.href = json.redirect_url;
-                        },()=>{
-                            button.textContent = "Error. Try Again"
-                            
-                        })
-                    }*/
-                </script>
-            </div>
-        </div>';
-}
-
-/**
- * Gets a payment button whose items don't change. For orders that may vary based on an input field, see {@see get_payment_button()}
- * @param string $text Text to display on the button
- * @param string[] $item_names An array of the item names. Indices should match with that of $variant_names
- * @param array $variant_names An array of the item variants' names. Indices should match with that of $item_names. Use null or an empty string if there is no variant info
+ * @param array[] $items Array of items to be purchased. Format: [['type':'dues', 'full_year':true, 't-shirt':false], ['type':'printful', 'id':'variantid'], ['type':'donation', 'amount':'99.99'], ...]
  * @param string $return_uri URI to return the user to after order approval
  * @param string $cancel_uri URI to return the user to after order cancellation
  * @return void
  */
-function get_payment_button_constant(string $text, array $item_names, array $variant_names, string $return_uri, string $cancel_uri) {
-    echo '<div class="paypal-button-container">
-            <div class="paypal-button-overlay">
-                <img src="/images/paypal-button.png" alt="">
-                <button type="submit" id="buy-product-now" class="btn btn-primary">' . $text . '</button>
-                <script type="text/javascript">
-                    let order_id = new URLSearchParams(window.location.search).get("token");
-                    document.querySelector("button#buy-product-now").addEventListener("click", get_order)
-                    async function get_order(){
-                        let button = document.querySelector(".paypal-button-overlay > button")
-                        button.removeEventListener("click", get_order)
-                        button.setAttribute("disabled", "")
-                        button.textContent = "Loading..."
-                        console.log("calling post");
-                        
-                        fetch(window.location.origin + "/paypal/get-order",{
-                            method: "POST",
-                            credentials: "include",
-                            body: JSON.stringify({
-                            item_identifiers: ' . json_encode($item_names) . ',
-                            variant_identifiers: ' . json_encode($variant_names) . ',
-                            return_url: "https://' . "{$_SERVER['SERVER_NAME']}/{$return_uri}" . '",
-                            cancel_url: "https://' . "{$_SERVER['SERVER_NAME']}/{$cancel_uri}" . '"
-                            })
-                        }).then(async (response)=>{
-                           button.removeAttribute("disabled")
-                           if(!response.ok){
-                               button.textContent = "Error try again";
-                               button.addEventListener("click", get_order)
-                               return;
-                           } 
-                           let json = await response.json();
-                           button.onclick = ()=>{window.location.href = json.redirect_url}
-                           window.location.href = json.redirect_url;
-                        },()=>{
-                            button.removeAttribute("disabled")
-                            button.textContent = "Error try again"
-                            button.addEventListener("click", get_order)
-                        })
-                    }
-                    /*async function get_order_by_id(){
-                        let button = document.querySelector(".paypal-button-overlay > button")
-                        button.removeEventListener("click", get_order_by_id)
-                        button.textContent = "Loading..."
-                        console.log("calling post");
-                        let order_id = new URLSearchParams(window.location.search).get("token");
-                        fetch(window.location.origin + "/paypal/get-order",{
-                            method: "POST",
-                            body: JSON.stringify({
-                            id: order_id,
-                            return_url: "' . "{$_SERVER['SERVER_NAME']}/{$return_uri}" . '",
-                            cancel_url: "' . "{$_SERVER['SERVER_NAME']}/{$cancel_uri}" . '"
-                            })
-                        }).then(async (response)=>{
-                           if(!response.ok){
-                               if(response.status === 404){
-                                    button.textContent = "Error. Try Again"       
-                               }
-                               button.textContent = "Error";
-                               return;
-                           } 
-                           let json = await response.json();
-                           button.onclick = ()=>{window.location.href = json.redirect_url}
-                           window.location.href = json.redirect_url;
-                        },()=>{
-                            button.textContent = "Error. Try Again"
-                            
-                        })
-                    }*/
-                </script>
-            </div>
+function get_payment_button(string $text, array $items, string $return_uri, string $cancel_uri) {
+    //https://' . "{$_SERVER['SERVER_NAME']}/{$return_uri}
+	$items_json = json_encode($items);
+	if(strlen($items_json) > 127){
+		error_log("Items array for PayPal order is too large. Array: ${items_json}");
+		return;
+	}
+	echo '<div class="paypal-button-container">
+			<form action="'. "https://{$_SERVER['SERVER_NAME']}/paypal/get-order" . '">
+				<div class="paypal-button-overlay">
+					<img src="/images/paypal-button.png" alt="">
+					<input type="submit" id="buy-product-now" class="btn btn-primary" value="' . $text . '">';
+//					<input type="hidden" id="paypal-items" name="items" value="' . $items_json . '"/>
+    foreach($items as $i=>$item){
+        foreach($item as $k=>$v){
+            echo '<input type="hidden" id="paypal-items' . $i . $k . '" name="items[' . $i . '][' . $k . ']" value="' . json_encode($v) . '">';
+        }
+    }
+
+    echo            '<input type="hidden" name="return_uri" value="' . $return_uri . '"/>
+					<input type="hidden" name="cancel_uri" value="' . $cancel_uri . '"/>
+				</div>
+            </form>
         </div>';
 }
 

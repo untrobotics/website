@@ -111,22 +111,14 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                                                 </div>
                                                 <select id="include-tshirt" name="include-tshirt" class="">
                                                     <option value="" selected="selected" variant="">No T-shirt</option>
-                                                    <!--<option value="632b8e41a865f1">XS</option>
-                                                    <option value="632b8e41a86664">S</option>
-                                                    <option value="632b8e41a866a1">M</option>
-                                                    <option value="632b8e41a866e2">L</option>
-                                                    <option value="632b8e41a86724">XL</option>
-                                                    <option value="632b8e41a86761">2XL</option>
-                                                    <option value="632b8e41a867a9">3XL</option>
-                                                    <option value="632b8e41a867e6">4XL</option>-->
-                                                    <option value="Dues Shirt" variant="XS">XS</option>
-                                                    <option value="Dues Shirt" variant="S">S</option>
-                                                    <option value="Dues Shirt" variant="M">M</option>
-                                                    <option value="Dues Shirt" variant="L">L</option>
-                                                    <option value="Dues Shirt" variant="XL">XL</option>
-                                                    <option value="Dues Shirt" variant="2XL">2XL</option>
-                                                    <option value="Dues Shirt" variant="3XL">3XL</option>
-                                                    <option value="Dues Shirt" variant="4XL">4XL</option>
+                                                    <option value="3508512951">XS</option>
+                                                    <option value="3508512952">S</option>
+                                                    <option value="3508512953">M</option>
+                                                    <option value="3508512954">L</option>
+                                                    <option value="3508512955">XL</option>
+                                                    <option value="3508512957">2XL</option>
+                                                    <option value="3508512962">3XL</option>
+                                                    <option value="3508512963">4XL</option>
                                                 </select>
                                             </label>
                                         </div>
@@ -140,14 +132,12 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
 
                                 <?php
                                 require_once('../template/functions/paypal.php');
-                                if($permit_full_year_payment)
-                                    get_payment_button('Pay Now', ['#include-tshirt', '#full-year'], 'dues/paid', 'dues');
-                                else
-                                    get_payment_button_constant('Pay Now', ['Dues'], ['1 semester'], 'dues/paid', 'dues');
+                                if($full_year_dues_price) {
+                                    get_payment_button('Pay Now', [['type' => 'dues', 'full-year' => false, 't-shirt' => false],['type'=>'printful','id'=>'']], 'dues/paid', 'dues');
+                                } else{
+                                    get_payment_button('Pay Now', [['type' => 'dues', 'full-year' => false, 't-shirt' => false]], 'dues/paid', 'dues');
+                                }
                                 ?>
-                                <!--<div class="dues-payment-button">
-                                    Loading...
-                                </div>-->
 
                                 <?php
                             } else {
@@ -214,19 +204,20 @@ footer(false);
         fullYear = !!$(this).is(':checked');
         $("#dues_cost").text("$" + getDuesCost());
         // setNewButton();
-        if (fullYear) {
-            $(this).attr('variant', '2 Semester')
-        } else {
-            $(this).attr('variant', '1 Semester')
-        }
+        $('input#paypal-items0full-year').val(fullYear);
     });
 
     $('#include-tshirt').on('change', function (e) {
         tShirt = e.target.value || null;
         $("#dues_cost").text("$" + getDuesCost());
         if (tShirt) {
-            $(this).attr('item', e.target.value)
-            $(this).attr('variant', $(this).find('option:selected').attr('variant'))
+            /*$(this).attr('item', e.target.value)
+            $(this).attr('variant', $(this).find('option:selected').attr('variant'))*/
+            $('input#paypal-items0t-shirt').val(true);
+            $('input#paypal-items1id').val($(this).find('option:selected').val());
+        } else{
+            $('input#paypal-items0t-shirt').val(false);
+            $('input#paypal-items1id').val('');
         }
     })
 </script>

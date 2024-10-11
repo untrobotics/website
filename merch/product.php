@@ -286,7 +286,8 @@ function get_variant_variant($variant_name) {
 							</ul>
 							<div class="offset-top-20">
 								<?php
-                                    get_payment_button_constant('Buy Now', [$product->get_name()],[$this_variant_name],'merch/buy/complete', $_SERVER['REQUEST_URI']);/*
+                                get_payment_button('Buy Now', [['type'=>'printful','id'=>$selected_variant->get_id()]],'merch/buy/complete', $_SERVER['REQUEST_URI']);
+                                /*
 									$custom = serialize(array(
 										'source' => 'PRINTFUL_PRODUCT',
 										'product' => $external_product_id,
