@@ -497,6 +497,41 @@ class PayPalItem extends JsonNoEmptyFieldSerializable
         $this->tax = $tax;
         $this->upc = $upc;
     }
+
+    public static function from_json_string(string $json): PayPalItem{
+        $a = json_decode($json, true);
+        $tax = null;
+        $description = null;
+        $sku = null;
+        $url = null;
+        $category = null;
+        $image_url = null;
+        $upc = null;
+
+        if(isset($a['tax'])){
+            $tax = new PayPalCurrencyField($a['tax']['currency_code'], $a['tax']['amount']);
+        }
+        if(isset($a['description'])){
+            $description = $a['description'];
+        }
+        if(isset($a['sku'])){
+            $sku = $a['sku'];
+        }
+        if(isset($a['url'])){
+            $url = $a['url'];
+        }
+        if(isset($a['category'])){
+            $category = $a['category'];
+        }
+        if(isset($a['image_url'])){
+            $image_url = $a['image_url'];
+        }
+        if(isset($a['upc'])){
+            $upc = $a['upc'];
+        }
+
+        return new PayPalItem($a['name'], $a['quantity'],new PayPalCurrencyField($a['currency_code'],$a['value']), $tax, $description, $sku, $url, $category, $image_url, $upc);
+    }
 }
 
 /**

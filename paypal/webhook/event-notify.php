@@ -30,8 +30,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
             }
         } catch (PayPalCustomApiException $e) {
             $verified = $event->verify_external();
+
+            // if the internal CRC check returned unverified but PayPal's API returned verified, send a message with full webhook event and headers to web log channel
             if(isset($crc_fail) && $crc_fail && $verified){
-                error_log("Webhook event verification failed CRC check but passed PayPal's API. Check certs.");
+                require_once('../../template/config.php');
+                AdminBot::send_message("Webhook event verification failed CRC check but passed PayPal's API. Check certs.", ENVIRONMENT == Environment::DEVELOPMENT? DISCORD_DEV_WEB_LOGS_CHANNEL_ID: DISCORD_WEB_LOGS_CHANNEL_ID, [['type'=>'json','bin'=>json_encode($event->headers)], ['type'=>'json', 'bin'=>$event->raw]]);
             }
         }
     } catch (Exception $e) {
@@ -48,43 +51,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
         die();
     }
 
+    // Ignore the event if it's already been handled
+/*    if($event->already_handled()){
+        http_response_code(200);
+        error_log("Ignoring duplicate webhook event transmission. Webhook event ID: {$event->payload['id']}");
+    }*/
+
     // perform actions based on what event occurred
     switch ($event->payload['event_type']) {
         // capture payment... this event is sent when order is approved by the payer
         case 'CHECKOUT.ORDER.APPROVED':
         {
-            global $db;
             $order_id = $event->payload['resource']['id'];
-
-            $status = get_order_status_internal($order_id);
-
-            // db error
-            if ($status === null) {
-                // send an error status since PayPal will resend webhook events a couple of times if a non-success is returned
-                http_response_code(500);
-                error_log("Failed to fetch PayPal order {$order_id} status from the db: {$db->error}");
-                die();
-            }
-
-            // order doesn't exist in the db
-            if (!$status) {
-                // don't send an error status to PayPal since this can't be fixed with a webhook event resend. This may need to alert a financial officer to fix it
-                error_log("Could not find PayPal order {$order_id} in the db.");
-                die();
-            }
-
-            // order status should be created before we change it to approved. If it's already been approved, we already tried capturing payment. If it's captured, then we received confirmation that it's been captured.
-            if ($status !== 'created') {
-                error_log("PayPal order {$order_id} internal status is not created. Not capturing payment. Status: {$status}");
-                die();
-            }
-
-            // change order status to approved
-            if (!$db->query("UPDATE paypal_orders SET status = 'approved' where paypal_order_id = '{$order_id}'")) {
-                http_response_code(500);
-                error_log("Failed to update PayPal order {$order_id} status to captured: {$db->error}");
-                die();
-            }
 
             // capture payment
             $paypal = new PayPalCustomApi();
@@ -106,69 +84,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
             // this info is used in the handlers, but we need to fetch order details to get the payment ID so there's no reason to pass it
             /*$order_total = Currency::from_string($event->payload['resource']['supplementary_data']['seller_receivable_breakdown']['gross_amount']['value']);
             $paypal_fee =  Currency::from_string($event->payload['resource']['supplementary_data']['seller_receivable_breakdown']['paypal_fee']['value']);*/
-
-
-            global $db;
-            // fetch our commitments to fulfill for the order
-            $rows = $db->query("SELECT 
-                                    paypal_items.id AS item_id, 
-                                    item_type, 
-                                    item_name, 
-                                    external_id,
-                                    uid,
-                                    custom_data, 
-                                    status,
-                                    item_category,
-                                    variant_name
-                                FROM 
-                                    paypal_orders 
-                                LEFT JOIN 
-                                    paypal_order_item 
-                                ON 
-                                    paypal_orders.id = paypal_order_item.order_id 
-                                LEFT JOIN
-                                    paypal_items 
-                                ON 
-                                    paypal_order_item.item_id = paypal_items.id
-                                WHERE
-                                    paypal_orders.paypal_order_id = '{$order_id}'");
-            if (!$rows) {
-                error_log("Paypal Order not found for order ID {$order_id}");
-                die();
-            }
-
-
-            // attempt to get info for this order
+            $paypal = new PayPalCustomApi();
             try {
-                $order_info = json_decode($event->get_order_info($order_id), true);
+                $order = json_decode($paypal->get_order_info($order_id), true);
             } catch (PayPalCustomApiException $e) {
-                error_log("Failed to fetch order information for ID {$order_id}: {$e->getMessage()}");
+                http_response_code(500);
+                error_log("(Webhook) Failed to fetch order details for ID {$order_id} while processing captured payment: {$e->getMessage()}");
                 die();
             }
-
-            // attempt to update status of order in our database
-            if (!$db->query("UPDATE paypal_orders SET status = 'captured' where paypal_order_id = '{$order_id}'")) {
-                error_log("Failed to update PayPal order {$order_id} status to captured: {$db->error}");
-            }
-
-            // array of Printful orders info returned by the Printful payment handler
-            $printful_orders = [];
-            $item = $rows->fetch_assoc();
-
-            // don't do anything if the order has already been marked as captured in the db
-            if ($item['status'] === 'captured') {
-                die();
-            }
-            $current_item_index = 0;
+            $items = $order['purchase_units'][0]['items'];
             // go over each item and handle it
-            while ($item !== null) {
+            foreach($items as $item) {
+                $item_type = 'donation';
+                if(isset($item['upc'])){ // upc is used for uid which should only be there for dues
+                    $item_type = 'dues';
+                }
+                if(isset($item['sku'])){ // sku is used for
+                    $custom = json_decode($item['custom'], true);
+                    if(isset($custom['src']))
+                    {
+                        $item_type = $custom['src'];    // should be printful
+                    }
+                }
                 switch ($item['item_type']) {
                     case 'dues':
                     {
                         require_once('handlers/dues.php');
                         $dues = true;
 //                        AdminBot::send_message('Found a dues payment!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
-                        \DUES\handle_payment_notification($order_info, json_decode($item['custom_data'], true), $item['uid'], $order_id);
+                        \DUES\handle_payment_notification($order_info, $custom, intval($item['upc']['code']), $order_id);
                         break;
                     }
                     case 'printful_product':

@@ -118,6 +118,22 @@ class PaypalWebhookEvent extends PayPalCustomApi
         $this->is_sandbox = false;
         return false;
     }
+
+    /**
+     * Determines if the webhook event was already handled
+     * @return bool True if a previous webhook transmission received a SUCCESS response. False otherwise
+     */
+    public function already_handled(): bool{
+        if(!isset($this->payload['transmissions'])){
+            return false;
+        }
+        foreach ($this->payload['transmissions'] as $transmission) {
+            if($transmission['status']==='SUCCESS'){
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 /**
