@@ -62,12 +62,11 @@ class PaypalWebhookEvent extends PayPalCustomApi
             throw new PayPalCustomApiException("Received an unexpected hostname for PayPal Cert URL. Full URL: {$this->headers['PAYPAL-CERT-URL']}");
         }
         // verify that the url is in the expected path and filename format
-        if (preg_match('/\/v[12]\/notifications\/certs\/[a-z0-9\-]+/', parse_url($this->headers['PAYPAL-CERT-URL'], PHP_URL_PATH)) !== 1) {
+        if (preg_match('/\/v[12]\/notifications\/certs\/(?:CERT)?[a-z0-9\-]+/', parse_url($this->headers['PAYPAL-CERT-URL'], PHP_URL_PATH)) !== 1) {
             throw new PayPalCustomApiException("Received an unexpected path for PayPal Cert URL. Full URL: {$this->headers['PAYPAL-CERT-URL']}");
         }
 
-        //todo: run the cert through the cache system?
-        $public_key = openssl_pkey_get_public(file_get_contents($this->headers['PAYPAL-CERT-URL']));
+        $public_key = openssl_pkey_get_public(file_get_contents(__DIR__ . '/../../paypal/cert/paypal-cert'));
 
         return openssl_verify(
             "{$this->headers['PAYPAL-TRANSMISSION-ID']}|{$this->headers['PAYPAL-TRANSMISSION-TIME']}|" . self::get_webhook_id() . '|' . crc32($this->raw),

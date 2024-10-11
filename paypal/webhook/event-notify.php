@@ -19,13 +19,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
 
     // get event
     $event = new PaypalWebhookEvent(file_get_contents('php://input'));
-
-    // verify the event. Tries with PayPal's API before using the CRC
+    // verify the event. Only uses the API if CRC calc fails
     try {
         try {
-            $verified = $event->verify_external();
-        } catch (PayPalCustomApiException $e) {
             $verified = $event->verify_internal();
+            // force verify external if internal verification failed
+            if(!$verified){
+                $crc_fail = true;
+                throw new PayPalCustomApiException();
+            }
+        } catch (PayPalCustomApiException $e) {
+            $verified = $event->verify_external();
+            if(isset($crc_fail) && $crc_fail && $verified){
+                error_log("Webhook event verification failed CRC check but passed PayPal's API. Check certs.");
+            }
         }
     } catch (Exception $e) {
         // assume the issue is with PayPal
@@ -168,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                     {
                         require_once('handlers/printful.php');
 //                        AdminBot::send_message('Found a printful order!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
-                        $printful_orders[] = \PRINTFUL\handle_payment_notification($order_info,$current_item_index,$item,$order_id,isset($dues),$event);
+                        $printful_orders[] = \PRINTFUL\handle_payment_notification($order_info, $current_item_index, $item, $order_id, isset($dues), $event);
                         break;
                     }
                     case 'donation':
@@ -181,13 +188,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                 $current_item_index++;
             }
 
-	        //email payer the receipt
+            //email payer the receipt
             $email = email_receipt($order_info, $printful_orders, isset($dues), ENVIRONMENT === Environment::PRODUCTION);
-            if(is_array($email)){
-				AdminBot::send_message('Receipt email for dev PayPal.', DISCORD_DEV_WEB_LOGS_CHANNEL_ID, [['bin'=>json_encode($email),'type'=>'json']]);
-			}
-			else if($email) {
-				payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email, true) . ")");
+            if (is_array($email)) {
+                AdminBot::send_message('Receipt email for dev PayPal.', DISCORD_DEV_WEB_LOGS_CHANNEL_ID, [['bin' => json_encode($email), 'type' => 'json']]);
+            } else if ($email) {
+                payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email, true) . ")");
             }
             break;
         }
