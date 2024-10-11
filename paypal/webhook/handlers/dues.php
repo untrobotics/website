@@ -22,29 +22,12 @@ use WebhookEventHandlerException;
  */
 function handle_payment_notification(array &$order_info, $custom, int $uid, string $order_id) {
 
-    global $db, $untrobotics;
+    global $untrobotics;
 
     // get dues price from dues_config table to verify payment amount
-    $q = $db->query("SELECT `key`,`value` FROM dues_config WHERE `key` = 'semester_price' OR `key` = 't_shirt_dues_purchase_price'");
-    if (!$q || $q->num_rows !== 2) {
-        AdminBot::send_message("Unable to determine the dues payment price (Webhook Event)");
-        throw new WebhookEventHandlerException("Unable to determine dues payment price (Webhook Event)");
-    }
-
-    $r = $q->fetch_all(MYSQLI_ASSOC);
-
-    // convert the rows fetched into a single associative array
-    $mapped_config = array();
-    array_walk(
-        $r,
-        function (&$val, $_key) use (&$mapped_config) {
-            $mapped_config[$val['key']] = $val['value'];
-        }
-    );
-
-    // puts the expected prices in variables
-    $t_shirt_dues_purchase_price = $mapped_config['t_shirt_dues_purchase_price'];
-    $single_semester_dues_price = $mapped_config['semester_price'];
+    $dues_prices = $untrobotics->get_dues_prices('Webhook Event');
+    $t_shirt_dues_purchase_price = $dues_prices['t_shirt_dues_purchase_price'];
+    $single_semester_dues_price = $dues_prices['semester_price'];
 
     // determine if a dues shirt was bought
     $is_tshirt_included = !empty($custom['include_tshirt']) && $custom['include_tshirt'] != false;
@@ -186,3 +169,4 @@ function handle_payment_notification(array &$order_info, $custom, int $uid, stri
         AdminBot::send_message("(Webhook) Alert: Received a negative or zero amount payment capture. This usually indicates some kind of reversal/refund. Order ID: [{$order_id}].");
     }
 }
+

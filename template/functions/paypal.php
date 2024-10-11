@@ -4,7 +4,7 @@
 /**
  * Gets a PayPal payment button. To change the items dynamically, set the value of input#paypal-items<index><key> (e.g., input#paypal-items0type.value = 'dues')
  * @param string $text Text to display on the button
- * @param array[] $items Array of items to be purchased. Format: [['type':'dues', 'full_year':true, 't-shirt':false], ['type':'printful', 'id':'variantid'], ['type':'donation', 'amount':'99.99'], ...]
+ * @param array[] $items Array of items to be purchased. Format: [['type':'dues', 'full_year':true, 't-shirt':false], ['type':'printful','ext_id':'externalid' , 'variant_id':'variantid'], ['type':'donation', 'amount':'99.99'], ...]
  * @param string $return_uri URI to return the user to after order approval
  * @param string $cancel_uri URI to return the user to after order cancellation
  * @return void
@@ -17,14 +17,14 @@ function get_payment_button(string $text, array $items, string $return_uri, stri
 		return;
 	}
 	echo '<div class="paypal-button-container">
-			<form action="'. "https://{$_SERVER['SERVER_NAME']}/paypal/get-order" . '">
+			<form method="post" action="'. "https://{$_SERVER['SERVER_NAME']}/paypal/get-order" . '">
 				<div class="paypal-button-overlay">
 					<img src="/images/paypal-button.png" alt="">
 					<input type="submit" id="buy-product-now" class="btn btn-primary" value="' . $text . '">';
 //					<input type="hidden" id="paypal-items" name="items" value="' . $items_json . '"/>
     foreach($items as $i=>$item){
         foreach($item as $k=>$v){
-            echo '<input type="hidden" id="paypal-items' . $i . $k . '" name="items[' . $i . '][' . $k . ']" value="' . json_encode($v) . '">';
+            echo '<input type="hidden" id="paypal-items' . $i . $k . '" name="items[' . $i . '][' . $k . ']" value="' . htmlspecialchars(trim(json_encode($v),'"')) . '">';
         }
     }
 

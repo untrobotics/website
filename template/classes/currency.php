@@ -47,7 +47,7 @@ class Currency
         }
 
         $c->whole_number += intdiv($c->fraction, $max_fraction);
-        $c->fraction -= ($c->fraction % $max_fraction) * $max_fraction;
+        $c->fraction = $c->fraction % $max_fraction;
     }
 
     /**
@@ -66,7 +66,9 @@ class Currency
                 $currency_code = $matches[0];
             }
         }
-        return new Currency(intval($s[0]), isset($s[1]) ? intval($s[1]) : 0, $currency_code);
+        $frac = isset($s[1]) ? intval($s[1]) : 0;
+        $whole_number = intval($s[0]);
+        return new Currency($whole_number, $frac, $currency_code);
     }
 
     /**

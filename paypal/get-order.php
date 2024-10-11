@@ -4,185 +4,201 @@ require_once('../api/paypal/paypal.php');
 require_once('../template/classes/currency.php');
 require_once('../api/discord/bots/admin.php');
 global $db;
+
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // read request body
-    $request = json_decode(file_get_contents("php://input"), true);
-    if (isset($request['order_id'])) {
-        $p = new PayPalCustomApi();
-        try {
-            $response = json_decode($p->get_order_info($request['order_id']), true);
-        } catch (PayPalCustomApiException $e) {
-            http_response_code(404);
-            error_log("Could not find order with ID {$request['order_id']}: {$e->getMessage()}");
-            die();
-        }
-        http_response_code(200);
+//    $request = $_POST;
 
-    }
-
-    $item_names = $request['item_identifiers'];
-    $variant_names = $request['variant_identifiers'];
-
-
-    // combines the item names in a comma-delimited string for MySQL query
-    $item_names_str = '';
-    $variant_names_str = '';
-    /*foreach ($item_names as $item_name) {
-        $item_names_str .= "'{$db->real_escape_string($item_name)}',";
-    }*/
-    for ($i = 0; $i < count($item_names); $i++) {
-        $item_names_str .= "'{$db->real_escape_string($item_names[$i])}',";
-        $variant_names_str .= "'{$db->real_escape_string($variant_names[$i])}',";
-    }
-    $item_names_str = rtrim($item_names_str, ",");
-    $variant_names_str = rtrim($variant_names_str, ",");
-
-
-
-    // Queries the item info for items requested... match is based on item name and variant name
-    // This query has an issue where if two items have variants with the same name, then multiple variants may be retrieved
-    // Not sure how to fix it easily
-    $query = "SELECT 
-                    id, item_type, sales_price, item_name, discount, discount_required_item, variant_name
-                FROM 
-                    paypal_items 
-                WHERE 
-                    item_name in ({$item_names_str})
-                AND
-                    variant_name in ({$variant_names_str})
-                ORDER BY 
-                    item_type DESC";
-    $q = $db->query($query);
-
-    // send 500 if the query fails
-    if ($q === false) {
-        http_response_code(500);
-        error_log("PayPal item db query failed: {$db->error}");
-        die();
-    }
-    if($q->num_rows < 1) {
-        http_response_code(404);
-        error_log("Could not find any items in the database with item and variant names: {$item_names_str}, {$variant_names_str}");
+    $items = $_POST['items'];
+    if(count($items)<1){
+        http_response_code(400);
         die();
     }
 
-    // list of PayPalItems
-    $items = array();
-    // subtotal of order
+    $return_url = "https://{$_SERVER['SERVER_NAME']}/" . htmlspecialchars_decode($_POST['return_uri']);
+    $cancel_url = "https://{$_SERVER['SERVER_NAME']}/" . htmlspecialchars_decode($_POST['cancel_uri']);
+    $paypal_items = [];
+
     $subtotal = new Currency(0, 0);
-    // any discounts that might be applicable
-    $discounts = [];
-    // item IDs in the paypal_items table
-    $item_ids = [];
-    $custom_data = [];
-
-    $r = $q->fetch_assoc();
-    $physical_goods = ['printful_product'];
-    $shipping_required = false;
-    $item_type_count = ['dues' => 0, 'printful_product' => 0, 'donation' => 0];
-    $required_discount_item_types = [];
-
-    global $untrobotics;
-    $custom = null;
-    // keep fetching next row until no more
-    while ($r !== null) {
-
-        $item_ids[] = $r['id'];
-        $item_type = $r["item_type"];
-        $item_type_count[$item_type]++;
-
-        if (in_array($item_type, $physical_goods)) {
-            $category = 'PHYSICAL_GOODS';
-            $shipping_required = true;
-
-            // add custom data stuff for Printful or whatever
-
-            $custom = new stdClass();
-
-
-        } else if ($item_type == 'dues') {
-            $custom = new stdClass();
-
-            $category = 'DIGITAL_GOODS';
-
-            // get number of semesters for dues from variant name
-            $semester_count = null;
-            preg_match('/^[0-9]+/', $r['variant_name'], $semester_count);
-            $custom->semester_count = (int)$semester_count[0];
-
-            // set semester and year for the dues
-            $custom->semester = $untrobotics->get_current_term();
-            $custom->year = $untrobotics->get_current_year();
-
-            // add another semester
-            if ($custom->semester_count > 1) {
-                $custom->extra_semester = $untrobotics->get_next_term();
-
-                // set year to next year if the next term is Spring
-                $custom->extra_year = $custom->extra_semester < $custom->semester ? $custom->year : $untrobotics->get_next_year();
-            }
-
-            if ($item_type_count['printful_product'] > 0) {
-                $custom->include_tshirt = true;
-            } else {
-                $custom->include_tshirt = false;
-            }
-
-
-
-        } else if ($item_type == 'donation') {
-            $category = 'DONATION';
-        } else {
-            $category = null;
-        }
-        $custom_data[] = json_encode($custom);
-        $items[] = new PayPalItem($r['item_name'],
-            1,
-            new PayPalCurrencyField('USD', $r['sales_price']),
-            null,
-            /*""*/ null, null, null, $category
-        );
-        $subtotal->add(Currency::from_string($r['sales_price']));
-        if ($r['discount'] !== '0.00') {
-            $discounts[] = Currency::from_string($r['discount']);
-            $required_discount_item_types[] = $r['discount_required_item'];
-        }
-
-        $custom = null;
-        $r = $q->fetch_assoc();
-    }
-
-    // prevent order with dues from being created if user isn't logged in
-    if ($item_type_count['dues'] > 0) {
-        $auth = auth();
-        if (!$auth) {
-            http_response_code(403);
-            die();
-        }
-    }
-
     $discount = new Currency(0, 0);
-    for ($i = 0; $i < count($discounts); $i++) {
-        if ($item_type_count[$required_discount_item_types[$i]] > 0) {
-            $discount->add($discounts[$i]);
-            $item_type_count[$required_discount_item_types[$i]]--;
+    $shipping_required = false;
+
+    // create paypal items and calculate subtotal and discount
+    foreach ($items as $item) {
+        switch ($item['type']) {
+            case 'dues':
+            {
+                $dues = true;
+
+                // ensure the user is logged in for dues
+                $auth = auth();
+                if (!$auth) {
+                    http_response_code(401);
+                    die();
+                }
+
+                global $untrobotics;
+                $userinfo = $auth[0];
+
+                // get prices
+                $dues_prices = $untrobotics->get_dues_prices('Get order');
+                $t_shirt_dues_purchase_price = $dues_prices['t_shirt_dues_purchase_price'];
+                $single_semester_dues_price = $dues_prices['semester_price'];
+                $full_year_dues_price = $single_semester_dues_price * 2;
+
+                // get term and years for data fields
+                $current_term = $untrobotics->get_current_term();
+                $next_term = $untrobotics->get_next_term();
+
+                $current_year = $untrobotics->get_current_year();
+                $next_year = $untrobotics->get_next_year();
+
+                // only allow the user to pay for the full year it is the autumn semester
+                $permit_full_year_payment = $current_term == Semester::AUTUMN;
+
+                // represents whether the payment is for full year dues
+                $fullyear = $item['full_year'] === 'true';
+
+                // represents whether a dues t-shirt was included
+                $dues_with_tshirt = $item['t-shirt'] === 'true';
+
+                // don't allow orders asking for full year payments if it's not the fall semester
+                if (!$permit_full_year_payment && $fullyear) {
+                    AdminBot::send_message("Someone is trying to pay for the full year (dues) in the Spring semester");
+                    throw new RuntimeException("Unable to pay for full year at this time");
+                }
+
+                /** $data is passed to the SKU field so we can process the order info
+                 * Dues format:
+                 * [
+                 *  's' => $current_term, // Should be one of the Semester const. Should be the first semester paid for (i.e., fall if paying for full year)
+                 *  'y' => $current_year, // Should be whatever $untrobotics->get_current_year() returns. Should be the year for the first semester
+                 *  's1' => $next_term, // Used if paying for full year
+                 *  'y1' => $next_year, // Used if paying for full year
+                 *  't' => true // Use if tshirt is purchased
+                 * ]
+                 * */
+                $data = ['s' => $current_term, 'y' => $current_year];
+
+                $cost = 0;
+                if ($fullyear) {
+                    $cost += $full_year_dues_price;
+                    $data['s1'] = $next_term;
+                    $data['y1'] = $next_year;
+                } else {
+                    $cost += $single_semester_dues_price;
+                }
+                $subtotal->add(new Currency($cost));
+
+                if ($dues_with_tshirt) {
+                    $data['t'] = true;
+                }
+
+                $n_semesters = $fullyear ? 2 : 1;
+                $item_name = 'UNT Robotics Dues - ';
+
+                $item_name .= Semester::get_name_from_value($current_term) . ' ' . $current_year;
+                if ($fullyear) {
+                    $item_name .= ' & ' . Semester::get_name_from_value($next_term) . ' ' . $next_year;
+                }
+
+                /**
+                 * The UPC field is the UID. The customer can't see the UPC field as far as I know
+                 */
+                $paypal_items[] = new PayPalItem($item_name, '1', new PayPalCurrencyField('USD', strval($cost)), null, 'UNT Robotics Dues', json_encode($data), null, 'DIGITAL_GOODS', null, new PayPalUPCField('UPC-A', str_pad(strval($userinfo['id']), 12, '0', STR_PAD_LEFT)));
+
+
+                break;
+            }
+            case 'printful':
+            {
+                if($item['variant_id']==='') break;
+                require_once('../api/printful/printful.php');
+                $shipping_required = true;
+                $printful_api = new PrintfulCustomAPI();
+
+                // for retrieving prices from printful
+                $variant = $printful_api->get_variant($item['variant_id']);
+
+                // for the product url
+                $parent_product = $printful_api->get_product('@' . $item['ext_id']);
+
+                if ($variant === null || $parent_product === null) {
+                    http_response_code(400);
+                    error_log("Could not find Printful variant or parent with variant ID {$item['id']} and external ID {$item['ext_id']} when trying to create a PayPal order.");
+                    die();
+                }
+
+                $price = $variant->get_internal_price() ?? $variant->get_price();
+
+                // add price to subtotal
+                $subtotal->add(Currency::from_string($price));
+
+                // add discount if dues payment was with shirt and the printful product matches one of the dues shirts' IDs
+                if(isset($dues_with_tshirt)&&$dues_with_tshirt && in_array($variant->get_external_id(), ['632b8e41a865f1','632b8e41a86664','632b8e41a866a1','632b8e41a866e2','632b8e41a86724','632b8e41a86761','632b8e41a867a9','632b8e41a867e6'])){
+                    // discount = (list price - dues selling price)
+                    $discount->add(Currency::from_string($price));
+                    /** @noinspection PhpUndefinedVariableInspection */
+                    $discount->subtract(Currency::from_string($t_shirt_dues_purchase_price));
+
+                }
+
+                $data = ['id'=>$item['variant_id']];
+
+                $product_url = "https://{$_SERVER['SERVER_NAME']}/product/{$item['ext_id']}/{$parent_product->get_name()}/{$variant->get_product()->get_variant_id()}";
+                $image_url = $variant->get_file_by_type(PrintfulVariantFilesTypes::PREVIEW);
+                if($image_url !== null){
+                    $image_url = $image_url->get_url()? $image_url->get_url() : $image_url->get_preview_url();
+                }
+                $currency_code = $variant->get_currency()?? 'USD';
+                $paypal_items[] = new PayPalItem(mb_strimwidth($variant->get_name(),0,127,'...'),'1',new PayPalCurrencyField($currency_code,$price),null, null, json_encode($data), $product_url, 'PHYSICAL_GOODS',$image_url);
+
+                break;
+            }
+            case 'donation':
+            {
+                $amount = Currency::from_string($item['amount']);
+
+                // ensure amount is positive
+                if ($amount->lt(new Currency('0'))) {
+                    http_response_code(400);
+                    die();
+                }
+
+                $subtotal->add($amount);
+
+                $data = null;
+
+                $paypal_items[] = new PayPalItem('Donation', '1', new PayPalCurrencyField('USD', $amount), null, 'Donation to UNT Robotics', $data, null, 'DONATION');
+                break;
+            }
+            default:
+            {
+                http_response_code(400);
+                error_log('Received unknown item when trying to make a PayPal order: ' . var_export($item, true));
+                die();
+            }
         }
     }
-
+    // make PayPal order
     $p = new PayPalCustomApi();
     try {
         // create order
         $order = ($p->create_order(
-            $items,
+            $paypal_items,
             (string)Currency::subtract_($subtotal, $discount),
             (string)$subtotal,
             new Currency(0, 0),
             $shipping_required,
-            $discount->is_zero() ? null : $discount, $request['return_url'], $request['cancel_url']));
-        if(!isset($order)){
+            $discount->is_zero() ? null : $discount,
+            $return_url, $cancel_url));
+
+        // throw error if order is null
+        if (!isset($order)) {
             throw new Exception("Couldn't retrieve access token.");
-        } else if($order === false){
+        } else if ($order === false) {  // throw error if no order was made
             throw new Exception('No items found in order');
         }
         $order = json_decode($order, true);
@@ -192,41 +208,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die();
     }
 
-    // add order to db
-    if (isset($auth)) { // should only be set when dues are purchased
-        $query = "INSERT INTO paypal_orders(uid, paypal_order_id) VALUES('{$auth[0]['id']}', '{$db->real_escape_string($order['id'])}')";
-    } else {
-        $query = "INSERT INTO paypal_orders(paypal_order_id) VALUES('{$db->real_escape_string($order['id'])}')";
-    }
-    $q = $db->query($query);
-    if ($q === false) {
-        http_response_code(500);
-        error_log("Error trying to add an order to the db: {$db->error}");
-        die();
-    }
-
-    // get paypal_orders ID (not PayPal's ID of the order) for each paypal_order_item
-    $q = $db->query("SELECT id FROM paypal_orders WHERE paypal_order_id='{$db->real_escape_string($order['id'])}'");
-    if ($q === false) {
-        http_response_code(500);
-        error_log("Error trying to fetch ID of paypal order from the db: {$db->error}");
-        die();
-    }
-    $db_order_id = $q->fetch_assoc()['id'];
-
-    for ($i = 0; $i < count($item_ids); $i++) {
-        if ($custom_data[$i] !== 'null') {
-            $query = "INSERT INTO paypal_order_item (item_id,order_id, custom_data) VALUES({$item_ids[$i]}, {$db_order_id}, '{$db->real_escape_string($custom_data[$i])}')";
-        } else {
-            $query = "INSERT INTO paypal_order_item (item_id,order_id) VALUES({$item_ids[$i]}, {$db_order_id})";
-        }
-        $q = $db->query($query);
-        if ($q === false) {
-            error_log("Error adding item to order {$order['id']}, internal ID {$db_order_id}. Item ID {$item_ids[$i]}: {$db->error}");
-            http_response_code(500);
-            die();
-        }
-    }
 
     // get the checkout link
     foreach ($order['links'] as $link) {
@@ -235,6 +216,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             break;
         }
     }
+
     // if no checkout link found, send 500
     if (!isset($redirect)) {
         //  confirm order? I'm not sure when PayPal gives no approve/payer-action link
@@ -243,10 +225,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die();
     }
     // send 201 and return redirect link
-    http_response_code(201);
-    $response_body = new stdClass();
-    $response_body->redirect_url = $redirect;
-    echo json_encode($response_body);
+    header('Location: ' . $redirect);
 } else {
-    http_response_code(403);
+    http_response_code(405);
 }
+

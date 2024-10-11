@@ -133,9 +133,9 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                                 <?php
                                 require_once('../template/functions/paypal.php');
                                 if($full_year_dues_price) {
-                                    get_payment_button('Pay Now', [['type' => 'dues', 'full-year' => false, 't-shirt' => false],['type'=>'printful','id'=>'']], 'dues/paid', 'dues');
+                                    get_payment_button('Pay Now', [['type' => 'dues', 'full_year' => false, 't-shirt' => false],['type'=>'printful','variant_id'=>'','ext_id'=>'632b8e41a86531']], 'dues/paid', 'dues');
                                 } else{
-                                    get_payment_button('Pay Now', [['type' => 'dues', 'full-year' => false, 't-shirt' => false]], 'dues/paid', 'dues');
+                                    get_payment_button('Pay Now', [['type' => 'dues', 'full_year' => false, 't-shirt' => false]], 'dues/paid', 'dues');
                                 }
                                 ?>
 
@@ -204,7 +204,7 @@ footer(false);
         fullYear = !!$(this).is(':checked');
         $("#dues_cost").text("$" + getDuesCost());
         // setNewButton();
-        $('input#paypal-items0full-year').val(fullYear);
+        $('input#paypal-items0full_year').val(fullYear);
     });
 
     $('#include-tshirt').on('change', function (e) {
@@ -214,10 +214,10 @@ footer(false);
             /*$(this).attr('item', e.target.value)
             $(this).attr('variant', $(this).find('option:selected').attr('variant'))*/
             $('input#paypal-items0t-shirt').val(true);
-            $('input#paypal-items1id').val($(this).find('option:selected').val());
+            $('input#paypal-items1variant_id').val($(this).find('option:selected').val());
         } else{
             $('input#paypal-items0t-shirt').val(false);
-            $('input#paypal-items1id').val('');
+            $('input#paypal-items1variant_id').val('');
         }
     })
 </script>
