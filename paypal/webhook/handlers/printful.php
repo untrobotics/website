@@ -19,7 +19,6 @@ use WebhookEventHandlerException;
  * @throws \PrintfulCustomAPIException
  */
 function handle_payment_notification(array $order_info, int $item_index, array $custom, string $order_id, bool $duesDiscount, \PaypalWebhookEvent $event): ?array {
-	global $db;
 	payment_log("[{$order_id}] Hello from within the PRINTFUL handler");
 
 	$printfulapi = new PrintfulCustomAPI();
@@ -100,32 +99,6 @@ function handle_payment_notification(array $order_info, int $item_index, array $
         }
         payment_log("[{$order_id}] Confirmed fulfillment cost is less than the revenue amount (cost: {$cost}) (revenue: {$amount_revenue}) (profit: {$profit})");
 
-        // create association in the database between tx id and printful order id
-        $q = $db->query('INSERT INTO printful_order_tx (txid, printful_order_id) VALUES ("' . $db->real_escape_string($order_id) . '", "' . $db->real_escape_string($draft_order->get_id()) . '")');
-        if (!$q) {
-            throw new WebhookEventHandlerException("[{$order_id}]: Unable to create tx id to order id associated in the database (error: {$db->error})");
-        } else {
-            payment_log("[{$order_id}] Created tx id and order id association in the database (order id: {$draft_order->get_id()})");
-        }
-
-        $q = $db->query('INSERT INTO printful_order (order_id, first_name, last_name, email_address, order_name, order_variant_name, order_type)
-		VALUES
-		(
-			"' . $db->real_escape_string($draft_order->get_id()) . '",
-			"' . $db->real_escape_string($payer['name']['given_name']) . '",
-			"' . $db->real_escape_string($payer['name']['surname']) . '",
-			"' . $db->real_escape_string($payer['email_address']) . '",
-			"' . $db->real_escape_string($order_name) . '",
-			"' . $db->real_escape_string($order_variant_name) . '",
-			"' . $db->real_escape_string($order_type) . '"
-		)');
-        $printful_order_db_id = $db->insert_id;
-        if (!$q) {
-            throw new WebhookEventHandlerException("[{$order_id}]: Unable to create printful order entry in the database (error: {$db->error})");
-        } else {
-            payment_log("[{$order_id}] Created printful order entry in the database (super secret id: {$printful_order_db_id})");
-        }
-
         // confirm the transaction
         if ($event->is_sandbox() === false) {
             $confirmed_order = $printfulapi->confirm_order($draft_order->get_id());
@@ -134,15 +107,6 @@ function handle_payment_notification(array $order_info, int $item_index, array $
                 throw new WebhookEventHandlerException("[{$order_id}]: Confirmation of order returned non-PENDING response (status: {$confirmed_order->get_status()})");
             }
             payment_log("[{$order_id}] Order confirmed and sent for fulfillment (status: {$confirmed_order->get_status()})");
-
-            $q = $db->query('UPDATE printful_order SET confirmed = 1 WHERE id = "' . $db->real_escape_string($printful_order_db_id) . '"');
-            if (!$q) {
-                payment_log("[{$order_id}] Failed to confirm order in the database.");
-                AdminBot::send_message("(Webhook) Alert: Printful order table failed to commit confirmation update for [{$order_id}]. (super secret id: {$printful_order_db_id})");
-            } else {
-                payment_log("[{$order_id}] Order confirmed in database.");
-                AdminBot::send_message("(Webhook) Alert: Successfully confirmed printful order [{$order_id}] (profit: {$profit} {$currency}, woohoo!).");
-            }
         } else {
             payment_log("[{$order_id}] Not confirming order because this is a sandbox order.");
             AdminBot::send_message("(Webhook) Alert: Not confirming order because this is a sandbox order.");

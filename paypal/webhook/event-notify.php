@@ -94,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
 
             $items = $order['purchase_units'][0]['items'];
             $printful_orders = [];
+            $donation_amount = 0;
             // go over each item and handle it
             for($i = 0; $i < count($items); $i++) {
                 $item = $items[$i];
@@ -102,37 +103,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
                     $item_type = 'dues';
                 }
                 if(isset($item['sku'])){ // sku is used for
-                    $custom = json_decode($item['custom'], true);
+                    $custom = json_decode($item['sku'], true);
                     if(isset($custom['src']))
                     {
                         $item_type = $custom['src'];    // should be printful
                     }
                 }
-                switch ($item['item_type']) {
+                switch ($item_type) {
                     case 'dues':
                     {
                         require_once('handlers/dues.php');
                         $dues = true;
 //                        AdminBot::send_message('Found a dues payment!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
-                        \DUES\handle_payment_notification($order, $custom, intval($item['upc']['code']), $order_id);
+                        $uid = intval($item['upc']['code']);
+                        /** @noinspection PhpUndefinedVariableInspection */ // sku should always be set with dues orders
+                        \DUES\handle_payment_notification($order, $custom, $uid, $order_id);
                         break;
                     }
-                    case 'printful_product':
+                    case 'printful':
                     {
                         require_once('handlers/printful.php');
-//                        AdminBot::send_message('Found a printful order!', DISCORD_DEV_WEB_LOGS_CHANNEL_ID);
-                        $printful_orders[] = \PRINTFUL\handle_payment_notification($order, $i, $item, $order_id, isset($dues), $event);
+                        /** @noinspection PhpUndefinedVariableInspection */ // $item_type === 'printful_product' only when $custom is set
+                        $printful_orders[] = \PRINTFUL\handle_payment_notification($order, $i, $custom, $order_id, isset($dues)&&$dues===true, $event);
                         break;
                     }
                     case 'donation':
                     {
                         AdminBot::send_message("Received donation from {$order['payer']['name']['given_name']} {$order['payer']['name']['surname']} ({$order['payer']['email_address']}).");
+                        $donation_amount = $item['unit_amount']['value'];
+                        break;
+                    }
+                    default:{
+                        AdminBot::send_message("Unknown item type '{$item_type}' found for order ID {$order_id}. Item JSON attached'", DISCORD_ADMIN_CHANNEL_ID,[['type'=>'json','bin'=>json_encode($item)]]);
+                        break;
                     }
                 }
             }
 
             //email payer the receipt
-            $email = email_receipt($order, $printful_orders, isset($dues), ENVIRONMENT === Environment::PRODUCTION);
+            $email = email_receipt($order, $printful_orders, isset($dues)&&$dues===true, ENVIRONMENT === Environment::PRODUCTION);
             if (is_array($email)) {
                 AdminBot::send_message('Receipt email for dev PayPal.', DISCORD_DEV_WEB_LOGS_CHANNEL_ID, [['bin' => json_encode($email), 'type' => 'json']]);
             } else if ($email) {
