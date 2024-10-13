@@ -1,15 +1,15 @@
 <?php
 require('../template/top.php');
-require_once(BASE . '/template/functions/payment_button.php');
+//todo:
+require_once('../template/functions/paypal.php');
 head('Sponsorships', true);
-
-$payment_button = new PaymentButton(
-    'UNT Robotics General Sponsorship or Donation',
-    null,
-    'Donate Now'
-);
-$payment_button->set_complete_return_uri('/sponsorships/donate/thank-you');
 ?>
+<style>
+    .stepper{
+        max-width: none;
+        width: auto;
+    }
+</style>
 <section class="section-50 section-md-75 section-lg-100">
     <div class="shell range-offset-1">
         <div class="range">
@@ -21,7 +21,15 @@ $payment_button->set_complete_return_uri('/sponsorships/donate/thank-you');
             </div>
         </div>
         <div class="cell-lg-12 offset-lg-top-50">
-            <?php echo $payment_button->get_button()->button; ?>
+
+            <?php
+            get_payment_button('Donate', [['type'=>'donation']], 'sponsorships/donate/thank-you', 'sponsorships',
+            ' <div class="form-group">
+                        <label for="donate-amount" class="form-label" style="margin-left:20px">Amount (USD)</label>
+                        <input id="donate-amount" type="number" min="0.01" step="any" name="items[0][' . 'amount' . ']" data-constraints="@Required" class="form-control" style="width:300px; max-width:300px" required>
+                    </div>'
+            );
+            ?>
         </div>
     </div>
 </section>
