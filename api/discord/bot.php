@@ -63,16 +63,14 @@ class DiscordBot {
 
 		// Add files to array
 		$files = array();
-        /** @noinspection PhpArrayUsedOnlyForWriteInspection */
         $tmp_files = [];    // needed if more than 1 attachment to prevent gc for deleting the temp files
 		if ($attachments) {
 			foreach ($attachments as $k => $attachment) {
 				if(isset($attachment['bin']))	// Function caller passed the raw data to the arg
 				{
 					// Since we have the data, we need to create a tmpfile to store that data for the CURLFile
-					$file = tmpfile();
-                    $tmp_files[] = $file;
-					$path = stream_get_meta_data($file)['uri'];
+					$tmp_files[$k] = tmpfile();
+					$path = stream_get_meta_data($tmp_files[$k])['uri'];
 					file_put_contents($path,$attachment['bin']);
 					$file_type = $attachment['type'];
 					$file_mime = ext2mime($file_type);
@@ -86,9 +84,8 @@ class DiscordBot {
 				else	// We assume the attachment is an online file that we need to download
 				{	// sebastian only insane people put curly braces on the same line
 					//$content = file_get_contents($attachment['url']);
-					$file = tmpfile();
-                    $tmp_files[] = $file;
-					$path = stream_get_meta_data($file)['uri'];
+                    $tmp_files[$k] = tmpfile();
+                    $path = stream_get_meta_data($tmp_files[$k])['uri'];
 					$ch = curl_init();
 					curl_setopt($ch, CURLOPT_URL, $attachment['url']);
 					curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
