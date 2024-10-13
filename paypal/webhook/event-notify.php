@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // webhook events are sent via POST
             //email payer the receipt
             $email = email_receipt($order, $printful_orders, isset($dues)&&$dues===true, ENVIRONMENT === Environment::PRODUCTION);
             if (is_array($email)) {
-                AdminBot::send_message('Receipt email for dev PayPal.', DISCORD_DEV_WEB_LOGS_CHANNEL_ID, [['bin' => json_encode($email), 'type' => 'json']]);
+                AdminBot::send_message('Receipt email for dev PayPal.', DISCORD_DEV_WEB_LOGS_CHANNEL_ID, [['bin' => json_encode([$email['to'], $email['subject']]), 'type' => 'json'], ['type'=>'html','bin'=>$email['body']]]);
             } else if ($email) {
                 payment_log("[{$order_id}] Successfully sent e-mail receipt (" . var_export($email, true) . ")");
             }

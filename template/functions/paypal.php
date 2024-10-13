@@ -42,7 +42,7 @@ function get_payment_button(string $text, array $items, string $return_uri, stri
  * @param $printful_order_info array[] An array containing information about the Printful order. Each index represents one Printful order. The required information is "variant_id" and "shipping_service".
  * @param $has_dues bool A boolean representing whether this order has dues or not. Defaults to false
  * @param $send_email bool Whether to send the email or not. If true, the email will be sent via SendGrid. If false, the email subject and body will be output in a string[]
- * @return bool|string[] A string array with the email subject and body if $send_email is false. Otherwise, true if the email received an HTTP success code. False otherwise. See {@see email()} for more information
+ * @return bool|string[] A string array with the email subject, body, and recipient email if $send_email is false. Otherwise, true if the email received an HTTP success code. False otherwise. See {@see email()} for more information
  */
 function email_receipt(array &$paypal_order_info, ?array $printful_order_info, bool $has_dues = false, bool $send_email = true) {
     $payer = $paypal_order_info['payer'];

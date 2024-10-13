@@ -39,11 +39,16 @@ class PaypalWebhookEvent extends PayPalCustomApi
      * @param string $paypal_client_id The client ID. Defaults to the constant defined in config.php
      * @param string $paypal_client_secret The secret key. Defaults to the constant defined in config.php
      */
-    public function __construct(string $raw, $paypal_client_id = PAYPAL_SANDBOX_API_CLIENT_ID, $paypal_client_secret = PAYPAL_SANDBOX_API_SECRET_KEY_1) {
-        parent::__construct($paypal_client_id, $paypal_client_secret);
+    public function __construct(string $raw, ?string $paypal_client_id = null, ?string $paypal_client_secret = null) {
         $this->raw = $raw;
         $this->payload = json_decode($raw, true);
         $this->headers = getallheaders();
+
+        if($paypal_client_id === null)
+            $paypal_client_id = $this->is_sandbox() ? PAYPAL_SANDBOX_API_CLIENT_ID:PAYPAL_API_CLIENT_ID;
+        if($paypal_client_secret === null)
+            $paypal_client_secret = $this->is_sandbox() ? PAYPAL_SANDBOX_API_SECRET_KEY_1 : PAYPAL_API_SECRET_KEY_1;
+        parent::__construct($paypal_client_id, $paypal_client_secret);
     }
 
     /**
@@ -111,12 +116,20 @@ class PaypalWebhookEvent extends PayPalCustomApi
         foreach ($this->payload['links'] as $link) {
             if ($link['rel'] === 'self') {  // self refers to the API endpoint that caused the event
                 // PayPal has an 'api-m' and a 'api' subdomain, although it's not stated what the difference is
-                $this->is_sandbox = preg_match('/^https?:\/\/api(?:-m)?\.sandbox\.paypal\.com/i', $link['href']);
+                $this->is_sandbox = preg_match('/^https?:\/\/api(?:-m)?\.paypal\.com/i', $link['href']) === 0;
                 return $this->is_sandbox;
             }
         }
         $this->is_sandbox = false;
         return false;
+    }
+
+    /**
+     * Overrides
+     * @return string
+     */
+    protected function get_api_url(): string{
+        return $this->is_sandbox() ? self::SANDBOX_API_BASE_URL : self::PRODUCTION_API_BASE_URL;
     }
 
     /**

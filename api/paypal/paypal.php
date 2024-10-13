@@ -14,11 +14,11 @@ class PayPalCustomApi
     /**
      * Base URL for sandbox (development) API calls. Does not include trailing slash
      */
-    private const SANDBOX_API_BASE_URL = 'https://api.sandbox.paypal.com';
+    protected const SANDBOX_API_BASE_URL = 'https://api.sandbox.paypal.com';
     /**
      * Base URL for production API calls. Does not include trailing slash
      */
-    private const PRODUCTION_API_BASE_URL = 'https://api.paypal.com';
+    protected const PRODUCTION_API_BASE_URL = 'https://api.paypal.com';
 
     /**
      * @var string The client ID
@@ -44,8 +44,8 @@ class PayPalCustomApi
      * @param $paypal_client_secret null|string The client secret. Defaults to the value stored in config.php
      */
     public function __construct(?string $paypal_client_id = null, ?string $paypal_client_secret = null) {
-        $this->client_id = isset($paypal_client_id) ? $paypal_client_id : ENVIRONMENT == Environment::DEVELOPMENT ? PAYPAL_SANDBOX_API_CLIENT_ID : PAYPAL_API_CLIENT_ID;
-        $this->client_secret = isset($paypal_client_secret) ? $paypal_client_secret : ENVIRONMENT == Environment::DEVELOPMENT ? PAYPAL_SANDBOX_API_SECRET_KEY_1 : PAYPAL_API_SECRET_KEY_1;
+        $this->client_id = $paypal_client_id ?? (ENVIRONMENT == Environment::DEVELOPMENT ? PAYPAL_SANDBOX_API_CLIENT_ID : PAYPAL_API_CLIENT_ID);
+        $this->client_secret = $paypal_client_secret ?? (ENVIRONMENT == Environment::DEVELOPMENT? PAYPAL_SANDBOX_API_SECRET_KEY_1 : PAYPAL_API_SECRET_KEY_1);
     }
 
     /**
@@ -192,7 +192,7 @@ class PayPalCustomApi
 
         }
         $ch = curl_init();
-        $full_url = self::get_api_url() . insert_args($URI, ...$args);
+        $full_url = $this->get_api_url() . insert_args($URI, ...$args);
         curl_setopt($ch, CURLOPT_URL, $full_url);
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -252,7 +252,7 @@ class PayPalCustomApi
         $headers = array();
         $headers[] = 'Content-Type: application/x-www-form-urlencoded';
 
-        curl_setopt($ch, CURLOPT_URL, self::get_api_url() . '/v1/oauth2/token');
+        curl_setopt($ch, CURLOPT_URL, $this->get_api_url() . '/v1/oauth2/token');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, 'grant_type=client_credentials');
@@ -263,10 +263,10 @@ class PayPalCustomApi
         $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if (curl_errno($ch)) {
-            throw new PayPalCustomApiException('Encountered an error while trying to retrieve access token: ' . curl_error($ch));
+            throw new PayPalCustomApiException("Encountered an error while trying to retrieve access token at {$this->get_api_url()}/v1/oauth2/token, " . curl_error($ch));
         }
         if ($httpcode != 200) {
-            throw new PayPalCustomApiException("Received non-success response while trying to retrieve access token: {$httpcode}");
+            throw new PayPalCustomApiException("Received non-success response while trying to retrieve access token at {$this->get_api_url()}/v1/oauth2/token, {$httpcode}");
         }
 
         curl_close($ch);
@@ -289,7 +289,7 @@ class PayPalCustomApi
      * Gives the proper base PayPal URL for the environment
      * @return string Returns the API URL based on ENVIRONMENT
      */
-    private static function get_api_url(): string {
+    protected function get_api_url(): string {
         return ENVIRONMENT == Environment::DEVELOPMENT ? self::SANDBOX_API_BASE_URL : self::PRODUCTION_API_BASE_URL;
     }
 
