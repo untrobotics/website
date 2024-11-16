@@ -86,6 +86,16 @@ $members[] = [
     'linkedin_url'=>'https://www.linkedin.com/in/kenneth-w-chen',
     'github_url'=>'https://www.github.com/kenneth-w-chen',
 ];
+
+$members[] = [
+    'name'=>'Logan Brewer',
+    'title'=>'Team Member',
+    'description'=>"Logan Brewer is a Computer Science student at UNT. He is an aspiring software developer with a passion for building things. He enjoys working on electronics projects and tinkering and always approaches problems with eagerness to learn.",
+    'picture_uri'=>'/images/bio-pics/logan-brewer.jpg',
+    'linkedin_url'=>'https://www.linkedin.com/in/logan-brewer-26a872256/',
+    'github_url'=>'https://github.com/loganthebrewer',
+];
+
 ?>
     <main class="page-content">
         <!-- Classic Breadcrumbs-->
