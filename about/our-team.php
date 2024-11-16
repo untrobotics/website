@@ -95,7 +95,7 @@ $members[] = [
             </div>
         </section>
         <section class="section-75 section-md-100 section-lg-150">
-            <div class="shell range-offset-1">
+            <div class="shell range-offset-1 justify-center">
                 <div class="range">
                     <div class="cell-lg-6">
                         <h1>Our Team</h1>
