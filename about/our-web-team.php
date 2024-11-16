@@ -86,6 +86,14 @@ $members[] = [
     'linkedin_url'=>'https://www.linkedin.com/in/kenneth-w-chen',
     'github_url'=>'https://www.github.com/kenneth-w-chen',
 ];
+$members[] = [
+    'name'=>'Truitt Crozier',
+    'title'=>'Team Member',
+    'description'=>"Truitt Crozier is a sophomore Computer Science student at UNT. His passions are learning about video game console architecture, collecting music, and playing Tetris. As a part of UNT Robotics, he is involved with programming and electronics.",
+    'picture_uri'=>'/images/bio-pics/truitt-crozier.jpg',
+    'linkedin_url'=>'https://www.linkedin.com/in/truitt-crozier-719355293',
+    'github_url'=>'https://github.com/tjcrozier',
+];
 ?>
     <main class="page-content">
         <!-- Classic Breadcrumbs-->
