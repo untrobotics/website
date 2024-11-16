@@ -45,6 +45,73 @@ $members[] = [
     'description'=>"Jesse is a senior mechanical engineering student interested in all things that fly and go fast. He has 4 years of experience in amateur high-power rocketry and currently holds an L1 certification with the National Association of Rocketry. He founded the Aerospace Division with UNT Robotics in order to foster interest in the hobby and provide a learning experience for anyone to become a part of.",
     'picture_uri'=>'/images/bio-pics/jesse-sullivan.jpg',
 ];
+$members[] = [
+    'name'=>'Sebastian King',
+    'title'=>'Former Co-President',
+    'description'=>"Sebastian is a post-baccalaureate world languages student, with a degree in computer science. His role as co-president was to oversee the day-to-day running of the organisation and help ensure the organization best serves the students at UNT. His expertise are programming and electrical engineering and he specializes in networking and remote control systems. He was, and still is, responsible for a lot of the more ambitious projects around campus, including the famous Sofabot and our re-usable weather balloon project.",
+    'picture_uri'=>'/images/bio-pics/sebastian-king.jpg',
+    'linkedin_url'=>'https://www.linkedin.com/in/sebastian-king',
+    'github_url'=>'https://www.github.com/sebastian-king',
+    'twitter_url'=>'https://www.twitter.com/@thekingseb'
+];
+$members[] = [
+    'name'=>'Lauren Caves',
+    'title'=>'Former Co-President',
+    'description'=> "She’s a woman of action, eternal optimist, and a passionate speaker. As a mechanical engineer, her enthusiasm for the art of engineering is vast and the hunger for discovery drives her motivation which led to many successes during her undergraduate years, although not easily. She has gone through many failures and complicated situations which shaped a new passion to inspire the youth and other students to overcome diversity and really fight for their dreams. She believes everyone is destined for greatness, and that it's important to not let the minor roadblocks we stumble upon crush the stars we wish upon.",
+    'picture_uri'=>'/images/bio-pics/lauren-caves.jpg',
+    'linkedin_url'=>'https://www.linkedin.com/in/lauren-caves',
+];
+$members[] = [
+    'name'=>'Tyler Adam Martinez',
+    'title'=>'Former Vice President and Former Financial Director',
+    'description'=>'Tyler is a software consultant with an electrical engineering degree from UNT and a minor in biomedical engineering. At UNT Robotics, he focused on robotics and automation, and loved designing cool circuits and building electronics.',
+    'picture_uri'=>'/images/bio-pics/tyler-adam-martinez.jpg',
+    'linkedin_url'=>'https://www.linkedin.com/in/tyleradammartinez',
+    'github_url'=>'https://www.github.com/TylerAdamMartinez',
+];
+$members[] = [
+    'name'=>'Andrew Paul',
+    'title'=>'Former Financial Director',
+    'description'=>'The Eagle Scout, Black Belt and Rescue scuba diver brought his vast experience keeping the funds up and in check for the the future development of UNT Robotics. Andrew Paul holds a mechanical engineering degree from UNT and loves innovation.',
+    'picture_uri'=>'/images/bio-pics/andrew-paul.jpg',
+];
+$members[] = [
+    'name'=>'Jacob Gomez',
+    'title'=>'Former Public Relations',
+    'description'=>'Jacob is a current Computer Science student at UNT. Although he balances school and work he finds time for extracurriculars. He has always enjoyed being apart of different organizations and getting to know new people. He loves using all the different software to model, create and design things for the organization or for his own personal projects.',
+    'picture_uri'=>'/images/bio-pics/jacob-gomez.jpg',
+];
+$members[] = [
+    'name'=>'Abdus Samee',
+    'title'=>'Former Event Coordinator',
+    'description'=>"With an ECE master's, Abdus Samee's love for engineering must be seen to be believed. Being a former Toastmaster, he has a flair for speaking which convinces the listener to accept the facts that he puts forward. His never-ending hunger for knowledge has enabled him to achieve a lot in a short time. Education is an ornament in prosperity and a refuge in adversity is what he says. Progress never comes without struggles, but his persistence helped him reach his dream destination. He was also the Vice Chair for UNT IEEE Robotics and Automation Society, and a IEEE Eta Kappa Nu Honor Student. The words of Ford inspired him to keep going. 'When everything seems to be going against you, remember that the airplane takes off against the wind and not with it.",
+    'picture_uri'=>'/images/bio-pics/abdus-samee.jpg',
+];
+$members[] = [
+    'name'=>'Ally Flores',
+    'title'=>'Former Social Media Manager',
+    'description'=>"Ally was a freshman majoring in mechanical engineering technology. She’s been in robotics since high school and was excited to continue it through college. She loves trying new hobbies and making new friends!",
+    'picture_uri'=>'/images/bio-pics/ally-flores.jpg',
+];
+$members[] = [
+    'name'=>'Peyton Thibodeaux',
+    'title'=>'Former Webmaster',
+    'description'=>"Peyton holds a degree in computer science from UNT with a minor in mathematics. He's a former webmaster for UNT Robotics and was in charge of the website that you see in front of you. He enjoys learning and using new technologies and have a passion for creating things.",
+    'picture_uri'=>'/images/bio-pics/peyton-thibodeaux.jpg',
+    'linkedin_url'=>'https://www.linkedin.com/in/peyton-thibodeaux',
+];
+$members[] = [
+    'name'=>'Ashank Annam',
+    'title'=>'Former Corporate Relations',
+    'description'=>"Ashank was a freshman studying Business Computer Information Systems. He has been interested in robotics since high school. He loves to meet new people and learn new technologies.",
+    'picture_uri'=>'/images/bio-pics/ashank-annam.jpg',
+];
+$members[] = [
+    'name'=>'Joseph moore',
+    'title'=>'Former Aerospace Division Lead',
+    'description'=>"Joseph holds a mechanical engineering bachelor's. Formerly a US Marine Master Explosive Ordnance Disposal Technician (EOD), he has always tried to tinker with things and figure out how they work and is passionate about establishing and growing our High-Power Rocketry team into a nationally competitive force. Both through STEM outreach efforts and internal events, he hopes to generate interest and encourage everyone to get into hobby rocketry, and the sport of high power rocketry.",
+    'picture_uri'=>'/images/bio-pics/joe-moore.jpg',
+];
 ?>
     <main class="page-content">
         <!-- Classic Breadcrumbs-->

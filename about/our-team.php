@@ -6,105 +6,76 @@ $members = array();
 
 //co-president
 $members[] = [
-        'name'=>'Sebastian King',
-        'title'=>'Co-President',
-        'description'=>"Sebastian is a post-baccalaureate world languages student, with a degree in Computer Science. His role is to oversee the day-to-day running of the organisation and help ensure the organisation best serves the students at UNT. His expertise are programming and electrical engineering and he specialises in networking and remote control systems. He is also responsible for a lot of the more ambitious projects around campus, including the famous Sofabot and our re-usable weather balloon project.",
-        'picture_uri'=>'/images/bio-pics/sebastian-king.jpg',
+        'name'=>'Nicholas Tindle',
+        'title'=>'President',
+        'description'=>"Nicholas Tindle is a Computer Engineering student at UNT. He works in software engineering and loves hackathons. You can generally find him wearing a hat and probably a sweatshirt. He has a long history of collaboration with UNT Robotics as the first president, a loyal advisor, and now Project Manager. He has also served as an advisor to the Dean and is currently an officer of Engineering United. Nick has helped host numerous events at the university over the years. In his professional life, he works in data analysis, web development, and python scripting.",
+        'picture_uri'=>'/images/bio-pics/nick-tindle.jpg',
         'email'=>'president@untrobotics.com',
-        'linkedin_url'=>'https://www.linkedin.com/in/sebastian-king',
-        'github_url'=>'https://www.github.com/sebastian-king',
-        'twitter_url'=>'https://www.twitter.com/@thekingseb'
-];
-//co-president2
-$members[] = [
-        'name'=>'Lauren Caves',
-        'title'=>'Co-President',
-        'description'=> "She’s a woman of action, eternal optimist, and a passionate speaker. As an undergraduate mechanical engineering student, her enthusiasm for the art of engineering is vast and the hunger for discovery drives her motivation which has led to many successes during her undergraduate years. Although not easily. She has gone through many failures and complicated situations which shaped a new passion to inspire the youth and other students to overcome diversity and really fight for their dreams. She believes everyone is destined for greatness, and that it's important to not let the minor roadblocks we stumble upon crush the stars we wish upon.",
-        'picture_uri'=>'/images/bio-pics/lauren-caves.jpg',
-        'email'=>'president@untrobotics.com',
-        'linkedin_url'=>'https://www.linkedin.com/in/lauren-caves',
+        'linkedin_url'=>'https://www.linkedin.com/in/ntindle',
+        'github_url'=>'https://www.github.com/ntindle',
 ];
 //vice president
 $members[] = [
-        'name'=>'Tyler Adam Martinez',
-        'title'=>'Vice President and Financial Director',
-        'description'=>'Tyler is a junior currently studying electrical engineering with a minor in biomedical engineering. He focuses on robotics and automation, and loves designing cool circuits and building electronics.',
-        'picture_uri'=>'/images/bio-pics/tyler-adam-martinez.jpg',
+        'name'=>'Laurance (Murphy) Boyd',
+        'title'=>'Vice President',
+        'description'=>'Laurance Boyd is a Computer Science student at UNT. He is a former Marine with four years of engineering experience in the fleet Marine Corps. He utilized his passion for language learning and leadership to ensure the success of mission critical objectives with Japanese partner forces. He chose to serve as the vice president of UNT Robotics due to the challenging and complex nature of the projects. In his free time he enjoys studying world languages, philosophy and martial arts.',
+        'picture_uri'=>'/images/bio-pics/laurance-boyd.jpg',
         'email'=>'vice-president@untrobotics.com',
-        'linkedin_url'=>'https://www.linkedin.com/in/tyleradammartinez',
-        'github_url'=>'https://www.github.com/TylerAdamMartinez',
 ];
-
-// deputy financial director
+//financial director
 $members[] = [
-    'name'=>'Andrew Paul',
-    'title'=>'Deputy Financial Director',
-    'description'=>'The Eagle Scout, Black Belt and Rescue scuba diver brings his vast experience keeping the funds up, and in check for the the future development of the robotics club. Andrew Paul is a freshman mechanical engineering student and lover of innovation. New to the scene with charisma to spare and a passion for engineering. He can be found climbing at the UNT Rockwall,  or in his dorm finding out new ways to build and code his next project while assisting in club finances.',
-    'picture_uri'=>'/images/bio-pics/andrew-paul.jpg',
+    'name'=>'Kenneth Chen',
+    'title'=>'Financial Director',
+    'description'=>"Kenneth Chen is a Computer Science and Accounting student at UNT. As an officer of UNT Robotics, he's been a part of various projects, such as organizing Botathon, working on the website, and competing in NASA USLI. As the financial director, he does the bookkeeping and prepares the financial statements for the organization's year end.",
+    'picture_uri'=>'/images/bio-pics/kenneth-chen.jpg',
+    'email'=>'financial-director@untrobotics.com',
+    'linkedin_url'=>'https://www.linkedin.com/in/kenneth-w-chen',
+    'github_url'=>'https://www.github.com/kenneth-w-chen',
+];
+//deputy financial director
+$members[] = [
+    'name'=>'Mahathi Sriji',
+    'title'=>'Deputy Financial Director and Inventory Manager',
+    'description'=>"Mahathi Sriji is a Mechanical and Energy Engineering student at UNT. Her role is to keep track and organize inventory for the robotics organization and assist in managing finances. She is currently working on multiple engineering projects such as system controls using simulink, a new rotorcraft model, and a recreational robot. She also teaches percussion and performed in many areas.",
+    'picture_uri'=>'/images/bio-pics/mahathi-sriji.jpg',
     'email'=>'deputy-financial-director@untrobotics.com',
+    'linkedin_url'=>'https://www.linkedin.com/in/mahathisriji'
 ];
-// Public Relations
-$members[] = [
-    'name'=>'Jacob Gomez',
-    'title'=>'Public Relations',
-    'description'=>'Jacob is a current Computer Science student at UNT.Although he balances school and work he finds time for extracurriculars.He has always enjoyed being apart of different organizations and getting to know new people. He loves using all the different software to model, create and design things for the club or for his own personal projects.',
-    'picture_uri'=>'/images/bio-pics/jacob-gomez.jpg',
-    'email'=>'public-relations@untrobotics.com',
-];
-
-// Event Coordinator
-$members[] = [
-    'name'=>'Abdus Samee',
-    'title'=>'Event Coordinator',
-    'description'=>"Abdus Samee is an ECE graduate whose love for engineering must be seen to be believed. Being a former Toastmaster, he has a flair for speaking which convinces the listener to accept the facts that he puts forward. His never ending hunger for knowledge has enabled him to achieve a lot in a short time. Education is an ornament in prosperity and a refuge in adversity is what he says. Progress never comes without struggles, but his persistence helped him reach his dream destination. He is also the Vice Chair for UNT IEEE Robotics and Automation Society, and a IEEE Eta Kappa Nu Honor Student. The words of Ford inspired him to keep going. 'When everything seems to be going against you, remember that the airplane takes off against the wind and not with it.",
-    'picture_uri'=>'/images/bio-pics/abdus-samee.jpg',
-    'email'=>'event-coordinator@untrobotics.com',
-];
-
 // Social Media Manager
 $members[] = [
-    'name'=>'Ally Flores',
-    'title'=>'Social Media Manager',
-    'description'=>"Ally is a freshman majoring in mechanical engineering technology. She’s been in robotics since high school and is excited to continue it through college. She loves trying new hobbies and making new friends!",
-    'picture_uri'=>'/images/bio-pics/ally-flores.jpg',
+    'name'=>'Brielle Brown',
+    'title'=>'Social Media Manager and Multimedia Manager',
+    'description'=>"Brielle Brown is an Information Technology undergraduate student at UNT. Her role is to maintain the social media platforms for the organization, as well as creating content for said platforms. She has been in several previous officer positions relating to social media, and has extensive experience regarding graphic design, social media marketing, photography, and more. She also loves doing freelance concept art in her free time.",
+    'picture_uri'=>'/images/bio-pics/brielle-brown.jpg',
     'email'=>'corp-relations@untrobotics.com',
 ];
-
 // (lead) Webmaster
 $members[] = [
-    'name'=>'Peyton Thibodeaux',
-    'title'=>'Webmaster',
-    'description'=>"Peyton is a junior, studying computer science with a minor in mathematics. He's the webmaster for UNT Robotics and in charge of the website that you see in front of you. He enjoys learning and using new technologies and have a passion for creating things.",
-    'picture_uri'=>'/images/bio-pics/peyton-thibodeaux.jpg',
+    'name'=>'Truitt Crozier',
+    'title'=>'Webmaster and Inventory Manager',
+    'description'=>"Truitt Crozier is a sophomore Computer Science student at UNT. His passions are learning about video game console architecture, collecting music, and playing Tetris. As a part of UNT Robotics, he is involved with programming and electronics.",
+    'picture_uri'=>'/images/bio-pics/truitt-crozier.jpg',
     'email'=>'webmaster@untrobotics.com',
-    'linkedin_url'=>'https://www.linkedin.com/in/peyton-thibodeaux',
+    'linkedin_url'=>'https://www.linkedin.com/in/truitt-crozier-719355293',
+    'github_url'=>'https://github.com/tjcrozier',
 ];
-
 // Project Manager
 $members[] = [
-    'name'=>'Nicholas Tindle',
+    'name'=>'Farhan Ar Rafi',
     'title'=>'Project Manager',
-    'description'=>"Nicholas Tindle is a Computer Engineering student at UNT. He works in software engineering and loves hackathons. You can generally find him wearing a hat and probably a sweatshirt. He has a long history of collaboration with UNT Robotics as the first president, a loyal advisor, and now Project Manager. He has also served as an advisor to the Dean and is currently an officer of Engineering United. Nick has helped host numerous events at the university over the years. In his professional life, he works in data analysis, web development, and python scripting.",
-    'picture_uri'=>'/images/bio-pics/nick-tindle.jpg',
+    'description'=>"Farhan is a Computer Science graduate student at UNT. As the project manager for UNT Robotics, he oversees the development of the NASA Rover project. He has previous experience in software engineering and is proficient in mobile and web apps, Android firmware, and IoT technologies. His PhD research focuses on enhancing the quality of life for visually and physically impaired individuals. On the weekends, you might bump into him in one of the hackathons or cybersecurity meetups around DFW.",
+    'picture_uri'=>'/images/bio-pics/farhan-ar-rafi.jpg',
     'email'=>'project-manager@untrobotics.com',
+    'linkedin_url'=>'https://www.linkedin.com/in/farhanarrafi',
+    'github_url'=>'https://www.github.com/farhanarrafi',
 ];
-
 // Corporate Relations
 $members[] = [
-    'name'=>'Ashank Annam',
-    'title'=>'Corporate Relations',
-    'description'=>"Ashank is a freshman studying Business Computer Information Systems. He has been interested in robotics since high school. He loves to meet new people and learn new technologies.",
-    'picture_uri'=>'/images/bio-pics/ashank-annam.jpg',
+    'name'=>'Sophia Casas',
+    'title'=>'Corporate Relations and Sponsorship Coordinator',
+    'description'=>"Sophia Casas is an undergraduate Pre-Med Biology Major. She currently serves as the sponsorship coordinator and as a mechanical team lead. She has previously collaborated and worked on several nationally award winning robots. She gained leadership experience by working with a career and technical education organization and served as the president of the organization for the state of Texas. Her main focus is sponsorship and outreach, having previously assisted in many technical education bills, such as Perkin V, being passed by U.S. Congress, totalling over 1.4 billion dollars annually. She is a proud dog mom and you can find her most days exploring Denton with her pup Loki.",
+    'picture_uri'=>'/images/bio-pics/sophia-casas.jpg',
     'email'=>'corp-relations@untrobotics.com',
-];
-
-// Joe
-$members[] = [
-    'name'=>'Joseph moore',
-    'title'=>'Aerospace Division Lead',
-    'description'=>"Joseph is a Junior Mechanical Engineering student. Formerly a US Marine Master Explosive Ordnance Disposal Technician (EOD), he has always tried to tinker with things and figure out how they work and is passionate about establishing and growing our High-Power Rocketry team into a nationally competitive force. Both through STEM outreach efforts and internal events, he hopes to generate interest and encourage everyone to get into hobby rocketry, and the sport of high power rocketry.",
-    'picture_uri'=>'/images/bio-pics/joe-moore.jpg',
-    'email'=>'aerospace@untrobotics.com',
 ];
 ?>
     <main class="page-content">
