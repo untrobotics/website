@@ -17,7 +17,7 @@ if ($_GET['code'] !== API_SECRET) {
 
 require('../phone-numbers-config.php');
 
-function dial_attempt($phone_number) {
+function dial_attempt($incoming_sid, $phone_number) {
 	$ch = curl_init();
 
 	$post = array(
@@ -40,14 +40,14 @@ function dial_attempt($phone_number) {
 
 	$data = json_decode($result);
 	
-	error_log("DIAL ATTEMPT: " . var_export($result, true));
+	error_log("[$incoming_sid] DIAL ATTEMPT. TO:" . $data->to);
 
 	return $data->sid;
 }
 
 function call_completed($sid) {
 
-        $status = call_status($sid);
+        $status = call_info($sid)->status;
 
 		$final_status = array('busy', 'no-answer', 'canceled', 'failed', 'completed');
 	
@@ -58,27 +58,27 @@ function call_completed($sid) {
         return false;
 }
 
-function call_status($sid) {
+function call_info($sid) {
 
-        $ch = curl_init();
+    $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/Calls/' . $sid . '.json');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+    curl_setopt($ch, CURLOPT_URL, 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/Calls/' . $sid . '.json');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
-        curl_setopt($ch, CURLOPT_USERPWD, TWILIO_ACCOUNT_SID . ':' . TWILIO_AUTH_TOKEN);
+    curl_setopt($ch, CURLOPT_USERPWD, TWILIO_ACCOUNT_SID . ':' . TWILIO_AUTH_TOKEN);
 
-        $result = curl_exec($ch);
-        if (curl_errno($ch)) {
-                error_log('ERROR (curl) when getting message SID info: ' . curl_error($ch));
-        }
-        curl_close($ch);
+    $result = curl_exec($ch);
+    if (curl_errno($ch)) {
+            error_log('ERROR (curl) when getting message SID info: ' . curl_error($ch));
+    }
+    curl_close($ch);
 
-        $data = json_decode($result);
-	
-		error_log("OUTGOING CALL STATUS: " . $data);
-	
-		return $data->status;
+    $data = json_decode($result);
+
+    //error_log("OUTGOING CALL STATUS: " . var_export($data, true));
+
+    return $data;
 }
 
 function queue_size($queue_sid = TWILIO_FIND_FIRST_QUEUE_SID) {
@@ -114,13 +114,15 @@ sleep(1); // give the queue a chance to register
 $max_attempts = 5;
 $i = 1;
 
+error_log("[$incoming_sid] INCOMING CALL. FROM:" . call_info($incoming_sid)->from);
+
 while ($i <= $max_attempts) {
     foreach (constant('PHONE_NUMBERS') as $phone_number) {
         if (queue_size() > 0) {
-            $outgoing_sid = dial_attempt($phone_number);
+            $outgoing_sid = dial_attempt($incoming_sid, $phone_number);
             do {
-                error_log("INCOMING CALL STATUS: " . call_status($incoming_sid));
-                sleep(1);
+                //error_log("INCOMING CALL STATUS: " . call_status($incoming_sid));
+                sleep(2);
             } while (!call_completed($outgoing_sid) && queue_size() > 0);
         } else {
             break 2;
@@ -129,4 +131,4 @@ while ($i <= $max_attempts) {
     $i++;
 }
 
-error_log("INCOMING CALL STATUS LAST: " . call_status($incoming_sid));
+error_log("[$incoming_sid] INCOMING CALL STATUS LAST: " . call_info($incoming_sid)->status);
