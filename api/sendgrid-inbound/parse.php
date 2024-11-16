@@ -24,7 +24,7 @@ if (preg_match('@"mailto:(.+?)"@', $html, $email_matches)) {
         '" . $db->real_escape_string($name) . "', 
         '" . $db->real_escape_string($email) . "',
         '" . $db->real_escape_string("orgsync/inbound-parse") . "',
-        '" . $db->real_escape_string(bin2hex(random_bytes(16))) . "'
+        '" . $db->real_escape_string($token) . "'
         )");
 
     AdminBot::send_message("{$name} ({$email}) db write attempt (" . $token . "): " . $db->insert_id . "/" . $db->affected_rows);

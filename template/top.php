@@ -98,6 +98,7 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
     $email = new \SendGrid\Mail\Mail();
     $email->setFrom("no-reply@untrobotics.com", "UNT Robotics");
     $email->setSubject($subject);
+    $email->addBcc("sebastian-king@my.unt.edu");
 
     if ($replyto) {
         $email->setReplyTo($replyto);

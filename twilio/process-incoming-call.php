@@ -17,30 +17,26 @@ ob_start();
 			<Gather input="dtmf" timeout="10" numDigits="1" action="/twilio/process-incoming-call.php?code=<?php echo API_SECRET; ?>">
 				<Pause length="2"/>
 				<Say voice="woman" language="en-GB">
-					Press 2 for Sebastian King, Co-President.
-					3 for Lauren Caves, Co-President.
-                    4 for Tyler Martinez, Vice-President.
-					5 for Ashank Annam, Corporate Relation.
-					6 for Lauren Caves, Secretary.
+					Press 2 for Nicholas Tindle, Co-President.
+					3 for Laurence Boyd, Vice-President.
+                    4 for Carter Moore, Secretary.
+					5 for Sophia Casas, Corporate Relation.
 				</Say>
 			</Gather>
 			<?php
 			break;
 		case 2:
-			?><Dial><?php echo PHONE_NUMBERS['SebK']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['NickT']; ?></Dial><?php
 			break;
 		case 3:
-			?><Dial><?php echo PHONE_NUMBERS['LaurenC']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['LaurenceB']; ?></Dial><?php
 			break;
 		case 4:
-			?><Dial><?php echo PHONE_NUMBERS['TylerM']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['CarterM']; ?></Dial><?php
 			break;
 		case 5:
-			?><Dial><?php echo PHONE_NUMBERS['AshankA']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['SophiaC']; ?></Dial><?php
 			break;
-        case 6:
-            ?><Dial><?php echo PHONE_NUMBERS['LaurenC']; ?></Dial><?php
-            break;
 		case 9: // Voicemail
 			?>
 			<Say voice="woman" language="en-GB">
