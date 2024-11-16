@@ -4,7 +4,7 @@ require('../template/functions/card.php');
 head('Our Team', true);
 $members = array();
 $members[] = [
-    'name'=>'Peyton Thibodeaux',
+    'name'=>'Peyton Thibodeaux 2',
     'title'=>'Webmaster | Team Member',
     'description'=>"Peyton is a junior, studying computer science with a minor in mathematics. He's the webmaster for UNT Robotics and in charge of the website that you see in front of you. He enjoys learning and using new technologies and have a passion for creating things.",
     'picture_uri'=>'/images/web-team-pics/peyton-thibodeaux.jpg',
@@ -121,6 +121,14 @@ $members[] = [
     'picture_uri'=>'/images/bio-pics/willow-houchin.jpg',
     'linkedin_url'=>'https://www.linkedin.com/in/willow-houchin-127147252',
     'github_url'=>'https://www.github.com/WillowHouchin',
+];
+$members[] = [
+    'name'=>'Truitt Crozier',
+    'title'=>'Team Member',
+    'description'=>"Truitt Crozier is a sophomore Computer Science student at UNT. His passions are learning about video game console architecture, collecting music, and playing Tetris. As a part of UNT Robotics, he is involved with programming and electronics.",
+    'picture_uri'=>'/images/bio-pics/truitt-crozier.jpg',
+    'linkedin_url'=>'https://www.linkedin.com/in/truitt-crozier-719355293',
+    'github_url'=>'https://github.com/tjcrozier',
 ];
 ?>
     <main class="page-content">
