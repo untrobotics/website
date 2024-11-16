@@ -4,7 +4,7 @@ require_once('card.php');
 head('Our Team', true);
 $members = array();
 $members[] = [
-    'name'=>'Peyton Thibodeaux 2',
+    'name'=>'Peyton Thibodeaux',
     'title'=>'Webmaster | Team Member',
     'description'=>"Peyton is a junior, studying computer science with a minor in mathematics. He's the webmaster for UNT Robotics and in charge of the website that you see in front of you. He enjoys learning and using new technologies and have a passion for creating things.",
     'picture_uri'=>'/images/web-team-pics/peyton-thibodeaux.jpg',
