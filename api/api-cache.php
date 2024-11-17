@@ -7,33 +7,27 @@ require_once('../template/top.php');
  * @param mixed ...$args The endpoint arguments for the API request
  * @return array|null The first entry that matches or null if no entry exists
  */
-function get_cached_api_response(string $endpoint, ...$args): ?array {
+function get_cached_api_response(string $endpoint, ...$args) {
+    error_log("$endpoint -> " . serialize($args));
     global $db;
     $q = $db->query("
                 SELECT
-                    id, 
-                    config_id, 
-                    last_sucessfully_retrieved,
-                    last_attempted_retrieval,
-                    retry_count,
-                    endpoint_args,
-                    UNCOMPRESS(content) AS content
+                    id
                 FROM
-                    api_cache
+                    api_cache cache
                 INNER JOIN 
-                    outgoing_request_cache_config
+                    outgoing_request_cache_config config
                 ON
-                    api_cache.config_id = outgoing_request_cache_config.id
+                    cache.config_id = config.id
                 WHERE
-                    endpoint = '{$db->real_escape_string($endpoint)}'
+                    config.endpoint = '{$db->real_escape_string($endpoint)}'
                 AND
-                    endpoint_args = '{$db->real_escape_string(serialize($args))}'
+                    cache.endpoint_args = '{$db->real_escape_string(serialize($args))}'
                 ");
     if ($q) {
-        $r = $q->fetch_array(MYSQLI_ASSOC);
-        return $r;
+        return $q->fetch_field();
     }
-    return null;
+    return false;
 }
 
 class CacheResult
@@ -141,9 +135,8 @@ function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
  */
 function cache(string $endpoint, string $content, int $config_id, ...$args) {
     global $db;
-    $r = get_cached_api_response($endpoint, ...$args);
-    if ($r) {
-        $id = $r['id'];
+    $id = get_cached_api_response($endpoint, ...$args);
+    if ($id) {
         $query_string = '
                         UPDATE
                             api_cache 
@@ -167,7 +160,7 @@ function cache(string $endpoint, string $content, int $config_id, ...$args) {
                             ({$config_id}, 
                              UTC_TIMESTAMP, 
                              UTC_TIMESTAMP, 
-                             '{$db->real_escape_string(implode('|', $args))}',
+                             '{$db->real_escape_string(serialize($args))}',
                              COMPRESS('{$db->real_escape_string($content)}'))";
     }
     $q = $db->query($query_string);
