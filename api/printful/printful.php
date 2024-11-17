@@ -205,6 +205,10 @@ class PrintfulSyncProduct {
     private $currency;
 
     private $product;
+
+    /**
+     * @var PrintfulVariant[]
+     */
     private $variants = array();
 
     public function __construct($object) {
@@ -225,6 +229,9 @@ class PrintfulSyncProduct {
         return $this->product;
     }
 
+    /**
+     * @return PrintfulVariant[]
+     */
     public function get_variants() {
         return $this->variants;
     }

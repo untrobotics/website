@@ -2,7 +2,7 @@
 require('../template/top.php');
 require(BASE . '/api/printful/printful.php');
 require(BASE . '/template/functions/functions.php');
-require(BASE . '/template/functions/payment_button.php');
+require(BASE . '/template/functions/paypal.php');
 
 $printfulapi = new PrintfulCustomAPI();
 
@@ -24,7 +24,7 @@ if (!empty($external_product_id)) {
 		$product = $printfulapi->get_product('@' . $external_product_id);
 		//error_log("ID: " . $product->get_variants()[0]->get_product()->get_product_id());
 		$catalog_product = $printfulapi->get_catalog_product($product->get_variants()[0]->get_product()->get_product_id());
-		
+
 		//var_dump($product);
 		if (!empty($product_name)) {
 			$product_description = post_slug($product->get_name());
@@ -38,7 +38,7 @@ if (!empty($external_product_id)) {
 		$product_can_be_handled = false;
 		$validation_error = "Failed to retrieve the requested product.";
 	}
-	
+
 } else {
 	// validation error: null id
 	$product_can_be_handled = false;
@@ -46,22 +46,22 @@ if (!empty($external_product_id)) {
 }
 
 if ($product_can_be_handled) {
-	foreach ($product->get_variants() as $index => $variant) {
-		if ($variant->get_variant_id() == $variant_id) {
-			$selected_product_variant_index = $index;
-			break;
-		}
-	}
-	
+    foreach ($product->get_variants() as $index => $variant) {
+        if ($variant->get_variant_id() == $variant_id) {
+            $selected_product_variant_index = $index;
+            break;
+        }
+    }
+
 	$selected_variant = $product->get_variants()[$selected_product_variant_index];
-	
+
 	$mockup_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::PREVIEW);
 	if ($mockup_file == null) {
 		// TODO
 		$mockup_file = "";
 	}
 	$back_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::BACK);
-	
+
 	head("Buy {$product->get_name()}", true);
 	$category_name = strtolower(preg_replace('@^.*\(([^()]+)\)$@i', '$1', $product->get_name()));
 	if($category_name !== 'gear' && $category_name[-1]!=='s'){
@@ -93,7 +93,7 @@ function get_variant_variant($variant_name) {
 	.merch-section > div:nth-child(2n) {
 		text-align: right;
 	}
-	
+
 	.merch-image {
 		display: inline-block;
 		max-width: 500px;
@@ -119,7 +119,7 @@ function get_variant_variant($variant_name) {
 		position: absolute;
 		display: inline-block;
 	}
-	
+
 	.blackbg {
 		background: black;
 		z-index: 2;
@@ -173,7 +173,7 @@ function get_variant_variant($variant_name) {
 		</div>
 	  </div>
 	</section>
-	
+
 	<?php if ($product_can_be_handled) { ?>
 	<section class="section-50">
 	  <div class="shell">
@@ -193,10 +193,10 @@ function get_variant_variant($variant_name) {
 				<p class="merch-tagline"><span class="small">UNT Robotics Merchandise</span><span class="text-darker">Support UNT Robotics &amp; look dapper while doing it!</span></p>
 			</div>
 		</div>
-			  
+
 			<div class="range">
 			  <div class="cell-lg-12 merch-section">
-				  
+
 					<div class="range">
 						<div class="col-lg-6 col-md-12 col-lg-push-6">
 							<div class="merch-image">
@@ -283,64 +283,15 @@ function get_variant_variant($variant_name) {
 							</ul>
 							<div class="offset-top-20">
 								<?php
-									$custom = serialize(array(
-										'source' => 'PRINTFUL_PRODUCT',
-										'product' => $external_product_id,
-										'variant' => $selected_variant->get_id()
-									));
-
-									$payment_button = new PaymentButton(
-										$product->get_name(),
-										$product->get_product_price()
-									);
-									if ($product->get_product_currency() != $payment_button->get_currency()) {
-										$payment_button->set_currency($product->get_product_currency());
-									}
-									$payment_button->set_custom($custom);
-									$payment_button->set_opt_names(array('Type', 'Product', 'Variant'));
-									$payment_button->set_opt_vals(array(
-										$catalog_product->get_type_name(),
-										$product->get_name(),
-										get_variant_variant($selected_variant->get_name())
-									));
-									$payment_button->set_complete_return_uri('/merch/buy/complete');
-
-									/*
-									$button = payment_button(
-											'T-Shirt', 
-											$product->get_product_price(),
-											$product->get_product_currency(),
-											$custom = $custom,
-											$opt_names = array('Type', 'Product', 'Variant'),
-											$opt_vals = array(
-												$catalog_product->get_type_name(),
-												$product->get_name(),
-												get_variant_variant($selected_variant->get_name())
-											),
-											$quantity = 1,
-											$complete_return_uri = '/merch/buy/complete'
-										);
-									*/
-
-									//echo $button['btn'];
-									$button = $payment_button->get_button();
-									if ($button->error === false) {
-										echo "button success";
-										echo $payment_button->get_button()->button;
-									} else {
-										// TODO: Alert
-										?>
-								<div class="alert alert-danger">An error occurred loading the payment button...</div>
-										<?php
-									}
+                                get_payment_button('Buy Now', [['type'=>'printful','ext_id'=>$external_product_id,'variant_id'=>$selected_variant->get_id()]],'merch/buy/complete', $_SERVER['REQUEST_URI']);
 								?>
 							</div>
 						</div>
 				  	</div>
-				  
+
 				</div>
 			  </div>
-		
+
 			</div>
 		  </div>
 		</div>

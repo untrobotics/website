@@ -121,4 +121,30 @@ class untrobotics {
 	public function get_year_from_date($timestamp) {
 		return date('Y', $timestamp);
 	}
+
+    /**
+     * Returns the dues payment price
+     * @return array An associative array of the prices. Valid keys are 't_shirt_dues_purchase_price' and 'semester_price'
+     * @throws RuntimeException Exception when there's an issue fetching the dues prices from the database
+     */
+    public function get_dues_prices(string $run_location = ''): array {
+        $q = $this->db->query("SELECT `key`,`value` FROM dues_config WHERE `key` = 'semester_price' OR `key` = 't_shirt_dues_purchase_price'");
+        if (!$q || $q->num_rows !== 2) {
+            AdminBot::send_message("Unable to determine the dues payment price ({$run_location})");
+            throw new RuntimeException("Unable to determine dues payment price ({$run_location})");
+        }
+
+        $r = $q->fetch_all(MYSQLI_ASSOC);
+
+        // convert the rows fetched into a single associative array
+        $mapped_config = array();
+        array_walk(
+            $r,
+            function (&$val, $_key) use (&$mapped_config) {
+                $mapped_config[$val['key']] = $val['value'];
+            }
+        );
+
+        return $mapped_config;
+    }
 }
