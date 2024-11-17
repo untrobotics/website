@@ -48054,4 +48054,16 @@ header nav.rd-navbar-static.rd-navbar-secondary .rd-navbar-nav > li.thin {
   display: inline-block;
   margin: 0 auto;
 }
+
+/*Adds a line above the bios in about/our-team, about/our-dev-team, and about/our-alumni*/
+.bio-area {
+  border-top: 2px solid #ececec;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
 /*# sourceMappingURL=style.css.map */
