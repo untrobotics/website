@@ -8,7 +8,6 @@ require_once('../template/top.php');
  * @return array|null The first entry that matches or null if no entry exists
  */
 function get_cached_api_response(string $endpoint, ...$args) {
-    error_log("$endpoint -> " . serialize($args));
     global $db;
     $q = $db->query("
                 SELECT
