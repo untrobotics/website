@@ -24,7 +24,7 @@ head('About Us', true);
         </section>
         <section class="section-75 section-md-100 section-lg-150">
           <div class="shell">
-            <div class="range range-md-justify">
+            <div class="range range-md-justify justify-center">
               <div class="cell-md-8 cell-lg-7 cell-xl-6">
                 <div class="inset-md-right-30 inset-lg-right-0">
                   <h1>What We Do</h1>
