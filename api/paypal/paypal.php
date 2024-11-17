@@ -2,6 +2,7 @@
 require_once(__DIR__ . '/../../template/config.php');
 require_once(__DIR__ . '/../../template/constants.php');    // used to get the right API URL based on environment
 require_once(__DIR__ . '/api-json-objects.php');
+require_once(__DIR__ . '/../../api/api-cache.php');
 
 /**
  * Class to interact with the PayPal API
@@ -192,8 +193,6 @@ class PayPalCustomApi
 
         }
         $ch = curl_init();
-        $full_url = $this->get_api_url() . insert_args($URI, ...$args);
-        curl_setopt($ch, CURLOPT_URL, $full_url);
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
@@ -216,21 +215,24 @@ class PayPalCustomApi
 
         $headers[] = "Authorization: Bearer $this->access_token";
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		$cache_result = get_valid_cache_entry($this->get_api_url(), $ch, $args);
+        /*$result = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);*/
+		if($cache_result->fetched_new_content) {
+			if ($cache_result->curl_errno) {
+				// TODO: handle errors
+				throw new PayPalCustomApiException("Encountered an error executing an API request for PayPal at {$URI} with args {$args}:" . curl_error($ch));
+			}
 
-        $result = curl_exec($ch);
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			if ($cache_result->http_code < 200|| $cache_result->http_code >=300) {
+				if ($cache_result->http_code >= 400 && $cache_result->http_code <= 403) {
+					throw new PayPalCustomApiException("Received non-success response from the PayPal API at {$URI} with args {$args} for bearer token '{$this->access_token}': {$cache_result->http_code}: result: {$cache_result->content}");
+				}
+				throw new PayPalCustomApiException("Received non-success response from the PayPal API at {$URI} with args {$args}: {$cache_result->http_code}: response: {$cache_result->http_code}");
+			}
+		}
 
-        if (curl_errno($ch)) {
-            throw new PayPalCustomApiException("Encountered an error executing an API request for PayPal at {$full_url}:" . curl_error($ch));
-        }
-        if ($httpcode < 200 || $httpcode >= 300) {
-            if ($httpcode >= 400 && $httpcode <= 403) {
-                throw new PayPalCustomApiException("Received non-success response from the PayPal API at {$full_url} for bearer token '{$this->access_token}': {$httpcode}: result: {$result}");
-            }
-            throw new PayPalCustomApiException("Received non-success response from the PayPal API at {$full_url}: {$httpcode}: response: {$result}");
-        }
-        curl_close($ch);
-        return $result;
+        return $cache_result->content;
     }
 
     /**
@@ -292,16 +294,6 @@ class PayPalCustomApi
     protected function get_api_url(): string {
         return ENVIRONMENT == Environment::DEVELOPMENT ? self::SANDBOX_API_BASE_URL : self::PRODUCTION_API_BASE_URL;
     }
-
-    /*
-        public function confirm_order(string $id, bool $minimal_return = true)
-        {
-            $headers = array();
-            $data = null;
-    //        $this->send_request('/v2/checkout/orders/$1/confirm-payment-source', 'POST', $headers,);
-        }*/
-
-
 }
 
 /**
@@ -316,16 +308,4 @@ class PayPalCustomApiException extends Exception
     public function __toString() {
         return __CLASS__ . ": [{$this->code}]: {$this->message}" . PHP_EOL;
     }
-}
-
-//todo: delete below when #158 is approved
-function insert_args(string $endpoint, ...$args): string {
-    if (count($args) === 0) {
-        return $endpoint;
-    }
-    $search = array();
-    for ($i = 1; $i <= count($args); $i++) {
-        $search[] = '$' . $i;
-    }
-    return str_replace($search, $args, $endpoint);
 }
