@@ -3,33 +3,35 @@
 <head>
     <title><?php echo $title; ?></title>
     <meta name="format-detection" content="telephone=no">
-    <meta name="viewport"
-          content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
     <!-- Open Graph tags   -->
     <meta content="<?php echo htmlspecialchars($title, ENT_COMPAT) ?>" property="og:title">
     <meta content="<?php
-    if (isset($description)) echo $description;
-    else echo "UNT Robotics is a robotics student organization based in Denton. Explore the field of robotics with hands-on practice in mechanical, electrical, and software subsystems. Whether you're a beginner or a pro, we always have a spot for you on our projects."
+    if (isset($description)) {
+        echo $description;
+    }
+    else {
+        echo "UNT Robotics is a robotics student organization based in Denton. Explore the field of robotics with hands-on experience in mechanical, electrical, and software systems. Whether you're a beginner or a pro, we always have a spot for you on our projects."
+    }
     ?>" property="og:description">
     <meta content="UNT Robotics" property="og:site_name">
-    <meta content="https://<?php echo $_SERVER['SERVER_NAME'] . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);?>" property="og:url">
-    <meta content="<?php if (isset($og_image_url) && $og_image_url !== null)
+    <meta content="https://<?php echo $_SERVER['SERVER_NAME'] . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>" property="og:url">
+    <meta content="<?php if (isset($og_image_url) && $og_image_url !== null) {
         echo $og_image_url;
-    else
+    }
+    else {
         echo 'https://' . $_SERVER['SERVER_NAME'] . '/images/og-image.png';
-          ?>" property='og:image'>
+    }
+    ?>" property='og:image'>
     <link rel="icon" href="/favicon.png" type="image/png">
     <!-- Stylesheets-->
-    <link rel="stylesheet" type="text/css"
-          href="//fonts.googleapis.com/css?family=Poppins:400,500,700%7CKanit:300,400,700">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Poppins:400,500,700%7CKanit:300,400,700">
     <link rel="stylesheet" href="/css/style.css">
     <!--[if lt IE 10]>
     <div style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;">
-        <a href="http://windows.microsoft.com/en-US/internet-explorer/"><img
-                src="/images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820"
-                alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
+        <a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="/images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a>
     </div>
     <script src="js/html5shiv.min.js"></script>
     <![endif]-->
@@ -80,10 +82,7 @@
     <!-- Page Header-->
     <header class="page-head">
         <div class="rd-navbar-wrap">
-            <nav data-stick-up-clone="true" data-layout="rd-navbar-fixed" data-md-layout="rd-navbar-static"
-                 data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static"
-                 data-lg-device-layout="rd-navbar-static" data-lg-stick-up-offset="252px"
-                 class="rd-navbar rd-navbar-secondary">
+            <nav data-stick-up-clone="true" data-layout="rd-navbar-fixed" data-md-layout="rd-navbar-static" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up-offset="252px" class="rd-navbar rd-navbar-secondary">
                 <div class="rd-navbar-inner">
                     <ul class="list-inline list-inline-lg offset-top-0">
                         <li><a href="/events" class="ioon icon-md2 icon-silver-chalice fa-calendar"></a></li>
@@ -101,11 +100,8 @@
                         <!-- RD Navbar Toggle-->
                         <button data-rd-navbar-toggle=".rd-navbar-nav-wrap" class="rd-navbar-toggle"><span></span>
                         </button>
-                        <button data-rd-navbar-toggle=".rd-navbar-collapse" class="rd-navbar-collapse-toggle"
-                                style="z-index: 99;"><span></span></button>
-                        <div class="rd-navbar-brand"><a href="/" class="brand-name"><span class="brand-logo veil">UNT Robotics</span><img
-                                        class="brand-logo-main" src="/images/unt-robotics-brand-logo-white.svg"
-                                        alt="UNT Robotics"><span class="brand-text-main">UNT Robotics</span></a></div>
+                        <button data-rd-navbar-toggle=".rd-navbar-collapse" class="rd-navbar-collapse-toggle" style="z-index: 99;"><span></span></button>
+                        <div class="rd-navbar-brand"><a href="/" class="brand-name"><span class="brand-logo veil">UNT Robotics</span><img class="brand-logo-main" src="/images/unt-robotics-brand-logo-white.svg" alt="UNT Robotics"><span class="brand-text-main">UNT Robotics</span></a></div>
                     </div>
                     <div class="rd-navbar-collapse animated">
                         <div class="rd-navbar-collapse-items">
@@ -205,7 +201,7 @@
                             <li><a href="/contact">Contact us</a></li>
                             <?php
                             if (count($userinfo)) {
-                            ?>
+                                ?>
                                 <li class="thin auth" style="margin-left: auto;"><a href="/me/" class="stacked">My<br>Profile</a>
                                 </li>
                                 <li class="thin auth" style="margin-left: 0;"><a href="/auth/logout" class="stacked">Log<br>Out</a>
@@ -215,7 +211,7 @@
                                                                                class="stacked">Log<br>In</a></li>
                                 <li class="thin" style="margin-left: 0;"><a href="/auth/join" class="stacked">Join<br>Now</a>
                                 </li>
-                            <?php
+                                <?php
                             }
                             ?>
                         </ul>

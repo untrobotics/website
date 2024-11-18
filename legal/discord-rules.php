@@ -1,6 +1,6 @@
 <?php
 require("../template/top.php");
-head("Discord Rules", true, false, false, "These are the rules for the official UNT Robotics Discord server.");
+head("Discord Rules", true, false, false, "The rules for the official UNT Robotics Discord server.");
 ?>
 <style>
     h3 {

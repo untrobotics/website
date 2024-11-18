@@ -1,6 +1,6 @@
 <?php
 require('template/top.php');
-head('Activities', true, false, false, "Explore the dynamic world of robotics with [University Name] Robotics Club! From hosting STEM company seminars and hands-on workshops to collaborating on innovative projects and competing in inter-collegiate events, we provide endless opportunities to learn and grow.");
+head('Activities', true, false, false, "Explore the dynamic world of robotics with UNT Robotics! From hosting STEM company seminars and hands-on workshops to collaborating on innovative projects and competing in inter-collegiate events, we provide endless opportunities to learn and grow.");
 ?>
 
        <main class="page-content">
