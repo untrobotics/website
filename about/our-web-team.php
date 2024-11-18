@@ -1,7 +1,7 @@
 <?php
 require('../template/top.php');
 require('card.php');
-head('Our Team', true);
+head('Our Team', true, false, false, "Discover the team who keep the UNT Robotics website up and running!");
 $members = array();
 
 $members[] = [

@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-head('Botathon Live Page', true);
+head('Botathon Live Page', true, false, false, "");
 ?>
 
 <style>

@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-head('Botathon Info', true);
+head('Botathon Info', true, false, false, "UNT's first robotics competition — Botathon. Learn more about Botathon as a whole and the current Botathon season here.");
 ?>
 
 <style>

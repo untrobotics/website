@@ -1,7 +1,7 @@
 <?php
 //header("Location: https://discord.gg/j3D5Zdp");
 require('../template/top.php');
-head('Welcome', true, true);
+head('Welcome', true, true, false, "", null);
 ?>
 <style>
 	.select2-container--bootstrap .select2-selection--single .select2-selection__rendered {

@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-head('Merch', true);
+head('Merch', true, false, false, "Support UNT Robotics & look dapper while doing it!");
 ?>
 <style>
 	.page-index-listing li {

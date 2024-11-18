@@ -1,7 +1,7 @@
 <?php
 require('../template/top.php');
 require_once('card.php');
-head('Our Web Team Alumni', true);
+head('Our Web Team Alumni', true, false, false, "Curious about who helped build UNT Robotics' website into what it is now? Look no further because all of our former web developers are here!");
 $members = array();
 $members[] = [
 	'name'=>'Peyton Thibodeaux',

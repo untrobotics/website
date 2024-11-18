@@ -1,6 +1,6 @@
 <?php
 require("../template/top.php");
-head("Privacy", true);
+head("Privacy", true, false, false, "");
 ?>
 <style>
     [data-custom-class='body'], [data-custom-class='body'] * {

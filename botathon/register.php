@@ -2,7 +2,7 @@
 require('../template/top.php');
 require('../template/functions/botathon-funcs.php');
 
-head('Botathon Registration', true);
+head('Botathon Registration', true, false, false, "Register for the upcoming Botathon season here!");
 ?>
 <style>
 	.checkbox-container {

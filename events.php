@@ -1,6 +1,6 @@
 <?php
 require('template/top.php');
-head('Events Calendar', true);
+head('Events Calendar', true, false, false, "Stay updated with UNT Robotics' upcoming meetings and events! Discover upcoming workshops, competitions, meetings, and more.");
 ?>
     <style>
         @media (min-width: 480px) and (max-width: 768px) {

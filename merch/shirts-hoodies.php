@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-head('Order Shirts & Hoodies', true);
+head('Order Shirts & Hoodies', true, false, false, "Support UNT Robotics & look dapper while doing it!");
 ?>
 <style>
 	/*

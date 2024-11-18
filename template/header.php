@@ -8,14 +8,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
     <!-- Open Graph tags   -->
-    <meta content="UNT Robotics - <?php echo htmlspecialchars($title, ENT_COMPAT) ?>" property="og:title">
+    <meta content="<?php echo htmlspecialchars($title, ENT_COMPAT) ?>" property="og:title">
     <meta content="<?php
     if (isset($description)) echo $description;
     else echo "UNT Robotics is a robotics student organization based in Denton. Explore the field of robotics with hands-on practice in mechanical, electrical, and software subsystems. Whether you're a beginner or a pro, we always have a spot for you on our projects."
     ?>" property="og:description">
     <meta content="UNT Robotics" property="og:site_name">
-    <meta content="<?php if (isset($og_image_uri))
-        echo 'https://' . $_SERVER['SERVER_NAME'] . $og_image_uri;
+    <meta content="https://<?php echo $_SERVER['SERVER_NAME'] . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);?>" property="og:url">
+    <meta content="<?php if (isset($og_image_url) && $og_image_url !== null)
+        echo $og_image_url;
     else
         echo 'https://' . $_SERVER['SERVER_NAME'] . '/images/og-image.png';
           ?>" property='og:image'>

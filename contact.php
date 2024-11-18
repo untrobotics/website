@@ -1,6 +1,6 @@
 <?php
 require('template/top.php');
-head('Contact Us', true);
+head('Contact Us', true, false, false, "Have questions for UNT Robotics or want to get involved? Visit our Contact Us page to get in touch with us!");
 ?>
 <style>
 	#contact-form-submit-area {

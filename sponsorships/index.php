@@ -1,7 +1,7 @@
 <?php
 require('../template/top.php');
 require_once(BASE . '/template/functions/payment_button.php');
-head('Sponsorships', true);
+head('Sponsorships', true, false, false, "Help us achieve our mission!");
 
 $payment_button = new PaymentButton(
     'UNT Robotics General Sponsorship or Donation',

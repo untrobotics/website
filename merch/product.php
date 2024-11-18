@@ -2,7 +2,7 @@
 require('../template/top.php');
 require(BASE . '/api/printful/printful.php');
 require(BASE . '/template/functions/functions.php');
-require(BASE . '/template/functions/payment_button.php');
+//require(BASE . '/template/functions/payment_button.php');
 
 $printfulapi = new PrintfulCustomAPI();
 
@@ -61,15 +61,22 @@ if ($product_can_be_handled) {
 		$mockup_file = "";
 	}
 	$back_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::BACK);
-	
-	head("Buy {$product->get_name()}", true);
+
+    preg_match("@^(.+?)•@ims", $catalog_product->get_description(), $m);
+    //var_dump($m);
+    $description = "";
+    if (count($m)) {
+        $description = trim($m[1]);
+    }
+
+    head("Buy {$product->get_name()}", true, false, false, $description, $mockup_file->get_url() ? $mockup_file->get_url() : $mockup_file->get_preview_url());
 	$category_name = strtolower(preg_replace('@^.*\(([^()]+)\)$@i', '$1', $product->get_name()));
 	if($category_name !== 'gear' && $category_name[-1]!=='s'){
 	$category_name .= 's';
 	}
 
 } else {
-	head("Invalid Product", true);
+	head("Invalid Product", true, false, false, null, null);
 }
 
 function get_variant_variant($variant_name) {
@@ -248,12 +255,6 @@ function get_variant_variant($variant_name) {
 								?>
 
 							<?php
-								preg_match("@^(.+?)•@ims", $catalog_product->get_description(), $m);
-								//var_dump($m);
-								$description = "";
-								if (count($m)) {
-									$description = trim($m[1]);
-								}
 								preg_match_all("@• (.+)\n@i", $catalog_product->get_description(), $m);
 								//var_dump($m);
 								$other_info = array();
@@ -289,7 +290,7 @@ function get_variant_variant($variant_name) {
 										'variant' => $selected_variant->get_id()
 									));
 
-									$payment_button = new PaymentButton(
+							/*		$payment_button = new PaymentButton(
 										$product->get_name(),
 										$product->get_product_price()
 									);
@@ -303,7 +304,7 @@ function get_variant_variant($variant_name) {
 										$product->get_name(),
 										get_variant_variant($selected_variant->get_name())
 									));
-									$payment_button->set_complete_return_uri('/merch/buy/complete');
+									$payment_button->set_complete_return_uri('/merch/buy/complete');*/
 
 									/*
 									$button = payment_button(
@@ -323,16 +324,7 @@ function get_variant_variant($variant_name) {
 									*/
 
 									//echo $button['btn'];
-									$button = $payment_button->get_button();
-									if ($button->error === false) {
-										echo "button success";
-										echo $payment_button->get_button()->button;
-									} else {
-										// TODO: Alert
-										?>
-								<div class="alert alert-danger">An error occurred loading the payment button...</div>
-										<?php
-									}
+
 								?>
 							</div>
 						</div>

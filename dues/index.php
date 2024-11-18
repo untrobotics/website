@@ -1,7 +1,7 @@
 <?php
 require('../template/top.php');
 require(BASE . '/api/discord/bots/admin.php');
-head('Pay Dues', true);
+head('Pay Dues', true, false, false, "Want to support UNT Robotics and get access to some exclusive projects? Get your Good Standing status by paying your UNT Robotics dues.");
 
 $q = $db->query("SELECT `key`,`value` FROM dues_config WHERE `key` = 'semester_price' OR `key` = 't_shirt_dues_purchase_price'");
 if (!$q || $q->num_rows !== 2) {

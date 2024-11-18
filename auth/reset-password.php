@@ -56,7 +56,7 @@ if (isset($_GET['token'])) {
         }
     } while (false);
 }
-head('Reset Password', true);
+head('Reset Password', true, false, false, "");
 ?>
 
     <main class="page-content">

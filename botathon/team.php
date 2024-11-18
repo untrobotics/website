@@ -9,7 +9,7 @@ if (@$_SERVER['HTTPS'] === "on") {
 
 require('../template/top.php');
 
-$head = head('Botathon Live Page', true, true, true);
+$head = head('Botathon Live Page', true, true, true, "Use this page to debug your Botathon robot's connection.", null);
 
 //get team name and number
 global $db;

@@ -1,6 +1,6 @@
 <?php
 require('../../template/top.php');
-head('Merch Ordered', true);
+head('Merch Ordered', true, false, false, "");
 
 $log = var_export($_REQUEST, true);
 $log .= var_export($userinfo, true);
