@@ -45,11 +45,8 @@ function head($title, $heading, $auth = false, $return = false, string $descript
         2 => array("auth", true),
         3 => array("return", false),
     );
-    $zza = "";
     foreach (func_get_args() as $key => $val) {
-
         if ($val === NULL) {
-            $zza .= $key . ' ' . var_export($default_values[$key][1], true);
             $$default_values[$key][0] = $default_values[$key][1];
         }
     }
@@ -81,7 +78,6 @@ function head($title, $heading, $auth = false, $return = false, string $descript
         return $return;
     } else {
         require("$base/template/header.php");
-        echo $zza;
         return;
     }
 }
