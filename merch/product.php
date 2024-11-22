@@ -2,7 +2,7 @@
 require('../template/top.php');
 require(BASE . '/api/printful/printful.php');
 require(BASE . '/template/functions/functions.php');
-//require(BASE . '/template/functions/payment_button.php');
+require(BASE . '/template/functions/payment_button.php');
 
 $printfulapi = new PrintfulCustomAPI();
 
@@ -25,7 +25,6 @@ if (!empty($external_product_id)) {
 		//error_log("ID: " . $product->get_variants()[0]->get_product()->get_product_id());
 		$catalog_product = $printfulapi->get_catalog_product($product->get_variants()[0]->get_product()->get_product_id());
 		
-		//var_dump($product);
 		if (!empty($product_name)) {
 			$product_description = post_slug($product->get_name());
 			if (!preg_match("@^{$product_description}$@i", $product_name)) {
@@ -63,7 +62,6 @@ if ($product_can_be_handled) {
 	$back_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::BACK);
 
     preg_match("@^(.+?)•@ims", $catalog_product->get_description(), $m);
-    //var_dump($m);
     $description = "";
     if (count($m)) {
         $description = trim($m[1]);
@@ -256,7 +254,6 @@ function get_variant_variant($variant_name) {
 
 							<?php
 								preg_match_all("@• (.+)\n@i", $catalog_product->get_description(), $m);
-								//var_dump($m);
 								$other_info = array();
 								foreach ($m[1] as $match) {
 									$other_info[] = trim($match);
@@ -290,7 +287,7 @@ function get_variant_variant($variant_name) {
 										'variant' => $selected_variant->get_id()
 									));
 
-							/*		$payment_button = new PaymentButton(
+									$payment_button = new PaymentButton(
 										$product->get_name(),
 										$product->get_product_price()
 									);
@@ -304,9 +301,9 @@ function get_variant_variant($variant_name) {
 										$product->get_name(),
 										get_variant_variant($selected_variant->get_name())
 									));
-									$payment_button->set_complete_return_uri('/merch/buy/complete');*/
+									$payment_button->set_complete_return_uri('/merch/buy/complete');
 
-									/*
+
 									$button = payment_button(
 											'T-Shirt', 
 											$product->get_product_price(),
@@ -321,7 +318,7 @@ function get_variant_variant($variant_name) {
 											$quantity = 1,
 											$complete_return_uri = '/merch/buy/complete'
 										);
-									*/
+
 
 									//echo $button['btn'];
 
