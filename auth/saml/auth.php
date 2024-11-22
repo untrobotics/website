@@ -1,6 +1,6 @@
 <?php
 require('template/top.php');
-head('Authentication', true);
+head('Authentication', true, false, false, "");
 
 require_once('saml/simplesamlphp/lib/_autoload.php');
 $as = new \SimpleSAML\Auth\Simple('untrobotics-sp');

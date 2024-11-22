@@ -23,31 +23,30 @@ $userinfo = array(); // this will be populated later, we are effectively making 
 $session = array();
 
 class mmysqli extends mysqli {
-    public function __construct($host, $user, $pass, $db) {
+    public function __construct($host, $user, $pass, $db, $port = 3306, $socket = null) {
         parent::init();
 
-        if (!parent::real_connect($host, $user, $pass, $db, 3306, null, MYSQLI_CLIENT_FOUND_ROWS)) {
+        if (!parent::real_connect($host, $user, $pass, $db, $port, $socket, MYSQLI_CLIENT_FOUND_ROWS)) {
             die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());
         }
     }
 }
 
-$db = new mmysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME);
+$db = new mmysqli(DATABASE_HOST, DATABASE_USER, DATABASE_PASSWORD, DATABASE_NAME, DATABASE_PORT, DATABASE_SOCKET);
 $db->set_charset(DATABASE_CHARSET);
 
 date_default_timezone_set(TIMEZONE);
 
 $untrobotics = new untrobotics($db);
 
-function head($title, $heading, $auth = false, $return = false) {
+function head($title, $heading, $auth = false, $return = false, string $description = null, string $og_image_url = null) {
     global $base, $userinfo, $session, $untrobotics, $db;
     $default_values = array(
         2 => array("auth", true),
-        3 => array("breadcrumbs", array("Home" => "/")),
-        4 => array("return", false)
+        3 => array("return", false),
     );
     foreach (func_get_args() as $key => $val) {
-        if ($val == NULL) {
+        if ($val === NULL) {
             $$default_values[$key][0] = $default_values[$key][1];
         }
     }

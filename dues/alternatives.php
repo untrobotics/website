@@ -1,7 +1,7 @@
 <?php
 require('../template/top.php');
 require(BASE . '/api/discord/bots/admin.php');
-head('Pay Dues via Alternatives', true);
+head('Pay Dues via Alternatives', true, false, false, "If you paid for your dues not using PayPal, fill out the form on this page to get your Good Standing role.");
 
 if (isset($_POST['submit'])) {
     AdminBot::send_message("Nick said this was okay..." . var_export(array($_POST, $userinfo['id'], $userinfo['name']), true));

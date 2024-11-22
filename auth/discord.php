@@ -118,7 +118,7 @@ function assign_user_good_standing($user_discord_id) {
 	return AdminBot::add_user_role($user_discord_id);
 }
 
-head('Joined Discord', true, true);
+head('Joined Discord', true, true, false, "", null);
 
 // user must be authenticated to reach this point
 

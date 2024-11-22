@@ -3,7 +3,7 @@ require('../template/top.php');
 require(BASE . '/api/discord/bots/admin.php');
 //require(BASE . '/api/google/count_majors.php');
 
-head('About Us', true);
+head('About Us', true, false, false, "UNT Robotics is a broad engineering student organization at the University of North Texas. We focus on developing student's skills in engineering &amp; robotics, which involves a range of beginner workshops, industry talks, robotics-based hackathons, recreational projects and competitions.");
 ?>
 	<main class="page-content">
         <!-- Classic Breadcrumbs-->

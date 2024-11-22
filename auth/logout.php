@@ -11,7 +11,7 @@ session_regenerate_id();
 session_unset();
 session_destroy();
 
-head('Logged Out', true);
+head('Logged Out', true, false, false, "");
 ?>
 
 <main class="page-content">

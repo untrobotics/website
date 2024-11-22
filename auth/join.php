@@ -123,7 +123,7 @@ if (!empty($_POST)) {
 		}
 	} while (false);
 }
-head('Join', true);
+head('Join', true, false, false, "");
 ?>
 <style>
 	.select2-container--bootstrap .select2-selection--single .select2-selection__rendered {

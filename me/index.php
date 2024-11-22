@@ -1,7 +1,7 @@
 
 <?php
 require('../template/top.php');
-head('My Profile', true, true);
+head('My Profile', true, false, false, "You must be logged in in order to view this page.", true);
 ?>
 
 <main class="page-content">

@@ -61,7 +61,7 @@ if (isset($_POST['email'])) {
 		}
 	} while (false);
 }
-head('Login', true);
+head('Login', true, false, false, "");
 ?>
 
 	<main class="page-content">

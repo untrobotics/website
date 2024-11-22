@@ -1,6 +1,6 @@
 <?php
 require('template/top.php');
-head('Login', true);
+head('Login', true, false, false, "");
 ?>
 <main class="page-content">
 	<section class="section-75 section-md-100 section-lg-150">

@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-head('Dues Paid', true);
+head('Dues Paid', true, false, false, "");
 
 $log = var_export($_REQUEST, true);
 error_log($log, 3, BASE . '/paypal/logs/pdt-dues.log');

@@ -1,7 +1,7 @@
 <?php
 require('../template/top.php');
 require_once('card.php');
-head('Our Alumni', true);
+head('Our Alumni', true, false, false, "Learn more about the members who made UNT Robotics into what it is today!");
 $members = array();
 $members[] = [
     'name'=>'Nick Tindle',

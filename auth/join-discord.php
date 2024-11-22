@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-head('Join us on Discord', true);
+head('Join us on Discord', true, false, false, "Want to stay up to date with all of UNT Robotics' fun? Join our Discord here!");
 
 $log = var_export($_REQUEST, true);
 error_log($log, 3, BASE . '/paypal/logs/pdt-dues.log');

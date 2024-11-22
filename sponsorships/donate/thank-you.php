@@ -1,7 +1,7 @@
 <?php
 require('../../template/top.php');
 require_once(BASE . '/api/discord/bots/admin.php');
-head('Thank you for your donation', true);
+head('Thank you for your donation', true, false, false, "");
 
 AdminBot::send_message("Donation received (probably)!");
 ?>

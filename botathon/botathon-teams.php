@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-head('Botathon Teams', true);
+head('Botathon Teams', true, false, false, "Find out about the teams competing in Botathon this year! Their bots may look scary, but they don't bite!");
 ?>
 <style>
     .bio-area {

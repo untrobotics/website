@@ -1,7 +1,7 @@
 <?php
 require('../template/top.php');
 require_once('card.php');
-head('Our Team', true);
+head('Our Team', true, false, false, "Meet the officers of UNT Robotics. These are the people driving the organization forward into the future!");
 $members = array();
 
 //co-president
