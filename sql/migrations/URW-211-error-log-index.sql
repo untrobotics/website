@@ -1,0 +1,1 @@
+INSERT INTO error_log_index VALUES (0)

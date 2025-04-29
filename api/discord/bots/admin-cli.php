@@ -1,20 +1,45 @@
 <?php
-
+// sample incrontab entry:
+// /var/log/apache2/untrobotics/error.log IN_MODIFY /www/api/discord/bots/admin-cli.php $#
 if (php_sapi_name() != "cli") {
     die();
 }
 
+// fetch previously read log length and update with current length
+try{
+    require_once(__DIR__ . '/../../../template/top.php');
+    global $db;
+    // fetch last line number read from log file
+    $q = $db->query('SELECT prev_len FROM error_log_index');
+    $prev = $q === false ? 0 : $q->fetch_row()[0];
+
+    // fetch all lines of log file
+    $lines = file($argv[1]);
+    if($lines === false) {
+        $current = 0;
+        $message = "Error log file '$argv[1]' not found.";
+    } else {
+        // update last line number read and set message
+        $current = count($lines);
+        $message = trim(implode('', array_slice($lines, $prev)));
+        if($current === 0 || strlen($message) === 0) {
+            $message = "Log file could not be read starting at line {$prev}";
+        } else if($db->query("UPDATE error_log_index SET prev_len = $current") === false) {
+            $message = "Could not update error log file to offset {$prev}";
+        }
+    }
+} catch(mysqli_sql_exception $e){
+    $message = "Error occurred while fetching/updating stored error log length in the db:\n{$e->getMessage()}";
+    $prev = 0;
+    $current = 0;
+} catch(Exception $e) {
+    $message = "Error occurred while attempting to retrieve error logs:\n{$e->getMessage()}";
+    $prev = 0;
+    $current = 0;
+}
+
 require_once(__DIR__ . '/../../../template/config.php');
 require_once(__DIR__ . '/admin.php');
-
-$message = $argv[1];
-$prev = $argv[2];
-$current = $argv[3];
-$len = strlen(trim($message));
-
-if ($len == 0) {
-    die();
-}
 
 $did_match = preg_match_all("@^\[(.+?)\] \[(.+?)\] \[(.+?)\] \[(.+?)\] (.+?)$@ms", $message, $matches);
 
@@ -64,22 +89,26 @@ foreach ($not_found_paths_to_ignore as $path) {
 }
 
 if ($did_match) {
-    foreach ($matches[0] as $k => $m) {
-        $timestamp = $matches[1][$k];
-        $error_type = $matches[2][$k];
-        $process_pid = $matches[3][$k];
-        $request_info = $matches[4][$k];
-        $error_message = $matches[5][$k];
+    try {
+        foreach ($matches[0] as $k => $m) {
+            $timestamp = $matches[1][$k];
+            $error_type = $matches[2][$k];
+            $process_pid = $matches[3][$k];
+            $request_info = $matches[4][$k];
+            $error_message = $matches[5][$k];
 
-        foreach ($offending_patterns as $pattern) {
-            if (preg_match($pattern, $error_message)) {
-                continue 2;
+            foreach ($offending_patterns as $pattern) {
+                if (preg_match($pattern, $error_message)) {
+                    continue 2;
+                }
             }
-        }
 
-        AdminBot::send_message(
-            "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel
-        );
+            AdminBot::send_message(
+                "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel
+            );
+        }
+    } catch (Exception $e) {
+        var_dump(AdminBot::send_message("```({$prev} => {$current})\n[ERROR LOG MESSAGE PARSE FAILED]\n{$message}```", $discord_channel));
     }
 } else {
     var_dump(AdminBot::send_message("```({$prev} => {$current})\n[ERROR LOG MESSAGE PARSE FAILED]\n{$message}```", $discord_channel));
