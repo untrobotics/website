@@ -22,9 +22,13 @@ try{
         // update last line number read and set message
         $current = count($lines);
         $message = trim(implode('', array_slice($lines, $prev)));
-        if($current === 0 || strlen($message) === 0) {
-            $message = "Log file could not be read starting at line {$prev}";
-        } else if($db->query("UPDATE error_log_index SET prev_len = $current") === false) {
+        if(strlen($message) === 0) {
+            die();
+        }
+        else if($current === 0){
+            $message = 'Log file was empty or could not be read.';
+        }
+        else if($db->query("UPDATE error_log_index SET prev_len = $current") === false) {
             $message = "Could not update error log file to offset {$prev}";
         }
     }
