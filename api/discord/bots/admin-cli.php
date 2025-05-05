@@ -107,9 +107,13 @@ if ($did_match) {
                 }
             }
 
-            AdminBot::send_message(
-                "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel
-            );
+            // chunk error message into 2000 char chunks for discord limits
+            $discord_message = "({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}";
+            for($i = 0; $i < strlen($discord_message); $i+= 1984) { // code block formatting is 16 chars
+                AdminBot::send_message(
+                    "```accesslog\n" . substr($discord_message,$i,1984) . "```", $discord_channel
+                );
+            }
         }
     } catch (Exception $e) {
         var_dump(AdminBot::send_message("```({$prev} => {$current})\n[ERROR LOG MESSAGE PARSE FAILED]\n{$message}```", $discord_channel));
