@@ -22,14 +22,16 @@ try{
         // update last line number read and set message
         $current = count($lines);
         $message = trim(implode('', array_slice($lines, $prev)));
-        if(strlen($message) === 0) {
-            die();
+        if($current !== 0) {
+            $q = $db->query("UPDATE error_log_index SET prev_len = $current");
+            if (strlen($message) === 0) {
+                die();
+            } else if ($q === false) {
+                $message = "Could not update error log file to offset {$prev}";
+            }
         }
-        else if($current === 0){
+        else {
             $message = 'Log file was empty or could not be read.';
-        }
-        else if($db->query("UPDATE error_log_index SET prev_len = $current") === false) {
-            $message = "Could not update error log file to offset {$prev}";
         }
     }
 } catch(mysqli_sql_exception $e){
