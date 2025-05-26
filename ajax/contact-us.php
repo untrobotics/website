@@ -19,16 +19,16 @@ if (isset($_POST)) {
 		if ($response['success'] == false) {
 			echo 'FAILED';
 			break;
-		} else if (strlen($name) < 4) {
+		} else if (strlen($name) < 4 || preg_match('/eric jones/i', $name) === 1) {
 			echo 'INVALID_NAME';
 			break;
-		} else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		} else if (!filter_var($email, FILTER_VALIDATE_EMAIL) || preg_match('/eric.*jones/i', $email) === 1) {
 			echo 'INVALID_EMAIL';
 			break;
-		} else if (strlen($phone) != 10) {
+		} else if (strlen($phone) != 10 || $phone == "5555551212") {
 			echo 'INVALID_PHONE';
 			break;
-		} else if (strlen($message) < 10) {
+		} else if (strlen($message) < 10 || preg_match('Web Visitor', $message) === 1) {
 			echo 'INVALID_MESSAGE';
 			break;
 		} else if (empty($captcha)) {
