@@ -1,0 +1,30 @@
+[
+  {
+    "name": "verify-email",
+    "type": 1,
+    "description": "Verify your identity as a UNT student, faculty, or alumnus",
+    "options": [
+      {
+        "name": "email",
+        "description": "A valid UNT email",
+        "type": 3,
+        "required": true,
+        "min_length": 9,
+        "max_length": 255
+      }
+    ]
+  },
+  {
+    "name": "verify-token",
+    "type": 1,
+    "description": "Verify you own the email provided in /verify-email",
+    "options": [
+      {
+        "name": "token",
+        "description": "The token sent to your UNT email address",
+        "type": 3,
+        "required": true
+      }
+    ]
+  }
+]

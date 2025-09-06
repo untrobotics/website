@@ -129,6 +129,23 @@ class DiscordBot {
 	    return static::send_api_request("/guilds/{$guild_id}/members?limit=1000");
     }
 
+    /**
+     * Registers an application command for the Discord bot.
+     * @param $command_json object JSON object with command details
+     * @param $application_id string The application ID of the Discord bot to register the command to
+     * @param $guild_id string The guild ID the command will be work on. If empty, command will be registered globally
+     * @return stdClass
+     * @throws DiscordBotException
+     * @see https://discord.com/developers/docs/interactions/application-commands
+     */
+    public static function add_application_command($command_json, $application_id, $guild_id = "") {
+        $scope = "applications/{$application_id}";
+        if($guild_id != "") {
+            $scope .= "/guilds/{$guild_id}";
+        }
+        return self::send_api_request("/v10/{$scope}/commands", 'POST', "application/json", $command_json);
+    }
+
     // utils
     public static function hasHitRateLimit($result) {
         return $result->status_code == 429;
