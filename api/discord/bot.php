@@ -140,6 +140,7 @@ class DiscordBot {
      */
     public static function add_application_command($command_json, $application_id, $guild_id = "") {
         $scope = "applications/{$application_id}";
+        // if $guild_id is blank, then the scope is global (available in all servers [the bot is in] and DMs
         if($guild_id != "") {
             $scope .= "/guilds/{$guild_id}";
         }

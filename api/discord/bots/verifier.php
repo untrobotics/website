@@ -19,6 +19,7 @@ class DiscordWebhook
      */
     public function __construct($bot_token = DISCORD_ADMIN_BOT_TOKEN)
     {
+        // bot doesn't need special intents
         $this->discord = new Discord([
             'token' => $bot_token,
             'intents' => Intents::getDefaultIntents()
@@ -26,8 +27,7 @@ class DiscordWebhook
 
         // runs when the bot establishes a connection with Discord
         $this->discord->on('ready', function (Discord $discord) {
-//            echo "Bot is ready!", PHP_EOL;
-
+            // adds event listener for when an Interaction is started. Interactions are things like slash commands or clicking a button on the bot's message
             $discord->on(Event::INTERACTION_CREATE, DiscordWebhook::AcknowledgeInteraction(...));
         });
     }
@@ -46,21 +46,21 @@ class DiscordWebhook
      * @return void
      */
     private static function AcknowledgeInteraction(Interaction $interaction, Discord $discord) {
-        echo "Received interaction: " . PHP_EOL . json_encode($interaction) . PHP_EOL;
+        // ignore interactions which don't provide data
         if(is_null($interaction->data)){
-            echo "Unknown interaction" . PHP_EOL;
+            error_log("Discord verification bot received an unknown interaction initiated by " . $interaction->user->id . " in guild " . $interaction->guild->id . " and channel " . $interaction->channel->id . ".");
             return;
         }
+        // handle interactions based on interaction names
         switch ($interaction->data->name) {
             case "verify-email":
-                /** @noinspection PhpUndefinedFieldInspection */
                 self::ValidateEmail($interaction);
                 break;
             case "verify-token":
                 self::ValidateToken($interaction);
                 break;
             default:
-                echo $interaction->data->name . PHP_EOL;
+                error_log("Discord verification bot received an unknown interaction with name " . $interaction->data->name);
         }
     }
 
@@ -70,7 +70,9 @@ class DiscordWebhook
      * @return void
      */
     private static function ValidateEmail(Interaction $interaction){
+        // get email passed to the bot
         $email = $interaction->data->options["email"]->value;
+        // if email isn't a unt email, provide error message to user and end interaction
         if(!self::IsValidEmail($email)){
             $interaction->respondWithMessage(
                 MessageBuilder::new()->setContent(
@@ -80,17 +82,89 @@ class DiscordWebhook
             );
             return;
         }
-        $interaction->acknowledgeWithResponse(true);
-        //todo: send email
-        $email_sent = true;
-        if($email_sent){
-            $response = "Email sent to {$email}. Use ``/verify-token <token>`` to continue the verification process. Tokens are valid for 7 days." . PHP_EOL . PHP_EOL . "If you can't find the email, check your spam folder.";
-        } else {
-            $response = "Error sending the email to {$email}: {$email_sent}." . PHP_EOL . PHP_EOL . "If this issue persists, contact an officer.";
-            error_log($email_sent);
-        }
-        $interaction->updateOriginalResponse(
-            MessageBuilder::new()->setContent($response)
+
+        // user sees an ephemeral, loading message from the bot
+        $interaction->acknowledgeWithResponse(true)->then(
+            function () use($interaction, $email) {
+
+                //generate token
+                $token = bin2hex(openssl_random_pseudo_bytes(3));
+
+                // add token to discrd_verification_tokens table
+                global $db;
+                //todo update db
+                $q = $db->query(
+                    "INSERT INTO discord_verification_tokens (token, expires_on, discord_id, user_id, unt_email)"
+                );
+
+                // if token couldn't be added to the table, respond with an error message, and log db error for devs to see
+                if (!$q) {
+                    $response = "Could not generate verification token." . PHP_EOL . PHP_EOL . "If this issue persists, contact an officer.";
+                    error_log("Failed to update DB with verification token for <@" . $interaction->user->id . "> (email: {$email}): " . $db->error);
+                } else {
+                    // Send generic welcome email
+                    $email_send_status = email(
+                        $email,
+                        "UNT Robotics Discord verification token",
+
+                        "<div style=\"position: relative;max-width: 100vw;text-align:center;\">" .
+                        '<img src="cid:untrobotics-email-header">' .
+
+                        '	<div></div>' .
+
+                        '<div style="text-align: left; max-width: 500px; display: inline-block;">' .
+                        "	<p>Hey there!</p>" .
+                        "	<p>Welcome to the team!!</p>" .
+                        "   <p>Thank you for joining the UNT Robotics Discord server!" .
+                        "   <p>Your verification token is:</p>" .
+                        "</div>" .
+                        "<div>" .
+                        "   <p style='font-size: 20pt; font-weight: 900; margin-top: 10px;'>{$token}</p>" .
+                        '</div>' .
+
+                        '	<div></div>' .
+
+                        "	<p></p>" .
+
+                        "	<p>If you need any assistance, please reach out to <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a>.</p>" .
+
+                        '	<div></div>' .
+
+                        '<div style="text-align: left; width: 500px; display: inline-block;">' .
+                        "	<p>All the best,</p>" .
+                        "   <p><em>UNT Robotics Leadership</em></p>" .
+                        '</div>' .
+
+                        "</div>",
+
+                        "hello@untrobotics.com",
+                        null,
+                        [
+                            [
+                                'content' => base64_encode(file_get_contents(BASE . '/images/unt-robotics-email-header.jpg')),
+                                'type' => 'image/jpeg',
+                                'filename' => 'unt-robotics-email-header.jpg',
+                                'disposition' => 'inline',
+                                'content_id' => 'untrobotics-email-header'
+                            ]
+                        ]
+                    );
+
+                    // if the email was successfully sent, respond with a success message.
+                    if ($email_send_status) {
+                        $response = "Email sent to {$email}. Use ``/verify-token <token>`` to continue the verification process. Tokens are valid for 7 days." . PHP_EOL . PHP_EOL . "If you can't find the email, check your spam folder.";
+                    } else {
+                        // if email wasn't sent, respond with an error message and remove the token from the db.
+                        $response = "Could not send an email to {$email}." . PHP_EOL . PHP_EOL . "If this issue persists, contact an officer.";
+                        $q = "DELETE FROM discord_verification_tokens WHERE token = '{$token}' AND discord_id = '{$interaction->user->id}'";
+                        error_log("Failed to send verification email with a token to {$email}.");
+                    }
+                }
+                // update loading message with proper response
+                $interaction->updateOriginalResponse(
+                    MessageBuilder::new()->setContent($response)
+                );
+            }
         );
     }
 
@@ -100,7 +174,11 @@ class DiscordWebhook
      * @return void
      */
     private static function ValidateToken(Interaction $interaction){
-        $token = $interaction->data->options["token"]->value;
+        global $db;
+        // get token passed to the bot
+        $token = $db->real_escape_string($interaction->data->options["token"]->value);
+        $user_id = $interaction->user->id;
+        // if token isn't valid, tell user verification failed and end interaction
         if(!self::IsValidToken($token)){
             $interaction->respondWithMessage(
                 MessageBuilder::new()->setContent(
@@ -111,9 +189,8 @@ class DiscordWebhook
             return;
         }
         //todo: check db
-        global $db;
-
-        $q = $db->query("SELECT * FROM ");
+        $q = $db->query("SELECT * FROM discord_verification_tokens WHERE token = '{$token}' AND discord_id = '{$interaction->user->id}'");
+        // if query fails, respond with an error message, log the db error, and end the interaction
         if($q === false){
             $interaction->respondWithMessage(
                 MessageBuilder::new()->setContent(
@@ -121,7 +198,7 @@ class DiscordWebhook
                 ),
                 true
             );
-//                    error_log("Failed to fetch token from user verification table: {$db->error}");
+            error_log("Failed to fetch token ({$token}) from discord verification table for user {$user_id}: {$db->error}");
             return;
         } /*elseif($q && $q->num_rows > 0) {
             $r = $q->fetch_array(MYSQLI_ASSOC);
@@ -147,22 +224,28 @@ class DiscordWebhook
                 return;
             }
         }*/
-        else{
+        else {
+            // if user is already verified (has the verified role), tell them they already have the role and end the interaction
             if($interaction->member->roles->has(DISCORD_VERIFIED_ROLE_ID)){
-                // user already has role
                 $interaction->respondWithMessage(
                     MessageBuilder::new()->setContent("You already the verified role.")
                 );
                 return;
             }
+
+            // send a loading message to user, then try to add the verified role to the user
             $interaction->acknowledgeWithResponse(true)->then(function () use ($interaction, $token) {
-                $interaction->member->addRole(DISCORD_VERIFIED_ROLE_ID)->then(function () use ($interaction) {
+                $interaction->member->addRole(DISCORD_VERIFIED_ROLE_ID)->then(
+
+                    // if the role adding succeeded, update loading message with a success message
+                    function () use ($interaction) {
                     $interaction->updateOriginalResponse(
                         MessageBuilder::new()->setContent(
                             "You've successfully verified your email address. Welcome to the server."
                         ),
                     );
                 },
+                    // if the role adding failed, update loading message with an error message and log the full error
                     function ($reason) use ($interaction, $token) {
                         $interaction->updateOriginalResponse(
                             MessageBuilder::new()->setContent(
