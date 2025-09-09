@@ -86,6 +86,7 @@ define('DISCORD_GOOD_STANDING_DEPENDENT_ROLES',	array(
         '755952946566660206' // Web/Ops Team
     )
 );
+define('DISCORD_VERIFIED_ROLE_ID', '');
 
 define('PAYPAL_PDT_ID_TOKEN', 				'');
 define('PAYPAL_SANDBOX_PDT_ID_TOKEN',		'');
