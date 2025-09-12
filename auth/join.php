@@ -118,7 +118,8 @@ if (!empty($_POST)) {
 				$auth_session_id = obfuscate_hash(sha1($fingerprint . session_id())); // based on IP, time, /dev/urandom and a PHP PRNG (PLCG) and fingerprint calculated above
 				session_regenerate_id();
 				$auth_session_name = obfuscate_hash(bin2hex(random_bytes(32))); // just really random
-
+                if(!isset($id))
+                    $id = $db->insert_id;
 				$db->query("INSERT INTO auth_sessions
 					(session_id,
 					session_name,
@@ -130,7 +131,7 @@ if (!empty($_POST)) {
 					('".$db->real_escape_string($auth_session_id)."',
 					'".$db->real_escape_string($auth_session_name)."',
 					'".$db->real_escape_string($fingerprint)."',
-					'".$db->real_escape_string($db->insert_id)."',
+					'".$db->real_escape_string($id)."',
 					'".$db->real_escape_string(0)."')
 				") or die($db->error); // remove this for security
 
