@@ -73,9 +73,28 @@ if (!empty($_POST)) {
 					$timezone = "UTC";
 				}
 			}
-
-			// do query
-			$q = $db->query('INSERT INTO users (name, email, phone, unteuid, grad_term, grad_year, password, reg_timestamp, reg_ip, timezone)
+            // update user that was added from the discord verification process
+            $q = $db->query('SELECT id FROM users WHERE unt_email = "' . $db->real_escape_string($email) . '"');
+            if($q && $q->num_rows > 0){
+                $id = $q->fetch_array(MYSQLI_ASSOC)['id'];
+                $query_string = "UPDATE 
+                                    users
+                                SET
+                                    name = '{$db->real_escape_string($name)}',
+                                    email = '{$db->real_escape_string($email)}',
+                                    phone = '{$db->real_escape_string($phone)}',
+                                    unteuid = '{$db->real_escape_string($unteuid)}',
+                                    grad_term = '" . $db->real_escape_string(array_search($grad_term, $valid_grad_terms)) ."',
+                                    grad_year = '{$db->real_escape_string($grad_year)}',
+                                    password = '" . $db->real_escape_string(password_hash($password1, PASSWORD_BCRYPT, array('cost' => 12))) . "',
+                                    reg_timestamp = NOW(),
+                                    reg_ip = '{$db->real_escape_string($ip)}',
+                                    timezone = '{$db->real_escape_string($timezone)}'
+                                WHERE
+                                    id = {$id}
+                                    ";
+            } else {
+                $query_string = 'INSERT INTO users (name, email, phone, unteuid, grad_term, grad_year, password, reg_timestamp, reg_ip, timezone)
 			VALUES (
 				"' . $db->real_escape_string($name) . '",
 				"' . $db->real_escape_string($email) . '",
@@ -88,7 +107,10 @@ if (!empty($_POST)) {
 				"' . $db->real_escape_string($ip) . '",
 				"' . $db->real_escape_string($timezone) . '"
 			)
-			');
+			';
+            }
+			// do query
+			$q = $db->query($query_string);
 
 			if ($q) {
 				// set cookies
@@ -118,6 +140,7 @@ if (!empty($_POST)) {
 				header('Location: /auth/welcome');
 			} else {
 				$error = 'An internal error occurred, please contact support.';
+                require_once(__DIR__ . '/../api/discord/bots/admin.php');
 				AdminBot::send_message("Failed to register new user due to database error: $db->error. Please investigate.");
 			}
 		}
