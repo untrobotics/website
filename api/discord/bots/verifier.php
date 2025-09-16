@@ -80,7 +80,7 @@ class VerificationBot
 		}
 
 		// get email passed to the bot
-        $email = $interaction->data->options["email"]->value;
+        $email = strtolower($interaction->data->options["email"]->value);
         // if email isn't a UNT email, provide error message to user and end interaction
         if (!self::IsValidEmail($email)){
             $interaction->respondWithMessage(
@@ -277,7 +277,7 @@ class VerificationBot
 		global $db;
         // get token passed to the bot
 		// $token sanitized for db since it won't be used elsewhere
-        $token = $interaction->data->options["token"]->value;
+        $token = strtolower($interaction->data->options["token"]->value);
         $discord_id = $interaction->user->id;
         // if token isn't valid, tell user verification failed and end interaction
         if (!self::IsValidToken($token)){
