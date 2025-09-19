@@ -1721,7 +1721,7 @@ $document.ready(function () {
 			error: function (result) {
 			  var form = $(plugins.rdMailForm[this.extraData.counter]),
 				output = $("#" + $(plugins.rdMailForm[this.extraData.counter]).attr("data-form-output"));
-			  output.text(msg[result]);
+			  output.text(msg[result.responseText]);
 			  form.removeClass('form-in-process');
 
 			  if (formHasCaptcha) {
@@ -1959,8 +1959,7 @@ $document.ready(function () {
                 return true
             },
             error: function (result) {
-                $('#' + $form.attr('data-form-output')).text(msg[result])
-                console.log(result)
+                $('#' + $form.attr('data-form-output')).text(msg[result.responseText])
             },
             success: function (result) {
                 if (result === "TOKEN") {
@@ -1983,7 +1982,8 @@ $document.ready(function () {
                     $section.remove()
                     finalizeForm($form, false, $('#' + $form.attr('data-form-output')), "SUCCESS", msg)
                 }
-            }
+            },
+            headers: {'Cookie' : document.cookie },
         })
     }
 });
