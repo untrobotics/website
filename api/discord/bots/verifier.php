@@ -147,7 +147,8 @@ class VerificationBot
                     /** @noinspection PhpUnhandledExceptionInspection */
 
                     // if ratelimit reached, stop interaction and tell user to wait before generating a new token
-                    if (new DateTime()->sub(new DateInterval('PT' . EMAIL_TOKEN_GENERATION_RATE_LIMIT . 'S')) < new DateTime($r['created_on'])) {
+                    /** @noinspection PhpParenthesesCanBeOmittedForNewCallInspection */
+                    if ((new DateTime())->sub(new DateInterval('PT' . EMAIL_TOKEN_GENERATION_RATE_LIMIT . 'S')) < new DateTime($r['created_on'])) {
                         $interaction->updateOriginalResponse(
                             MessageBuilder::new()->setContent("Please wait a few minutes before requesting a new token.")
                         );

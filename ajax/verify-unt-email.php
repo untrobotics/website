@@ -42,7 +42,9 @@ switch ($dataType) {
         }
         if ($q->num_rows > 0) {
             $r = $q->fetch_assoc();
-            if (new DateTime()->sub(new DateInterval('PT' . EMAIL_TOKEN_GENERATION_RATE_LIMIT . 'S')) < new DateTime($r['created_on'])) {
+            /** @noinspection PhpParenthesesCanBeOmittedForNewCallInspection */
+            /** @noinspection PhpUnhandledExceptionInspection */
+            if ((new DateTime())->sub(new DateInterval('PT' . EMAIL_TOKEN_GENERATION_RATE_LIMIT . 'S')) < new DateTime($r['created_on'])) {
                 echo 'TOKEN_RATELIMIT';
                 die();
             }
