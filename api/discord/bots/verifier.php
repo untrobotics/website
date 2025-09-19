@@ -11,7 +11,6 @@ use Discord\WebSockets\Intents;
 class VerificationBot
 {
     private $discord;
-    private const int TOKEN_GENERATION_RATE_LIMIT = 300;
 
     /**
      * Creates a VerificationBot instance. To start the webhook, call {@see VerificationBot::run()}
@@ -148,7 +147,7 @@ class VerificationBot
                     /** @noinspection PhpUnhandledExceptionInspection */
 
                     // if ratelimit reached, stop interaction and tell user to wait before generating a new token
-                    if (new DateTime()->sub(new DateInterval('PT' . self::TOKEN_GENERATION_RATE_LIMIT . 'S')) < new DateTime($r['created_on'])) {
+                    if (new DateTime()->sub(new DateInterval('PT' . EMAIL_TOKEN_GENERATION_RATE_LIMIT . 'S')) < new DateTime($r['created_on'])) {
                         $interaction->updateOriginalResponse(
                             MessageBuilder::new()->setContent("Please wait a few minutes before requesting a new token.")
                         );
@@ -459,7 +458,7 @@ class VerificationBot
     private static function IsValidEmail(string $email): bool {
         // regex for the domain name
         $valid_domains = '/@my\.unt\.edu$/i';
-        return filter_var($email, FILTER_VALIDATE_EMAIL) && preg_match($valid_domains, $email) === 1;
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false && preg_match($valid_domains, $email) === 1;
     }
 
     /**

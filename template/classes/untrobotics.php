@@ -70,6 +70,28 @@ class untrobotics {
 		return $q->num_rows === 1;
 	}
 
+    public function is_user_email_verified($userinfo) {
+        $uid = null;
+        if (is_array($userinfo)) {
+            $uid = $userinfo['id'];
+        } else {
+            $uid = $userinfo;
+        }
+        $q = $this->db->query('
+			SELECT id FROM users
+			WHERE
+				id = "' . $this->db->real_escape_string($uid) . '"
+            AND
+                unt_email IS NOT NULL
+			');
+
+        if (!$q) {
+            return false;
+        }
+
+        return $q->num_rows === 1;
+    }
+
 	// semester, dues functions
 	public function get_current_term() {
 		return $this->get_term_from_date(time());

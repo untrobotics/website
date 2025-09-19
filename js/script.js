@@ -1583,6 +1583,50 @@ $document.ready(function () {
     $.getScript("//www.google.com/recaptcha/api.js?onload=onloadCaptchaCallback&render=explicit&hl=en");
   }
 
+    /**
+     * Finalizes a form's state after submission upon a successful (200) response from the server
+     * @param form The jQuery selector for the form
+     * @param formHasCaptcha A boolean representing whether the form has a captcha or not
+     * @param output The jQuery selector for where output text will be placed
+     * @param result The server response message
+     * @param msg An object or associative array which maps result to a message to put in output
+     */
+    function finalizeForm(form, formHasCaptcha, output, result, msg) {
+        form
+            .addClass('success')
+            .removeClass('form-in-process');
+
+        if (formHasCaptcha) {
+            grecaptcha.reset();
+        }
+
+        //result = result.length == 5 ? result : 'MF255';
+        output.text(msg[result]);
+
+        if (result === "SUCCESS") {
+            if (output.hasClass("snackbars")) {
+                output.css('background-color', '#24c57c');
+                output.html('<p><span class="icon text-middle mdi mdi-check icon-xxs"></span><span>' + msg[result] + '</span></p>');
+            } else {
+                output.addClass("active success");
+            }
+            form.clearForm();
+        } else {
+            if (output.hasClass("snackbars")) {
+                output.html('<p class="snackbars-left"><span class="icon icon-xxs mdi mdi-alert-outline text-middle"></span><span>' + msg[result] + '</span></p>');
+            } else {
+                output.addClass("active error");
+            }
+        }
+
+        form.find('input, textarea').blur();
+
+        setTimeout(function () {
+            output.removeClass("active error success");
+            form.removeClass('success');
+        }, 3500);
+    }
+
   /**
    * RD Mailform
    */
@@ -1688,40 +1732,8 @@ $document.ready(function () {
 			  var form = $(plugins.rdMailForm[this.extraData.counter]),
 				output = $("#" + form.attr("data-form-output"));
 
-			  form
-				.addClass('success')
-				.removeClass('form-in-process');
-
-			  if (formHasCaptcha) {
-				grecaptcha.reset();
-			  }
-
-			  //result = result.length == 5 ? result : 'MF255';
-			  output.text(msg[result]);
-
-			  if (result === "SUCCESS") {
-				if (output.hasClass("snackbars")) {
-				  output.css('background-color', '#24c57c');
-				  output.html('<p><span class="icon text-middle mdi mdi-check icon-xxs"></span><span>' + msg[result] + '</span></p>');
-				} else {
-				  output.addClass("active success");
-				}
-				form.clearForm();
-			  } else {
-				if (output.hasClass("snackbars")) {
-				  output.html('<p class="snackbars-left"><span class="icon icon-xxs mdi mdi-alert-outline text-middle"></span><span>' + msg[result] + '</span></p>');
-				} else {
-				  output.addClass("active error");
-				}
-			  }
-
-			  form.find('input, textarea').blur();
-
-			  setTimeout(function () {
-				output.removeClass("active error success");
-				form.removeClass('success');
-			  }, 3500);
-			}
+                finalizeForm(form, formHasCaptcha, output, result, msg);
+            }
 		  });
 		}
     }
@@ -1922,6 +1934,58 @@ $document.ready(function () {
       }, 300);
     });
   }
+
+  /**
+  * Custom email verification AJAX form
+  */
+  // noinspection JSJQueryEfficiency
+    if ($('form#verify-email').length) {
+        let msg = {
+            "INVALID_EMAIL": "The e-mail address you entered is not valid. Please ensure the email ends with @my.unt.edu.",
+            "INVALID_TOKEN": "The token is incorrect or invalid.",
+            "INVALID_LOGIN": "Your log-in session has expired or isn't valid anymore. Please log-in again to continue.",
+            "INVALID_REQUEST": "The request fields are invalid.",
+            "TOKEN_RATELIMIT": "Please wait a few minutes before requesting a new token.",
+            "SUCCESS": "E-mail successfully verified.",
+            "ERROR": "A server error occurred. Please contact support."
+        }
+        let $form = $('form#verify-email');
+        $form.ajaxForm({
+            data: {
+                type: $form.attr('data-type'),
+            },
+            beforeSubmit: function () {
+                //todo validate
+                return true
+            },
+            error: function (result) {
+                $('#' + $form.attr('data-form-output')).text(msg[result])
+                console.log(result)
+            },
+            success: function (result) {
+                if (result === "TOKEN") {
+                    $form.attr('data-type', 'token');
+                    $form.children('label').attr('for', 'token');
+                    let $input = $form.find('input').attr({
+                        id: 'token',
+                        type: '',
+                        name: 'token',
+                        'data-constraints': '@Required'
+                    });
+                    let email = $input.val();
+                    $input.val('')
+                    $form.children('h6').text("We’ve sent a verification code to " + email + ". Please check your inbox and spam/junk folder and enter the code below to verify your address.")
+                } else if (result.startsWith("INVALID")) {
+                    finalizeForm($form, false, $('#' + $form.attr('data-form-output')), result, msg)
+                } else {
+                    let $section = $('section#email-verification-section');
+                    $section.parent().append(result)
+                    $section.remove()
+                    finalizeForm($form, false, $('#' + $form.attr('data-form-output')), "SUCCESS", msg)
+                }
+            }
+        })
+    }
 });
 
 

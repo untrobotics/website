@@ -118,6 +118,10 @@ function assign_user_good_standing($user_discord_id) {
 	return AdminBot::add_user_role($user_discord_id);
 }
 
+function assign_user_verified($user_discord_id) {
+    return AdminBot::add_user_role($user_discord_id, DISCORD_VERIFIED_ROLE_ID);
+}
+
 head('Joined Discord', true, true);
 
 // user must be authenticated to reach this point
@@ -195,6 +199,15 @@ strong.no-wrap {
 											// Alert!
 											throw new Exception("Current user is not in good standing.");
 										}
+                                        if($untrobotics->is_user_email_verified($userinfo)) {
+                                            $assigned = assign_user_verified($user->id);
+                                            if ($assigned->status_code != 204) {
+                                                error_log("AUTHDIS", var_export($assigned, true));
+                                                throw new Exception("Failed to give user the correct role: " . $assigned->status_code . " ($code)");
+                                            }
+                                        } else {
+                                            throw new Exception("Current user has not verified their UNT email address.");
+                                        }
 										?>
 										<h1>You're good to go</h1>
 										<h5 class="offset-top-50"><strong><?php echo $user->username; ?>#<?php echo $user->discriminator; ?></strong> has been given the <em>Good Standing</em> role.</h5>
@@ -228,7 +241,7 @@ strong.no-wrap {
                                             }
                                         }
 
-										AdminBot::send_message("[AUTHDIS] Failed to assign '{$userinfo['name']}' [{$username}#{$discriminator}] (http://untro.bo/admin/check-good-standing?u={$userinfo['id']}) to the Good Standing role.\n{$ex}");
+										AdminBot::send_message("[AUTHDIS] Failed to assign '{$userinfo['name']}' [{$username}#{$discriminator}] (http://untro.bo/admin/check-good-standing?u={$userinfo['id']}) to the Good Standing or verified role.\n{$ex}");
 										?>
 										<div class="alert alert-danger">
 											<h2 style="color: inherit;">Error!</h2>
