@@ -6,6 +6,7 @@ if ($auth === false) {
     echo 'INVALID_LOGIN';
     die();
 }
+$auth = $auth[0];
 if (!isset($_POST)) {
     die();
 }
@@ -60,18 +61,18 @@ switch ($dataType) {
             }
         }
         // generate token
-        $token = openssl_random_pseudo_bytes(3);
+        $token = bin2hex(openssl_random_pseudo_bytes(3));
         $q = $db->query("INSERT INTO discord_verification_tokens (
                                          token,
                                          created_on,
                                          user_id,
-                                         unt_email,
+                                         unt_email
                                          )
                         VALUES (
                                 '{$token}',
                                 CURRENT_TIMESTAMP(),
                                 {$auth['id']},
-                                '{$db->real_escape_string($email)}',
+                                '{$db->real_escape_string($email)}'
                         )"
         );
         if ($q === false) {
