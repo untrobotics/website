@@ -149,7 +149,7 @@ switch ($dataType) {
     case "token":
     {
         $token = $_POST['token'];
-        if (ctype_xdigit($token) || strlen($token) !== 6) {
+        if (!ctype_xdigit($token) || strlen($token) !== 6) {
             echo 'INVALID_TOKEN';
             die();
         }

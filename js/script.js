@@ -1951,9 +1951,6 @@ $document.ready(function () {
         }
         let $form = $('form#verify-email');
         $form.ajaxForm({
-            data: {
-                type: $form.attr('data-type'),
-            },
             beforeSubmit: function () {
                 //todo validate
                 return true
@@ -1963,18 +1960,20 @@ $document.ready(function () {
             },
             success: function (result) {
                 if (result === "TOKEN") {
-                    $form.attr('data-type', 'token');
-                    $form.children('label').attr('for', 'token');
-                    let $input = $form.find('input').attr({
-                        id: 'token',
-                        type: '',
-                        name: 'token',
-                        'data-constraints': '@Required'
-                    });
+                    let $input = $form.find('input#email')
+                    $form.find('label#email-label').addClass('hidden')
                     let email = $input.val();
-                    $input.val('')
-                    $form.children('h6').text("We’ve sent a verification code to " + email + ". Please check your inbox and spam/junk folder and enter the code below to verify your address.")
-                } else if (result.startsWith("INVALID")) {
+                    $input.attr({
+                        'type': 'hidden',
+                        'disabled': ''
+                    })
+                    $input = $form.find('input#token')
+                    $input.attr('type', 'text').removeAttr('disabled')
+                    $form.find('label#token-label').removeClass('hidden')
+                    $form.find('input#type').val('token')
+                    $form.siblings('div').children('h6').text("We’ve sent a verification token to " + email + ". Please check your inbox and spam/junk folder and enter the code below to verify your address.")
+                    $form.find('button').text('Verify')
+                } else if (result.startsWith("INVALID") || result.startsWith('TOKEN_RATELIMIT')) {
                     finalizeForm($form, false, $('#' + $form.attr('data-form-output')), result, msg)
                 } else {
                     let $section = $('section#email-verification-section');

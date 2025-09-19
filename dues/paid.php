@@ -29,12 +29,15 @@ $userinfo = auth();
 							<div style="max-width: 50%">
 								<h6>Next, please verify your UNT email address.</h6>
 							</div>
-							<form id="verify-email" data-type="email" data-form-type="verify-email" data-form-output="form-output-global" method="post" action="/ajax/verify-unt-email.php" style="min-width: 30%">
+							<form id="verify-email" data-form-type="verify-email" data-form-output="form-output-global" method="post" action="/ajax/verify-unt-email.php" style="min-width: 30%">
 								<div class="form-group postfix-xl-right-40 offset-top-40">
-									<label for="email" class="form-label rd-input-label">E-mail <em>(@my.unt.edu)</em></label>
+									<label for="email" id="email-label" class="form-label rd-input-label">E-mail <em>(@my.unt.edu)</em></label>
 									<input id="email" type="email" name="email" data-constraints="@Email @Required" class="form-control form-control-has-validation form-control-last-child">
+                                    <label for="token" id="token-label" class="hidden form-label rd-input-label">Token</label>
+                                    <input id="token" type="hidden" disabled="" name="token" data-constraints="@Required" class="form-control form-control-has-validation form-control-last-child">
+                                    <input id="type" name="type" type="hidden" value="email">
 								</div>
-								<button type="submit" style="min-width: 100%" class="btn btn-form btn-default offset-top-20">Send message</button>
+								<button type="submit" style="min-width: 100%" class="btn btn-form btn-default offset-top-20">Get Token</button>
 							</form>
 						</section>
 							<?php
