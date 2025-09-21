@@ -1722,8 +1722,8 @@ $document.ready(function () {
 			  var form = $(plugins.rdMailForm[this.extraData.counter]),
 				output = $("#" + $(plugins.rdMailForm[this.extraData.counter]).attr("data-form-output"));
 			  output.text(msg[result.responseText]);
+              output.addClass('active error')
 			  form.removeClass('form-in-process');
-
 			  if (formHasCaptcha) {
 				grecaptcha.reset();
 			  }
@@ -1950,13 +1950,22 @@ $document.ready(function () {
             "ERROR": "A server error occurred. Please contact support."
         }
         let $form = $('form#verify-email');
+        let $output = $('#' + $form.attr('data-form-output'))
         $form.ajaxForm({
             beforeSubmit: function () {
-                //todo validate
-                return true
+                if(isValidated($form.find('input:not([type="hidden"])'), false)) {
+                    $output.removeClass("active error success");
+                    $form.addClass('form-in-process');
+                    if ($output.hasClass("snackbars")) {
+                        $output.html('<p><span class="icon text-middle fa fa-circle-o-notch fa-spin icon-xxs"></span><span>Sending</span></p>');
+                        $output.addClass("active");
+                    }
+                    return true
+                }
+                return false
             },
             error: function (result) {
-                $('#' + $form.attr('data-form-output')).text(msg[result.responseText])
+                $output.text(msg[result.responseText]).addClass('active error')
             },
             success: function (result) {
                 if (result === "TOKEN") {
@@ -1973,13 +1982,13 @@ $document.ready(function () {
                     $form.find('input#type').val('token')
                     $form.siblings('div').children('h6').text("We’ve sent a verification token to " + email + ". Please check your inbox and spam/junk folder and enter the code below to verify your address.")
                     $form.find('button').text('Verify')
-                } else if (result.startsWith("INVALID") || result.startsWith('TOKEN_RATELIMIT')) {
-                    finalizeForm($form, false, $('#' + $form.attr('data-form-output')), result, msg)
+                } else if (result.startsWith("INVALID") || result.startsWith('TOKEN_RATELIMIT') || result.startsWith("ERROR")) {
+                    finalizeForm($form, false, $output, result, msg)
                 } else {
                     let $section = $('section#email-verification-section');
                     $section.parent().append(result)
                     $section.remove()
-                    finalizeForm($form, false, $('#' + $form.attr('data-form-output')), "SUCCESS", msg)
+                    finalizeForm($form, false, $output, "SUCCESS", msg)
                 }
             },
             headers: {'Cookie' : document.cookie },
