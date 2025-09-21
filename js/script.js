@@ -1946,6 +1946,7 @@ $document.ready(function () {
             "INVALID_LOGIN": "Your log-in session has expired or isn't valid anymore. Please log-in again to continue.",
             "INVALID_REQUEST": "The request fields are invalid.",
             "TOKEN_RATELIMIT": "Please wait a few minutes before requesting a new token.",
+            "TOKEN": "Token sent.",
             "SUCCESS": "E-mail successfully verified.",
             "ERROR": "A server error occurred. Please contact support."
         }
@@ -1982,6 +1983,7 @@ $document.ready(function () {
                     $form.find('input#type').val('token')
                     $form.siblings('div').children('h6').text("We’ve sent a verification token to " + email + ". Please check your inbox and spam/junk folder and enter the code below to verify your address.")
                     $form.find('button').text('Verify')
+                    finalizeForm($form,false, $output, result, msg)
                 } else if (result.startsWith("INVALID") || result.startsWith('TOKEN_RATELIMIT') || result.startsWith("ERROR")) {
                     finalizeForm($form, false, $output, result, msg)
                 } else {

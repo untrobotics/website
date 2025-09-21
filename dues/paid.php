@@ -18,7 +18,7 @@ $userinfo = auth();
 						<p><strong>Thank you for paying your dues.</strong></p>
 							<?php
                             // give the join Discord link if the user has already verified their UNT email
-							if(isset($userinfo['unt_email'])) {
+							if(isset($userinfo[0]['unt_email'])) {
 							?>
 						<a href="/join/w/discord">Click here to update your Discord account status.</a>
 							<?php
