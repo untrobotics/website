@@ -1,0 +1,21 @@
+# Deploy from GitHub Container Registry instead of locally-imported images.
+#
+#   kubectl apply -k k8s/overlays/ghcr
+#
+# Pin newTag to an immutable tag (a git sha or release version) for real
+# deployments; "latest" is the convenience default. If the GHCR packages are
+# private, also create a pull secret in the namespace and reference it (see
+# deploy/runbook.md, "Pull from GHCR").
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../..
+
+images:
+  - name: untrobotics-web
+    newName: ghcr.io/untrobotics/website
+    newTag: latest
+  - name: untrobotics-driver-ws
+    newName: ghcr.io/untrobotics/website-driver-ws
+    newTag: latest

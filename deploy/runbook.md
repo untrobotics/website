@@ -107,6 +107,35 @@ sudo -E bash deploy/deploy.sh
 
 ---
 
+## Pull from GHCR (CI-built images)
+
+The `.github/workflows/build-images.yml` workflow builds both images on every
+push to `develop`/`master` (and tags) and pushes them to:
+
+- `ghcr.io/untrobotics/website` (app)
+- `ghcr.io/untrobotics/website-driver-ws` (relay)
+
+To deploy those instead of building on the node, skip
+`build-and-load-images.sh` and use the GHCR overlay:
+
+```sh
+kubectl apply -k k8s/overlays/ghcr        # instead of `kubectl apply -k k8s/`
+```
+
+Pin the tag in `k8s/overlays/ghcr/kustomization.yaml` (a git sha or version) for
+real deploys rather than `latest`.
+
+**If the GHCR packages are private**, create a pull secret in the namespace and
+attach it (or just set the packages to Public in GitHub since the site is public):
+
+```sh
+kubectl -n untrobotics create secret docker-registry ghcr-pull \
+  --docker-server=ghcr.io \
+  --docker-username=<github-user> \
+  --docker-password=<a PAT with read:packages>
+# then add `imagePullSecrets: [{name: ghcr-pull}]` to the pod specs (overlay patch).
+```
+
 ## Known gaps / TODO
 
 - **PHP 7.2 -> 8.3:** prod runs 7.2; the image is 8.3. Expect compatibility fixes
