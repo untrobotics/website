@@ -1,0 +1,14 @@
+{
+  "name": "botathon-driver-ws",
+  "version": "1.0.0",
+  "description": "WebSocket relay server for UNT Robotics Botathon — relays driver-controller input to per-team ESP32 robots.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "start:legacy": "node legacy-server.js"
+  },
+  "dependencies": {
+    "websocket": "1.0.33"
+  },
+  "license": "MIT"
+}

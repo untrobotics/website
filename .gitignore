@@ -92,3 +92,14 @@ fabric.properties
 # Python virtual environments
 .venv
 .DS_Store
+
+# Composer-managed dependencies (installed at build time)
+api/discord/interactions/vendor/
+
+# Node dependencies
+node_modules/
+
+# Runtime-generated data (written by the app/cron at runtime, not source)
+cron/total-members.txt
+api/rocketry/gps/locations/
+botathon/old/teamScores.json

@@ -1,0 +1,7 @@
+{
+    "name": "untrobotics/discord-interactions",
+    "description": "Discord interactions endpoint helpers (ed25519 request signature verification).",
+    "require": {
+        "simplito/elliptic-php": "^1.0.8"
+    }
+}
