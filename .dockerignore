@@ -1,0 +1,36 @@
+# --- Secrets: never bake these into the image -------------------------------
+template/config.php
+twilio/phone-numbers-config.php
+api/endpoint-example/groupme-endpoint-config.php
+
+# --- VCS / CI / editor / tooling --------------------------------------------
+.git
+.github
+.gitignore
+.gitmodules
+.devcontainer
+.idea
+*.iml
+
+# --- Docker / compose (not needed inside the image) -------------------------
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker/
+.env
+.env.*
+
+# --- Dependencies installed at build time, not copied -----------------------
+node_modules
+botathon/driver-ws/node_modules
+api/discord/interactions/vendor
+
+# --- Runtime data / logs ----------------------------------------------------
+paypal/logs
+*.log
+cron/total-members.txt
+api/rocketry/gps/locations
+
+# --- Docs / project memory (irrelevant to runtime) --------------------------
+*.md
+LICENSE
