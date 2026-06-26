@@ -1,0 +1,5 @@
+# Keep shell scripts and YAML LF-only so they work on Linux servers regardless of
+# the checkout platform (a CRLF shebang breaks `#!/usr/bin/env bash`).
+*.sh   text eol=lf
+*.yaml text eol=lf
+*.yml  text eol=lf
