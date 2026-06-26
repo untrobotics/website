@@ -22,8 +22,10 @@ spec:
     spec:
       containers:
         - name: web
-          # Replace with your registry/repo:tag (built from the root Dockerfile).
-          image: REGISTRY/untrobotics-web:latest
+          # Built on the node and imported into k3s containerd (deploy/build-and-load-images.sh).
+          # For a registry-based multi-node cluster, override via kustomization `images:`.
+          image: untrobotics-web:dev
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
           envFrom:

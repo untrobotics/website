@@ -48,6 +48,9 @@ services:
     restart: unless-stopped
 
   driver-ws:
+    # OFF by default (the relay has no origin/auth checks). Start it explicitly
+    # only when needed:  docker compose --profile driver-ws up
+    profiles: ["driver-ws"]
     build:
       context: ./botathon/driver-ws
       dockerfile: Dockerfile

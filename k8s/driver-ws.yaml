@@ -7,7 +7,11 @@ metadata:
   labels:
     app: driver-ws
 spec:
-  replicas: 1   # in-memory per-team connection state; do not scale without a shared store
+  # OFF by default: the relay performs no origin/auth checks, so it must not be
+  # publicly exposed casually. Enable only when needed (e.g. a botathon event):
+  #   kubectl -n untrobotics scale deploy/driver-ws --replicas=1
+  # It also keeps in-memory per-team state, so do not scale beyond 1.
+  replicas: 0
   selector:
     matchLabels:
       app: driver-ws
@@ -18,8 +22,9 @@ spec:
     spec:
       containers:
         - name: driver-ws
-          # Replace with your registry/repo:tag (built from botathon/driver-ws/Dockerfile).
-          image: REGISTRY/untrobotics-driver-ws:latest
+          # Built on the node and imported into k3s containerd (deploy/build-and-load-images.sh).
+          image: untrobotics-driver-ws:dev
+          imagePullPolicy: IfNotPresent
           # Override to ["node","legacy-server.js"] for the prod-proven variant.
           command: ["node", "server.js"]
           ports:
