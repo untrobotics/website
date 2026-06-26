@@ -1,0 +1,80 @@
+# In-cluster MySQL (StatefulSet + headless Service + persistent volume).
+#
+# Schema initialisation (first start only): create a ConfigMap from the
+# SCHEMA-ONLY dump and it will be mounted into the init dir below. Do NOT use the
+# local test seed (docker/mysql/initdb/02-seed.sql) in the cluster — restore real
+# data from a production dump via a one-off Job/`mysql` client instead.
+#
+#   kubectl -n untrobotics create configmap mysql-initdb \
+#       --from-file=01-schema.sql=docker/mysql/initdb/01-schema.sql
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: untrobotics
+spec:
+  clusterIP: None   # headless — stable DNS: mysql-0.mysql.untrobotics.svc
+  selector:
+    app: mysql
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: untrobotics
+spec:
+  serviceName: mysql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          args:
+            - --default-authentication-plugin=mysql_native_password
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - secretRef:
+                name: mysql-secrets
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+            - name: initdb
+              mountPath: /docker-entrypoint-initdb.d
+              readOnly: true
+          readinessProbe:
+            exec:
+              command: ["sh", "-c", "mysqladmin ping -h127.0.0.1 -uroot -p\"$MYSQL_ROOT_PASSWORD\""]
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+      volumes:
+        - name: initdb
+          configMap:
+            name: mysql-initdb
+            optional: true
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi

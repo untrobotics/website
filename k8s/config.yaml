@@ -1,0 +1,19 @@
+# Non-secret application configuration. Consumed by the web pods via envFrom;
+# template/config.docker.php reads these with getenv().
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+  namespace: untrobotics
+data:
+  APP_ENV: "production"
+  TIMEZONE: "America/Chicago"
+  WEBSITE_NAME: "UNT Robotics"
+  WEBSITE_DOMAIN: "untrobotics.com"
+  WEBSITE_URL: "https://www.untrobotics.com"
+  COOKIE_PREFIX: "UNT_ROBOTICS"
+  # Database connection (password lives in the Secret, not here).
+  DATABASE_HOST: "mysql"
+  DATABASE_NAME: "untrobotics"
+  DATABASE_USER: "untrobotics-web"
+  DATABASE_CHARSET: "latin1"

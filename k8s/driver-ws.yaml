@@ -1,0 +1,46 @@
+# Botathon driver WebSocket relay (Node). Standalone service on :81.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: driver-ws
+  namespace: untrobotics
+  labels:
+    app: driver-ws
+spec:
+  replicas: 1   # in-memory per-team connection state; do not scale without a shared store
+  selector:
+    matchLabels:
+      app: driver-ws
+  template:
+    metadata:
+      labels:
+        app: driver-ws
+    spec:
+      containers:
+        - name: driver-ws
+          # Replace with your registry/repo:tag (built from botathon/driver-ws/Dockerfile).
+          image: REGISTRY/untrobotics-driver-ws:latest
+          # Override to ["node","legacy-server.js"] for the prod-proven variant.
+          command: ["node", "server.js"]
+          ports:
+            - containerPort: 81
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: driver-ws
+  namespace: untrobotics
+spec:
+  selector:
+    app: driver-ws
+  ports:
+    - name: ws
+      port: 81
+      targetPort: 81
