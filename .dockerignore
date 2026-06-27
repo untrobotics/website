@@ -17,6 +17,7 @@ Dockerfile
 .dockerignore
 docker-compose.yml
 docker/
+!docker/php/
 .env
 .env.*
 

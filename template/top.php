@@ -24,7 +24,7 @@ $session = array();
 
 class mmysqli extends mysqli {
     public function __construct($host, $user, $pass, $db) {
-        parent::init();
+        parent::__construct(); // no-arg: create unconnected, then real_connect (mysqli::init() is deprecated in PHP 8.3)
 
         if (!parent::real_connect($host, $user, $pass, $db, 3306, null, MYSQLI_CLIENT_FOUND_ROWS)) {
             die('Connect Error (' . mysqli_connect_errno() . ') ' . mysqli_connect_error());

@@ -35,6 +35,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Composer (for the Discord interactions endpoint's ed25519 dependency).
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Production-oriented PHP settings (errors logged, not displayed).
+COPY docker/php/zz-untrobotics.ini "$PHP_INI_DIR/conf.d/zz-untrobotics.ini"
+
 # --- Apache -------------------------------------------------------------------
 # Enable rewrite + headers and allow .htaccess overrides under the docroot.
 RUN a2enmod rewrite headers \

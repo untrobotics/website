@@ -157,4 +157,19 @@ kubectl -n untrobotics create secret docker-registry ghcr-pull \
 
 ## Changelog (issues hit & resolved)
 
-- _(to be filled in during the first real run)_
+- **2026-06-27 — first deploy to dev2 (Ubuntu 26.04 LTS, k3s v1.36.2).** Stack came
+  up: mysql-0 + web both Ready, homepage renders HTTP 200 on PHP 8.3 with MySQL
+  connected. Issues found and fixed:
+  - `ubuntu` account shipped with an admin-enforced expired password that blocked
+    SSH sessions. `passwd` discards piped input (tcflush), so automate the forced
+    change by feeding each line with a delay:
+    `( sleep 4; echo OLD; sleep 3; echo NEW; sleep 3; echo NEW ) | ssh -tt ubuntu@host`.
+  - `mysqli::init()` is deprecated in PHP 8.3 (template/top.php) — replaced with
+    `parent::__construct()` (works on 7.2 and 8.3).
+  - PHP deprecations were printing into pages — added `docker/php/zz-untrobotics.ini`
+    (`display_errors=Off`, `log_errors=On`) to the image.
+  - Behind the TLS-terminating ingress the pod always sees plain HTTP, so the
+    `%{HTTPS} off` redirect would loop real HTTPS users — added
+    `RewriteCond %{HTTP:X-Forwarded-Proto} !=https` to `.htaccess`.
+  - To test a page without the HTTPS redirect, hit the pod with `Host: localhost`
+    (the `.htaccess` localhost exception skips the redirect).
