@@ -8,27 +8,16 @@ metadata:
   name: mail-aliases
   namespace: untrobotics
 data:
-  # alias@untrobotics.com <whitespace> destination mailbox. EDIT THESE.
   virtual: |
-    hello@untrobotics.com            REPLACE_ME@gmail.com
-    webmaster@untrobotics.com        REPLACE_ME@gmail.com
-    project-manager@untrobotics.com  REPLACE_ME@gmail.com
-    corp-relations@untrobotics.com   REPLACE_ME@gmail.com
-    social-media@untrobotics.com     REPLACE_ME@gmail.com
-    # Optional catch-all for any other alias:
-    # @untrobotics.com               catchall@gmail.com
+    # Catch-all: every address @untrobotics.com forwards to the club inbox.
+    # The original recipient stays in the To:/Received headers, so you can filter
+    # in Gmail by e.g.  to:webmaster@untrobotics.com  to label per alias.
+    # (Add explicit "alias  dest" lines above this to override the catch-all.)
+    @untrobotics.com   untroboticsclub@gmail.com
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mail-srs
-  namespace: untrobotics
-type: Opaque
-stringData:
-  # Generate a STABLE value once: openssl rand -hex 32
-  # (changing it invalidates previously-issued SRS bounce addresses)
-  SRS_SECRET: ""
----
+# The mail-srs Secret (SRS_SECRET) is created out-of-band so re-applying this file
+# never clobbers it:  kubectl -n untrobotics create secret generic mail-srs \
+#   --from-literal=SRS_SECRET="$(openssl rand -hex 32)"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -65,6 +54,7 @@ spec:
                 secretKeyRef:
                   name: mail-srs
                   key: SRS_SECRET
+                  optional: true   # falls back to an ephemeral secret if unset
           volumeMounts:
             - name: aliases
               mountPath: /config
