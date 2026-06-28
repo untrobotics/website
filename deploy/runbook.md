@@ -136,6 +136,47 @@ kubectl -n untrobotics create secret docker-registry ghcr-pull \
 # then add `imagePullSecrets: [{name: ghcr-pull}]` to the pod specs (overlay patch).
 ```
 
+## Email forwarder (self-hosted Postfix + SRS)
+
+Registrar-agnostic forwarding of the human aliases (`hello@`, `webmaster@`, …) to
+external mailboxes (Gmail). Inbound only — outbound transactional mail stays on
+SendGrid. Lives in `mail/` (container) + `k8s/mail.yaml`. It is **not** applied by
+`kubectl apply -k k8s/`; deploy it deliberately, since it owns the domain's MX.
+
+Deploy:
+```sh
+# 1. Edit aliases (k8s/mail.yaml ConfigMap: alias -> destination mailbox).
+# 2. Set a STABLE SRS secret:
+kubectl -n untrobotics create secret generic mail-srs \
+  --from-literal=SRS_SECRET="$(openssl rand -hex 32)" --dry-run=client -o yaml | kubectl apply -f -
+# 3. Build + import the image:
+docker build -t untrobotics-mail:dev mail/ && docker save untrobotics-mail:dev | sudo k3s ctr images import -
+# 4. Open SMTP and deploy:
+sudo ufw allow 25/tcp
+kubectl apply -f k8s/mail.yaml
+kubectl -n untrobotics logs deploy/mail
+```
+
+DNS records (anywhere you host DNS — registrar-agnostic):
+- `A`   `mail.untrobotics.com` → server public IP
+- `MX`  `untrobotics.com` → `10 mail.untrobotics.com`  (replaces name.com's forwarding MX)
+- `PTR` (rDNS) server IP → `mail.untrobotics.com`  (set at the IP owner / **OVH panel** — critical for deliverability)
+- `TXT` (SPF) `untrobotics.com`: `v=spf1 ip4:<server IP> include:sendgrid.net ~all`  (merge with existing SendGrid SPF)
+- `TXT` (DMARC) `_dmarc.untrobotics.com`: `v=DMARC1; p=none; rua=mailto:postmaster@untrobotics.com`
+
+Notes:
+- Forwarding keeps the original sender's DKIM intact (body unchanged) so DMARC can
+  pass on the sender's DKIM; SRS fixes the return-path SPF for bounces.
+- Mount a real cert (cert-manager secret) at `/tls` for `mail.untrobotics.com` to
+  replace the default self-signed STARTTLS cert (better deliverability).
+- OVH: confirm outbound port 25 is enabled for the IP and set the rDNS in the panel.
+
+Test BEFORE the MX cutover (send straight to the IP, bypassing MX):
+```sh
+swaks --server <server IP> --to hello@untrobotics.com --from you@example.com
+# confirm arrival in the mapped Gmail; then flip MX. Validate at mail-tester.com.
+```
+
 ## Known gaps / TODO
 
 - **PHP 7.2 -> 8.3:** prod runs 7.2; the image is 8.3. Expect compatibility fixes

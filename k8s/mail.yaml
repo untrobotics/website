@@ -1,0 +1,91 @@
+# Self-hosted email forwarder (Postfix + SRS). NOT part of `kubectl apply -k k8s/`
+# by default — deploy deliberately (it owns the domain's MX). See deploy/runbook.md.
+#
+#   kubectl apply -f k8s/mail.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mail-aliases
+  namespace: untrobotics
+data:
+  # alias@untrobotics.com <whitespace> destination mailbox. EDIT THESE.
+  virtual: |
+    hello@untrobotics.com            REPLACE_ME@gmail.com
+    webmaster@untrobotics.com        REPLACE_ME@gmail.com
+    project-manager@untrobotics.com  REPLACE_ME@gmail.com
+    corp-relations@untrobotics.com   REPLACE_ME@gmail.com
+    social-media@untrobotics.com     REPLACE_ME@gmail.com
+    # Optional catch-all for any other alias:
+    # @untrobotics.com               catchall@gmail.com
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mail-srs
+  namespace: untrobotics
+type: Opaque
+stringData:
+  # Generate a STABLE value once: openssl rand -hex 32
+  # (changing it invalidates previously-issued SRS bounce addresses)
+  SRS_SECRET: ""
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mail
+  namespace: untrobotics
+  labels:
+    app: mail
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate          # only one MTA should bind the queue/port at a time
+  selector:
+    matchLabels:
+      app: mail
+  template:
+    metadata:
+      labels:
+        app: mail
+    spec:
+      containers:
+        - name: mail
+          # Built on the node and imported into k3s (see deploy/build-and-load-images.sh).
+          image: untrobotics-mail:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - { containerPort: 25, name: smtp }
+          env:
+            - name: MAIL_HOSTNAME
+              value: mail.untrobotics.com
+            - name: SRS_DOMAIN
+              value: untrobotics.com
+            - name: SRS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mail-srs
+                  key: SRS_SECRET
+          volumeMounts:
+            - name: aliases
+              mountPath: /config
+              readOnly: true
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 250m, memory: 192Mi }
+      volumes:
+        - name: aliases
+          configMap:
+            name: mail-aliases
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mail
+  namespace: untrobotics
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local   # preserve the sending server's real IP
+  selector:
+    app: mail
+  ports:
+    - { name: smtp, port: 25, targetPort: 25, protocol: TCP }
