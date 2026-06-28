@@ -150,8 +150,12 @@ kubectl -n untrobotics create secret docker-registry ghcr-pull \
 - **PayPal SDK submodule:** path mismatch (`paypal/PP-BM-SDK` in code vs
   `paypal/paypal/PP-BM-SDK` in `.gitmodules`); payment button may be broken until
   resolved.
-- **TLS:** ingress TLS via cert-manager is commented in `k8s/ingress.yaml`;
-  install cert-manager + a ClusterIssuer for real certs.
+- **TLS:** handled for `dev2.untrobotics.com` via cert-manager + Let's Encrypt.
+  Install with `sudo bash deploy/install-tls.sh` (after install-k3s.sh), then the
+  ingress (`cert-manager.io/cluster-issuer: letsencrypt-prod` + tls block) auto-
+  issues the cert via HTTP-01. Watch: `kubectl -n untrobotics get certificate`.
+  For a different server, change the host in `k8s/ingress.yaml` (tls + rule) and
+  the `.htaccess` redirect-exception. Prod hosts stay plain HTTP until migrated.
 - **MySQL data:** only the schema is loaded in-cluster. Import real data from a
   prod dump separately (never the local test seed).
 

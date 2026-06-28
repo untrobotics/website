@@ -18,15 +18,26 @@ metadata:
     # Rate limiting (per client IP)
     nginx.ingress.kubernetes.io/limit-rps: "20"
     nginx.ingress.kubernetes.io/limit-connections: "20"
-    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # Dev server only: Let's Encrypt cert for dev2.untrobotics.com. The prod hosts
+    # below stay plain HTTP until prod is migrated (their DNS points elsewhere).
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
-  # tls:
-  #   - hosts:
-  #       - untrobotics.com
-  #       - www.untrobotics.com
-  #     secretName: untrobotics-tls
+  tls:
+    - hosts:
+        - dev2.untrobotics.com
+      secretName: dev2-untrobotics-tls
   rules:
+    - host: dev2.untrobotics.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80
     - host: www.untrobotics.com
       http:
         paths:
