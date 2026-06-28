@@ -19,7 +19,7 @@ head("Discord Rules", true);
     <div class="shell">
         <ul class="list-breadcrumb">
             <li><a href="/">Home</a></li>
-            <li>Legal</li>
+            <li><a href="/legal">Legal</a></li>
             <li>Discord Rules</li>
         </ul>
     </div>
