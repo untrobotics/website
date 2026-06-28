@@ -4,7 +4,7 @@ require(BASE . '/api/discord/bots/admin.php');
 head('Pay Dues via Alternatives', true);
 
 if (isset($_POST['submit'])) {
-    AdminBot::send_message("Nick said this was okay..." . var_export(array($_POST, $userinfo['id'], $userinfo['name']), true));
+    AdminBot::send_message("Alternative dues payment submitted by " . $userinfo['name'] . " (uid " . $userinfo['id'] . "): " . var_export($_POST, true));
 
     $authorise_user = true;
 }

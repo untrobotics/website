@@ -6,7 +6,7 @@ $members = array();
 
 $members[] = [
     'name'=>'Sebastian King',
-    'title'=>'Alumni | Team Member',
+    'title'=>'Team Lead',
     'description'=>"Sebastian is a post-baccalaureate world languages student, with a degree in Computer Science. His role is to oversee the day-to-day running of the organisation and help ensure the organisation best serves the students at UNT. His expertise are programming and electrical engineering and he specialises in networking and remote control systems. He is also responsible for a lot of the more ambitious projects around campus, including the famous Sofabot and our re-usable weather balloon project.",
     'picture_uri'=>'/images/web-team-pics/sebastian-king.jpg',
     'linkedin_url'=>'https://www.linkedin.com/in/sebastian-king',

@@ -68,7 +68,7 @@ head('Reset Password', true);
                     <div class="shell">
                         <ul class="list-breadcrumb">
                             <li><a href="/">Home</a></li>
-                            <li><a href="/auth/">Auth</a></li>
+                            <li>Account</li>
                             <li>Reset Password
                             </li>
                         </ul>

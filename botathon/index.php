@@ -174,7 +174,7 @@ head('Botathon Info', true);
             <div class="range range-md-justify">
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <h1><strong>Botathon</strong> - <em>Season <?php echo BOTATHON_SEASON?> (2024)</em></h1>
+                        <h1><strong>Botathon</strong> - <em>Season <?php echo BOTATHON_SEASON?></em></h1>
 
                         <h2>What is Botathon?</h2>
 
@@ -193,7 +193,6 @@ head('Botathon Info', true);
                         <p>Botathon is all about teamwork and friendly competition. Our mission is to build knowledge and skills while promoting
                             creativity and camaraderie among all participants.</p>
 
-                        <p></p>
                         <iframe width="100%" height="400" src="https://www.youtube.com/embed/H0xerrP6yag?si=5Vda6rnb3ycf2i8j" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
                     </div>
@@ -208,7 +207,7 @@ head('Botathon Info', true);
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <h2>Registration</h2>
-                        <p>Registration for Season  <?php echo BOTATHON_SEASON?><em>is open now</em> for all currently enrolled UNT students.</p>
+                        <p>Registration for Season <?php echo BOTATHON_SEASON?> <em>is open now</em> for all currently enrolled UNT students.</p>
 
                         <div class="cell-md-8 cell-lg-9">
                             <h4><strong>Mar. 8:</strong> Registration Opened</h4>
@@ -478,7 +477,7 @@ head('Botathon Info', true);
                                 <td>$100</td>
                             </tr>
                             <tr>
-                                <td>Buiding Materials (cardboard, plastic, etc.)</td>
+                                <td>Building Materials (cardboard, plastic, etc.)</td>
                                 <td>1</td>
                                 <td>FREE</td>
                             </tr>
@@ -493,7 +492,7 @@ head('Botathon Info', true);
                                 <td>$10</td>
                             </tr>
                             <tr>
-                                <td>Ultrasonic Distnace Sensor</td>
+                                <td>Ultrasonic Distance Sensor</td>
                                 <td>1</td>
                                 <td>$75</td>
                             </tr>

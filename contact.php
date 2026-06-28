@@ -41,7 +41,7 @@ head('Contact Us', true);
 				  <div class="unit unit-horizontal unit-spacing-md">
 					<div class="unit-left"><span class="icon icon-primary fa-map-marker"></span></div>
 					<div class="unit-body">
-					  <h6><a href="#" class="text-darker">
+					  <h6><a href="https://maps.google.com/?q=University+of+North+Texas,+1155+Union+Circle,+Denton,+TX+76203" target="_blank" rel="noopener" class="text-darker">
 						  <strong>UNT Robotics</strong><br>
 						  University of North Texas<br>
 						  Department of Computer Science and Engineering<br>

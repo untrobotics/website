@@ -47,7 +47,7 @@ $members[] = [
     'title'=>'Social Media Manager and Multimedia Manager',
     'description'=>"Brielle Brown is an Information Technology undergraduate student at UNT. Her role is to maintain the social media platforms for the organization, as well as creating content for said platforms. She has been in several previous officer positions relating to social media, and has extensive experience regarding graphic design, social media marketing, photography, and more. She also loves doing freelance concept art in her free time.",
     'picture_uri'=>'/images/bio-pics/brielle-brown.jpg',
-    'email'=>'corp-relations@untrobotics.com',
+    'email'=>'social-media@untrobotics.com',
 ];
 // (lead) Webmaster
 $members[] = [

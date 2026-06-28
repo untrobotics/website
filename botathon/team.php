@@ -211,7 +211,7 @@ footer(false);
         $("#demo").prepend(`<li>Socket connected successfully.</li>`);
     };
     ws.onmessage = function (ev) {
-        $('#message').text('recieved message');
+        $('#message').text('received message');
     };
 
     ws.onclose = function (ev) {

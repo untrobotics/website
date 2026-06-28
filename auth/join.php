@@ -140,8 +140,8 @@ head('Join', true);
 		  <div class="shell">
 			<ul class="list-breadcrumb">
 			  <li><a href="/">Home</a></li>
-			  <li><a href="/auth/">Auth</a></li>
-			  <li>Login
+			  <li>Account</li>
+			  <li>Join
 			  </li>
 			</ul>
 		  </div>

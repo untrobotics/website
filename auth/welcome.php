@@ -13,7 +13,7 @@ head('Welcome', true, true);
 	<!-- Classic Breadcrumbs-->
 	<section class="breadcrumb-classic">
 	  <div class="rd-parallax">
-		<div data-speed="0.25" data-type="media" data-url="https://targetcareers.co.uk/sites/targetcareers.co.uk/files/public/styles/header_1500x550/public/field/image/engineering-personal-statements.jpg?itok=I8sIDavS" class="rd-parallax-layer"></div>
+		<div data-speed="0.25" data-type="media" data-url="/images/breadcrumbs-parallax.jpg" class="rd-parallax-layer"></div>
 		<div data-speed="0" data-type="html" class="rd-parallax-layer section-top-75 section-md-top-150 section-lg-top-260">
 		  <div class="shell">
 			<ul class="list-breadcrumb">
