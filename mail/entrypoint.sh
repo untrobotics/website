@@ -37,6 +37,12 @@ fi
 chmod 600 /etc/postfix/tls/tls.key
 
 postconf -e "myhostname=${MAIL_HOSTNAME}"
+
+# Disable chroot for all master.cf services: this minimal image has no
+# /etc/resolv.conf (etc.) inside /var/spool/postfix, so chrooted delivery agents
+# can't resolve recipient MX records and every message would defer.
+postconf -F '*/*/chroot=n'
+
 newaliases 2>/dev/null || true
 
 # --- Start postsrsd (forward socket 10001, reverse socket 10002) --------------

@@ -1,47 +1,57 @@
-# Forwarding-only MTA for the untrobotics.com aliases.
-# Receives mail for alias@untrobotics.com and forwards it to an external mailbox
-# (e.g. a Gmail) via the virtual_alias_maps below. SRS (postsrsd) rewrites the
-# envelope sender so the forwarded mail passes SPF at the destination.
-# See deploy/runbook.md ("Email forwarder") for the DNS records this requires.
+# Forwarding-only MTA for the untrobotics.com aliases. Inbound only: receives
+# mail for alias@untrobotics.com and forwards it to an external mailbox (Gmail)
+# via virtual_alias_maps. postsrsd rewrites the envelope sender so forwarded mail
+# passes SPF. See deploy/runbook.md ("Email forwarder") for the required DNS.
+#
+# IMPORTANT: Postfix does NOT support end-of-line comments — every comment must
+# be on its own line, or it becomes part of the parameter value (which silently
+# breaks delivery).
 
 compatibility_level = 3.6
-maillog_file = /dev/stdout          # log to container stdout, no syslog needed
+
+# Log to the container's stdout (visible via `kubectl logs`).
+maillog_file = /dev/stdout
 
 myhostname = mail.untrobotics.com
 mydomain = untrobotics.com
 myorigin = $mydomain
-mydestination =                      # we are not a final destination for any domain
-relayhost =                          # deliver directly to recipients' MX
-inet_interfaces = all
-# IPv4 only: the pod egresses over the node's IPv4, and forcing this avoids
-# Gmail's strict "IPv6 senders must have valid IPv6 PTR" rejection. So only an
-# IPv4 PTR (for 51.81.223.48) is required.
-inet_protocols = ipv4
-mynetworks = 127.0.0.0/8 [::1]/128   # trust only localhost (NOT an open relay)
 
-# Virtual forwarding: alias@untrobotics.com -> external mailbox
+# Forwarding only: not a final destination for any domain.
+mydestination =
+
+# Deliver directly to each recipient's MX.
+relayhost =
+
+inet_interfaces = all
+
+# IPv4 only: the pod egresses over the node's IPv4, and this avoids Gmail's
+# "IPv6 senders must have valid IPv6 PTR" rejection.
+inet_protocols = ipv4
+
+# Trust only localhost. This is NOT an open relay.
+mynetworks = 127.0.0.0/8 [::1]/128
+
+# Virtual forwarding: alias@untrobotics.com -> external mailbox.
 virtual_alias_domains = untrobotics.com
 virtual_alias_maps = hash:/etc/postfix/virtual
 
-# Accept mail only for our virtual aliases; reject everything else (no open relay).
-smtpd_recipient_restrictions =
-    permit_mynetworks,
-    reject_unauth_destination
+# Accept mail only for our virtual aliases; reject all other destinations.
+smtpd_recipient_restrictions = permit_mynetworks, reject_unauth_destination
 
-# SRS via postsrsd (sender/recipient rewriting on the envelope).
+# SRS via postsrsd (envelope sender/recipient rewriting).
 sender_canonical_maps = tcp:127.0.0.1:10001
 sender_canonical_classes = envelope_sender
 recipient_canonical_maps = tcp:127.0.0.1:10002
 recipient_canonical_classes = envelope_recipient, header_recipient
 
-# Opportunistic TLS, both directions.
+# Opportunistic TLS in both directions.
 smtpd_tls_security_level = may
 smtpd_tls_cert_file = /etc/postfix/tls/tls.crt
 smtpd_tls_key_file = /etc/postfix/tls/tls.key
 smtp_tls_security_level = may
 smtp_tls_loglevel = 1
 
-# Limits / don't sit on undeliverable mail forever.
+# Limits and queue lifetime.
 message_size_limit = 31457280
 maximal_queue_lifetime = 1d
 bounce_queue_lifetime = 1d
