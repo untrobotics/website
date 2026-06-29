@@ -11,7 +11,10 @@ ARGOCD_VERSION="${ARGOCD_VERSION:-$(curl -fsSL https://api.github.com/repos/argo
   | grep -oE '"tag_name":[[:space:]]*"[^"]+"' | grep -oE 'v[0-9.]+' | head -1)}"
 echo "==> Installing Argo CD ${ARGOCD_VERSION}"
 kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
-kubectl apply -n argocd -f "https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/install.yaml"
+# Server-side apply: the applicationsets CRD is too large for client-side apply's
+# last-applied-configuration annotation (>256KB).
+kubectl apply --server-side --force-conflicts -n argocd \
+  -f "https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/install.yaml"
 
 # Terminate TLS at the ingress (run argocd-server in insecure/HTTP mode behind it).
 echo "==> Configuring argocd-server for ingress TLS termination"
