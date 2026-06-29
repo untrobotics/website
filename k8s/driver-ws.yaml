@@ -12,6 +12,7 @@ spec:
   #   kubectl -n untrobotics scale deploy/driver-ws --replicas=1
   # It also keeps in-memory per-team state, so do not scale beyond 1.
   replicas: 0
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: driver-ws

@@ -12,16 +12,16 @@ RewriteRule ^botathon/team([0-9]+) /botathon/team.php?team_num=$1 [L,END]
 # development hosts (Docker/compose serves over http://localhost) via the
 # "!^(localhost|127.0.0.1)" condition on each rule. Production hosts are never
 # localhost, so prod behaviour is unchanged.
-RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1|dev2\.untrobotics\.com)(:[0-9]+)?$ [NC]
+RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1|dev\.untrobotics\.com|dev2\.untrobotics\.com)(:[0-9]+)?$ [NC]
 RewriteCond %{HTTP_HOST} !^www.untrobotics.com [NC]
 RewriteRule ^(.*)$ https://www.untrobotics.com/$1 [R=301,L]
 
-RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1|dev2\.untrobotics\.com)(:[0-9]+)?$ [NC]
+RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1|dev\.untrobotics\.com|dev2\.untrobotics\.com)(:[0-9]+)?$ [NC]
 RewriteCond %{HTTP_HOST} !^$
 RewriteCond %{HTTP_HOST} !^www\. [NC]
 RewriteRule ^ https://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
-RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1|dev2\.untrobotics\.com)(:[0-9]+)?$ [NC]
+RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1|dev\.untrobotics\.com|dev2\.untrobotics\.com)(:[0-9]+)?$ [NC]
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https
 RewriteCond %{HTTPS} off
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]

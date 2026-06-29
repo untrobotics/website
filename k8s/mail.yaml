@@ -27,6 +27,7 @@ metadata:
     app: mail
 spec:
   replicas: 1
+  revisionHistoryLimit: 3
   strategy:
     type: Recreate          # only one MTA should bind the queue/port at a time
   selector:

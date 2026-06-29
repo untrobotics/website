@@ -25,9 +25,20 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
+        - dev.untrobotics.com
         - dev2.untrobotics.com
-      secretName: dev2-untrobotics-tls
+      secretName: dev-untrobotics-tls
   rules:
+    - host: dev.untrobotics.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80
     - host: dev2.untrobotics.com
       http:
         paths:
