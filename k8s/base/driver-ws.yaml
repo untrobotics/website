@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: driver-ws
-  namespace: untrobotics
   labels:
     app: driver-ws
 spec:
@@ -42,7 +41,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: driver-ws
-  namespace: untrobotics
 spec:
   selector:
     app: driver-ws
