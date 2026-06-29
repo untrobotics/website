@@ -44,6 +44,14 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - { containerPort: 25, name: smtp }
+          readinessProbe:
+            tcpSocket: { port: 25 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket: { port: 25 }
+            initialDelaySeconds: 30
+            periodSeconds: 20
           env:
             - name: MAIL_HOSTNAME
               value: mail.untrobotics.com
