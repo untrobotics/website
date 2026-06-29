@@ -21,7 +21,7 @@ kubectl apply --server-side --force-conflicts -n argocd \
 # the repo's PayPal SDK submodule / a needless clone on every sync.
 echo "==> Configuring argocd-server (insecure) + disabling git submodules"
 kubectl -n argocd patch configmap argocd-cmd-params-cm --type merge \
-  -p '{"data":{"server.insecure":"true","reposerver.git.modules.enabled":"false"}}'
+  -p '{"data":{"server.insecure":"true","reposerver.enable.git.submodule":"false"}}'
 kubectl -n argocd rollout restart deploy/argocd-server deploy/argocd-repo-server
 
 echo "==> Waiting for Argo CD to be ready"
