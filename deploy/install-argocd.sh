@@ -16,10 +16,13 @@ kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
 kubectl apply --server-side --force-conflicts -n argocd \
   -f "https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/install.yaml"
 
-# Terminate TLS at the ingress (run argocd-server in insecure/HTTP mode behind it).
-echo "==> Configuring argocd-server for ingress TLS termination"
-kubectl -n argocd patch configmap argocd-cmd-params-cm --type merge -p '{"data":{"server.insecure":"true"}}'
-kubectl -n argocd rollout restart deploy/argocd-server
+# Terminate TLS at the ingress (run argocd-server insecure behind it), and skip
+# git submodules — the k8s/ manifests don't need them, and it avoids failing on
+# the repo's PayPal SDK submodule / a needless clone on every sync.
+echo "==> Configuring argocd-server (insecure) + disabling git submodules"
+kubectl -n argocd patch configmap argocd-cmd-params-cm --type merge \
+  -p '{"data":{"server.insecure":"true","reposerver.git.modules.enabled":"false"}}'
+kubectl -n argocd rollout restart deploy/argocd-server deploy/argocd-repo-server
 
 echo "==> Waiting for Argo CD to be ready"
 kubectl -n argocd rollout status deploy/argocd-server --timeout=300s
