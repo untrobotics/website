@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: untrobotics-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/untrobotics/website.git
+    targetRevision: chore/reconcile-prod-drift
+    path: k8s/overlays/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: untrobotics-dev
+  # Manual sync (no automated/prune) until we trust the overlays — observe first.
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

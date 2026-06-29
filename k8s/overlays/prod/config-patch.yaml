@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+data:
+  APP_ENV: "production"
+  WEBSITE_URL: "https://www.untrobotics.com"

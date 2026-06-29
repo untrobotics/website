@@ -1,12 +1,10 @@
-# Self-hosted email forwarder (Postfix + SRS). NOT part of `kubectl apply -k k8s/`
-# by default — deploy deliberately (it owns the domain's MX). See deploy/runbook.md.
-#
-#   kubectl apply -f k8s/mail.yaml
+# Self-hosted email forwarder (Postfix + SRS). Deployed via k8s/mail (the "mail"
+# Argo Application) into the untrobotics-mail namespace. It owns the domain's MX.
+# The mail-srs Secret is created out-of-band (see deploy/runbook.md).
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mail-aliases
-  namespace: untrobotics
 data:
   virtual: |
     # Catch-all: every address @untrobotics.com forwards to the club inbox.
@@ -15,14 +13,21 @@ data:
     # (Add explicit "alias  dest" lines above this to override the catch-all.)
     @untrobotics.com   untroboticsclub@gmail.com
 ---
-# The mail-srs Secret (SRS_SECRET) is created out-of-band so re-applying this file
-# never clobbers it:  kubectl -n untrobotics create secret generic mail-srs \
-#   --from-literal=SRS_SECRET="$(openssl rand -hex 32)"
+# Persistent mail queue so deferred mail survives pod restarts.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mail-spool
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mail
-  namespace: untrobotics
   labels:
     app: mail
 spec:
@@ -68,6 +73,8 @@ spec:
             - name: aliases
               mountPath: /config
               readOnly: true
+            - name: spool
+              mountPath: /var/spool/postfix
           resources:
             requests: { cpu: 50m, memory: 64Mi }
             limits: { cpu: 250m, memory: 192Mi }
@@ -75,12 +82,14 @@ spec:
         - name: aliases
           configMap:
             name: mail-aliases
+        - name: spool
+          persistentVolumeClaim:
+            claimName: mail-spool
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: mail
-  namespace: untrobotics
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local   # preserve the sending server's real IP

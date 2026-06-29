@@ -1,0 +1,11 @@
+# The self-hosted email forwarder runs in its own namespace (shared infra,
+# independent of dev/prod). The mail-srs Secret is created out-of-band.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: untrobotics-mail
+resources:
+  - namespace.yaml
+  - mail.yaml
+images:
+  - name: untrobotics-mail
+    newTag: dev

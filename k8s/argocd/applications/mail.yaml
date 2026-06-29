@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mail
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/untrobotics/website.git
+    targetRevision: chore/reconcile-prod-drift
+    path: k8s/mail
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: untrobotics-mail
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

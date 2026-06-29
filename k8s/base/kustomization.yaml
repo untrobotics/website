@@ -1,0 +1,14 @@
+# Shared base for the website stack. Namespace, ingress (hosts), and env-specific
+# ConfigMap values come from the dev/ and prod/ overlays.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - config.yaml
+  - mysql.yaml
+  - web.yaml
+  - driver-ws.yaml
+images:
+  - name: untrobotics-web
+    newTag: dev
+  - name: untrobotics-driver-ws
+    newTag: dev

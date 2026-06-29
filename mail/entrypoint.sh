@@ -49,5 +49,10 @@ newaliases 2>/dev/null || true
 /usr/sbin/postsrsd -s /etc/postsrsd.secret -d "${SRS_DOMAIN}" -f 10001 -r 10002 &
 
 # --- Postfix in the foreground (PID 1 of the container) -----------------------
+# Recreate any missing queue directories + fix permissions. Needed when the mail
+# spool is an empty (PVC-mounted) volume on first start.
+postfix post-install create-missing >/dev/null 2>&1 || true
+postfix set-permissions >/dev/null 2>&1 || true
+
 postfix check || true
 exec postfix start-fg

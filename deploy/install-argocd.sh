@@ -28,9 +28,9 @@ echo "==> Waiting for Argo CD to be ready"
 kubectl -n argocd rollout status deploy/argocd-server --timeout=300s
 kubectl -n argocd rollout status deploy/argocd-repo-server --timeout=300s
 
-echo "==> Ingress + observe-only Application"
+echo "==> Ingress + Applications (dev, prod, mail)"
 kubectl apply -f "${REPO_DIR}/k8s/argocd/ingress.yaml"
-kubectl apply -f "${REPO_DIR}/k8s/argocd/application.yaml"
+kubectl apply -f "${REPO_DIR}/k8s/argocd/applications/"
 
 echo "==> Initial admin password (user: admin):"
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d; echo
