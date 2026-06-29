@@ -1,0 +1,28 @@
+# Public TLS access to the Argo CD UI. Requires a DNS A record:
+#   argocd.untrobotics.com -> 51.81.223.48
+# argocd-server runs in insecure mode (see install-argocd.sh); TLS terminates here.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-server
+  namespace: argocd
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - argocd.untrobotics.com
+      secretName: argocd-tls
+  rules:
+    - host: argocd.untrobotics.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80
