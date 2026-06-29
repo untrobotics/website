@@ -13,7 +13,10 @@ myorigin = $mydomain
 mydestination =                      # we are not a final destination for any domain
 relayhost =                          # deliver directly to recipients' MX
 inet_interfaces = all
-inet_protocols = all
+# IPv4 only: the pod egresses over the node's IPv4, and forcing this avoids
+# Gmail's strict "IPv6 senders must have valid IPv6 PTR" rejection. So only an
+# IPv4 PTR (for 51.81.223.48) is required.
+inet_protocols = ipv4
 mynetworks = 127.0.0.0/8 [::1]/128   # trust only localhost (NOT an open relay)
 
 # Virtual forwarding: alias@untrobotics.com -> external mailbox
