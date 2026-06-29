@@ -31,4 +31,4 @@ kubectl apply -f "${REPO_DIR}/k8s/argocd/application.yaml"
 
 echo "==> Initial admin password (user: admin):"
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d; echo
-echo "==> Browse https://argocd.untrobotics.com once its DNS A record + cert exist."
+echo "==> Browse https://c.untrobotics.com once its DNS A record + cert exist."
