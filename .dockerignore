@@ -18,6 +18,7 @@ Dockerfile
 docker-compose.yml
 docker/
 !docker/php/
+!docker/apache/
 .env
 .env.*
 
