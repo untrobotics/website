@@ -102,6 +102,15 @@ class PaymentButton {
 
 		$response = new PaymentButtonResponse();
 
+		// The PayPal Button Manager SDK vanished upstream; degrade gracefully instead
+		// of fataling on the missing require so the page still renders. (Superseded by
+		// the modern PayPal JS SDK + Stripe checkout.)
+		if (!file_exists(BASE . '/paypal/PP-BM-SDK/vendor/autoload.php')) {
+			echo "We are unable to accept payments via our website at this time. Please email hello@untrobotics.com to purchase.";
+			$response->button = '';
+			return $response;
+		}
+
 		if ($untrobotics->get_sandbox()) {
 			require_once(BASE . '/paypal/PP-BM-SDK/Sandbox.Configuration.php');
 		} else {
