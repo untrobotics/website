@@ -44,6 +44,13 @@ RUN a2enmod rewrite headers \
     && sed -ri 's!AllowOverride None!AllowOverride All!g' /etc/apache2/apache2.conf \
     && echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
+# Pipe the Apache error log to a shared file (for the Discord log-forwarder
+# sidecar) AND keep it on stderr (kubectl logs). The server-scope piped logger
+# is in error-log.conf; drop the vhost ErrorLog so the vhost inherits it.
+COPY docker/apache/error-log.conf /etc/apache2/conf-enabled/error-log.conf
+RUN sed -ri '/ErrorLog.*error\.log/d' /etc/apache2/sites-available/000-default.conf \
+    && mkdir -p /var/log/forward
+
 WORKDIR /var/www/html
 COPY . /var/www/html/
 

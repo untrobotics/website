@@ -33,6 +33,9 @@ spec:
                 name: web-config
             - secretRef:
                 name: web-secrets
+          volumeMounts:
+            - name: forward-logs
+              mountPath: /var/log/forward
           readinessProbe:
             httpGet:
               path: /
@@ -54,6 +57,41 @@ spec:
             limits:
               cpu: "1"
               memory: 512Mi
+        # Tails the Apache error log and posts new lines to the Discord web-logs
+        # channel via admin-cli.php (which filters scanner spam). Same image so it
+        # has PHP + config + the bot token; a cheap pre-filter drops the highest
+        # volume 404 scanner noise before spawning PHP.
+        - name: log-forwarder
+          image: untrobotics-web:dev
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - |
+              touch /var/log/forward/error.log
+              tail -n0 -F /var/log/forward/error.log \
+                | grep --line-buffered -vE 'not found or unable to stat|File does not exist' \
+                | while IFS= read -r line; do
+                    [ -n "$line" ] && php /var/www/html/api/discord/bots/admin-cli.php "$line" 0 0 >/dev/null 2>&1 || true
+                  done
+          envFrom:
+            - configMapRef:
+                name: web-config
+            - secretRef:
+                name: web-secrets
+          volumeMounts:
+            - name: forward-logs
+              mountPath: /var/log/forward
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+      volumes:
+        - name: forward-logs
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
