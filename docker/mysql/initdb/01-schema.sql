@@ -322,7 +322,7 @@ CREATE TABLE `users` (
   `grad_term` int(1) DEFAULT NULL,
   `grad_year` int(4) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `reg_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `reg_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `reg_ip` varchar(39) DEFAULT NULL,
   `timezone` varchar(100) DEFAULT NULL,
   `sandbox` int(1) NOT NULL DEFAULT '0',
