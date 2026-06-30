@@ -22,6 +22,11 @@ session_start();
 $userinfo = array(); // this will be populated later, we are effectively making this a global
 $session = array();
 
+// PHP 8.1+ makes mysqli throw mysqli_sql_exception on failed queries by default.
+// This codebase relies on the classic "query() or die()" / "if (!$q)" idiom, so
+// restore the pre-8.1 return-false behavior site-wide (else failed queries 500).
+mysqli_report(MYSQLI_REPORT_OFF);
+
 class mmysqli extends mysqli {
     public function __construct($host, $user, $pass, $db) {
         parent::__construct(); // no-arg: create unconnected, then real_connect (mysqli::init() is deprecated in PHP 8.3)
