@@ -36,6 +36,18 @@ function originIsAllowed(origin) {
     return true;
 }
 
+// Shared-secret auth: clients (the Python controller and the ESP32 firmware)
+// must connect with ?token=<DRIVER_WS_TOKEN>, e.g. ws://host:81/?token=abc123.
+// Fails CLOSED — if no token is configured, every connection is rejected.
+const DRIVER_WS_TOKEN = process.env.DRIVER_WS_TOKEN || '';
+function isAuthorized(request) {
+    if (!DRIVER_WS_TOKEN) {
+        return false;
+    }
+    var q = request.resourceURL && request.resourceURL.query;
+    return !!q && q.token === DRIVER_WS_TOKEN;
+}
+
 function IsJsonString(str) {
     try {
         if (!isNaN(str)) {
@@ -95,6 +107,12 @@ wsServer.on('request', function (request) {
         // Make sure we only accept requests from an allowed origin
         request.reject();
         console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
+        return;
+    }
+
+    if (!isAuthorized(request)) {
+        request.reject(401, 'Unauthorized');
+        console.log((new Date()) + ' Connection rejected: missing/invalid token.');
         return;
     }
 

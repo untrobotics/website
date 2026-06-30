@@ -27,6 +27,17 @@ spec:
           imagePullPolicy: IfNotPresent
           # Override to ["node","legacy-server.js"] for the prod-proven variant.
           command: ["node", "server.js"]
+          env:
+            # Shared-secret gate: clients must connect with ?token=<this>. The
+            # relay fails closed without it. Create out-of-band before scaling up:
+            #   kubectl -n <ns> create secret generic driver-ws-token \
+            #     --from-literal=DRIVER_WS_TOKEN=$(openssl rand -hex 16)
+            - name: DRIVER_WS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: driver-ws-token
+                  key: DRIVER_WS_TOKEN
+                  optional: true
           ports:
             - containerPort: 81
           resources:
