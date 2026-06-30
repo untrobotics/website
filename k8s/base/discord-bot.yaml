@@ -1,0 +1,79 @@
+# UNT Robotics interactive Discord bot (Node). Standalone gateway service.
+#
+# It holds ONE persistent gateway connection per bot token, so it must never run
+# more than a single replica. Like driver-ws it ships OFF (replicas: 0); the
+# operator scales it to 1 in exactly one environment:
+#   kubectl -n untrobotics scale deploy/discord-bot --replicas=1
+# Running it in two environments on the same (reused admin) token would make the
+# two instances fight over the gateway session.
+#
+# No Service: the bot only makes OUTBOUND connections (Discord gateway + REST,
+# MySQL, SendGrid). Nothing connects to it.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-bot
+  labels:
+    app: discord-bot
+spec:
+  replicas: 0
+  revisionHistoryLimit: 3
+  # Only one gateway connection may exist for the token; never run two pods.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: discord-bot
+  template:
+    metadata:
+      labels:
+        app: discord-bot
+    spec:
+      containers:
+        - name: discord-bot
+          # Built on the node and imported into k3s containerd (deploy/build-and-load-images.sh).
+          # For a registry-based multi-node cluster, override via kustomization `images:`.
+          image: untrobotics-discord-bot:dev
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            # Same config the PHP app uses: DB host/name/user (config), and
+            # DATABASE_PASSWORD / SENDGRID_API_KEY / DISCORD_ADMIN_BOT_TOKEN /
+            # DISCORD_APP_CLIENT_ID (secrets). config.js accepts these names.
+            - configMapRef:
+                name: web-config
+            - secretRef:
+                name: web-secrets
+          env:
+            # Bot-specific identifiers not present in web-config/web-secrets.
+            # Guild id is the public UNT Robotics server id.
+            - name: DISCORD_GUILD_ID
+              value: "639209564188704768"
+            # TODO: set these to the real role/channel ids before scaling to 1.
+            - name: DISCORD_VERIFIED_ROLE_ID
+              value: "REPLACE_WITH_VERIFIED_UNT_ROLE_ID"
+            - name: DISCORD_VERIFY_CHANNEL_ID
+              value: "REPLACE_WITH_VERIFY_CHANNEL_ID"
+            # Verification audit log channel (defaults to the admin channel).
+            - name: DISCORD_LOG_CHANNEL_ID
+              value: "674703370971250708"
+            - name: HEARTBEAT_FILE
+              value: "/tmp/discord-bot-heartbeat"
+          # Liveness via a heartbeat file the bot refreshes on each gateway ack
+          # (a plain TCP/HTTP probe can't tell a live gateway from a wedged one).
+          # If the file hasn't been touched in 2 minutes, restart the pod.
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - 'find "$HEARTBEAT_FILE" -mmin -2 | grep -q .'
+            initialDelaySeconds: 40
+            periodSeconds: 30
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 192Mi

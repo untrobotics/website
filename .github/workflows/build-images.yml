@@ -29,6 +29,9 @@ jobs:
           - name: website-driver-ws
             context: botathon/driver-ws
             dockerfile: botathon/driver-ws/Dockerfile
+          - name: website-discord-bot
+            context: discord-bot
+            dockerfile: discord-bot/Dockerfile
     steps:
       - uses: actions/checkout@v4
 

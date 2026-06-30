@@ -19,9 +19,13 @@ docker build -t untrobotics-web:dev -f Dockerfile .
 echo "==> Building untrobotics-driver-ws:dev"
 docker build -t untrobotics-driver-ws:dev -f botathon/driver-ws/Dockerfile botathon/driver-ws
 
+echo "==> Building untrobotics-discord-bot:dev"
+docker build -t untrobotics-discord-bot:dev -f discord-bot/Dockerfile discord-bot
+
 echo "==> Importing images into k3s containerd"
-docker save untrobotics-web:dev       | sudo k3s ctr images import -
-docker save untrobotics-driver-ws:dev | sudo k3s ctr images import -
+docker save untrobotics-web:dev          | sudo k3s ctr images import -
+docker save untrobotics-driver-ws:dev    | sudo k3s ctr images import -
+docker save untrobotics-discord-bot:dev  | sudo k3s ctr images import -
 
 echo "==> Imported:"
 sudo k3s ctr images ls | grep -E 'untrobotics-(web|driver-ws):dev' || true

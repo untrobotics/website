@@ -7,8 +7,11 @@ resources:
   - mysql.yaml
   - web.yaml
   - driver-ws.yaml
+  - discord-bot.yaml
 images:
   - name: untrobotics-web
     newTag: dev
   - name: untrobotics-driver-ws
+    newTag: dev
+  - name: untrobotics-discord-bot
     newTag: dev

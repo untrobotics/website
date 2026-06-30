@@ -350,6 +350,35 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=268 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `discord_verifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+-- UNT email verification state for the interactive Discord bot (discord-bot/).
+-- One row per Discord user. `code_hash` is sha256(code + discord_id + secret) —
+-- the plaintext code is NEVER stored. `email` is UNIQUE so an address can bind
+-- to only one Discord account (prevents sharing). Rate-limit / lockout counters
+-- live here so they survive bot restarts.
+CREATE TABLE `discord_verifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `discord_id` bigint(20) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `code_hash` varchar(64) DEFAULT NULL,
+  `expires_at` datetime DEFAULT NULL,
+  `attempts` int(11) NOT NULL DEFAULT '0',
+  `verified` tinyint(1) NOT NULL DEFAULT '0',
+  `verified_at` datetime DEFAULT NULL,
+  `last_sent_at` datetime DEFAULT NULL,
+  `send_count_window` int(11) NOT NULL DEFAULT '0',
+  `window_started_at` datetime DEFAULT NULL,
+  `failed_total` int(11) NOT NULL DEFAULT '0',
+  `locked_until` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `discord_id` (`discord_id`),
+  UNIQUE KEY `email` (`email`),
+  KEY `verified` (`verified`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

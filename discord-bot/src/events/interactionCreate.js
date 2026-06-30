@@ -1,0 +1,38 @@
+'use strict';
+
+const { Events, MessageFlags } = require('discord.js');
+const log = require('../logger');
+
+module.exports = {
+  name: Events.InteractionCreate,
+  once: false,
+  async execute(interaction) {
+    // Slash-command router. `client.commands` is populated in index.js.
+    if (!interaction.isChatInputCommand()) return;
+
+    const command = interaction.client.commands.get(interaction.commandName);
+    if (!command) {
+      log.warn('interactionCreate: unknown command', interaction.commandName);
+      return;
+    }
+
+    try {
+      await command.execute(interaction);
+    } catch (err) {
+      log.error(`interactionCreate: /${interaction.commandName} failed`, err.stack || err.message);
+      const payload = {
+        content: 'Sorry, something went wrong running that command.',
+        flags: MessageFlags.Ephemeral,
+      };
+      try {
+        if (interaction.deferred || interaction.replied) {
+          await interaction.editReply(payload);
+        } else {
+          await interaction.reply(payload);
+        }
+      } catch (_) {
+        /* interaction already gone — nothing more to do */
+      }
+    }
+  },
+};
