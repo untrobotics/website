@@ -119,6 +119,10 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
                         Loading...
 					</div>
 
+                    <div class="offset-top-10">
+                        <button id="stripe-pay-button" type="button" class="btn btn-primary">Pay with Card / Apple Pay</button>
+                    </div>
+
 					<?php
 					} else {
 						?>
@@ -143,6 +147,7 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
 footer(false);
 ?>
 
+<script src="https://js.stripe.com/v3/"></script>
 <script>
     const cssLoader = `<div class="cssload-loader">
               <div class="cssload-inner cssload-one"></div>
@@ -199,4 +204,34 @@ footer(false);
         $("#dues_cost").text("$" + getDuesCost());
 	    setNewButton();
     })
+
+    // Stripe Checkout (Card / Apple Pay). The server recomputes the price; we
+    // only send which options were chosen.
+    $('#stripe-pay-button').on('click', function() {
+        const $btn = $(this);
+        $btn.prop('disabled', true).text('Redirecting...');
+        const params = new URLSearchParams();
+        params.set('source', 'dues');
+        params.set('full-year', fullYear ? 'true' : 'false');
+        params.set('t-shirt', tShirt || '');
+        fetch('/api/stripe/create-checkout-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params.toString(),
+            credentials: 'same-origin'
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.url) {
+                    window.location = data.url;
+                } else {
+                    alert((data && data.error) ? data.error : 'Unable to start checkout.');
+                    $btn.prop('disabled', false).text('Pay with Card / Apple Pay');
+                }
+            })
+            .catch(() => {
+                alert('Unable to start checkout. Please try again.');
+                $btn.prop('disabled', false).text('Pay with Card / Apple Pay');
+            });
+    });
 </script>

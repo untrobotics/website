@@ -1,0 +1,7 @@
+{
+    "name": "untrobotics/stripe-checkout",
+    "description": "Stripe Checkout + Apple Pay integration (create session + webhook handling).",
+    "require": {
+        "stripe/stripe-php": "^15.0"
+    }
+}

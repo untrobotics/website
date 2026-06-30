@@ -25,6 +25,7 @@ docker/
 node_modules
 botathon/driver-ws/node_modules
 api/discord/interactions/vendor
+api/stripe/vendor
 
 # --- Runtime data / logs ----------------------------------------------------
 paypal/logs

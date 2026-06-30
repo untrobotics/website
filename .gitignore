@@ -95,6 +95,7 @@ fabric.properties
 
 # Composer-managed dependencies (installed at build time)
 api/discord/interactions/vendor/
+api/stripe/vendor/
 
 # Node dependencies
 node_modules/

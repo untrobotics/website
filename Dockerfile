@@ -55,6 +55,11 @@ RUN cp template/config.docker.php template/config.php
 RUN composer install --no-dev --no-interaction --prefer-dist \
         --working-dir=api/discord/interactions
 
+# Install the Stripe SDK (declared in api/stripe/composer.json) for Checkout +
+# Apple Pay (create-checkout-session.php / webhook.php).
+RUN composer install --no-dev --no-interaction --prefer-dist \
+        --working-dir=api/stripe
+
 # Runtime-writable directories + ownership.
 RUN mkdir -p paypal/logs api/rocketry/gps/locations cron \
     && chown -R www-data:www-data /var/www/html

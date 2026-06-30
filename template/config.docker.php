@@ -119,6 +119,14 @@ define('PAYPAL_SANDBOX_API_ACCOUNT',  env('PAYPAL_SANDBOX_API_ACCOUNT'));
 define('PAYPAL_SANDBOX_API_PASSWORD', env('PAYPAL_SANDBOX_API_PASSWORD'));
 define('PAYPAL_SANDBOX_API_SIGNATURE', env('PAYPAL_SANDBOX_API_SIGNATURE'));
 
+// Stripe — Checkout + Apple Pay. The pk_test/sk_test vs pk_live/sk_live prefix
+// already encodes test-vs-live, so no separate sandbox flag is needed.
+// STRIPE_WEBHOOK_SECRET is the "whsec_..." signing secret of the webhook
+// endpoint (https://<host>/api/stripe/webhook.php), created in the dashboard.
+define('STRIPE_PUBLISHABLE_KEY', env('STRIPE_PUBLISHABLE_KEY'));
+define('STRIPE_SECRET_KEY',      env('STRIPE_SECRET_KEY'));
+define('STRIPE_WEBHOOK_SECRET',  env('STRIPE_WEBHOOK_SECRET'));
+
 define('DYNDNS_ALLOWED_SUPERDOMAINS', array('untrobotics.com'));
 define('DYNDNS_FORCE_SUBDOMAIN',      'dyndns');
 

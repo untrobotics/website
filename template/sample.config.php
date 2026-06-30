@@ -101,6 +101,13 @@ define('PAYPAL_SANDBOX_API_ACCOUNT',		'');
 define('PAYPAL_SANDBOX_API_PASSWORD',		'');
 define('PAYPAL_SANDBOX_API_SIGNATURE',		'');
 
+// Stripe — Checkout + Apple Pay. Use pk_test/sk_test for dev, pk_live/sk_live for prod.
+// STRIPE_WEBHOOK_SECRET (whsec_...) is created when you add the webhook endpoint
+// (https://<host>/api/stripe/webhook.php) in the Stripe dashboard.
+define('STRIPE_PUBLISHABLE_KEY',			'');
+define('STRIPE_SECRET_KEY',					'');
+define('STRIPE_WEBHOOK_SECRET',				'');
+
 define('DYNDNS_ALLOWED_SUPERDOMAINS',		array('untrobotics.com'));
 define('DYNDNS_FORCE_SUBDOMAIN',			'dyndns'); // don't forget the trailing .
 

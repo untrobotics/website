@@ -334,6 +334,13 @@ function get_variant_variant($variant_name) {
 										<?php
 									}
 								?>
+								<div class="offset-top-10">
+									<button id="stripe-pay-button" type="button" class="btn btn-primary"
+										data-product="<?php echo htmlspecialchars($external_product_id); ?>"
+										data-variant="<?php echo htmlspecialchars($selected_variant->get_id()); ?>">
+										Pay with Card / Apple Pay
+									</button>
+								</div>
 							</div>
 						</div>
 				  	</div>
@@ -357,6 +364,7 @@ function get_variant_variant($variant_name) {
 <?php
 footer(false);
 ?>
+<script src="https://js.stripe.com/v3/"></script>
 <script>
 	$('#buy-shirt-form').on('submit', function(e) {
 		if ($('#choose-size').val() == 'none') {
@@ -367,5 +375,35 @@ footer(false);
 			alert('Please choose a colour.');
 			return false;
 		}
+	});
+
+	// Stripe Checkout (Card / Apple Pay). The server recomputes the price from
+	// Printful; we only send which product/variant was chosen.
+	$('#stripe-pay-button').on('click', function() {
+		const $btn = $(this);
+		$btn.prop('disabled', true).text('Redirecting...');
+		const params = new URLSearchParams();
+		params.set('source', 'merch');
+		params.set('product', $btn.data('product'));
+		params.set('variant', $btn.data('variant'));
+		fetch('/api/stripe/create-checkout-session', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			body: params.toString(),
+			credentials: 'same-origin'
+		})
+			.then(r => r.json())
+			.then(data => {
+				if (data && data.url) {
+					window.location = data.url;
+				} else {
+					alert((data && data.error) ? data.error : 'Unable to start checkout.');
+					$btn.prop('disabled', false).text('Pay with Card / Apple Pay');
+				}
+			})
+			.catch(() => {
+				alert('Unable to start checkout. Please try again.');
+				$btn.prop('disabled', false).text('Pay with Card / Apple Pay');
+			});
 	});
 </script>
