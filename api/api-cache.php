@@ -95,7 +95,7 @@ function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
             $ttl = $r['ttl'];
             $now = time();
             $retrieval_time = $r['last_successfully_retrieved'];
-            if ($retrieval_time !== null && $now - strtotime($retrieval_time . 'UTC') < $ttl) {
+            if ($retrieval_time !== null && $now - strtotime($retrieval_time . ' UTC') < $ttl) {
                 return new CacheResult($r['content']);
             }
         }
@@ -113,7 +113,7 @@ function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
         $config_id = get_config_id($endpoint);
         if ($config_id === null) {
             error_log("Failed to check cachability of endpoint \"{$endpoint_full}\". Result not cached.");
-            return new CacheResult(curl_exec($ch), true, $response_code, curl_errno($ch));
+            return new CacheResult($result, true, $response_code, curl_errno($ch));
         }
         // $config_id should be false if the endpoint can't be cached, otherwise it should be an int
         $can_be_cached = $config_id !== false;
@@ -122,7 +122,7 @@ function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
         cache($endpoint, $result, $config_id, ...$args);
     }
 
-    return new CacheResult(curl_exec($ch), true, $response_code, curl_errno($ch));
+    return new CacheResult($result, true, $response_code, curl_errno($ch));
 }
 
 /**
