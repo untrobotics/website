@@ -2,8 +2,6 @@
 require('../template/top.php');
 require(BASE . '/template/functions/hash.php');
 if (!empty($_POST)) {
-	require(BASE . '/template/functions/IP2Location.php');
-
 	$name = $_POST['name'];
 	$email = $_POST['email'];
 	$phone = preg_replace('/[^0-9]/', '', $_POST['phone_number']);
@@ -55,26 +53,16 @@ if (!empty($_POST)) {
 			$error = "The passwords you entered do not match";
 			break;
 		} else {
-			$ip = $_SERVER['REMOTE_ADDR'];
-			$ipdb = FALSE;
-			if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-				$ipdb = new \IP2Location\Database("$base/ip2location/IP2LOCATION-LITE-DB11.BIN", \IP2Location\Database::FILE_IO);
-			} else if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-				$ipdb = new \IP2Location\Database("$base/ip2location/IP2LOCATION-LITE-DB11.IPV6.BIN", \IP2Location\Database::FILE_IO);
-			}
-			if ($ipdb == FALSE) {
-				$timezone = "UTC";
-			} else {
-				$ipinfo = $ipdb->lookup($_SERVER['REMOTE_ADDR'], \IP2Location\Database::ALL);
-				$tzdb = file_get_contents("http://api.timezonedb.com?key=" . TIMEZONEDB_API_KEY . "&lat={$ipinfo['latitude']}&lng={$ipinfo['longitude']}&format=json");
-				$timezone = json_decode($tzdb);
-				$timezone = $timezone->zoneName;
-				if (!in_array($timezone, timezone_identifiers_list())) {
-					$timezone = "UTC";
-				}
-			}
+				$ip = $_SERVER['REMOTE_ADDR'];
 
-			// do query
+				// Timezone comes from the browser (hidden field set by Intl.DateTimeFormat)
+				// instead of an IP2Location lookup + external API.
+				$timezone = $_POST['timezone'] ?? '';
+				if (!in_array($timezone, timezone_identifiers_list(), true)) {
+					$timezone = TIMEZONE;
+				}
+
+				// do query
 			$q = $db->query('INSERT INTO users (name, email, phone, unteuid, grad_term, grad_year, password, reg_timestamp, reg_ip, timezone)
 			VALUES (
 				"' . $db->real_escape_string($name) . '",
@@ -154,6 +142,8 @@ head('Join', true);
 		  <div class="cell-xl-12 cell-lg-12 cell-md-12 cell-sm-12 text-left">
 			<h2>Join</h2>
 			<form data-form-output="form-output-global" data-form-type="login" method="post" action="" class="rd-mailform text-left">
+					<input type="hidden" name="timezone" id="reg-timezone">
+					<script>try{document.getElementById('reg-timezone').value=Intl.DateTimeFormat().resolvedOptions().timeZone;}catch(e){}</script>
 				<?php
 					if (isset($error)) {
 						?>
