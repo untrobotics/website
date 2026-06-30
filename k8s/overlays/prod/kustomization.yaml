@@ -7,11 +7,22 @@ resources:
   - ingress.yaml
 patches:
   - path: config-patch.yaml
-# When prod uses registry images, override here (built/pushed via CI to GHCR):
-# images:
-#   - name: untrobotics-web
-#     newName: ghcr.io/untrobotics/website
-#     newTag: "1.0.0"
-#   - name: untrobotics-driver-ws
-#     newName: ghcr.io/untrobotics/website-driver-ws
-#     newTag: "1.0.0"
+  # Pull the private GHCR images using the out-of-band ghcr-pull secret
+  # (created in untrobotics-prod: kubectl -n untrobotics-prod create secret
+  #  docker-registry ghcr-pull --docker-server=ghcr.io ...). See deploy/runbook.md.
+  - target:
+      kind: Deployment
+    patch: |-
+      - op: add
+        path: /spec/template/spec/imagePullSecrets
+        value:
+          - name: ghcr-pull
+# Prod runs immutable, versioned images built + pushed by CI to GHCR.
+# Promote a new build by bumping newTag to a freshly-tagged vX.Y.Z and syncing.
+images:
+  - name: untrobotics-web
+    newName: ghcr.io/untrobotics/website
+    newTag: "v1.0.0"
+  - name: untrobotics-driver-ws
+    newName: ghcr.io/untrobotics/website-driver-ws
+    newTag: "v1.0.0"
