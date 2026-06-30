@@ -101,6 +101,14 @@ define('PAYPAL_SANDBOX_API_ACCOUNT',		'');
 define('PAYPAL_SANDBOX_API_PASSWORD',		'');
 define('PAYPAL_SANDBOX_API_SIGNATURE',		'');
 
+// PayPal REST app (Orders v2 / JS SDK Smart Buttons). Create a REST app in the
+// PayPal Developer dashboard for live and for sandbox; sandbox vs live is chosen
+// at request time by $untrobotics->get_sandbox().
+define('PAYPAL_CLIENT_ID',				'');
+define('PAYPAL_CLIENT_SECRET',			'');
+define('PAYPAL_SANDBOX_CLIENT_ID',		'');
+define('PAYPAL_SANDBOX_CLIENT_SECRET',	'');
+
 // Stripe — Checkout + Apple Pay. Use pk_test/sk_test for dev, pk_live/sk_live for prod.
 // STRIPE_WEBHOOK_SECRET (whsec_...) is created when you add the webhook endpoint
 // (https://<host>/api/stripe/webhook.php) in the Stripe dashboard.

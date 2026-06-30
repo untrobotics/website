@@ -236,6 +236,26 @@ CREATE TABLE `password_reset_tokens` (
   UNIQUE KEY `uid` (`uid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `pending_payments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `pending_payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` varchar(64) NOT NULL,
+  `source` varchar(25) NOT NULL,
+  `custom` text NOT NULL,
+  `option_pairs` text NOT NULL,
+  `expected_amount` decimal(10,2) NOT NULL,
+  `currency` varchar(3) NOT NULL DEFAULT 'USD',
+  `item_name` varchar(255) DEFAULT NULL,
+  `quantity` int(11) NOT NULL DEFAULT '1',
+  `sandbox` tinyint(1) NOT NULL DEFAULT '0',
+  `captured` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `order_id` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `printful_order`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

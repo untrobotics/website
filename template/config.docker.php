@@ -119,6 +119,15 @@ define('PAYPAL_SANDBOX_API_ACCOUNT',  env('PAYPAL_SANDBOX_API_ACCOUNT'));
 define('PAYPAL_SANDBOX_API_PASSWORD', env('PAYPAL_SANDBOX_API_PASSWORD'));
 define('PAYPAL_SANDBOX_API_SIGNATURE', env('PAYPAL_SANDBOX_API_SIGNATURE'));
 
+// PayPal REST app (Orders v2 / JS SDK Smart Buttons). Created in the PayPal
+// Developer dashboard (one app for live, one for sandbox). The sandbox-vs-live
+// pair (and the api-m.sandbox.paypal.com vs api-m.paypal.com endpoint) is chosen
+// at request time by $untrobotics->get_sandbox(), exactly like the old buttons.
+define('PAYPAL_CLIENT_ID',          env('PAYPAL_CLIENT_ID'));
+define('PAYPAL_CLIENT_SECRET',      env('PAYPAL_CLIENT_SECRET'));
+define('PAYPAL_SANDBOX_CLIENT_ID',  env('PAYPAL_SANDBOX_CLIENT_ID'));
+define('PAYPAL_SANDBOX_CLIENT_SECRET', env('PAYPAL_SANDBOX_CLIENT_SECRET'));
+
 // Stripe — Checkout + Apple Pay. The pk_test/sk_test vs pk_live/sk_live prefix
 // already encodes test-vs-live, so no separate sandbox flag is needed.
 // STRIPE_WEBHOOK_SECRET is the "whsec_..." signing secret of the webhook

@@ -27,6 +27,10 @@ $next_term = $untrobotics->get_next_term();
 
 // only allow the user to pay for the full year it is the autumn semester
 $permit_full_year_payment = $current_term == Semester::AUTUMN;
+
+// PayPal JS SDK client id for the active environment (sandbox flag is set by the
+// auth() call inside head() for sandbox users; guests/live get the live id).
+$paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAYPAL_CLIENT_ID;
 ?>
 
 <style>
@@ -115,9 +119,7 @@ $permit_full_year_payment = $current_term == Semester::AUTUMN;
 
                         <p><strong style="font-size: 20px;"><pre style="display: inline-block;border-radius: 10px;">Cost: <span id="dues_cost">$<?php echo $single_semester_dues_price; ?></span></pre></strong></p>
 
-					<div class="dues-payment-button">
-                        Loading...
-					</div>
+					<div class="dues-payment-button"></div>
 
                     <div class="offset-top-10">
                         <button id="stripe-pay-button" type="button" class="btn btn-primary">Pay with Card / Apple Pay</button>
@@ -148,37 +150,16 @@ footer(false);
 ?>
 
 <script src="https://js.stripe.com/v3/"></script>
+<?php if (is_current_user_authenticated() && !$untrobotics->is_user_in_good_standing($userinfo)) { ?>
+<script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD"></script>
+<?php } ?>
 <script>
-    const cssLoader = `<div class="cssload-loader">
-              <div class="cssload-inner cssload-one"></div>
-              <div class="cssload-inner cssload-two"></div>
-              <div class="cssload-inner cssload-three"></div>
-            </div>`;
-
     const single_semester_price = <?php echo intval($single_semester_dues_price); ?>;
     const full_semester_price = <?php echo intval($full_year_dues_price); ?>;
     const t_shirt_price = <?php echo intval($t_shirt_dues_purchase_price); ?>;
 
     let fullYear = false;
     let tShirt = null;
-
-    function setNewButton() {
-        $('.dues-payment-button').html(cssLoader);
-        $.get(`/api/paypal/buttons/generator?t-shirt=${tShirt || ''}&full-year=${fullYear}`, (data) => {
-                if (data.cost !== getDuesCost()) {
-                    $('.dues-payment-button').html('<div class="alert alert-danger">Unable to load payment button.</div>');
-                    return;
-                }
-                $('.dues-payment-button').html(data.button);
-            })
-            .fail(error => {
-                $('.dues-payment-button').html('<div class="alert alert-danger">Unable to load payment button.</div>');
-            })
-    }
-
-    $(document).ready(function() {
-        setNewButton();
-    })
 
     function getDuesCost() {
         let cost = 0;
@@ -193,16 +174,60 @@ footer(false);
         return cost;
     }
 
+    // PayPal Smart Buttons (Orders v2). The button is rendered once; createOrder
+    // reads the current options at click time and the SERVER recomputes the price
+    // — the client never sends an amount.
+    if (window.paypal) {
+        paypal.Buttons({
+            createOrder: function() {
+                const params = new URLSearchParams();
+                params.set('source', 'dues');
+                params.set('full-year', fullYear ? 'true' : 'false');
+                params.set('t-shirt', tShirt || '');
+                return fetch('/api/paypal/orders/create.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params.toString(),
+                    credentials: 'same-origin'
+                })
+                    .then(r => r.json())
+                    .then(d => {
+                        if (!d || !d.id) {
+                            throw new Error((d && d.error) ? d.error : 'Unable to start checkout.');
+                        }
+                        return d.id;
+                    });
+            },
+            onApprove: function(data) {
+                return fetch('/api/paypal/orders/capture.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ order_id: data.orderID }),
+                    credentials: 'same-origin'
+                })
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d && d.success) {
+                            window.location = '/dues/paid';
+                        } else {
+                            alert((d && d.error) ? d.error : 'Your payment could not be completed.');
+                        }
+                    });
+            },
+            onError: function(err) {
+                alert('An error occurred with PayPal checkout. Please try again.');
+            }
+        }).render('.dues-payment-button');
+    }
+
 	$('input[name="full-year"]').on("change", function(e) {
         fullYear = !!$(this).is(':checked');
         $("#dues_cost").text("$" + getDuesCost());
-        setNewButton();
     });
 
 	$('#include-tshirt').on('change', function(e) {
 	    tShirt = e.target.value || null;
         $("#dues_cost").text("$" + getDuesCost());
-	    setNewButton();
     })
 
     // Stripe Checkout (Card / Apple Pay). The server recomputes the price; we

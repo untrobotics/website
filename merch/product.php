@@ -283,57 +283,11 @@ function get_variant_variant($variant_name) {
 							</ul>
 							<div class="offset-top-20">
 								<?php
-									$custom = serialize(array(
-										'source' => 'PRINTFUL_PRODUCT',
-										'product' => $external_product_id,
-										'variant' => $selected_variant->get_id()
-									));
-
-									$payment_button = new PaymentButton(
-										$product->get_name(),
-										$product->get_product_price()
-									);
-									if ($product->get_product_currency() != $payment_button->get_currency()) {
-										$payment_button->set_currency($product->get_product_currency());
-									}
-									$payment_button->set_custom($custom);
-									$payment_button->set_opt_names(array('Type', 'Product', 'Variant'));
-									$payment_button->set_opt_vals(array(
-										$catalog_product->get_type_name(),
-										$product->get_name(),
-										get_variant_variant($selected_variant->get_name())
-									));
-									$payment_button->set_complete_return_uri('/merch/buy/complete');
-
-									/*
-									$button = payment_button(
-											'T-Shirt', 
-											$product->get_product_price(),
-											$product->get_product_currency(),
-											$custom = $custom,
-											$opt_names = array('Type', 'Product', 'Variant'),
-											$opt_vals = array(
-												$catalog_product->get_type_name(),
-												$product->get_name(),
-												get_variant_variant($selected_variant->get_name())
-											),
-											$quantity = 1,
-											$complete_return_uri = '/merch/buy/complete'
-										);
-									*/
-
-									//echo $button['btn'];
-									$button = $payment_button->get_button();
-									if ($button->error === false) {
-										echo "button success";
-										echo $payment_button->get_button()->button;
-									} else {
-										// TODO: Alert
-										?>
-								<div class="alert alert-danger">An error occurred loading the payment button...</div>
-										<?php
-									}
+									// PayPal Smart Buttons (Orders v2) render here. The price is
+									// recomputed server-side from Printful by the create endpoint;
+									// the client only sends the product + variant.
 								?>
+								<div id="paypal-button-container"></div>
 								<div class="offset-top-10">
 									<button id="stripe-pay-button" type="button" class="btn btn-primary"
 										data-product="<?php echo htmlspecialchars($external_product_id); ?>"
@@ -365,6 +319,61 @@ function get_variant_variant($variant_name) {
 footer(false);
 ?>
 <script src="https://js.stripe.com/v3/"></script>
+<?php if ($product_can_be_handled) {
+	// PayPal JS SDK client id for the active environment (sandbox flag is set by
+	// the auth() call inside head() for sandbox users; guests/live get the live id).
+	$paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAYPAL_CLIENT_ID;
+?>
+<script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD"></script>
+<script>
+	// PayPal Smart Buttons (Orders v2). The server recomputes the price from
+	// Printful; we only send which product/variant was chosen.
+	const PAYPAL_MERCH_PRODUCT = <?php echo json_encode($external_product_id); ?>;
+	const PAYPAL_MERCH_VARIANT = <?php echo json_encode((string) $selected_variant->get_id()); ?>;
+	if (window.paypal) {
+		paypal.Buttons({
+			createOrder: function() {
+				const params = new URLSearchParams();
+				params.set('source', 'merch');
+				params.set('product', PAYPAL_MERCH_PRODUCT);
+				params.set('variant', PAYPAL_MERCH_VARIANT);
+				return fetch('/api/paypal/orders/create.php', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+					body: params.toString(),
+					credentials: 'same-origin'
+				})
+					.then(r => r.json())
+					.then(d => {
+						if (!d || !d.id) {
+							throw new Error((d && d.error) ? d.error : 'Unable to start checkout.');
+						}
+						return d.id;
+					});
+			},
+			onApprove: function(data) {
+				return fetch('/api/paypal/orders/capture.php', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ order_id: data.orderID }),
+					credentials: 'same-origin'
+				})
+					.then(r => r.json())
+					.then(d => {
+						if (d && d.success) {
+							window.location = '/merch/buy/complete';
+						} else {
+							alert((d && d.error) ? d.error : 'Your payment could not be completed.');
+						}
+					});
+			},
+			onError: function(err) {
+				alert('An error occurred with PayPal checkout. Please try again.');
+			}
+		}).render('#paypal-button-container');
+	}
+</script>
+<?php } ?>
 <script>
 	$('#buy-shirt-form').on('submit', function(e) {
 		if ($('#choose-size').val() == 'none') {
