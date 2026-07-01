@@ -36,7 +36,7 @@ inet_protocols = ipv4
 mynetworks = 127.0.0.0/8 [::1]/128 10.42.0.0/16
 
 # Virtual forwarding: alias@untrobotics.com -> external mailbox.
-virtual_alias_domains = untrobotics.com
+virtual_alias_domains = untrobotics.com auto-ingest.untrobotics.com
 virtual_alias_maps = hash:/etc/postfix/virtual
 
 # OrgSync/CampusLabs auto-welcome ingest. The virtual map rewrites

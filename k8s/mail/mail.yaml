@@ -12,6 +12,10 @@ data:
     # internal pseudo-domain orgsync-ingest.local, which transport_maps sends to
     # the `orgsync-pipe` service (master.cf) -> orgsync-ingest.py -> POST to the
     # web handler api/sendgrid-inbound/parse.php. MUST stay ABOVE the catch-all.
+    # OrgSync/CampusLabs already sends to auto-ingest.untrobotics.com (unchanged —
+    # only its MX moves from SendGrid to this relay). Route the whole subdomain to
+    # the pipe so no OrgSync reconfiguration is needed.
+    @auto-ingest.untrobotics.com   orgsync@orgsync-ingest.local
     orgsync@untrobotics.com   orgsync@orgsync-ingest.local
     # Catch-all: every address @untrobotics.com forwards to the club inbox.
     # The original recipient stays in the To:/Received headers, so you can filter
