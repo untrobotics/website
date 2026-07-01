@@ -52,6 +52,8 @@ spec:
               value: "1521694650027479253"
             - name: DISCORD_VERIFY_CHANNEL_ID
               value: "1521694041136300083"
+            - name: DISCORD_VERIFY_HELP_CHANNEL_ID
+              value: "1521913423192002750"
             # Verification audit log channel (defaults to the admin channel).
             - name: DISCORD_LOG_CHANNEL_ID
               value: "674703370971250708"
