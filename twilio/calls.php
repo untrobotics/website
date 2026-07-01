@@ -8,6 +8,14 @@ if ($_GET['code'] !== API_SECRET) {
 	die();
 }
 
+// In addition to the shared ?code secret, verify Twilio's request signature when
+// an auth token is configured (no-op fallback to the code check if it isn't).
+require_once('twilio-signature.php');
+if (!validate_twilio_signature()) {
+	http_response_code(403);
+	die();
+}
+
 //TODO: if the call comes in from 402-935-7733 do something about it because this is paypal
 
 ?><?xml version="1.0" encoding="UTF-8"?>

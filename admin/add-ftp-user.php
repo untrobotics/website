@@ -1,6 +1,13 @@
 <?php
 require('../template/top.php');
 
+// Admin-only: this page creates and DELETES server FTP accounts. Gate before any
+// handler runs. auth(2) returns the [userinfo, session] array only for admins.
+if (!is_array(auth(2))) {
+    header("Location: /auth/login?returnto=" . $_SERVER['REQUEST_URI']);
+    die();
+}
+
 function handleUserDeletion($request) {
     global $db;
 

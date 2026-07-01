@@ -15,7 +15,35 @@ if ($_GET['code'] !== API_SECRET) {
         die();
 }
 
+// In addition to the ?code secret, require a valid Twilio signature when an auth
+// token is configured. This endpoint is normally invoked server-to-server by
+// process-incoming-call.php, which signs its request; falls back to code-only
+// when no token is set.
+require('../twilio-signature.php');
+if (!validate_twilio_signature()) {
+        http_response_code(403);
+        die();
+}
+
 require('../phone-numbers-config.php');
+
+// Redact a phone number for logging — keep only the last 4 digits so call/message
+// logs don't leak members' full PII. Returns e.g. "***7733".
+function redact_phone($number) {
+	$number = (string)$number;
+	return $number === '' ? '' : '***' . substr($number, -4);
+}
+
+$incoming_sid = $_GET['SID'] ?? '';
+
+// $incoming_sid is attacker-controlled ($_GET) and gets concatenated into the
+// Twilio REST URL below (.../Calls/{sid}.json), so reject anything that isn't a
+// well-formed Twilio SID (two uppercase letters + 32 hex chars) to prevent
+// SSRF / path injection.
+if (!preg_match('/^[A-Z]{2}[0-9a-f]{32}$/', $incoming_sid)) {
+	http_response_code(400);
+	die();
+}
 
 function dial_attempt($incoming_sid, $phone_number) {
 	$ch = curl_init();
@@ -40,7 +68,7 @@ function dial_attempt($incoming_sid, $phone_number) {
 
 	$data = json_decode($result);
 	
-	error_log("[$incoming_sid] DIAL ATTEMPT. TO:" . $data->to);
+	error_log("[$incoming_sid] DIAL ATTEMPT. TO:" . redact_phone($data->to));
 
 	return $data->sid;
 }
@@ -62,7 +90,7 @@ function call_info($sid) {
 
     $ch = curl_init();
 
-    curl_setopt($ch, CURLOPT_URL, 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/Calls/' . $sid . '.json');
+    curl_setopt($ch, CURLOPT_URL, 'https://api.twilio.com/2010-04-01/Accounts/' . TWILIO_ACCOUNT_SID . '/Calls/' . rawurlencode($sid) . '.json');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
 
@@ -107,14 +135,12 @@ function queue_size($queue_sid = TWILIO_FIND_FIRST_QUEUE_SID) {
 	return intval($data->current_size);
 }
 
-$incoming_sid = $_GET['SID'];
-
 sleep(1); // give the queue a chance to register
 
 $max_attempts = 5;
 $i = 1;
 
-error_log("[$incoming_sid] INCOMING CALL. FROM:" . call_info($incoming_sid)->from);
+error_log("[$incoming_sid] INCOMING CALL. FROM:" . redact_phone(call_info($incoming_sid)->from));
 
 while ($i <= $max_attempts) {
     foreach (constant('PHONE_NUMBERS') as $phone_number) {

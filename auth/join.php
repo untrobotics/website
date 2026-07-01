@@ -153,19 +153,19 @@ head('Join', true);
 				?>
 				  <div class="form-group postfix-xl-right-40">
 					<label for="name" class="form-label">Name</label>
-					<input id="name" type="text" name="name" data-constraints="@Required" class="form-control" <?php if (isset($_POST['name'])) { echo 'value="' . $_POST['name'] . '"'; } ?>>
+					<input id="name" type="text" name="name" data-constraints="@Required" class="form-control" <?php if (isset($_POST['name'])) { echo 'value="' . htmlspecialchars($_POST['name'] ?? '', ENT_QUOTES) . '"'; } ?>>
 				  </div>
 				  <div class="form-group postfix-xl-right-40">
 					<label for="email" class="form-label">E-mail address</label>
-					<input id="email" type="text" name="email" data-constraints="@Required" class="form-control" <?php if (isset($_POST['email'])) { echo 'value="' . $_POST['email'] . '"'; } ?>>
+					<input id="email" type="text" name="email" data-constraints="@Required" class="form-control" <?php if (isset($_POST['email'])) { echo 'value="' . htmlspecialchars($_POST['email'] ?? '', ENT_QUOTES) . '"'; } ?>>
 				  </div>
 				  <div class="form-group postfix-xl-right-40">
 					<label for="phone_number" class="form-label">Phone Number</label>
-					<input id="phone_number" type="text" name="phone_number" data-constraints="@Required" class="form-control" <?php if (isset($_POST['phone_number'])) { echo 'value="' . $_POST['phone_number'] . '"'; } ?>>
+					<input id="phone_number" type="text" name="phone_number" data-constraints="@Required" class="form-control" <?php if (isset($_POST['phone_number'])) { echo 'value="' . htmlspecialchars($_POST['phone_number'] ?? '', ENT_QUOTES) . '"'; } ?>>
 				  </div>
 				  <div class="form-group postfix-xl-right-40">
 					<label for="unteuid" class="form-label">UNT EUID</label>
-					<input id="unteuid" type="text" name="unteuid" data-constraints="@Required" class="form-control" <?php if (isset($_POST['unteuid'])) { echo 'value="' . $_POST['unteuid'] . '"'; } ?>>
+					<input id="unteuid" type="text" name="unteuid" data-constraints="@Required" class="form-control" <?php if (isset($_POST['unteuid'])) { echo 'value="' . htmlspecialchars($_POST['unteuid'] ?? '', ENT_QUOTES) . '"'; } ?>>
 				  </div>
 				  <div class="postfix-xl-right-40">
 					<!--<label for="graduation_date" class="form-label">Graduation Date</label>-->

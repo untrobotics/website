@@ -4,6 +4,13 @@ if ($_GET['code'] !== API_SECRET) {
 	http_response_code(401);
 	die();
 }
+// Verify Twilio's request signature when a token is configured, in addition to
+// the ?code check above (falls back to code-only if no token is set yet).
+require('twilio-signature.php');
+if (!validate_twilio_signature()) {
+	http_response_code(403);
+	die();
+}
 // Keep phone numbers out of normal config file!!
 // This is just in case some other part of the system gets compromised, it stops all of our phone numbers being in the global scope of all pages on the website.
 require('phone-numbers-config.php');
@@ -68,10 +75,25 @@ flush();
 // the curl request must be done asynchronously, because the script called here checks to make sure the Queue size is greater than one,
 // however the call won't get added to the queue until this XML is returned, which without the async call waits for the curl to finish
 if (intval($_POST['Digits']) === 0) {
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'https://' . $_SERVER['SERVER_NAME'] . '/twilio/find-first/find-first-available.php?code=' . API_SECRET . '&SID=' . $_POST['CallSid']);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_exec($ch);
-	curl_close($ch);
+	// CallSid is attacker-controlled ($_POST) and gets concatenated into the
+	// internal URL below, so only proceed for a well-formed Twilio SID and
+	// rawurlencode it to avoid SSRF / parameter injection.
+	$call_sid = $_POST['CallSid'] ?? '';
+	if (preg_match('/^[A-Z]{2}[0-9a-f]{32}$/', $call_sid)) {
+		$ff_url = 'https://' . $_SERVER['SERVER_NAME'] . '/twilio/find-first/find-first-available.php?code=' . API_SECRET . '&SID=' . rawurlencode($call_sid);
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $ff_url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		// This is a server-to-server GET, so Twilio wouldn't sign it. When an auth
+		// token is configured, sign it ourselves (signature over just the URL, no
+		// POST body) so find-first-available's signature check accepts it.
+		if (defined('TWILIO_AUTH_TOKEN') && TWILIO_AUTH_TOKEN !== '') {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				'X-Twilio-Signature: ' . compute_twilio_signature($ff_url, array()),
+			));
+		}
+		curl_exec($ch);
+		curl_close($ch);
+	}
 }
 ?>

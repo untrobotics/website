@@ -2,6 +2,12 @@
 
 require('../template/top.php');
 
+// Admin-only: dumps every registrant's PII (name, email, phone, major, etc.).
+if (!is_array(auth(2))) {
+    header("Location: /auth/login?returnto=" . $_SERVER['REQUEST_URI']);
+    die();
+}
+
 $q = $db->query('SELECT * FROM botathon_registration WHERE season = "' . $db->real_escape_string(BOTATHON_SEASON) . '"');
 
 echo '<pre>';

@@ -30,6 +30,5 @@ function sid_to_phone_number($sid) {
 	curl_close ($ch);
 
 	$data = json_decode($result);
-	error_log(var_export($data, true));
 	return $data->from;
 }

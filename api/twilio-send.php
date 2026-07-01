@@ -3,16 +3,26 @@ require_once("../template/config.php");
 
 function send_sms_message($message, $to, $attachments) {
 
+	// Build the x-www-form-urlencoded body with every value properly encoded.
+	// $message, $to and each MediaUrl are caller/attacker-controlled, so raw
+	// interpolation would allow injecting extra Twilio parameters. http_build_query
+	// can't emit repeated MediaUrl= keys from an array, so encode those by hand.
 	$media = '';
 	foreach ($attachments as $attachment) {
-		$media .= 'MediaUrl=' . $attachment . '&';
+		$media .= 'MediaUrl=' . urlencode($attachment) . '&';
 	}
+
+	$body = $media . http_build_query(array(
+		'Body' => $message,
+		'From' => PHONE_NUMBER,
+		'To'   => $to,
+	));
 
 	$ch = curl_init();
 
 	curl_setopt($ch, CURLOPT_URL, "https://api.twilio.com/2010-04-01/Accounts/" . TWILIO_ACCOUNT_SID . "/Messages.json");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, "{$media}Body={$message}&From=" . PHONE_NUMBER . "&To={$to}");
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_USERPWD, TWILIO_ACCOUNT_SID . ':' . TWILIO_AUTH_TOKEN);
 

@@ -1,6 +1,12 @@
 <?php
 require("../template/top.php");
 
+// Admin-only: exposes any member's standing by UID (membership enumeration).
+if (!is_array(auth(2))) {
+    header("Location: /auth/login?returnto=" . $_SERVER['REQUEST_URI']);
+    die();
+}
+
 $u = @$_GET['u'];
 if (empty($u)) {
     die("UID not specified.");

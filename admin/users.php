@@ -1,6 +1,15 @@
 <?php
 require("../template/top.php");
 
+// Admin-only: this page exposes member PII (names, emails, phone/EUID) and a full
+// CSV export. Gate BEFORE any query runs or any output/CSV is produced. auth(2)
+// returns the [userinfo, session] array only for authenticated admins (is_admin = 1)
+// and false otherwise; non-admins get bounced to login, matching head()'s behavior.
+if (!is_array(auth(2))) {
+    header("Location: /auth/login?returnto=" . $_SERVER['REQUEST_URI']);
+    die();
+}
+
 $term = @$_GET['term'];
 $year = @$_GET['year'];
 if (strlen($term) == 0) {
@@ -37,7 +46,7 @@ if (isset($_GET['download'])) {
         // email
         // graduation date
         // euid
-        echo "{$user['name']},{$user['email']}," . Semester::get_name_from_value($user['grad_term']) . ",{$user['grad_year']},{$user['unteuid']},{$r['payment_timestamp']},{$r['txid']},{$r['amount']}\n";
+        echo htmlspecialchars($user['name'], ENT_QUOTES) . "," . htmlspecialchars($user['email'], ENT_QUOTES) . "," . Semester::get_name_from_value($user['grad_term']) . "," . htmlspecialchars($user['grad_year'], ENT_QUOTES) . "," . htmlspecialchars($user['unteuid'], ENT_QUOTES) . "," . htmlspecialchars($r['payment_timestamp'], ENT_QUOTES) . "," . htmlspecialchars($r['txid'], ENT_QUOTES) . "," . htmlspecialchars($r['amount'], ENT_QUOTES) . "\n";
     }
 
     die();
@@ -107,13 +116,13 @@ if (isset($_GET['download'])) {
 
         ?>
             <tr>
-                <td><?php echo $user['name']; ?></td>
-                <td><?php echo $user['email']; ?></td>
-                <td><?php echo Semester::get_name_from_value($user['grad_term']); ?> - <?php echo $user['grad_year']; ?></td>
-                <td><?php echo $user['unteuid']; ?></td>
-                <td><?php echo $r['payment_timestamp']; ?></td>
-                <td><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=<?php echo $r['txid']; ?>"><?php echo $r['txid']; ?></a></td>
-                <td><?php echo $user['discord_id']; ?></td>
+                <td><?php echo htmlspecialchars($user['name'], ENT_QUOTES); ?></td>
+                <td><?php echo htmlspecialchars($user['email'], ENT_QUOTES); ?></td>
+                <td><?php echo Semester::get_name_from_value($user['grad_term']); ?> - <?php echo htmlspecialchars($user['grad_year'], ENT_QUOTES); ?></td>
+                <td><?php echo htmlspecialchars($user['unteuid'], ENT_QUOTES); ?></td>
+                <td><?php echo htmlspecialchars($r['payment_timestamp'], ENT_QUOTES); ?></td>
+                <td><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=<?php echo htmlspecialchars($r['txid'], ENT_QUOTES); ?>"><?php echo htmlspecialchars($r['txid'], ENT_QUOTES); ?></a></td>
+                <td><?php echo htmlspecialchars($user['discord_id'], ENT_QUOTES); ?></td>
             </tr>
         <?php
     }

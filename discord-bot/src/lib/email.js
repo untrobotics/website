@@ -1,15 +1,8 @@
 'use strict';
 
-const path = require('path');
 const nodemailer = require('nodemailer');
 const { config } = require('../config');
 const log = require('../logger');
-
-// Header banner, bundled into the image at build time (see Dockerfile). Attached
-// inline and referenced by CID so it renders without remote-image blocking —
-// mirrors the site's email() (template/top.php), which embeds the same asset.
-const BANNER_PATH = path.join(__dirname, '..', '..', 'assets', 'unt-robotics-email-header.jpg');
-const BANNER_CID = 'untrobotics-email-header';
 
 // Outbound goes through the self-hosted Postfix relay (the untrobotics-mail
 // service), same as the website's email(). SendGrid is inbound-ingest only, so
@@ -40,20 +33,20 @@ function brandedHtml(inner) {
     '<table role="presentation" align="center" width="600" cellpadding="0" cellspacing="0" border="0" ' +
     'style="width:100%;max-width:600px;margin:0 auto;background:#ffffff;' +
     'border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.08);">' +
-    '<tr><td style="padding:0;line-height:0;">' +
-    `<img src="cid:${BANNER_CID}" alt="UNT Robotics" width="600" ` +
+    '<tr><td style="padding:0;line-height:0;background:#00853e;">' +
+    '<img src="https://www.untrobotics.com/images/unt-robotics-email-header.jpg" alt="UNT Robotics" width="600" ' +
     'style="display:block;width:100%;max-width:600px;height:auto;border:0;"></td></tr>' +
     '<tr><td style="padding:32px 36px;font-size:15px;line-height:1.6;color:#1a1a1a;">' +
     inner +
     '</td></tr>' +
-    '<tr><td style="padding:22px 36px;background:#0b2545;text-align:center;' +
-    'font-size:12px;line-height:1.6;color:#b8c4d4;">' +
+    '<tr><td style="padding:22px 36px;background:#00853e;text-align:center;' +
+    'font-size:12px;line-height:1.6;color:#eafaef;">' +
     'UNT Robotics &middot; University of North Texas<br>' +
-    '<a href="https://www.untrobotics.com" style="color:#7ec8e3;text-decoration:none;">untrobotics.com</a>' +
+    '<a href="https://www.untrobotics.com" style="color:#ffffff;text-decoration:underline;">untrobotics.com</a>' +
     ' &nbsp;&middot;&nbsp; ' +
-    '<a href="mailto:hello@untrobotics.com" style="color:#7ec8e3;text-decoration:none;">hello@untrobotics.com</a>' +
+    '<a href="mailto:hello@untrobotics.com" style="color:#ffffff;text-decoration:underline;">hello@untrobotics.com</a>' +
     ' &nbsp;&middot;&nbsp; ' +
-    '<a href="https://www.untrobotics.com/discord" style="color:#7ec8e3;text-decoration:none;">Discord</a>' +
+    '<a href="https://www.untrobotics.com/discord" style="color:#ffffff;text-decoration:underline;">Discord</a>' +
     '</td></tr></table></div>'
   );
 }
@@ -99,9 +92,6 @@ async function sendVerificationCode(to, code, ttlMins) {
       `you can safely ignore this email.\n\n` +
       `— UNT Robotics`,
     html: brandedHtml(inner),
-    attachments: [
-      { filename: 'unt-robotics-email-header.jpg', path: BANNER_PATH, cid: BANNER_CID },
-    ],
   };
 
   try {
