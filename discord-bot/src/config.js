@@ -58,6 +58,9 @@ const config = Object.freeze({
   // Verification feature targets.
   verifiedRoleId: env('DISCORD_VERIFIED_ROLE_ID'),
   verifyChannelId: env('DISCORD_VERIFY_CHANNEL_ID'),
+  // Where non-UNT folks (other schools, HS, industry mentors) go for MANUAL
+  // verification. Rendered as a clickable channel mention if set.
+  verifyHelpChannelId: env('DISCORD_VERIFY_HELP_CHANNEL_ID'),
   // Channel that receives verification audit lines. Defaults to the admin
   // channel used by the PHP bot (api/discord/bots/admin.php).
   logChannelId: env('DISCORD_LOG_CHANNEL_ID', '674703370971250708'),

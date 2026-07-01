@@ -71,9 +71,14 @@ module.exports = {
     const messages = {
       invalid_email: 'That doesn\'t look like a valid email address. Please try again.',
       bad_domain:
-        'That email isn\'t a recognised UNT address. Allowed domains: ' +
+        "That's not a UNT email. Automatic `/verify` is only for current UNT " +
+        'students & staff (' +
         config.allowedEmailDomains.map((d) => `\`${d}\``).join(', ') +
-        '.',
+        ").\n\nIf you're from **another university or a high school**, or an " +
+        "**industry mentor**, you're welcome here — please request **manual " +
+        'verification** in ' +
+        (config.verifyHelpChannelId ? `<#${config.verifyHelpChannelId}>` : '#verification-help') +
+        ' and an officer will get you sorted.',
       already_verified: "You're already verified. 🎉",
       email_taken:
         'That email is already linked to a different Discord account. ' +
