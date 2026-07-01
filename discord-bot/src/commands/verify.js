@@ -50,7 +50,7 @@ module.exports = {
 
     let result;
     try {
-      result = await verification.requestCode(interaction.user.id, email);
+      result = await verification.requestCode(interaction.user.id, email, interaction.user.tag);
     } catch (err) {
       log.error('verify: requestCode threw', err.message);
       await interaction.editReply(

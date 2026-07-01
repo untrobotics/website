@@ -5,17 +5,19 @@
  * human member of the guild. Idempotent — members who already have the role are
  * skipped, so it is safe to re-run.
  *
+ * Uses the REST API only (NO gateway connection), so it can run alongside the
+ * live bot without disrupting its gateway session. @discordjs/rest queues the
+ * requests and respects Discord's rate limits automatically.
+ *
  * Usage (role id via env or first arg):
  *   DISCORD_VERIFIED_LEGACY_ROLE_ID=1521695260521005147 node src/scripts/backfill-legacy.js
  *   node src/scripts/backfill-legacy.js 1521695260521005147
  *
- * Requires the Server Members (GuildMembers) intent and the bot's role to sit
- * ABOVE the target role in the hierarchy. discord.js queues the role edits and
- * respects Discord's rate limits automatically, so large servers just take a
- * little while.
+ * Requires the Server Members intent (for the list-members REST endpoint) and
+ * the bot's role to sit ABOVE the target role in the hierarchy.
  */
 
-const { Client, GatewayIntentBits } = require('discord.js');
+const { REST, Routes } = require('discord.js');
 const { config } = require('../config');
 const log = require('../logger');
 
@@ -29,54 +31,61 @@ if (!config.token) {
   process.exit(1);
 }
 
-const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
-});
+const rest = new REST({ version: '10' }).setToken(config.token);
 
-client.once('ready', async () => {
-  let code = 0;
-  try {
-    const guild = await client.guilds.fetch(config.guildId);
-    const role = await guild.roles.fetch(roleId);
-    if (!role) throw new Error(`role ${roleId} not found in guild ${config.guildId}`);
+async function fetchAllMembers() {
+  const members = [];
+  let after = '0';
+  // Paginate: max 1000 per page, page by ascending user id.
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const page = await rest.get(Routes.guildMembers(config.guildId), {
+      query: new URLSearchParams({ limit: '1000', after }),
+    });
+    if (!Array.isArray(page) || page.length === 0) break;
+    members.push(...page);
+    after = page[page.length - 1].user.id;
+    if (page.length < 1000) break;
+  }
+  return members;
+}
 
-    // Guard: the bot can only assign roles below its own highest role.
-    const me = await guild.members.fetchMe();
-    if (role.position >= me.roles.highest.position) {
-      throw new Error(
-        `bot's highest role must be ABOVE "${role.name}" in the hierarchy — move it up and re-run`
-      );
-    }
+async function main() {
+  const members = await fetchAllMembers();
+  log.info(`backfill-legacy: ${members.length} members; granting role ${roleId}`);
 
-    const members = await guild.members.fetch(); // needs Server Members intent
-    log.info(`backfill-legacy: ${members.size} members; granting "${role.name}" (${roleId})`);
-
-    let added = 0;
-    let skipped = 0;
-    let failed = 0;
-    for (const member of members.values()) {
-      if (member.user.bot) { skipped++; continue; }
-      if (member.roles.cache.has(roleId)) { skipped++; continue; }
-      try {
-        await member.roles.add(roleId, 'Verified Legacy one-time backfill');
-        added++;
-        if (added % 25 === 0) log.info(`  ...${added} granted so far`);
-      } catch (err) {
-        failed++;
-        log.error(`  failed for ${member.user.tag} (${member.id}): ${err.message}`);
+  let added = 0;
+  let skipped = 0;
+  let failed = 0;
+  for (const m of members) {
+    if (!m.user || m.user.bot) { skipped++; continue; }
+    if (Array.isArray(m.roles) && m.roles.includes(roleId)) { skipped++; continue; }
+    try {
+      await rest.put(Routes.guildMemberRole(config.guildId, m.user.id, roleId), {
+        reason: 'Verified Legacy one-time backfill',
+      });
+      added++;
+      if (added % 25 === 0) log.info(`  ...${added} granted so far`);
+    } catch (err) {
+      failed++;
+      const who = m.user ? `${m.user.username} (${m.user.id})` : 'unknown';
+      log.error(`  failed for ${who}: ${err.message}`);
+      // If the very first grant fails with 403, it's almost certainly the role
+      // hierarchy (bot role must be above the target) — bail early with a hint.
+      if (added === 0 && failed === 1 && /Missing Permissions|403/.test(err.message)) {
+        log.error('  -> looks like a permissions/hierarchy issue: move the bot\'s role ABOVE the target role and re-run.');
+        break;
       }
     }
-
-    log.info(`backfill-legacy DONE: added=${added} skipped=${skipped} failed=${failed}`);
-    if (failed > 0) code = 2;
-  } catch (err) {
-    log.error(`backfill-legacy error: ${err.message}`);
-    code = 1;
-  } finally {
-    client.destroy();
-    process.exit(code);
   }
-});
 
-client.on('error', (e) => log.error(`client error: ${e.message}`));
-client.login(config.token);
+  log.info(`backfill-legacy DONE: added=${added} skipped=${skipped} failed=${failed}`);
+  return failed > 0 ? 2 : 0;
+}
+
+main()
+  .then((code) => process.exit(code))
+  .catch((err) => {
+    log.error(`backfill-legacy error: ${err.message}`);
+    process.exit(1);
+  });

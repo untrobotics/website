@@ -5,6 +5,7 @@ const { pool } = require('../db');
 const { config } = require('../config');
 const ratelimit = require('./ratelimit');
 const { sendVerificationCode } = require('./email');
+const { logAttempt } = require('./auditlog');
 const log = require('../logger');
 
 /* -------------------------------------------------------------------------- */
@@ -81,22 +82,37 @@ async function getRow(discordId) {
  *
  * reasons: invalid_email, bad_domain, already_verified, email_taken,
  *          cooldown, hourly_limit, email_failed, sent
+ *
+ * `username` is an optional Discord tag captured for the append-only audit log
+ * only; it is nullable and never affects the verification logic.
  */
-async function requestCode(discordId, rawEmail) {
+async function requestCode(discordId, rawEmail, username) {
   const email = normalizeEmail(rawEmail);
 
-  if (!looksLikeEmail(email)) return { ok: false, reason: 'invalid_email' };
-  if (!isAllowedDomain(email)) return { ok: false, reason: 'bad_domain' };
+  if (!looksLikeEmail(email)) {
+    await logAttempt({ discordId, username, email, action: 'verify_request', outcome: 'invalid_email' });
+    return { ok: false, reason: 'invalid_email' };
+  }
+  if (!isAllowedDomain(email)) {
+    await logAttempt({ discordId, username, email, action: 'verify_request', outcome: 'bad_domain' });
+    return { ok: false, reason: 'bad_domain' };
+  }
 
   const row = await getRow(discordId);
-  if (row && row.verified) return { ok: false, reason: 'already_verified' };
+  if (row && row.verified) {
+    await logAttempt({ discordId, username, email, action: 'verify_request', outcome: 'already_verified' });
+    return { ok: false, reason: 'already_verified' };
+  }
 
   // Prevent account sharing: an email may only ever bind to one discord id.
   const [taken] = await pool.query(
     'SELECT discord_id FROM discord_verifications WHERE email = ? AND discord_id <> ? LIMIT 1',
     [email, discordId]
   );
-  if (taken.length) return { ok: false, reason: 'email_taken' };
+  if (taken.length) {
+    await logAttempt({ discordId, username, email, action: 'verify_request', outcome: 'email_taken' });
+    return { ok: false, reason: 'email_taken' };
+  }
 
   const now = new Date();
 
@@ -104,16 +120,23 @@ async function requestCode(discordId, rawEmail) {
   // the DB row is updated). Authoritative window state still lives in the row.
   const cdKey = `verify:${discordId}`;
   const cdRemaining = ratelimit.secondsRemaining(cdKey);
-  if (cdRemaining > 0) return { ok: false, reason: 'cooldown', retryAfter: cdRemaining };
+  if (cdRemaining > 0) {
+    await logAttempt({
+      discordId, username, email, action: 'verify_request',
+      outcome: 'cooldown', detail: `retryAfter=${cdRemaining}`,
+    });
+    return { ok: false, reason: 'cooldown', retryAfter: cdRemaining };
+  }
 
   if (row && row.last_sent_at) {
     const since = (now - new Date(row.last_sent_at)) / 1000;
     if (since < config.verifyCooldownSeconds) {
-      return {
-        ok: false,
-        reason: 'cooldown',
-        retryAfter: Math.ceil(config.verifyCooldownSeconds - since),
-      };
+      const retryAfter = Math.ceil(config.verifyCooldownSeconds - since);
+      await logAttempt({
+        discordId, username, email, action: 'verify_request',
+        outcome: 'cooldown', detail: `retryAfter=${retryAfter}`,
+      });
+      return { ok: false, reason: 'cooldown', retryAfter };
     }
   }
 
@@ -128,6 +151,10 @@ async function requestCode(discordId, rawEmail) {
   }
   if (sendCount >= config.maxVerifyPerHour) {
     const retryAfter = Math.ceil(3600 - windowAgeSec);
+    await logAttempt({
+      discordId, username, email, action: 'verify_request',
+      outcome: 'hourly_limit', detail: `retryAfter=${retryAfter}`,
+    });
     return { ok: false, reason: 'hourly_limit', retryAfter };
   }
 
@@ -146,6 +173,7 @@ async function requestCode(discordId, rawEmail) {
   } catch (err) {
     ratelimit.clear(cdKey); // send failed — don't penalise the user
     log.error('verification: email send failed', err.message);
+    await logAttempt({ discordId, username, email, action: 'verify_request', outcome: 'email_failed' });
     return { ok: false, reason: 'email_failed' };
   }
 
@@ -166,6 +194,7 @@ async function requestCode(discordId, rawEmail) {
     [discordId, email, codeHash, expiresAt, now, sendCount + 1, windowStartedAt]
   );
 
+  await logAttempt({ discordId, username, email, action: 'verify_request', outcome: 'sent' });
   return { ok: true, reason: 'sent', email };
 }
 
@@ -182,16 +211,31 @@ async function requestCode(discordId, rawEmail) {
  *
  * `expired` and `invalid` both correspond to the SAME generic user message
  * ("invalid or expired code") so we never reveal which condition failed.
+ *
+ * `username` is an optional Discord tag captured for the append-only audit log
+ * only; it is nullable and never affects the redemption logic.
  */
-async function redeemToken(discordId, submittedCode) {
+async function redeemToken(discordId, submittedCode, username) {
   const row = await getRow(discordId);
-  if (!row) return { ok: false, reason: 'no_request' };
-  if (row.verified) return { ok: false, reason: 'already_verified' };
+  if (!row) {
+    await logAttempt({ discordId, username, action: 'token_attempt', outcome: 'no_request' });
+    return { ok: false, reason: 'no_request' };
+  }
+  if (row.verified) {
+    await logAttempt({
+      discordId, username, email: row.email, action: 'token_attempt', outcome: 'already_verified',
+    });
+    return { ok: false, reason: 'already_verified' };
+  }
 
   const now = new Date();
 
   if (row.locked_until && new Date(row.locked_until) > now) {
     const retryAfter = Math.ceil((new Date(row.locked_until) - now) / 1000);
+    await logAttempt({
+      discordId, username, email: row.email, action: 'token_attempt',
+      outcome: 'locked', detail: `retryAfter=${retryAfter}`,
+    });
     return { ok: false, reason: 'locked', retryAfter };
   }
 
@@ -199,12 +243,19 @@ async function redeemToken(discordId, submittedCode) {
   const cdKey = `token:${discordId}`;
   const cdRemaining = ratelimit.secondsRemaining(cdKey);
   if (cdRemaining > 0) {
+    await logAttempt({
+      discordId, username, email: row.email, action: 'token_attempt',
+      outcome: 'attempt_cooldown', detail: `retryAfter=${cdRemaining}`,
+    });
     return { ok: false, reason: 'attempt_cooldown', retryAfter: cdRemaining };
   }
   ratelimit.arm(cdKey, config.tokenAttemptCooldownSeconds);
 
   // No active code, or expired → generic invalid/expired.
   if (!row.code_hash || !row.expires_at || new Date(row.expires_at) <= now) {
+    await logAttempt({
+      discordId, username, email: row.email, action: 'token_attempt', outcome: 'expired',
+    });
     return { ok: false, reason: 'expired' };
   }
 
@@ -238,6 +289,11 @@ async function redeemToken(discordId, submittedCode) {
     );
 
     const attemptsLeft = Math.max(0, config.maxTokenAttempts - attempts);
+    await logAttempt({
+      discordId, username, email: row.email, action: 'token_attempt',
+      outcome: 'invalid_code',
+      detail: `attemptsLeft=${attemptsLeft};burned=${invalidateCode};locked=${lock}`,
+    });
     return {
       ok: false,
       reason: 'invalid',
@@ -262,6 +318,9 @@ async function redeemToken(discordId, submittedCode) {
   );
   ratelimit.clear(cdKey);
 
+  await logAttempt({
+    discordId, username, email: row.email, action: 'token_attempt', outcome: 'success',
+  });
   return { ok: true, reason: 'verified', email: row.email };
 }
 

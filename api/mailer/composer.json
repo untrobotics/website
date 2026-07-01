@@ -1,0 +1,7 @@
+{
+    "name": "untrobotics/mailer",
+    "description": "Outbound email via PHPMailer over the self-hosted Postfix SMTP relay (used by template/top.php email()).",
+    "require": {
+        "phpmailer/phpmailer": "^6"
+    }
+}

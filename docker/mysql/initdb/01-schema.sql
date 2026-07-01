@@ -379,6 +379,33 @@ CREATE TABLE `discord_verifications` (
   KEY `verified` (`verified`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `discord_verification_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+-- Append-only audit trail for the interactive Discord verification bot
+-- (discord-bot/). One row per verification attempt/action so the club keeps a
+-- full history (who tried, with what email, the outcome, when) alongside the
+-- current-state row in `discord_verifications`. This table is NEVER updated or
+-- deleted by the bot. The plaintext code and the code hash are NEVER stored
+-- here. `action` is 'verify_request' | 'token_attempt'; `outcome` is the
+-- terminal result (e.g. sent, invalid_email, bad_domain, already_verified,
+-- email_taken, cooldown, hourly_limit, email_failed, success, invalid_code,
+-- expired, locked, no_request). `detail` is free-form context (attemptsLeft,
+-- retryAfter, burned/locked flags).
+CREATE TABLE `discord_verification_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `discord_id` bigint(20) NOT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `action` varchar(32) NOT NULL,
+  `outcome` varchar(32) NOT NULL,
+  `detail` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `discord_id` (`discord_id`),
+  KEY `created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

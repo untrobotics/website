@@ -147,7 +147,14 @@ define('IP2LOCATION_PASS',  env('IP2LOCATION_PASS'));
 
 define('TIMEZONEDB_API_KEY', env('TIMEZONEDB_API_KEY'));
 
+// SendGrid stays INBOUND-only (parse webhook ingest); outbound no longer uses it.
 define('SENDGRID_API_KEY', env('SENDGRID_API_KEY'));
+
+// Outbound email relay. email() (template/top.php) sends via plain SMTP on the
+// trusted internal hop to the self-hosted Postfix relay; the relay does the real
+// TLS out to the recipient's MX. No auth/STARTTLS on this internal :25 hop.
+define('SMTP_HOST', env('SMTP_HOST', 'mail.untrobotics-mail.svc.cluster.local'));
+define('SMTP_PORT', (int) env('SMTP_PORT', '25'));
 
 define('GOOGLE_CLIENT_API_KEY',          env('GOOGLE_CLIENT_API_KEY'));
 define('GOOGLE_CLIENT_APP_NAME',         'UNT Robotics');

@@ -98,37 +98,14 @@ function footer($die = true) {
 
 function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array()) {
     global $db;
-    require_once(BASE . "/api/sendgrid/sendgrid-php.php");
+    // Outbound now goes through the self-hosted Postfix relay via PHPMailer/SMTP.
+    // SendGrid is INBOUND-ingest only (api/sendgrid-inbound/*) and no longer used
+    // here. The internal hop is plain SMTP on :25 to a trusted relay (no auth/TLS);
+    // the relay itself does the real TLS out to the recipient's MX.
+    require_once(BASE . "/api/mailer/vendor/autoload.php");
 
-    $email = new \SendGrid\Mail\Mail();
-    $email->setFrom("no-reply@untrobotics.com", "UNT Robotics");
-    $email->setSubject($subject);
-    $email->addBcc("sebastian-king@my.unt.edu");
-
-    if ($replyto) {
-        $email->setReplyTo($replyto);
-    }
-
-    if (is_array($to)) {
-        $email->addTo($to[0], $to[1]);
-    } else {
-        $email->addTo($to);
-    }
-
-    $email->addContent("text/html", $message);
-
-    foreach ($attachments as $attachment) {
-        $email->addAttachment(
-            $attachment['content'],
-            $attachment['type'],
-            $attachment['filename'],
-            $attachment['disposition'],
-            $attachment['content_id']
-        );
-    }
-
-    $sendgrid = new \SendGrid(SENDGRID_API_KEY);
-
+    // Record the attempt first (status 0), then flip to 1 on a successful send —
+    // preserves the original sent_emails bookkeeping and return semantics.
     $db->query("
 				INSERT INTO sent_emails (
 					`to`,
@@ -149,37 +126,76 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
 					" . $db->real_escape_string(0) . "
 				)"
     );
+    $insert_id = $db->insert_id;
 
+    $mail = new \PHPMailer\PHPMailer\PHPMailer(true); // true => throw exceptions
     try {
-        $response = $sendgrid->send($email);
-        $status_code = $response->statusCode();
+        $mail->isSMTP();
+        $mail->Host        = SMTP_HOST;
+        $mail->Port        = SMTP_PORT;
+        $mail->SMTPAuth    = false;
+        $mail->SMTPAutoTLS = false;      // never opportunistically STARTTLS on the trusted internal hop
+        $mail->Timeout     = 15;         // seconds; keep request-path sends snappy
+        $mail->CharSet     = \PHPMailer\PHPMailer\PHPMailer::CHARSET_UTF8;
 
-        if ($status_code >= 200 && $status_code <= 299) {
-            $insert_id = $db->insert_id;
-            if (is_numeric($insert_id)) {
-                $db->query('UPDATE sent_emails SET status = 1 WHERE id = "' . $db->real_escape_string($insert_id) . '"');
-            }
+        // Same from/BCC as the previous SendGrid implementation.
+        $mail->setFrom("no-reply@untrobotics.com", "UNT Robotics");
+        $mail->addBCC("sebastian-king@my.unt.edu");
 
-            return true;
+        if (is_array($to)) {
+            $mail->addAddress($to[0], isset($to[1]) ? $to[1] : '');
+        } else {
+            $mail->addAddress($to);
         }
-    } catch (Exception $e) {
-        //echo 'Caught exception: '. $e->getMessage() ."\n";
-        // TODO: Alerting
+
+        if ($replyto) {
+            $mail->addReplyTo($replyto);
+        }
+
+        // Custom headers, when a caller supplies an assoc array of name => value.
+        if (is_array($headers)) {
+            foreach ($headers as $name => $value) {
+                $mail->addCustomHeader($name, $value);
+            }
+        }
+
+        $mail->Subject = $subject;
+        $mail->isHTML(true);
+        $mail->Body    = $message;
+        $mail->AltBody = trim(html_entity_decode(strip_tags($message))); // plaintext fallback
+
+        // Attachments keep the SendGrid-era shape:
+        //   ['content' => base64, 'type' => mime, 'filename' => name,
+        //    'disposition' => 'inline'|'attachment', 'content_id' => cid]
+        // PHPMailer wants the raw bytes, so decode the base64 content first.
+        foreach ($attachments as $attachment) {
+            $raw         = base64_decode($attachment['content']);
+            $filename    = isset($attachment['filename']) ? $attachment['filename'] : '';
+            $type        = isset($attachment['type']) ? $attachment['type'] : '';
+            $disposition = isset($attachment['disposition']) ? $attachment['disposition'] : 'attachment';
+            $cid         = isset($attachment['content_id']) ? $attachment['content_id'] : '';
+
+            if ($disposition === 'inline' && $cid !== '') {
+                $mail->addStringEmbeddedImage($raw, $cid, $filename, \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64, $type);
+            } else {
+                $mail->addStringAttachment($raw, $filename, \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64, $type, $disposition);
+            }
+        }
+
+        $mail->send();
+
+        if (is_numeric($insert_id)) {
+            $db->query('UPDATE sent_emails SET status = 1 WHERE id = "' . $db->real_escape_string($insert_id) . '"');
+        }
+
+        return true;
+    } catch (\Throwable $e) {
+        // Leave the sent_emails row at status 0 (failed) and log for investigation.
+        error_log('email(): SMTP send failed: ' . $mail->ErrorInfo . ' (' . $e->getMessage() . ')');
+        // TODO: Alerting (e.g. AdminBot::send_message) on repeated relay failures.
     }
 
     return false;
-
-    /*
-    $replyto = ($replyto ? "$replyto" : EMAIL_NAME . ' <' . EMAIL_USER . '@' . EMAIL_DOMAIN . '>');
-    if (!$headers || $headers == NULL) {
-        $headers  = 'MIME-Version: 1.0' . "\r\n";
-        $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-        $headers .= 'From: ' . EMAIL_NAME . ' <no-reply@' . EMAIL_DOMAIN . '>' . "\r\n" .
-        'Reply-To: ' . $replyto . "\r\n" .
-        'X-Mailer: PHP/' . phpversion();
-    }
-    */
-
 }
 
 function get_fingerprint() {

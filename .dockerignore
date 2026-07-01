@@ -27,6 +27,7 @@ node_modules
 botathon/driver-ws/node_modules
 api/discord/interactions/vendor
 api/stripe/vendor
+api/mailer/vendor
 
 # --- Runtime data / logs ----------------------------------------------------
 paypal/logs

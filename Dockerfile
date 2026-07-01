@@ -67,6 +67,11 @@ RUN composer install --no-dev --no-interaction --prefer-dist \
 RUN composer install --no-dev --no-interaction --prefer-dist \
         --working-dir=api/stripe
 
+# Install PHPMailer (declared in api/mailer/composer.json) — outbound email()
+# in template/top.php sends via SMTP to the self-hosted Postfix relay.
+RUN composer install --no-dev --no-interaction --prefer-dist \
+        --working-dir=api/mailer
+
 # Runtime-writable directories + ownership.
 RUN mkdir -p paypal/logs api/rocketry/gps/locations cron \
     && chown -R www-data:www-data /var/www/html

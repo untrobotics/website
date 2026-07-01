@@ -51,7 +51,7 @@ module.exports = {
 
     let result;
     try {
-      result = await verification.redeemToken(interaction.user.id, code);
+      result = await verification.redeemToken(interaction.user.id, code, interaction.user.tag);
     } catch (err) {
       log.error('token: redeemToken threw', err.message);
       await interaction.editReply(

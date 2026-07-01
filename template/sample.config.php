@@ -127,7 +127,11 @@ define('IP2LOCATION_PASS',					'');
 
 define('TIMEZONEDB_API_KEY',				'');
 
-define('SENDGRID_API_KEY',					'');
+define('SENDGRID_API_KEY',					''); // inbound parse ingest only; outbound uses the SMTP relay below
+
+// Outbound email relay (self-hosted Postfix). Plain SMTP on the trusted hop.
+define('SMTP_HOST',							'mail.untrobotics-mail.svc.cluster.local');
+define('SMTP_PORT',							25);
 
 define('GOOGLE_CLIENT_API_KEY',             '');
 define('GOOGLE_CLIENT_APP_NAME',            'UNT Robotics');
