@@ -18,7 +18,8 @@ if (!validate_twilio_signature()) {
 
 //TODO: if the call comes in from 402-935-7733 do something about it because this is paypal
 
-?><?xml version="1.0" encoding="UTF-8"?>
+echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+?>
 <Response>
     <Gather input="dtmf" timeout="10" numDigits="1" action="/twilio/process-incoming-call.php?code=<?php echo API_SECRET; ?>">
 		<Pause length="2"/>

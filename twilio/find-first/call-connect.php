@@ -4,7 +4,8 @@ if ($_GET['code'] !== API_SECRET) {
         http_response_code(401);
         die();
 }
-?><?xml version="1.0" encoding="UTF-8"?>
+echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+?>
 <Response>
 	<?php
 	switch (intval($_POST['Digits'])) {

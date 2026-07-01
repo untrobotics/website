@@ -15,7 +15,8 @@ if (!validate_twilio_signature()) {
 // This is just in case some other part of the system gets compromised, it stops all of our phone numbers being in the global scope of all pages on the website.
 require('phone-numbers-config.php');
 ob_start();
-?><?xml version="1.0" encoding="UTF-8"?>
+echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+?>
 <Response>
 	<?php
 	switch (intval($_POST['Digits'])) {
