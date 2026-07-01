@@ -24,6 +24,24 @@ fi
 touch /etc/postfix/virtual
 postmap /etc/postfix/virtual
 
+# --- OrgSync/CampusLabs auto-welcome ingest -----------------------------------
+# orgsync@untrobotics.com is rewritten by the virtual map to
+# orgsync@orgsync-ingest.local; transport_maps (below) routes that pseudo-domain
+# to the `orgsync-pipe` service, which pipes the message into orgsync-ingest.py.
+touch /etc/postfix/transport
+postmap /etc/postfix/transport
+
+# Register the pipe delivery service (idempotent). Runs as the unprivileged
+# `ingest` user; Postfix hands the full raw message to the script on stdin.
+postconf -M -e 'orgsync-pipe/unix=orgsync-pipe unix - n n - - pipe flags=Rq user=ingest argv=/usr/bin/python3 /usr/local/bin/orgsync-ingest.py'
+
+# Postfix scrubs the environment of piped commands, so INGEST_SECRET / WEB_NS
+# from the pod env would be invisible to the script. Import them into the master
+# process and export them to the pipe child (keep the compiled-in defaults +
+# PATH so curl/python resolve).
+postconf -e 'import_environment=MAIL_CONFIG MAIL_DEBUG MAIL_LOGTAG TZ XAUTHORITY DISPLAY LANG=C POSTLOG_SERVICE POSTLOG_HOSTNAME PATH INGEST_SECRET WEB_NS'
+postconf -e 'export_environment=TZ MAIL_CONFIG LANG PATH INGEST_SECRET WEB_NS'
+
 # --- TLS cert: use a mounted one if present, else self-signed (opportunistic) --
 mkdir -p /etc/postfix/tls
 if [ -f /tls/tls.crt ] && [ -f /tls/tls.key ]; then
@@ -44,6 +62,27 @@ postconf -e "myhostname=${MAIL_HOSTNAME}"
 postconf -F '*/*/chroot=n'
 
 newaliases 2>/dev/null || true
+
+# --- DKIM signing (OpenDKIM milter) -------------------------------------------
+# The private key is mounted from the `mail-dkim` k8s Secret at
+# /etc/dkim/mail.private. Only sign if it's present; otherwise start Postfix
+# WITHOUT the milter so mail still flows (unsigned) instead of deferring.
+mkdir -p /etc/dkim
+DKIM_KEY=/etc/dkim/mail.private
+if [ -s "$DKIM_KEY" ]; then
+    echo "DKIM: key found at ${DKIM_KEY}; starting OpenDKIM (signing enabled)."
+    # The secret mount is read-only + root-owned; OpenDKIM (RequireSafeKeys)
+    # needs a key it owns at 600, so copy it to an opendkim-owned runtime path.
+    # This path (/run/opendkim/mail.key) matches KeyFile in opendkim.conf.
+    mkdir -p /run/opendkim
+    chown opendkim:opendkim /run/opendkim
+    install -o opendkim -g opendkim -m 600 "$DKIM_KEY" /run/opendkim/mail.key
+    /usr/sbin/opendkim -x /etc/opendkim.conf &
+else
+    echo "WARNING: no DKIM key at ${DKIM_KEY}; outbound mail will NOT be signed." >&2
+    # Disable the milter so Postfix doesn't defer waiting on a dead socket.
+    postconf -e 'smtpd_milters=' 'non_smtpd_milters='
+fi
 
 # --- Start postsrsd (forward socket 10001, reverse socket 10002) --------------
 /usr/sbin/postsrsd -s /etc/postsrsd.secret -d "${SRS_DOMAIN}" -f 10001 -r 10002 &

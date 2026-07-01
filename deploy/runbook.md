@@ -177,6 +177,42 @@ swaks --server <server IP> --to hello@untrobotics.com --from you@example.com
 # confirm arrival in the mapped Gmail; then flip MX. Validate at mail-tester.com.
 ```
 
+### OrgSync auto-welcome ingest (replaces SendGrid Inbound Parse)
+
+An OrgSync/CampusLabs join notification sent to `orgsync@untrobotics.com` is
+received by this relay, piped to `mail/orgsync-ingest.py`, and POSTed to the
+existing web handler `api/sendgrid-inbound/parse.php` (still the processor:
+inserts into `orgsync_members`, emails the welcome + token). The `virtual` map
+routes just that address to a local pipe (via the `orgsync-ingest.local`
+pseudo-domain + `transport_maps` + the `orgsync-pipe` master.cf service) instead
+of the Gmail catch-all. The handler is now gated by a shared secret.
+
+1. Pick a secret and put it in BOTH namespaces (same value):
+   ```sh
+   INGEST=$(openssl rand -hex 32)
+   # web handler side (prod web-secrets):
+   kubectl -n untrobotics-prod patch secret web-secrets --type merge \
+     -p "{\"stringData\":{\"INGEST_SECRET\":\"$INGEST\"}}"
+   # mail pod side (same value, its own namespace):
+   kubectl -n untrobotics-mail create secret generic mail-ingest \
+     --from-literal=INGEST_SECRET="$INGEST" --dry-run=client -o yaml | kubectl apply -f -
+   ```
+   Then restart both: `kubectl -n untrobotics-prod rollout restart deploy/web`
+   and `kubectl -n untrobotics-mail rollout restart deploy/mail`.
+2. **OrgSync/CampusLabs reconfiguration:** point the club's join/roster
+   notification (or a forward rule on whatever address currently receives them)
+   at `orgsync@untrobotics.com`.
+3. **DNS:** none needed — the `untrobotics.com` MX already points at this relay.
+   You can now REMOVE the old SendGrid Inbound Parse: delete the parse-subdomain
+   MX record (e.g. `MX parse.untrobotics.com -> mx.sendgrid.net`) and delete the
+   Inbound Parse webhook host entry in the SendGrid dashboard.
+4. **Test end-to-end:** send a crafted OrgSync-style HTML email (an
+   `<a href="mailto:someone@example.com">Some Name</a>` in the HTML part) to
+   `orgsync@untrobotics.com`; confirm `orgsync-ingest: OK: posted ...` in
+   `kubectl -n untrobotics-mail logs deploy/mail`, a new row in `orgsync_members`,
+   and the welcome email in the web/relay logs. A 403 in the mail log means the
+   two INGEST_SECRET values don't match (mail defers + retries — nothing lost).
+
 ## Known gaps / TODO
 
 - **PHP 7.2 -> 8.3:** prod runs 7.2; the image is 8.3. Expect compatibility fixes

@@ -1,0 +1,7 @@
+# TrustedHosts / InternalHosts for OpenDKIM. Mail submitted from any of these
+# is SIGNED (treated as originating from us); everything else is only verified.
+# Keep in sync with mynetworks in main.cf.
+127.0.0.1
+::1
+localhost
+10.42.0.0/16

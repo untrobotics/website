@@ -129,6 +129,11 @@ define('TIMEZONEDB_API_KEY',				'');
 
 define('SENDGRID_API_KEY',					''); // inbound parse ingest only; outbound uses the SMTP relay below
 
+// Shared secret for api/sendgrid-inbound/parse.php (OrgSync auto-welcome ingest).
+// Must match the value the mail relay's pipe posts in X-Ingest-Secret. Empty =
+// endpoint is fail-closed (rejects everything).
+define('INGEST_SECRET',						'');
+
 // Outbound email relay (self-hosted Postfix). Plain SMTP on the trusted hop.
 define('SMTP_HOST',							'mail.untrobotics-mail.svc.cluster.local');
 define('SMTP_PORT',							25);

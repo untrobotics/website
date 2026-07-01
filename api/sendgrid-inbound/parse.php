@@ -2,6 +2,22 @@
 require('../../template/top.php');
 require(BASE . '/api/discord/bots/admin.php');
 
+// --- Shared-secret gate ------------------------------------------------------
+// This endpoint inserts a member row and sends a welcome email, so it must not
+// be open to the public internet. Only the mail relay's OrgSync ingest pipe
+// (mail/orgsync-ingest.py) may call it; it sends the shared secret in the
+// X-Ingest-Secret header. Reject anything that doesn't match (and never allow
+// through when INGEST_SECRET is unconfigured — fail closed).
+$__ingest_secret_expected = defined('INGEST_SECRET') ? INGEST_SECRET : '';
+$__ingest_secret_actual   = $_SERVER['HTTP_X_INGEST_SECRET'] ?? '';
+if ($__ingest_secret_expected === ''
+    || !hash_equals($__ingest_secret_expected, $__ingest_secret_actual)) {
+    http_response_code(403);
+    header('Content-Type: text/plain');
+    echo "Forbidden\n";
+    exit;
+}
+
 AdminBot::send_message('Inbound parse....');
 $html = $_POST['html'];
 

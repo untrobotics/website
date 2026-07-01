@@ -7,6 +7,12 @@ metadata:
   name: mail-aliases
 data:
   virtual: |
+    # OrgSync/CampusLabs auto-welcome ingest. Route this ONE address to the local
+    # pipe transport instead of the Gmail catch-all: it is rewritten to the
+    # internal pseudo-domain orgsync-ingest.local, which transport_maps sends to
+    # the `orgsync-pipe` service (master.cf) -> orgsync-ingest.py -> POST to the
+    # web handler api/sendgrid-inbound/parse.php. MUST stay ABOVE the catch-all.
+    orgsync@untrobotics.com   orgsync@orgsync-ingest.local
     # Catch-all: every address @untrobotics.com forwards to the club inbox.
     # The original recipient stays in the To:/Received headers, so you can filter
     # in Gmail by e.g.  to:webmaster@untrobotics.com  to label per alias.
@@ -69,12 +75,35 @@ spec:
                   name: mail-srs
                   key: SRS_SECRET
                   optional: true   # falls back to an ephemeral secret if unset
+            # OrgSync auto-welcome ingest: which web namespace to POST to (prod,
+            # since OrgSync welcomes are production) and the shared secret that
+            # authenticates to api/sendgrid-inbound/parse.php. The secret must
+            # equal INGEST_SECRET in the untrobotics-prod `web-secrets`. Created
+            # out-of-band as the `mail-ingest` Secret in this (untrobotics-mail)
+            # namespace — see deploy/runbook.md. optional:true so the pod starts
+            # before the Secret exists (ingest just defers until it does).
+            - name: WEB_NS
+              value: untrobotics-prod
+            - name: INGEST_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mail-ingest
+                  key: INGEST_SECRET
+                  optional: true
           volumeMounts:
             - name: aliases
               mountPath: /config
               readOnly: true
             - name: spool
               mountPath: /var/spool/postfix
+            # Mounted as a DIRECTORY (not subPath): an optional secret consumed
+            # via subPath makes the pod fail to start when the secret is absent
+            # ("failed to prepare subPath"), which would defeat optional:true.
+            # The key lands at /etc/dkim/mail.private; the entrypoint copies it
+            # to an opendkim-owned runtime path with safe perms before signing.
+            - name: dkim-key
+              mountPath: /etc/dkim
+              readOnly: true
           resources:
             requests: { cpu: 50m, memory: 64Mi }
             limits: { cpu: 250m, memory: 192Mi }
@@ -85,6 +114,15 @@ spec:
         - name: spool
           persistentVolumeClaim:
             claimName: mail-spool
+        # DKIM signing key. optional:true so the pod starts before the operator
+        # creates the Secret; the entrypoint runs Postfix unsigned until it does.
+        - name: dkim-key
+          secret:
+            secretName: mail-dkim
+            optional: true
+            items:
+              - { key: mail.private, path: mail.private }
+            defaultMode: 0400
 ---
 apiVersion: v1
 kind: Service

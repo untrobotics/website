@@ -39,6 +39,12 @@ mynetworks = 127.0.0.0/8 [::1]/128 10.42.0.0/16
 virtual_alias_domains = untrobotics.com
 virtual_alias_maps = hash:/etc/postfix/virtual
 
+# OrgSync/CampusLabs auto-welcome ingest. The virtual map rewrites
+# orgsync@untrobotics.com -> orgsync@orgsync-ingest.local; this transport map
+# routes that pseudo-domain to the orgsync-pipe service (master.cf), which pipes
+# the message into orgsync-ingest.py. See mail/transport + the entrypoint.
+transport_maps = hash:/etc/postfix/transport
+
 # Accept mail only for our virtual aliases; reject all other destinations.
 smtpd_recipient_restrictions = permit_mynetworks, reject_unauth_destination
 
@@ -59,3 +65,13 @@ smtp_tls_loglevel = 1
 message_size_limit = 31457280
 maximal_queue_lifetime = 1d
 bounce_queue_lifetime = 1d
+
+# DKIM signing via the OpenDKIM milter (listens on localhost:8891).
+# non_smtpd_milters matters: the website/bot inject mail through the local
+# sendmail/pickup path (not smtpd), so both hooks are needed to sign it.
+# The entrypoint clears both smtpd_milters and non_smtpd_milters at runtime if
+# the DKIM key is missing, so Postfix never defers waiting on a dead milter.
+milter_default_action = accept
+milter_protocol = 6
+smtpd_milters = inet:localhost:8891
+non_smtpd_milters = inet:localhost:8891

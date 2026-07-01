@@ -150,6 +150,13 @@ define('TIMEZONEDB_API_KEY', env('TIMEZONEDB_API_KEY'));
 // SendGrid stays INBOUND-only (parse webhook ingest); outbound no longer uses it.
 define('SENDGRID_API_KEY', env('SENDGRID_API_KEY'));
 
+// Shared secret protecting api/sendgrid-inbound/parse.php (the OrgSync/CampusLabs
+// auto-welcome ingest). The self-hosted Postfix relay's pipe script
+// (mail/orgsync-ingest.py) sends this in the X-Ingest-Secret header; requests
+// without a matching value get 403. Set the SAME value on the mail pod
+// (untrobotics-mail Secret `mail-ingest`) and in web-secrets. Empty = fail closed.
+define('INGEST_SECRET', env('INGEST_SECRET'));
+
 // Outbound email relay. email() (template/top.php) sends via plain SMTP on the
 // trusted internal hop to the self-hosted Postfix relay; the relay does the real
 // TLS out to the recipient's MX. No auth/STARTTLS on this internal :25 hop.

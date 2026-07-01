@@ -1,0 +1,9 @@
+# Postfix transport map (postmap'd at container start by the entrypoint).
+#
+# The `virtual` alias map rewrites  orgsync@untrobotics.com  ->
+# orgsync@orgsync-ingest.local  (an internal pseudo-domain that is neither a
+# virtual-alias domain nor a mydestination, so it isn't forwarded to Gmail and
+# isn't a final local mailbox). This map then routes that pseudo-domain to the
+# `orgsync-pipe` delivery service defined in master.cf, which pipes the message
+# into orgsync-ingest.py.
+orgsync-ingest.local   orgsync-pipe:
