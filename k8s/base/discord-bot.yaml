@@ -57,6 +57,10 @@ spec:
               value: "674703370971250708"
             - name: HEARTBEAT_FILE
               value: "/tmp/discord-bot-heartbeat"
+            # 4-digit code (per request). Brute force is held by attempt-burn +
+            # lockout + send-rate limits + expiry (see verification.js).
+            - name: CODE_LENGTH
+              value: "4"
           # Liveness via a heartbeat file the bot refreshes on each gateway ack
           # (a plain TCP/HTTP probe can't tell a live gateway from a wedged one).
           # If the file hasn't been touched in 2 minutes, restart the pod.
