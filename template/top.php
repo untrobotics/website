@@ -96,7 +96,52 @@ function footer($die = true) {
     }
 }
 
-function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array()) {
+/**
+ * Wrap an email body fragment in the shared UNT Robotics branded template:
+ * a responsive, centered white card with the header banner up top (inline
+ * cid image) and a footer. Callers pass ONLY their inner content (paragraphs,
+ * a code box, etc.); email() applies this automatically unless $branded=false.
+ *
+ * Improvements over the old hand-rolled version: max-width instead of a fixed
+ * 500px (renders on mobile), real spacing instead of empty <div> spacers, and
+ * an <img> with alt + width so it degrades cleanly when images are blocked.
+ */
+function brand_email_html($inner) {
+    return
+        '<div style="background:#f4f5f7;margin:0;padding:24px 12px;'
+        . 'font-family:Arial,Helvetica,sans-serif;color:#1a1a1a;">'
+        . '<table role="presentation" align="center" width="600" cellpadding="0" cellspacing="0" border="0" '
+        . 'style="width:100%;max-width:600px;margin:0 auto;background:#ffffff;'
+        . 'border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.08);">'
+        . '<tr><td style="padding:0;line-height:0;">'
+        . '<img src="cid:untrobotics-email-header" alt="UNT Robotics" width="600" '
+        . 'style="display:block;width:100%;max-width:600px;height:auto;border:0;"></td></tr>'
+        . '<tr><td style="padding:32px 36px;font-size:15px;line-height:1.6;color:#1a1a1a;">'
+        . $inner
+        . '</td></tr>'
+        . '<tr><td style="padding:22px 36px;background:#0b2545;text-align:center;'
+        . 'font-size:12px;line-height:1.6;color:#b8c4d4;">'
+        . 'UNT Robotics &middot; University of North Texas<br>'
+        . '<a href="https://www.untrobotics.com" style="color:#7ec8e3;text-decoration:none;">untrobotics.com</a>'
+        . ' &nbsp;&middot;&nbsp; '
+        . '<a href="mailto:hello@untrobotics.com" style="color:#7ec8e3;text-decoration:none;">hello@untrobotics.com</a>'
+        . ' &nbsp;&middot;&nbsp; '
+        . '<a href="https://www.untrobotics.com/discord" style="color:#7ec8e3;text-decoration:none;">Discord</a>'
+        . '</td></tr></table></div>';
+}
+
+/**
+ * Reusable "big code/token" box for verification & welcome emails. Keeps the
+ * look identical across the site and the Discord bot.
+ */
+function brand_email_code_box($code) {
+    return '<div style="text-align:center;margin:24px 0;">'
+        . '<span style="display:inline-block;font-size:28px;font-weight:700;letter-spacing:4px;'
+        . 'background:#f0f4f8;border:1px solid #d0d7de;border-radius:8px;padding:14px 24px;'
+        . 'color:#0b2545;font-family:Consolas,Menlo,monospace;">' . htmlspecialchars($code) . '</span></div>';
+}
+
+function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array(), $branded = true) {
     global $db;
     // Outbound now goes through the self-hosted Postfix relay via PHPMailer/SMTP.
     // SendGrid is INBOUND-ingest only (api/sendgrid-inbound/*) and no longer used
@@ -127,6 +172,32 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
 				)"
     );
     $insert_id = $db->insert_id;
+
+    // Apply the shared branded template (header banner + footer) and attach the
+    // banner image inline exactly once. Done AFTER the sent_emails insert so the
+    // DB keeps the lean original body rather than the wrapped copy.
+    if ($branded) {
+        $message = brand_email_html($message);
+        $has_banner = false;
+        foreach ($attachments as $a) {
+            if (isset($a['content_id']) && $a['content_id'] === 'untrobotics-email-header') {
+                $has_banner = true;
+                break;
+            }
+        }
+        if (!$has_banner) {
+            $banner_path = BASE . '/images/unt-robotics-email-header.jpg';
+            if (is_readable($banner_path)) {
+                $attachments[] = array(
+                    'content'     => base64_encode(file_get_contents($banner_path)),
+                    'type'        => 'image/jpeg',
+                    'filename'    => 'unt-robotics-email-header.jpg',
+                    'disposition' => 'inline',
+                    'content_id'  => 'untrobotics-email-header',
+                );
+            }
+        }
+    }
 
     $mail = new \PHPMailer\PHPMailer\PHPMailer(true); // true => throw exceptions
     try {

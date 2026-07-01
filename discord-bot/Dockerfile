@@ -12,6 +12,9 @@ RUN npm ci --omit=dev || npm install --omit=dev
 # Application source.
 COPY src ./src
 
+# Static assets (branded email header banner, embedded inline by src/lib/email.js).
+COPY assets ./assets
+
 # Drop root.
 USER node
 

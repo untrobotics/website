@@ -81,50 +81,16 @@ if (isset($_POST)) {
 			AdminBot::send_message($name . ' has signed up for bothaton. There are ' . botathon_spots_remaining() . ' spots remaining.');
 
 			$email_send_status = email(
-                $email,
-                "UNT Robotics Botathon Registration",
-
-                "<div style=\"position: relative;max-width: 100vw;text-align:center;\">" .
-                '<img src="cid:untrobotics-email-header">' .
-
-                '	<div></div>' .
-
-                '<div style="text-align: left; width: 500px; display: inline-block;">' .
-                "	<p>Dear " . $name . ",</p>" .
-                "	<p>Thank you for registering for Botathon Season " . BOTATHON_SEASON . "!</p>" .
-                "   <p>If you haven't already, please make sure to join our" .
-                "      <a href=\"https://www.untrobotics.com/discord\"><b>Discord server</b></a> as this is where we will post all of our event-day communications and announcements.</p>" .
-                "</div>" .
-
-                '	<div></div>' .
-
-                "	<p></p>" .
-
-                '<div style="text-align: left; width: 500px; display: inline-block;">' .
-                "	<p>If you need any assistance or have any questions, please reach out in our Discord server or email us at <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a>.</p>" .
-                '</div>' .
-
-                '	<div></div>' .
-
-                '<div style="text-align: left; width: 500px; display: inline-block;">' .
-                "	<p>All the best,</p>" .
-                "   <p><em>UNT Robotics Leadership</em></p>" .
-                '</div>' .
-
-                "</div>",
-
-                "hello@untrobotics.com",
-                null,
-                [
-                    [
-                        'content' => base64_encode(file_get_contents(BASE . '/images/unt-robotics-email-header.jpg')),
-                        'type' => 'image/jpeg',
-                        'filename' => 'unt-robotics-email-header.jpg',
-                        'disposition' => 'inline',
-                        'content_id' => 'untrobotics-email-header'
-                    ]
-                ]
-            );
+				$email,
+				"UNT Robotics Botathon Registration",
+				"<p>Dear " . htmlspecialchars($name) . ",</p>" .
+				"<p>Thank you for registering for Botathon Season " . BOTATHON_SEASON . "!</p>" .
+				"<p>If you haven't already, please join our " .
+				"<a href=\"https://www.untrobotics.com/discord\"><strong>Discord server</strong></a> — it's where we'll post all event-day communications and announcements.</p>" .
+				"<p>If you need any assistance or have questions, reach out in our Discord server or email <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a>.</p>" .
+				"<p>All the best,<br><em>UNT Robotics Leadership</em></p>",
+				"hello@untrobotics.com"
+			);
 		} else {
 		    error_log("Failed to add botathon registration: " . $db->error);
 			echo 'ERROR';

@@ -48,49 +48,15 @@ if (preg_match('@"mailto:(.+?)"@', $html, $email_matches)) {
     $email_send_status = email(
         $email,
         "UNT Robotics Membership & Welcome!",
-
-        "<div style=\"position: relative;max-width: 100vw;text-align:center;\">" .
-        '<img src="cid:untrobotics-email-header">' .
-
-        '	<div></div>' .
-
-        '<div style="text-align: left; max-width: 500px; display: inline-block;">' .
-        "	<p>Dear " . $name . ",</p>" .
-        "	<p>Welcome to the team!!</p>" .
-        "   <p>Thank you for joining UNT Robotics on orgsync/campuslabs! If you haven't already, please make sure to join our" .
-        "      <a href=\"https://www.untrobotics.com/discord\"><b>Discord server</b></a> as this is where we all chat and conduct most of our projects and teams.</p>" .
-        "   <p>Once you have joined the Discord server, you may be asked for a verification token, your verification token is:</p>" .
-        "</div>" .
-        "<div>" .
-        "   <p style='font-size: 20pt; font-weight: 900; margin-top: 10px;'>{$token}</p>" .
-        '</div>' .
-
-        '	<div></div>' .
-
-        "	<p></p>" .
-
-        "	<p>If you need any assistance, please reach out to <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a>.</p>" .
-
-        '	<div></div>' .
-
-        '<div style="text-align: left; width: 500px; display: inline-block;">' .
-        "	<p>All the best,</p>" .
-        "   <p><em>UNT Robotics Leadership</em></p>" .
-        '</div>' .
-
-        "</div>",
-
-        "hello@untrobotics.com",
-        null,
-        [
-            [
-                'content' => base64_encode(file_get_contents(BASE . '/images/unt-robotics-email-header.jpg')),
-                'type' => 'image/jpeg',
-                'filename' => 'unt-robotics-email-header.jpg',
-                'disposition' => 'inline',
-                'content_id' => 'untrobotics-email-header'
-            ]
-        ]
+        "<p>Dear " . htmlspecialchars($name) . ",</p>" .
+        "<p>Welcome to the team!</p>" .
+        "<p>Thank you for joining UNT Robotics on OrgSync/CampusLabs! If you haven't already, please join our " .
+        "<a href=\"https://www.untrobotics.com/discord\"><strong>Discord server</strong></a> — it's where we chat and run most of our projects and teams.</p>" .
+        "<p>Once you've joined the Discord server, you may be asked for a verification token. Yours is:</p>" .
+        brand_email_code_box($token) .
+        "<p>If you need any assistance, reach out to <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a>.</p>" .
+        "<p>All the best,<br><em>UNT Robotics Leadership</em></p>",
+        "hello@untrobotics.com"
     );
 
     if ($email_send_status) {
