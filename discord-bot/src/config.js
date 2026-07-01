@@ -71,7 +71,10 @@ const config = Object.freeze({
     .map((d) => d.trim().toLowerCase())
     .filter(Boolean),
 
-  sendgridApiKey: env('SENDGRID_API_KEY'),
+  // Outbound goes through the self-hosted Postfix relay (untrobotics-mail),
+  // same as the website. SendGrid is inbound-ingest only — not used here.
+  smtpHost: env('SMTP_HOST', 'mail.untrobotics-mail.svc.cluster.local'),
+  smtpPort: intEnv('SMTP_PORT', 25),
   emailFrom: env('EMAIL_FROM', 'verify@untrobotics.com'),
   emailFromName: env('EMAIL_FROM_NAME', 'UNT Robotics'),
 
@@ -118,7 +121,6 @@ function assertConfig() {
   if (!config.guildId) missing.push('DISCORD_GUILD_ID');
   if (!config.verifiedRoleId) missing.push('DISCORD_VERIFIED_ROLE_ID');
   if (!config.verifyChannelId) missing.push('DISCORD_VERIFY_CHANNEL_ID');
-  if (!config.sendgridApiKey) missing.push('SENDGRID_API_KEY');
   if (!config.db.password) missing.push('DB_PASSWORD (or DATABASE_PASSWORD)');
   if (!(config.codeLength >= 4 && config.codeLength <= 10)) {
     missing.push('CODE_LENGTH (must be between 4 and 10)');

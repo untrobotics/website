@@ -1,34 +1,42 @@
 'use strict';
 
-const sgMail = require('@sendgrid/mail');
+const nodemailer = require('nodemailer');
 const { config } = require('../config');
 const log = require('../logger');
 
-let initialised = false;
-
-function init() {
-  if (initialised) return;
-  if (!config.sendgridApiKey) {
-    throw new Error('SENDGRID_API_KEY is not set — cannot send verification email');
+// Outbound goes through the self-hosted Postfix relay (the untrobotics-mail
+// service), same as the website's email(). SendGrid is inbound-ingest only, so
+// we never touch it here. The internal hop is plain SMTP on :25 — the relay
+// itself does the real TLS out to the recipient's MX.
+let transporter = null;
+function getTransport() {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: config.smtpHost,
+      port: config.smtpPort,
+      secure: false,
+      ignoreTLS: config.smtpPort === 25, // no STARTTLS on the trusted internal hop
+      tls: { rejectUnauthorized: false },
+      connectionTimeout: 15000,
+      greetingTimeout: 10000,
+    });
   }
-  sgMail.setApiKey(config.sendgridApiKey);
-  initialised = true;
+  return transporter;
 }
 
 /**
- * Send a verification code to a UNT address via SendGrid.
- * Throws on failure so the caller can surface a "couldn't send" message and
- * (importantly) NOT persist a code the user never received.
+ * Send a verification code via the Postfix relay. Throws on failure so the
+ * caller can surface a "couldn't send" message and NOT persist a code the user
+ * never received.
  *
  * @param {string} to       recipient email
  * @param {string} code     the plaintext numeric code (only lives in memory)
  * @param {number} ttlMins  minutes until the code expires (for the body copy)
  */
 async function sendVerificationCode(to, code, ttlMins) {
-  init();
   const msg = {
+    from: `"${config.emailFromName}" <${config.emailFrom}>`,
     to,
-    from: { email: config.emailFrom, name: config.emailFromName },
     subject: `Your UNT Robotics Discord verification code: ${code}`,
     text:
       `Welcome to the UNT Robotics Discord!\n\n` +
@@ -48,14 +56,10 @@ async function sendVerificationCode(to, code, ttlMins) {
   };
 
   try {
-    await sgMail.send(msg);
-    log.info('email: verification code sent', `to=${to}`);
+    const info = await getTransport().sendMail(msg);
+    log.info('email: verification code sent', `to=${to} id=${info.messageId}`);
   } catch (err) {
-    const detail =
-      err && err.response && err.response.body
-        ? JSON.stringify(err.response.body)
-        : err.message;
-    log.error('email: SendGrid send failed', detail);
+    log.error('email: SMTP send failed', err.message);
     throw new Error('Failed to send verification email');
   }
 }

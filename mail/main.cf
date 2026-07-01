@@ -28,8 +28,12 @@ inet_interfaces = all
 # "IPv6 senders must have valid IPv6 PTR" rejection.
 inet_protocols = ipv4
 
-# Trust only localhost. This is NOT an open relay.
-mynetworks = 127.0.0.0/8 [::1]/128
+# Trust localhost + the in-cluster pod network (k3s default 10.42.0.0/16) so the
+# website's email() and the Discord bot can relay outbound mail through this
+# Postfix. Single-tenant cluster, so this is not an open relay to the world —
+# only our own pods can submit. (Inbound from the internet still can't relay:
+# it hits reject_unauth_destination.)
+mynetworks = 127.0.0.0/8 [::1]/128 10.42.0.0/16
 
 # Virtual forwarding: alias@untrobotics.com -> external mailbox.
 virtual_alias_domains = untrobotics.com
