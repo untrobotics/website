@@ -48,11 +48,10 @@ spec:
             # Guild id is the public UNT Robotics server id.
             - name: DISCORD_GUILD_ID
               value: "639209564188704768"
-            # TODO: set these to the real role/channel ids before scaling to 1.
             - name: DISCORD_VERIFIED_ROLE_ID
-              value: "REPLACE_WITH_VERIFIED_UNT_ROLE_ID"
+              value: "1521694650027479253"
             - name: DISCORD_VERIFY_CHANNEL_ID
-              value: "REPLACE_WITH_VERIFY_CHANNEL_ID"
+              value: "1521694041136300083"
             # Verification audit log channel (defaults to the admin channel).
             - name: DISCORD_LOG_CHANNEL_ID
               value: "674703370971250708"
