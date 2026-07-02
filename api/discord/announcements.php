@@ -71,6 +71,17 @@ function get_last_three_announcements($limit = 3) {
             continue; // skip attachment/embed-only posts
         }
 
+        // Clean Discord-specific markup so the public feed reads cleanly.
+        $content = preg_replace('/@(everyone|here)\b/i', '', $content);  // drop mass-ping text
+        $content = preg_replace('/<a?:(\w+):\d+>/', ':$1:', $content);   // custom emoji -> :name:
+        $content = preg_replace('/<@&\d+>/', '', $content);             // role mentions
+        $content = preg_replace('/<@!?\d+>/', '@member', $content);     // user mentions
+        $content = preg_replace('/<#\d+>/', '#channel', $content);      // channel mentions
+        $content = trim($content);
+        if ($content === '') {
+            continue;
+        }
+
         // Escape, then linkify URLs and trim to a footer-friendly length.
         $safe = htmlspecialchars($content, ENT_QUOTES);
         if (strlen($safe) > 200) {
