@@ -181,76 +181,101 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
         $message = brand_email_html($message);
     }
 
-    $mail = new \PHPMailer\PHPMailer\PHPMailer(true); // true => throw exceptions
-    try {
-        $mail->isSMTP();
-        $mail->Host        = SMTP_HOST;
-        $mail->Port        = SMTP_PORT;
-        $mail->SMTPAuth    = false;
-        $mail->SMTPAutoTLS = false;      // never opportunistically STARTTLS on the trusted internal hop
-        $mail->Timeout     = 15;         // seconds; keep request-path sends snappy
-        $mail->CharSet     = \PHPMailer\PHPMailer\PHPMailer::CHARSET_UTF8;
+    // Delivery transports in priority order. Brevo smarthost FIRST (trusted IPs
+    // => reliable inbox placement at Gmail/Microsoft), then the self-hosted
+    // Postfix relay as an automatic FAILOVER when Brevo is unreachable or over
+    // its daily quota. Each attempt uses a fresh PHPMailer; a thrown send()
+    // simply moves on to the next transport.
+    $transports = array();
+    if (defined('BREVO_SMTP_HOST') && BREVO_SMTP_HOST && defined('BREVO_SMTP_USER') && BREVO_SMTP_USER) {
+        $transports[] = array(
+            'label' => 'brevo',
+            'host'  => BREVO_SMTP_HOST,
+            'port'  => (defined('BREVO_SMTP_PORT') && BREVO_SMTP_PORT) ? BREVO_SMTP_PORT : 587,
+            'auth'  => true,
+            'user'  => BREVO_SMTP_USER,
+            'pass'  => defined('BREVO_SMTP_PASS') ? BREVO_SMTP_PASS : '',
+        );
+    }
+    $transports[] = array('label' => 'postfix', 'host' => SMTP_HOST, 'port' => SMTP_PORT, 'auth' => false);
 
-        // Keep a filable copy of every outbound email (plus-addressed so it can be
-        // filtered/foldered in Gmail). Replaces the old BCC to a now-deleted
-        // @my.unt.edu mailbox that bounced on every send.
-        $mail->setFrom("no-reply@untrobotics.com", "UNT Robotics");
-        $mail->addBCC("untrobotics+sebastian.thomas.king@gmail.com");
-
-        if (is_array($to)) {
-            $mail->addAddress($to[0], isset($to[1]) ? $to[1] : '');
-        } else {
-            $mail->addAddress($to);
-        }
-
-        if ($replyto) {
-            $mail->addReplyTo($replyto);
-        }
-
-        // Custom headers, when a caller supplies an assoc array of name => value.
-        if (is_array($headers)) {
-            foreach ($headers as $name => $value) {
-                $mail->addCustomHeader($name, $value);
-            }
-        }
-
-        $mail->Subject = $subject;
-        $mail->isHTML(true);
-        $mail->Body    = $message;
-        $mail->AltBody = trim(html_entity_decode(strip_tags($message))); // plaintext fallback
-
-        // Attachments keep the SendGrid-era shape:
-        //   ['content' => base64, 'type' => mime, 'filename' => name,
-        //    'disposition' => 'inline'|'attachment', 'content_id' => cid]
-        // PHPMailer wants the raw bytes, so decode the base64 content first.
-        foreach ($attachments as $attachment) {
-            $raw         = base64_decode($attachment['content']);
-            $filename    = isset($attachment['filename']) ? $attachment['filename'] : '';
-            $type        = isset($attachment['type']) ? $attachment['type'] : '';
-            $disposition = isset($attachment['disposition']) ? $attachment['disposition'] : 'attachment';
-            $cid         = isset($attachment['content_id']) ? $attachment['content_id'] : '';
-
-            if ($disposition === 'inline' && $cid !== '') {
-                $mail->addStringEmbeddedImage($raw, $cid, $filename, \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64, $type);
+    $sent = false;
+    foreach ($transports as $t) {
+        $mail = new \PHPMailer\PHPMailer\PHPMailer(true); // true => throw exceptions
+        try {
+            $mail->isSMTP();
+            $mail->Host    = $t['host'];
+            $mail->Port    = $t['port'];
+            $mail->Timeout = 15;             // keep request-path sends snappy
+            $mail->CharSet = \PHPMailer\PHPMailer\PHPMailer::CHARSET_UTF8;
+            if (!empty($t['auth'])) {
+                // Brevo: authenticated submission over STARTTLS (:587). Brevo signs
+                // with our domain-authenticated DKIM, so alignment still holds.
+                $mail->SMTPAuth    = true;
+                $mail->Username    = $t['user'];
+                $mail->Password    = $t['pass'];
+                $mail->SMTPSecure  = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->SMTPAutoTLS = true;
             } else {
-                $mail->addStringAttachment($raw, $filename, \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64, $type, $disposition);
+                // Postfix relay: trusted internal hop, no auth/STARTTLS on :25.
+                // OpenDKIM on the relay signs the fallback path.
+                $mail->SMTPAuth    = false;
+                $mail->SMTPAutoTLS = false;
             }
+
+            // Keep a filable copy of every outbound email (plus-addressed so it can
+            // be filtered/foldered in Gmail).
+            $mail->setFrom("no-reply@untrobotics.com", "UNT Robotics");
+            $mail->addBCC("untrobotics+sebastian.thomas.king@gmail.com");
+
+            if (is_array($to)) {
+                $mail->addAddress($to[0], isset($to[1]) ? $to[1] : '');
+            } else {
+                $mail->addAddress($to);
+            }
+            if ($replyto) {
+                $mail->addReplyTo($replyto);
+            }
+            if (is_array($headers)) {
+                foreach ($headers as $name => $value) {
+                    $mail->addCustomHeader($name, $value);
+                }
+            }
+
+            $mail->Subject = $subject;
+            $mail->isHTML(true);
+            $mail->Body    = $message;
+            $mail->AltBody = trim(html_entity_decode(strip_tags($message))); // plaintext fallback
+
+            // Attachments keep the SendGrid-era shape: raw bytes, decode base64.
+            foreach ($attachments as $attachment) {
+                $raw         = base64_decode($attachment['content']);
+                $filename    = isset($attachment['filename']) ? $attachment['filename'] : '';
+                $type        = isset($attachment['type']) ? $attachment['type'] : '';
+                $disposition = isset($attachment['disposition']) ? $attachment['disposition'] : 'attachment';
+                $cid         = isset($attachment['content_id']) ? $attachment['content_id'] : '';
+                if ($disposition === 'inline' && $cid !== '') {
+                    $mail->addStringEmbeddedImage($raw, $cid, $filename, \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64, $type);
+                } else {
+                    $mail->addStringAttachment($raw, $filename, \PHPMailer\PHPMailer\PHPMailer::ENCODING_BASE64, $type, $disposition);
+                }
+            }
+
+            $mail->send();
+            $sent = true;
+            error_log("email(): delivered via {$t['label']}");
+            break; // first transport that succeeds wins
+        } catch (\Throwable $e) {
+            // Brevo over quota / unreachable => fall through to the Postfix relay.
+            error_log("email(): transport '{$t['label']}' failed: " . $mail->ErrorInfo . ' (' . $e->getMessage() . ')');
         }
-
-        $mail->send();
-
-        if (is_numeric($insert_id)) {
-            $db->query('UPDATE sent_emails SET status = 1 WHERE id = "' . $db->real_escape_string($insert_id) . '"');
-        }
-
-        return true;
-    } catch (\Throwable $e) {
-        // Leave the sent_emails row at status 0 (failed) and log for investigation.
-        error_log('email(): SMTP send failed: ' . $mail->ErrorInfo . ' (' . $e->getMessage() . ')');
-        // TODO: Alerting (e.g. AdminBot::send_message) on repeated relay failures.
     }
 
-    return false;
+    if ($sent && is_numeric($insert_id)) {
+        $db->query('UPDATE sent_emails SET status = 1 WHERE id = "' . $db->real_escape_string($insert_id) . '"');
+    }
+
+    return $sent;
 }
 
 function get_fingerprint() {

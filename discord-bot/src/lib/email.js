@@ -4,14 +4,15 @@ const nodemailer = require('nodemailer');
 const { config } = require('../config');
 const log = require('../logger');
 
-// Outbound goes through the self-hosted Postfix relay (the untrobotics-mail
-// service), same as the website's email(). SendGrid is inbound-ingest only, so
-// we never touch it here. The internal hop is plain SMTP on :25 — the relay
-// itself does the real TLS out to the recipient's MX.
-let transporter = null;
-function getTransport() {
-  if (!transporter) {
-    transporter = nodemailer.createTransport({
+// Delivery transports, mirroring the website's email(): Brevo smarthost FIRST
+// (trusted IPs => inbox placement), then the self-hosted Postfix relay as an
+// automatic FAILOVER when Brevo is unreachable or over quota.
+let postfixTransport = null;
+let brevoTransport = null;
+
+function getPostfixTransport() {
+  if (!postfixTransport) {
+    postfixTransport = nodemailer.createTransport({
       host: config.smtpHost,
       port: config.smtpPort,
       secure: false,
@@ -21,7 +22,32 @@ function getTransport() {
       greetingTimeout: 10000,
     });
   }
-  return transporter;
+  return postfixTransport;
+}
+
+function getBrevoTransport() {
+  if (!config.brevoSmtpUser) return null; // Brevo not configured
+  if (!brevoTransport) {
+    brevoTransport = nodemailer.createTransport({
+      host: config.brevoSmtpHost,
+      port: config.brevoSmtpPort,
+      secure: false,
+      requireTLS: true, // STARTTLS on :587
+      auth: { user: config.brevoSmtpUser, pass: config.brevoSmtpPass },
+      connectionTimeout: 15000,
+      greetingTimeout: 10000,
+    });
+  }
+  return brevoTransport;
+}
+
+// Ordered [label, transport] list: Brevo (if configured) then Postfix fallback.
+function getTransports() {
+  const list = [];
+  const brevo = getBrevoTransport();
+  if (brevo) list.push(['brevo', brevo]);
+  list.push(['postfix', getPostfixTransport()]);
+  return list;
 }
 
 // Shared branded wrapper — kept byte-for-byte in sync with brand_email_html()
@@ -94,13 +120,20 @@ async function sendVerificationCode(to, code, ttlMins) {
     html: brandedHtml(inner),
   };
 
-  try {
-    const info = await getTransport().sendMail(msg);
-    log.info('email: verification code sent', `to=${to} id=${info.messageId}`);
-  } catch (err) {
-    log.error('email: SMTP send failed', err.message);
-    throw new Error('Failed to send verification email');
+  // Try each transport in order (Brevo, then Postfix); the first success wins.
+  // Brevo over quota / unreachable falls through to the self-hosted relay.
+  let lastErr = null;
+  for (const [label, transport] of getTransports()) {
+    try {
+      const info = await transport.sendMail(msg);
+      log.info('email: verification code sent', `to=${to} via=${label} id=${info.messageId}`);
+      return;
+    } catch (err) {
+      lastErr = err;
+      log.error(`email: ${label} send failed`, err.message);
+    }
   }
+  throw new Error('Failed to send verification email: ' + (lastErr ? lastErr.message : 'no transport'));
 }
 
 module.exports = { sendVerificationCode };

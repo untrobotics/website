@@ -78,6 +78,12 @@ const config = Object.freeze({
   // same as the website. SendGrid is inbound-ingest only — not used here.
   smtpHost: env('SMTP_HOST', 'mail.untrobotics-mail.svc.cluster.local'),
   smtpPort: intEnv('SMTP_PORT', 25),
+  // Brevo smarthost (primary; the Postfix relay above is the automatic failover).
+  // Active only when brevoSmtpUser is set.
+  brevoSmtpHost: env('BREVO_SMTP_HOST', 'smtp-relay.brevo.com'),
+  brevoSmtpPort: intEnv('BREVO_SMTP_PORT', 587),
+  brevoSmtpUser: env('BREVO_SMTP_USER'),
+  brevoSmtpPass: env('BREVO_SMTP_PASS'),
   emailFrom: env('EMAIL_FROM', 'verify@untrobotics.com'),
   emailFromName: env('EMAIL_FROM_NAME', 'UNT Robotics'),
 

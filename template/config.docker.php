@@ -163,6 +163,15 @@ define('INGEST_SECRET', env('INGEST_SECRET'));
 define('SMTP_HOST', env('SMTP_HOST', 'mail.untrobotics-mail.svc.cluster.local'));
 define('SMTP_PORT', (int) env('SMTP_PORT', '25'));
 
+// Primary outbound smarthost: Brevo (authenticated SMTP over STARTTLS on :587).
+// When BREVO_SMTP_HOST + BREVO_SMTP_USER are set, email() sends via Brevo first
+// (trusted IPs => inbox placement) and FAILS OVER to the Postfix relay above if
+// Brevo is unreachable or over quota. Leave unset to use Postfix only.
+define('BREVO_SMTP_HOST', env('BREVO_SMTP_HOST', 'smtp-relay.brevo.com'));
+define('BREVO_SMTP_PORT', (int) env('BREVO_SMTP_PORT', '587'));
+define('BREVO_SMTP_USER', env('BREVO_SMTP_USER'));
+define('BREVO_SMTP_PASS', env('BREVO_SMTP_PASS'));
+
 define('GOOGLE_CLIENT_API_KEY',          env('GOOGLE_CLIENT_API_KEY'));
 define('GOOGLE_CLIENT_APP_NAME',         'UNT Robotics');
 define('GOOGLE_INTEREST_SPREADSHEET_ID', env('GOOGLE_INTEREST_SPREADSHEET_ID'));
