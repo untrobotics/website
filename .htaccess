@@ -8,6 +8,12 @@ RewriteEngine on
 
 RewriteRule ^botathon/team([0-9]+) /botathon/team.php?team_num=$1 [L,END]
 
+# Internal-only endpoints are called pod-to-pod over plain HTTP (e.g. the Discord
+# bot -> api/internal/send-email.php). Serve them directly and skip the
+# canonical-host / HTTPS redirects below, which would otherwise 301 the internal
+# caller off to the public URL.
+RewriteRule ^api/internal/ - [L]
+
 # The canonical-host / force-HTTPS redirects below are skipped for local
 # development hosts (Docker/compose serves over http://localhost) via the
 # "!^(localhost|127.0.0.1)" condition on each rule. Production hosts are never
