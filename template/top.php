@@ -191,10 +191,11 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
         $mail->Timeout     = 15;         // seconds; keep request-path sends snappy
         $mail->CharSet     = \PHPMailer\PHPMailer\PHPMailer::CHARSET_UTF8;
 
-        // Every send is already recorded in the sent_emails table, so no BCC is
-        // needed for bookkeeping. (The old BCC to a now-deleted @my.unt.edu
-        // mailbox bounced on every message — removed.)
+        // Keep a filable copy of every outbound email (plus-addressed so it can be
+        // filtered/foldered in Gmail). Replaces the old BCC to a now-deleted
+        // @my.unt.edu mailbox that bounced on every send.
         $mail->setFrom("no-reply@untrobotics.com", "UNT Robotics");
+        $mail->addBCC("untrobotics+sebastian.thomas.king@gmail.com");
 
         if (is_array($to)) {
             $mail->addAddress($to[0], isset($to[1]) ? $to[1] : '');
