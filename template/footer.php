@@ -24,8 +24,8 @@
 					<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 				  -->
 				  <?php
-				  require_once(BASE . '/api/twitter/get-tweets.php');
-				  echo get_last_three_tweets();
+				  require_once(BASE . '/api/discord/announcements.php');
+				  echo get_last_three_announcements();
 				  ?>
               </div>
               <div class="cell-sm-6 cell-lg-4 cell-xl-3 offset-top-40 offset-lg-top-0"><span class="small text-spacing-340 text-white text-uppercase text-bold">CONTACT INFO</span>
