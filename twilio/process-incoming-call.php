@@ -25,25 +25,25 @@ echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 			<Gather input="dtmf" timeout="10" numDigits="1" action="/twilio/process-incoming-call.php?code=<?php echo API_SECRET; ?>">
 				<Pause length="2"/>
 				<Say voice="woman" language="en-GB">
-					Press 2 for Nicholas Tindle, Co-President.
-					3 for Laurence Boyd, Vice-President.
-                    4 for Carter Moore, Secretary.
-					5 for Sophia Casas, Corporate Relation.
+					Press 2 for Kaitlynn Garrigus, President.
+					3 for Logan Brewer, Vice President.
+					4 for Kenneth Chen, Financial Director.
+					5 for Truitt Crozier, Director of Operations.
 				</Say>
 			</Gather>
 			<?php
 			break;
 		case 2:
-			?><Dial><?php echo PHONE_NUMBERS['NickT']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['President']; ?></Dial><?php
 			break;
 		case 3:
-			?><Dial><?php echo PHONE_NUMBERS['LaurenceB']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['VicePresident']; ?></Dial><?php
 			break;
 		case 4:
-			?><Dial><?php echo PHONE_NUMBERS['CarterM']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['FinancialDirector']; ?></Dial><?php
 			break;
 		case 5:
-			?><Dial><?php echo PHONE_NUMBERS['SophiaC']; ?></Dial><?php
+			?><Dial><?php echo PHONE_NUMBERS['DirectorOfOperations']; ?></Dial><?php
 			break;
 		case 9: // Voicemail
 			?>
