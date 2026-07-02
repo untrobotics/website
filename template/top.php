@@ -141,6 +141,36 @@ function brand_email_code_box($code) {
         . 'color:#0b2545;font-family:Consolas,Menlo,monospace;">' . htmlspecialchars($code) . '</span></div>';
 }
 
+/**
+ * Rate-limited admin-channel alert when the Brevo (primary) email transport
+ * fails, so an expired/invalid Brevo SMTP key (it lapses after 90 days of
+ * inactivity) gets noticed. Mail still goes out via the Postfix fallback, but to
+ * spam — so we want a human to regenerate the key. Best effort: never throws,
+ * at most one alert per 6 hours (temp-file marker).
+ */
+function notify_brevo_failure($detail) {
+    $marker = sys_get_temp_dir() . '/untr_brevo_alert';
+    if (is_readable($marker) && (time() - filemtime($marker) < 21600)) {
+        return; // already alerted within the last 6h
+    }
+    @touch($marker);
+    if (!class_exists('AdminBot')) {
+        @require_once(BASE . '/api/discord/bots/admin.php');
+    }
+    if (class_exists('AdminBot')) {
+        try {
+            AdminBot::send_message(
+                "\u{26A0}\u{FE0F} Brevo email send failed \u{2014} falling back to Postfix (mail delivered "
+                . "but likely to spam). Regenerate the Brevo SMTP key (it expires after 90 days of "
+                . "inactivity) and update BREVO_SMTP_PASS. Detail: ",
+                substr((string) $detail, 0, 300)
+            );
+        } catch (\Throwable $e) {
+            /* alerting is best-effort */
+        }
+    }
+}
+
 function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array(), $branded = true) {
     global $db;
     // Outbound now goes through the self-hosted Postfix relay via PHPMailer/SMTP.
@@ -266,8 +296,11 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
             error_log("email(): delivered via {$t['label']}");
             break; // first transport that succeeds wins
         } catch (\Throwable $e) {
-            // Brevo over quota / unreachable => fall through to the Postfix relay.
+            // Brevo over quota / unreachable / expired key => fall through to Postfix.
             error_log("email(): transport '{$t['label']}' failed: " . $mail->ErrorInfo . ' (' . $e->getMessage() . ')');
+            if ($t['label'] === 'brevo') {
+                notify_brevo_failure($mail->ErrorInfo ?: $e->getMessage());
+            }
         }
     }
 

@@ -74,18 +74,11 @@ const config = Object.freeze({
     .map((d) => d.trim().toLowerCase())
     .filter(Boolean),
 
-  // Outbound goes through the self-hosted Postfix relay (untrobotics-mail),
-  // same as the website. SendGrid is inbound-ingest only — not used here.
-  smtpHost: env('SMTP_HOST', 'mail.untrobotics-mail.svc.cluster.local'),
-  smtpPort: intEnv('SMTP_PORT', 25),
-  // Brevo smarthost (primary; the Postfix relay above is the automatic failover).
-  // Active only when brevoSmtpUser is set.
-  brevoSmtpHost: env('BREVO_SMTP_HOST', 'smtp-relay.brevo.com'),
-  brevoSmtpPort: intEnv('BREVO_SMTP_PORT', 587),
-  brevoSmtpUser: env('BREVO_SMTP_USER'),
-  brevoSmtpPass: env('BREVO_SMTP_PASS'),
-  emailFrom: env('EMAIL_FROM', 'verify@untrobotics.com'),
-  emailFromName: env('EMAIL_FROM_NAME', 'UNT Robotics'),
+  // The bot does not send mail directly. It POSTs to the website's single
+  // internal email endpoint, which owns SMTP/Brevo/failover/alerting. The short
+  // service name `web` resolves to the web Service in the bot's own namespace.
+  emailEndpoint: env('EMAIL_ENDPOINT', 'http://web/api/internal/send-email.php'),
+  internalEmailSecret: env('INTERNAL_EMAIL_SECRET'),
 
   // --- Database -------------------------------------------------------------
   db: {

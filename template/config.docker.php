@@ -172,6 +172,11 @@ define('BREVO_SMTP_PORT', (int) env('BREVO_SMTP_PORT', '587'));
 define('BREVO_SMTP_USER', env('BREVO_SMTP_USER'));
 define('BREVO_SMTP_PASS', env('BREVO_SMTP_PASS'));
 
+// Shared secret guarding the internal email endpoint (api/internal/send-email.php)
+// that the Discord bot POSTs to so all mail flows through one send path. Must
+// match the bot's INTERNAL_EMAIL_SECRET. Empty = the endpoint fails closed (403).
+define('INTERNAL_EMAIL_SECRET', env('INTERNAL_EMAIL_SECRET'));
+
 define('GOOGLE_CLIENT_API_KEY',          env('GOOGLE_CLIENT_API_KEY'));
 define('GOOGLE_CLIENT_APP_NAME',         'UNT Robotics');
 define('GOOGLE_INTEREST_SPREADSHEET_ID', env('GOOGLE_INTEREST_SPREADSHEET_ID'));
