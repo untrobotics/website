@@ -17,6 +17,16 @@ patches:
         path: /spec/template/spec/imagePullSecrets
         value:
           - name: ghcr-pull
+  # Run the interactive Discord bot in prod (base ships it at replicas: 0 so it
+  # runs in exactly one environment). Only ONE instance may hold the gateway
+  # connection — the dev bot must be scaled to 0 before this syncs.
+  - target:
+      kind: Deployment
+      name: discord-bot
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
 # Prod runs immutable, versioned images built + pushed by CI to GHCR.
 # Promote a new build by bumping newTag to a freshly-tagged vX.Y.Z and syncing.
 images:
@@ -26,3 +36,6 @@ images:
   - name: untrobotics-driver-ws
     newName: ghcr.io/untrobotics/website-driver-ws
     newTag: "v1.0.3"
+  - name: untrobotics-discord-bot
+    newName: ghcr.io/untrobotics/website-discord-bot
+    newTag: "v1.0.6"
