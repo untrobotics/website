@@ -78,6 +78,7 @@ const config = Object.freeze({
   // internal email endpoint, which owns SMTP/Brevo/failover/alerting. The short
   // service name `web` resolves to the web Service in the bot's own namespace.
   emailEndpoint: env('EMAIL_ENDPOINT', 'http://web/api/internal/send-email.php'),
+  smsEndpoint: env('SMS_ENDPOINT', 'http://web/api/internal/send-sms.php'),
   internalEmailSecret: env('INTERNAL_EMAIL_SECRET'),
 
   // --- Database -------------------------------------------------------------
