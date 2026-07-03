@@ -46,4 +46,7 @@ if (!preg_match('/^\+?[0-9]{10,15}$/', $to)) {
 }
 
 $status = send_sms_message((string) $data['body'], $to, array());
+// Audit every send (initial status only; the final delivery status arrives via
+// twilio/sms-status.php). Goes to the Apache log -> Discord web-logs channel.
+error_log('[sms] internal send to=' . $to . ' -> ' . var_export($status, true));
 echo json_encode(array('status' => $status));

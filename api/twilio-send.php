@@ -12,10 +12,14 @@ function send_sms_message($message, $to, $attachments) {
 		$media .= 'MediaUrl=' . urlencode($attachment) . '&';
 	}
 
+	// StatusCallback: Twilio POSTs the FINAL delivery status to this webhook so
+	// carrier rejections (e.g. A2P 10DLC 30034) are logged/alerted instead of
+	// being masked by the initial 'queued' response.
 	$body = $media . http_build_query(array(
 		'Body' => $message,
 		'From' => PHONE_NUMBER,
 		'To'   => $to,
+		'StatusCallback' => 'https://www.untrobotics.com/twilio/sms-status.php?code=' . API_SECRET,
 	));
 
 	$ch = curl_init();
