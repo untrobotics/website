@@ -9,6 +9,10 @@
  */
 
 require('../../template/top.php');
+// twilio-send.php loads config with a CWD-relative require("../template/config.php"),
+// which only resolves from api/. Match groupme-bot.php's working directory so the
+// include succeeds (config is already loaded via top.php, so it's a no-op).
+chdir(BASE . '/api');
 require_once(BASE . '/api/twilio-send.php');
 
 header('Content-Type: application/json');
