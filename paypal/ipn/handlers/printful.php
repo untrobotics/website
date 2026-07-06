@@ -125,7 +125,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		} else {
 			//throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
 			payment_log("[{$payment_info->txn_id}] Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
-			AdminBot::send_message("(IPN) Alert: Failed to send e-mail receipt for order #{$draft_order->get_id()} [{$payment_info->txn_id}].");
+			$ipn->alert("Alert: Failed to send e-mail receipt for order #{$draft_order->get_id()} [{$payment_info->txn_id}].");
 		}
 		
 		// create association in the database between tx id and printful order id
@@ -166,18 +166,18 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 			$q = $db->query('UPDATE printful_order SET confirmed = 1 WHERE id = "' . $db->real_escape_string($printful_order_db_id) . '"');
 			if (!$q) {
 				payment_log("[{$payment_info->txn_id}] Failed to confirm order in the database.");
-				AdminBot::send_message("(IPN) Alert: Printful order table failed to commit confirmation update for [{$payment_info->txn_id}]. (super secret id: {$printful_order_db_id})");
+				$ipn->alert("Alert: Printful order table failed to commit confirmation update for [{$payment_info->txn_id}]. (super secret id: {$printful_order_db_id})");
 			} else {
 				payment_log("[{$payment_info->txn_id}] Order confirmed in database.");
-				AdminBot::send_message("(IPN) Alert: Successfully confirmed printful order [{$payment_info->txn_id}] (profit: {$profit} {$currency}, woohoo!).");
+				$ipn->alert("Alert: Successfully confirmed printful order [{$payment_info->txn_id}] (profit: {$profit} {$currency}, woohoo!).");
 			}
 		} else {
 			payment_log("[{$payment_info->txn_id}] Not confirming order because this is a sandbox order.");
-            AdminBot::send_message("(IPN) Alert: Not confirming order because this is a sandbox order.");
+            $ipn->alert("Alert: Not confirming order because this is a sandbox order.");
 		}
 	} else {
 		// Alerting! this is some type of reversal
 		payment_log("[{$payment_info->txn_id}] Amount is not positive. Alerting the executives of potential returned item.");
-		AdminBot::send_message("(IPN) Alert: Printful item returned for order [{$payment_info->txn_id}]. Reversal amount: {$amount_paid}.");
+		$ipn->alert("Alert: Printful item returned for order [{$payment_info->txn_id}]. Reversal amount: {$amount_paid}.");
 	}
 }

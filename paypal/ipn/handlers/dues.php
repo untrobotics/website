@@ -159,7 +159,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		
 		if ($email_send_status) {
 			payment_log("[{$payment_info->txn_id}] Successfully sent e-mail receipt (" . var_export($email_send_status, true) . ")");
-            AdminBot::send_message("(IPN) Alert: Successfully received dues payment from {$r['name']} (#$uid), paid for by {$payment_info->first_name} {$payment_info->last_name}. # Semesters: " . count($paid_for_terms));
+            $ipn->alert("Alert: Successfully received dues payment from {$r['name']} (#$uid), paid for by {$payment_info->first_name} {$payment_info->last_name}. # Semesters: " . count($paid_for_terms));
 
             $sum = "UNKNOWN";
             if ($untrobotics->get_current_term() == Semester::AUTUMN) {
@@ -225,10 +225,10 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 		} else {
 			//throw new IPNHandlerException("[{$payment_info->txn_id}]: Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
 			payment_log("[{$payment_info->txn_id}] Failed to send e-mail receipt (" . var_export($email_send_status, true) . ")");
-			AdminBot::send_message("(IPN) Alert: Failed to send e-mail receipt for dues payment [{$payment_info->txn_id}].");
+			$ipn->alert("Alert: Failed to send e-mail receipt for dues payment [{$payment_info->txn_id}].");
 		}
 		
 	} else {
-        AdminBot::send_message("(IPN) Alert: Received a negative or zero amount IPN. This usually indicates some kind of reversal/refund. [{$payment_info->txn_id}].");
+        $ipn->alert("Alert: Received a negative or zero amount IPN. This usually indicates some kind of reversal/refund. [{$payment_info->txn_id}].");
 	}
 }

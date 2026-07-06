@@ -86,14 +86,27 @@ if (!function_exists('already_handled')) {
 if (!class_exists('PaymentGatewayContext')) {
     class PaymentGatewayContext {
         private $sandbox;
-        public function __construct($sandbox) {
+        private $name;
+        public function __construct($sandbox, $name = 'PayPal') {
             $this->sandbox = (bool) $sandbox;
+            $this->name = $name;
         }
         public function getSandbox() {
             return $this->sandbox;
         }
         public function useSandbox() {
             $this->sandbox = true;
+        }
+        public function get_name() {
+            return $this->name;
+        }
+        // Gateway-aware admin alert: prefixes the message with "IPN/<provider>"
+        // (e.g. "(IPN/Stripe) ...", "(IPN/PayPal) ...") so alerts show which
+        // gateway they came from.
+        public function alert($message) {
+            if (class_exists('AdminBot')) {
+                AdminBot::send_message('(IPN/' . $this->name . ') ' . $message);
+            }
         }
     }
 }

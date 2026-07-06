@@ -84,7 +84,7 @@ try {
 
     // Test keys (sk_test) => sandbox: a real Printful order is never confirmed.
     $is_sandbox = (strpos((string) STRIPE_SECRET_KEY, 'sk_test') === 0);
-    $gateway = new PaymentGatewayContext($is_sandbox);
+    $gateway = new PaymentGatewayContext($is_sandbox, 'Stripe');
 
     // ---- Amounts -----------------------------------------------------------
     $amount_total = isset($session->amount_total) ? $session->amount_total : 0; // cents
