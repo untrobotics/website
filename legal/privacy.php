@@ -43,6 +43,16 @@ head("Privacy", true);
     <div class="shell">
         <div class="range range-md-justify">
             <div class="cell-md-8 cell-lg-7 cell-xl-6">
+                <div data-custom-class="body_text" style="margin-bottom:28px;padding:16px 18px;border:1px solid #ddd;border-radius:6px;">
+                    <strong>SMS / Text Messaging.</strong> If you provide your mobile number to UNT Robotics
+                    (by requesting a verification code on our website or by texting our phone number), we use
+                    it only to send you one-time verification codes and to reply to questions you send us.
+                    <strong>We do not sell, rent, or share your mobile number or SMS opt-in information with
+                    any third parties or affiliates, and we never use it for marketing.</strong> Message and
+                    data rates may apply and message frequency varies. Reply STOP to opt out or HELP for help.
+                    See our <a href="https://www.untrobotics.com/legal/sms-terms">SMS Terms &amp; Conditions</a>.
+                </div>
+
                 <div class="inset-md-right-30 inset-lg-right-0">
 
                     <div data-custom-class="body">
