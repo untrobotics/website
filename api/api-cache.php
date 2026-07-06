@@ -1,5 +1,5 @@
 <?php
-require_once('../template/top.php');
+require_once(__DIR__ . '/../template/top.php');
 
 /**
  * Gets the first entry from the API cache that has a matching endpoint.
