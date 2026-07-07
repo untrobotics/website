@@ -162,6 +162,14 @@ head('Join', true);
 				  <div class="form-group postfix-xl-right-40">
 					<label for="phone_number" class="form-label">Phone Number</label>
 					<input id="phone_number" type="text" name="phone_number" data-constraints="@Required" class="form-control" <?php if (isset($_POST['phone_number'])) { echo 'value="' . htmlspecialchars($_POST['phone_number'] ?? '', ENT_QUOTES) . '"'; } ?>>
+					<small class="form-label" style="display:block;margin-top:8px;line-height:1.5;color:#6b6b6b;">
+						By providing your phone number and joining, you agree to receive SMS text messages from
+						UNT Robotics &mdash; including account/phone verification codes and replies to questions you
+						text us. Message frequency varies. Message and data rates may apply. Reply <strong>STOP</strong>
+						to opt out or <strong>HELP</strong> for help. We never sell or share your number. See our
+						<a href="https://www.untrobotics.com/legal/privacy">Privacy Policy</a> and
+						<a href="https://www.untrobotics.com/legal/sms-terms">SMS Terms &amp; Conditions</a>.
+					</small>
 				  </div>
 				  <div class="form-group postfix-xl-right-40">
 					<label for="unteuid" class="form-label">UNT EUID</label>
