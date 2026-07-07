@@ -138,8 +138,8 @@ head('Join', true);
 	</section>
 	<section class="section-50">
 	  <div class="shell">
-		<div class="range offset-top-40">
-		  <div class="cell-xl-12 cell-lg-12 cell-md-12 cell-sm-12 text-left">
+		<div class="range range-md-center offset-top-40">
+		  <div class="cell-sm-12 cell-md-10 cell-lg-8 cell-xl-6 text-left">
 			<h2>Join</h2>
 			<form data-form-output="form-output-global" data-form-type="login" method="post" action="" class="rd-mailform text-left">
 					<input type="hidden" name="timezone" id="reg-timezone">

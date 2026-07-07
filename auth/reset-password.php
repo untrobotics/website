@@ -78,8 +78,8 @@ head('Reset Password', true);
         </section>
         <section class="section-50">
             <div class="shell">
-                <div class="range offset-top-40">
-                    <div class="cell-md-12 text-center">
+                <div class="range range-md-center offset-top-40">
+                    <div class="cell-sm-12 cell-md-8 cell-lg-6 cell-xl-5 text-center">
                         <h2>Reset Password</h2>
                         <?php
                         if (isset($error)) {
