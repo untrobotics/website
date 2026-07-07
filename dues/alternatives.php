@@ -30,8 +30,8 @@ if (isset($_POST['submit'])) {
 <main class="page-content">
 	<section class="section-50 section-md-75 section-lg-100">
 	  <div class="shell">
-		<div class="range range-md-justify">
-		  <div class="cell-md-12">
+		<div class="range range-md-center">
+		  <div class="cell-sm-12 cell-md-10 cell-lg-8 cell-xl-6">
 			<div class="inset-md-right-30 inset-lg-right-0 text-center">
 
 			  <h1>Pay Dues</h1>
