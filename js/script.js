@@ -1580,16 +1580,40 @@ $document.ready(function () {
     } catch (e) {
       if (window.console && console.warn) { console.warn("RDInputLabel init skipped:", e && e.message); }
     }
-    // Chrome autofill populates fields AFTER init without firing an 'input'
-    // event, so the floating label never lifts and overlaps the value. Re-run
-    // each label's change() a few times over the first ~2s to catch autofill.
+    // Chrome autofill populates fields AFTER init without an 'input' event AND
+    // masks the value from JS, so RDInputLabel's change() never lifts the label
+    // (it overlaps the value). Detect the autofill CSS state directly and lift
+    // the label ourselves. Two paths: (1) re-run change() + probe :-webkit-autofill
+    // on a few timers to catch fills already present; (2) an animationstart hook
+    // that fires the instant Chrome autofills a field.
+    var _liftIfAutofilled = function ($lbl) {
+      try {
+        var input = document.getElementById($lbl.attr("for"));
+        if (input && input.matches && input.matches(":-webkit-autofill")) {
+          $lbl.addClass("focus not-empty");
+        }
+      } catch (e) {}
+    };
     var _syncRdLabels = function () {
       plugins.rdInputLabel.each(function () {
-        var inst = jQuery(this).data("RDInputLabel");
+        var $lbl = jQuery(this);
+        var inst = $lbl.data("RDInputLabel");
         if (inst && typeof inst.change === "function") { try { inst.change(); } catch (e) {} }
+        _liftIfAutofilled($lbl);
       });
     };
-    [150, 400, 900, 1600].forEach(function (ms) { setTimeout(_syncRdLabels, ms); });
+    [150, 400, 900, 1600, 2600].forEach(function (ms) { setTimeout(_syncRdLabels, ms); });
+    try {
+      var _st = document.createElement("style");
+      _st.textContent = "@keyframes untrAutofill{from{}to{}}input:-webkit-autofill{animation-name:untrAutofill;animation-duration:1ms;}";
+      document.head.appendChild(_st);
+      document.addEventListener("animationstart", function (e) {
+        if (e.animationName === "untrAutofill" && e.target && e.target.id) {
+          var lbl = document.querySelector('.form-label[for="' + e.target.id + '"]');
+          if (lbl) { lbl.classList.add("focus", "not-empty"); }
+        }
+      }, true);
+    } catch (e) {}
   }
 
   /**

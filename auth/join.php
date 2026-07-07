@@ -163,7 +163,7 @@ head('Join', true);
 					<label for="phone_number" class="form-label">Phone Number</label>
 					<input id="phone_number" type="text" name="phone_number" data-constraints="@Required" class="form-control" <?php if (isset($_POST['phone_number'])) { echo 'value="' . htmlspecialchars($_POST['phone_number'] ?? '', ENT_QUOTES) . '"'; } ?>>
 				  </div>
-				  <div class="form-group">
+				  <div class="form-group postfix-xl-right-40">
 					<small style="display:block;position:relative;margin-top:4px;line-height:1.5;font-size:0.8rem;color:#6b6b6b;">
 						By providing your phone number and joining, you agree to receive SMS text messages from
 						UNT Robotics &mdash; including account/phone verification codes and replies to questions you
@@ -177,15 +177,15 @@ head('Join', true);
 					<label for="unteuid" class="form-label">UNT EUID</label>
 					<input id="unteuid" type="text" name="unteuid" data-constraints="@Required" class="form-control" <?php if (isset($_POST['unteuid'])) { echo 'value="' . htmlspecialchars($_POST['unteuid'] ?? '', ENT_QUOTES) . '"'; } ?>>
 				  </div>
-				  <div class="postfix-xl-right-40">
+				  <div class="form-group postfix-xl-right-40">
 					<!--<label for="graduation_date" class="form-label">Graduation Date</label>-->
-					  <select id="graduation_term" name="graduation_term" class="">
+					  <select id="graduation_term" name="graduation_term" class="form-control offset-top-10">
 						  <option>Select graduation term...</option>
 						  <option value="spring" <?php if (isset($_POST['graduation_term']) && $_POST['graduation_term'] === "spring") { echo 'selected="selected"'; } ?>>Spring</option>
 						  <option value="summer" <?php if (isset($_POST['graduation_term']) && $_POST['graduation_term'] === "summer") { echo 'selected="selected"'; } ?>>Summer</option>
 						  <option value="fall" <?php if (isset($_POST['graduation_term']) && $_POST['graduation_term'] === "fall") { echo 'selected="selected"'; } ?>>Fall</option>
 					  </select>
-					  <select id="graduation_year" name="graduation_year" class="">
+					  <select id="graduation_year" name="graduation_year" class="form-control offset-top-10">
 					  	  <option>Select graduation year...</option>
 						  <?php
 						  for ($i = 0; $i < 7; $i++) {
