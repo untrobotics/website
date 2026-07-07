@@ -407,6 +407,24 @@ CREATE TABLE `discord_verification_log` (
   KEY `created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+--
+-- Migration tracking (see sql/migrate.php). A fresh schema is already at the
+-- current version, so every existing migration file is pre-recorded as applied.
+--
+DROP TABLE IF EXISTS `schema_migrations`;
+CREATE TABLE `schema_migrations` (
+  `filename` varchar(255) NOT NULL,
+  `applied_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`filename`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+INSERT INTO `schema_migrations` (`filename`) VALUES
+('URW-64-ftp-users.sql'),
+('URW-65.sql'),
+('URW-66.sql'),
+('URW-147.sql'),
+('URW-178-cache-configs.sql'),
+('stripe-payments-txid-and-order-uid.sql');
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
