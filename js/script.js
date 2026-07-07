@@ -1580,6 +1580,16 @@ $document.ready(function () {
     } catch (e) {
       if (window.console && console.warn) { console.warn("RDInputLabel init skipped:", e && e.message); }
     }
+    // Chrome autofill populates fields AFTER init without firing an 'input'
+    // event, so the floating label never lifts and overlaps the value. Re-run
+    // each label's change() a few times over the first ~2s to catch autofill.
+    var _syncRdLabels = function () {
+      plugins.rdInputLabel.each(function () {
+        var inst = jQuery(this).data("RDInputLabel");
+        if (inst && typeof inst.change === "function") { try { inst.change(); } catch (e) {} }
+      });
+    };
+    [150, 400, 900, 1600].forEach(function (ms) { setTimeout(_syncRdLabels, ms); });
   }
 
   /**
