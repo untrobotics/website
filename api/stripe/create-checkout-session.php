@@ -173,6 +173,13 @@ try {
             'variant' => $selected_variant->get_id()
         );
 
+        // Merch checkout stays guest-friendly, but if the buyer is logged in,
+        // tag the order with their uid so it can be associated to their account.
+        $merch_auth = auth();
+        if (is_array($merch_auth) && isset($merch_auth[0]['id'])) {
+            $custom['uid'] = $merch_auth[0]['id'];
+        }
+
         // Type/Product/Variant option pairs — the PRINTFUL handler reads
         // options[0]=Type, options[1]=Product, options[2]=Variant.
         $option_pairs = array(

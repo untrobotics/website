@@ -205,7 +205,8 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
                 AdminBot::send_message("Processing T-shirt order with this dues payment: @{$tshirt_size}");
                 $printful_custom = array(
                     'variant'=>"@{$tshirt_size}",
-                    'discounts'=>array('paid-with-dues')
+                    'discounts'=>array('paid-with-dues'),
+                    'uid'=>$uid
                 );
 
                 $printfulapi = new PrintfulCustomAPI();

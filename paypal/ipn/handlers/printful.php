@@ -136,7 +136,10 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 			payment_log("[{$payment_info->txn_id}] Created tx id and order id association in the database (order id: {$draft_order->get_id()})");
 		}
 		
-		$q = $db->query('INSERT INTO printful_order (order_id, first_name, last_name, email_address, order_name, order_variant_name, order_type)
+		// Associate the order with a logged-in buyer's account when available
+		// (guest merch checkouts leave uid NULL).
+		$order_uid = isset($custom['uid']) ? intval($custom['uid']) : null;
+		$q = $db->query('INSERT INTO printful_order (order_id, first_name, last_name, email_address, order_name, order_variant_name, order_type, uid)
 		VALUES
 		(
 			"' . $db->real_escape_string($draft_order->get_id()) . '",
@@ -145,7 +148,8 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 			"' . $db->real_escape_string($payment_info->payer_email) . '",
 			"' . $db->real_escape_string($order_name) . '",
 			"' . $db->real_escape_string($order_variant_name) . '",
-			"' . $db->real_escape_string($order_type) . '"
+			"' . $db->real_escape_string($order_type) . '",
+			' . ($order_uid !== null ? '"' . $db->real_escape_string($order_uid) . '"' : 'NULL') . '
 		)');
 		$printful_order_db_id = $db->insert_id;
 		if (!$q) {
