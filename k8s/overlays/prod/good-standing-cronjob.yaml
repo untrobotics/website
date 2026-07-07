@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: unassign-expired-good-standing
+spec:
+  # Fires at 14:00 UTC (~09:00 Central) on the 1st of each month. The actual
+  # safety gate is the PHP season guard (SAFE_MONTHS = Sept-April): off-season
+  # firings run in analysis mode and change nothing, so a monthly schedule is safe.
+  schedule: "0 14 1 * *"
+  timeZone: America/Chicago
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 1800
+      template:
+        spec:
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: ghcr-pull
+          containers:
+            - name: unassign-good-standing
+              image: untrobotics-web
+              # --apply --confirm (NO --force): the season guard limits real
+              # removals to Sept-April. Members are DM'd normally on removal.
+              command:
+                - php
+                - /var/www/html/cron/unassign-expired-good-standing.php
+                - --apply
+                - --confirm
+              envFrom:
+                - configMapRef:
+                    name: web-config
+                - secretRef:
+                    name: web-secrets

@@ -118,6 +118,7 @@ function audit_log(string $message): void {
 $argv = $argv ?? [];
 $apply   = in_array('--apply', $argv, true);
 $confirm = in_array('--confirm', $argv, true);
+$force   = in_array('--force', $argv, true); // deliberately override the season guard (intentional off-season mass strip)
 if (in_array('--help', $argv, true) || in_array('-h', $argv, true)) {
 	echo "Usage: php " . basename(__FILE__) . " [--apply] [--confirm]\n";
 	echo "  (no flags)         Dry-run. Reports what WOULD happen. Changes nothing.\n";
@@ -329,7 +330,7 @@ if (!$apply) {
 }
 
 // --apply was requested: enforce the season + confirm guard.
-if (!$confirm || !$in_safe_window) {
+if (!$confirm || (!$in_safe_window && !$force)) {
 	$reasons = [];
 	if (!$confirm) {
 		$reasons[] = 'missing --confirm flag';
