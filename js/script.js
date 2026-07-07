@@ -1562,8 +1562,24 @@ $document.ready(function () {
    * RD Input Label
    * @description Enables RD Input Label Plugin
    */
+  // jQuery's Sizzle engine throws "unsupported pseudo: -webkit-autofill" when
+  // RDInputLabel checks .is(':-webkit-autofill'). That uncaught error aborts the
+  // rest of page-init — including hiding the .page-loader overlay below — leaving
+  // form pages stuck on an infinite spinner. Register the pseudo so the check
+  // works, and guard the init so it can never strand the loader again.
+  try {
+    if (window.jQuery && jQuery.expr && jQuery.expr.pseudos && !jQuery.expr.pseudos["-webkit-autofill"]) {
+      jQuery.expr.pseudos["-webkit-autofill"] = function (el) {
+        try { return !!(el && el.matches && el.matches(":-webkit-autofill")); } catch (e) { return false; }
+      };
+    }
+  } catch (e) {}
   if (plugins.rdInputLabel.length) {
-    plugins.rdInputLabel.RDInputLabel();
+    try {
+      plugins.rdInputLabel.RDInputLabel();
+    } catch (e) {
+      if (window.console && console.warn) { console.warn("RDInputLabel init skipped:", e && e.message); }
+    }
   }
 
   /**
