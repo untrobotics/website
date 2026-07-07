@@ -113,7 +113,7 @@ CREATE TABLE `dues_payments` (
   `euid` varchar(25) DEFAULT NULL,
   `amount` decimal(5,2) DEFAULT NULL,
   `fee` decimal(5,2) DEFAULT NULL,
-  `txid` varchar(50) DEFAULT NULL,
+  `txid` varchar(255) DEFAULT NULL,
   `payment_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `dues_term` int(1) NOT NULL,
   `dues_year` int(4) NOT NULL,
@@ -173,7 +173,7 @@ CREATE TABLE `handled_ipns` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `handled_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `handled_source` varchar(25) DEFAULT NULL,
-  `txid` varchar(25) DEFAULT NULL,
+  `txid` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `txid` (`txid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=217 DEFAULT CHARSET=latin1;
@@ -270,6 +270,7 @@ CREATE TABLE `printful_order` (
   `first_name` varchar(50) DEFAULT NULL,
   `last_name` varchar(50) DEFAULT NULL,
   `returned` int(1) NOT NULL DEFAULT '0',
+  `uid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_id` (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
@@ -279,7 +280,7 @@ DROP TABLE IF EXISTS `printful_order_tx`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `printful_order_tx` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `txid` varchar(25) DEFAULT NULL,
+  `txid` varchar(255) DEFAULT NULL,
   `printful_order_id` varchar(25) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
