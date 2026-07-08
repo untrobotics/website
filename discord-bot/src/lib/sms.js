@@ -27,13 +27,13 @@ async function handleSmsReply(message) {
   const desc = embed.description || '';
   const m = desc.match(/\*\*FROM:\*\*\s*(\+?\d{10,15})/i);
   if (!m) {
-    await message.react('❓').catch(() => {});
+    await message.react('🚫').catch(() => {});
     return true;
   }
   const to = m[1];
   const body = (message.content || '').trim();
   if (!body) {
-    await message.react('❓').catch(() => {});
+    await message.react('🚫').catch(() => {});
     return true;
   }
 
@@ -49,13 +49,13 @@ async function handleSmsReply(message) {
     });
     const json = await res.json().catch(() => ({}));
     if (res.ok && json.status && json.status !== 'failed') {
-      await message.react('✅').catch(() => {});
+      await message.react('📤').catch(() => {});
     } else {
-      await message.react('⚠️').catch(() => {});
+      await message.react('📵').catch(() => {});
       log.error('sms reply: send failed', res.status, JSON.stringify(json));
     }
   } catch (err) {
-    await message.react('⚠️').catch(() => {});
+    await message.react('📵').catch(() => {});
     log.error('sms reply: endpoint error', err.message);
   }
   return true;

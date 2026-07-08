@@ -39,4 +39,4 @@ images:
     newTag: "v1.0.3"
   - name: untrobotics-discord-bot
     newName: ghcr.io/untrobotics/website-discord-bot
-    newTag: "v1.0.7"
+    newTag: "v1.0.18"
