@@ -346,6 +346,7 @@ CREATE TABLE `users` (
   `reg_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `reg_ip` varchar(39) DEFAULT NULL,
   `timezone` varchar(100) DEFAULT NULL,
+  `sms_consent` tinyint(1) NOT NULL DEFAULT '0',
   `sandbox` int(1) NOT NULL DEFAULT '0',
   `discord_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`)

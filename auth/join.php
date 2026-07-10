@@ -10,6 +10,7 @@ if (!empty($_POST)) {
 	$grad_year = $_POST['graduation_year'];
 	$password1 = $_POST['password1'];
 	$password2 = $_POST['password2'];
+	$sms_consent = isset($_POST['sms_consent']) ? 1 : 0;
 
 	$valid_grad_terms = array('spring', 'fall', 'summer');
 
@@ -63,7 +64,7 @@ if (!empty($_POST)) {
 				}
 
 				// do query
-			$q = $db->query('INSERT INTO users (name, email, phone, unteuid, grad_term, grad_year, password, reg_timestamp, reg_ip, timezone)
+			$q = $db->query('INSERT INTO users (name, email, phone, unteuid, grad_term, grad_year, password, reg_timestamp, reg_ip, timezone, sms_consent)
 			VALUES (
 				"' . $db->real_escape_string($name) . '",
 				"' . $db->real_escape_string($email) . '",
@@ -74,7 +75,8 @@ if (!empty($_POST)) {
 				"' . $db->real_escape_string(password_hash($password1, PASSWORD_BCRYPT, array('cost' => 12))) . '",
 				NOW(),
 				"' . $db->real_escape_string($ip) . '",
-				"' . $db->real_escape_string($timezone) . '"
+				"' . $db->real_escape_string($timezone) . '",
+				' . intval($sms_consent) . '
 			)
 			');
 
@@ -164,14 +166,10 @@ head('Join', true);
 					<input id="phone_number" type="text" name="phone_number" data-constraints="@Required" class="form-control" <?php if (isset($_POST['phone_number'])) { echo 'value="' . htmlspecialchars($_POST['phone_number'] ?? '', ENT_QUOTES) . '"'; } ?>>
 				  </div>
 				  <div class="form-group postfix-xl-right-40">
-					<small style="display:block;position:relative;margin-top:4px;line-height:1.5;font-size:0.8rem;color:#6b6b6b;">
-						By providing your phone number and joining, you agree to receive SMS text messages from
-						UNT Robotics &mdash; including account/phone verification codes and replies to questions you
-						text us. Message frequency varies. Message and data rates may apply. Reply <strong>STOP</strong>
-						to opt out or <strong>HELP</strong> for help. We never sell or share your number. See our
-						<a href="https://www.untrobotics.com/legal/privacy">Privacy Policy</a> and
-						<a href="https://www.untrobotics.com/legal/sms-terms">SMS Terms &amp; Conditions</a>.
-					</small>
+					<label style="display:flex;align-items:flex-start;gap:8px;margin-top:4px;line-height:1.5;font-size:0.8rem;color:#6b6b6b;font-weight:normal;cursor:pointer;">
+						<input type="checkbox" name="sms_consent" value="1" style="margin-top:3px;flex:0 0 auto;"<?php if (!empty($_POST) && isset($_POST['sms_consent'])) { echo ' checked'; } ?>>
+						<span><strong>Optional:</strong> I agree to receive SMS text messages from UNT Robotics &mdash; account/phone verification codes and replies to questions I text you. Consent is <strong>not required</strong> to join or to use any part of our service. Message frequency varies. Message and data rates may apply. Reply <strong>STOP</strong> to opt out or <strong>HELP</strong> for help. We never sell or share your number. See our <a href="https://www.untrobotics.com/legal/privacy">Privacy Policy</a> and <a href="https://www.untrobotics.com/legal/sms-terms">SMS Terms &amp; Conditions</a>.</span>
+					</label>
 				  </div>
 				  <div class="form-group postfix-xl-right-40">
 					<label for="unteuid" class="form-label">UNT EUID</label>
