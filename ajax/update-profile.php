@@ -28,6 +28,7 @@ $phone    = preg_replace('/[^0-9]/', '', @$_POST['phone']);
 $timezone = (string)@$_POST['timezone'];
 $grad_term = @$_POST['grad_term'];
 $grad_year = @$_POST['grad_year'];
+$sms_consent = isset($_POST['sms_consent']) ? 1 : 0;
 
 global $timezones; // timezone_identifiers_list(), defined in top.php
 if (empty($timezones)) $timezones = timezone_identifiers_list();
@@ -69,6 +70,7 @@ $q = $db->query('UPDATE users SET
         grad_term = "' . $db->real_escape_string($grad_term) . '",
         grad_year = "' . $db->real_escape_string($grad_year) . '",
         timezone = "' . $db->real_escape_string($timezone) . '",
+        sms_consent = ' . intval($sms_consent) . ',
         reg_timestamp = reg_timestamp
     WHERE id = "' . $db->real_escape_string($uid) . '"');
 

@@ -32,6 +32,24 @@ $discord_link_url = DISCORD_APP_API_URL . '/oauth2/authorize?' . http_build_quer
 function e($v) { return htmlspecialchars($v ?? '', ENT_QUOTES); }
 ?>
 
+<style>
+/* This is an edit form with pre-filled fields, so use plain static labels above
+   each control. The theme's floating .form-label overlaps pre-filled <select>s
+   (timezone / graduation), which is the display bug. */
+#profile-form .form-label,
+#password-form .form-label {
+    position: static !important;
+    display: block;
+    transform: none !important;
+    top: auto !important; left: auto !important;
+    font-size: 12px; letter-spacing: 0.03em; text-transform: none;
+    color: #8a8a8a; margin: 0 0 5px; pointer-events: auto; opacity: 1;
+}
+#profile-form .form-control, #password-form .form-control { margin-top: 0; }
+.sms-toggle { display: flex; align-items: flex-start; gap: 10px; font-weight: normal; font-size: 0.9rem; line-height: 1.5; color: #555; cursor: pointer; }
+.sms-toggle input { margin-top: 4px; flex: 0 0 auto; }
+</style>
+
 <main class="page-content">
     <section class="section-50 section-md-66">
         <div class="shell text-left">
@@ -136,6 +154,12 @@ function e($v) { return htmlspecialchars($v ?? '', ENT_QUOTES); }
                                                 <option value="<?php echo $y; ?>" <?php echo ($y === $grad_year) ? 'selected' : ''; ?>><?php echo $y; ?></option>
                                             <?php endforeach; ?>
                                         </select>
+                                    </div>
+                                    <div class="cell-md-12 form-group offset-top-10">
+                                        <label class="sms-toggle">
+                                            <input type="checkbox" name="sms_consent" value="1" <?php echo !empty($userinfo['sms_consent']) ? 'checked' : ''; ?>>
+                                            <span>Receive SMS text messages from UNT Robotics &mdash; account/phone verification codes and replies to questions you text us. Optional; message &amp; data rates may apply. Reply STOP to opt out or HELP for help.</span>
+                                        </label>
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-default">Save changes</button>

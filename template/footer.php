@@ -11,18 +11,6 @@
                   <p class="offset-top-20">We are thankful to have a wonderful <a href="/about/our-web-team">website development team</a></p>
               </div>
               <div class="cell-sm-6 cell-lg-3"><span class="small text-spacing-340 text-white text-uppercase text-bold">RECENT UPDATES</span>
-                <!--<article class="event offset-top-20">
-                  <p><a href="#" class="text-white">TWITTER FEED HERE #1</a></p>
-                  <time datetime="2017" class="small offset-top-10">Jan 1, 2019</time>
-                </article>
-                <article class="event offset-top-20">
-                  <p><a href="#" class="text-white">TWITTER FEED HERE #2</a></p>
-                  <time datetime="2017" class="small offset-top-10">Jan 1, 2019</time>
-                </article>-->
-				  <!--
-				  	<a class="twitter-timeline" href="https://twitter.com/UNTRobotics" data-tweet-limit="2" data-theme="dark">Tweets by @UNTRobotics</a>
-					<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-				  -->
 				  <?php
 				  require_once(BASE . '/api/discord/announcements.php');
 				  echo get_last_three_announcements();

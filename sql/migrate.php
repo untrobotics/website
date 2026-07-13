@@ -74,6 +74,14 @@ if ($mode === 'baseline') {
 }
 
 // mode: migrate
+// Serialize concurrent runners (e.g. multiple pods' init containers starting at
+// once) and re-read the applied set under the lock so two can't apply the same
+// file twice.
+$db->query("SELECT GET_LOCK('untr_schema_migrate', 120)");
+$applied = array();
+if ($res = $db->query("SELECT filename FROM schema_migrations")) {
+    while ($row = $res->fetch_row()) { $applied[$row[0]] = true; }
+}
 $ran = 0;
 foreach ($files as $file) {
     $name = basename($file);
@@ -91,4 +99,5 @@ foreach ($files as $file) {
     fwrite(STDOUT, "ok\n");
     $ran++;
 }
+$db->query("SELECT RELEASE_LOCK('untr_schema_migrate')");
 fwrite(STDOUT, "Done. Applied {$ran} new migration(s); " . count($applied) . " already recorded.\n");

@@ -1,3 +1,0 @@
-[submodule "paypal/PP-BM-SDK"]
-	path = paypal/PP-BM-SDK
-	url = https://github.com/paypal/buttonmanager-sdk-php

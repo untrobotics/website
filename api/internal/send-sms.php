@@ -45,6 +45,20 @@ if (!preg_match('/^\+?[0-9]{10,15}$/', $to)) {
     exit;
 }
 
+// Optional consent gate. Proactive/marketing callers pass respect_consent=true,
+// which refuses to text a registered user who hasn't opted in (users.sms_consent).
+// Transactional sends — one-time verification codes, and officer replies to an
+// inbound text — omit it: those are user-initiated and allowed regardless.
+if (!empty($data['respect_consent'])) {
+    $last10 = substr(preg_replace('/[^0-9]/', '', $to), -10);
+    $cq = $db->query('SELECT sms_consent FROM users WHERE RIGHT(phone, 10) = "' . $db->real_escape_string($last10) . '" LIMIT 1');
+    if ($cq && $cq->num_rows > 0 && (int) $cq->fetch_assoc()['sms_consent'] !== 1) {
+        error_log('[sms] blocked by consent gate (recipient has not opted in): to=' . $to);
+        echo json_encode(array('status' => 'blocked_no_consent'));
+        exit;
+    }
+}
+
 $status = send_sms_message((string) $data['body'], $to, array());
 // Audit every send (initial status only; the final delivery status arrives via
 // twilio/sms-status.php). Goes to the Apache log -> Discord web-logs channel.

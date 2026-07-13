@@ -20,6 +20,19 @@ spec:
       labels:
         app: web
     spec:
+      initContainers:
+        # Apply any pending DB migrations before the app serves traffic.
+        # Idempotent + lock-guarded (sql/migrate.php); a failing migration blocks
+        # the rollout instead of serving on a half-migrated schema.
+        - name: migrate
+          image: untrobotics-web:dev
+          imagePullPolicy: IfNotPresent
+          command: ["php", "/var/www/html/sql/migrate.php"]
+          envFrom:
+            - configMapRef:
+                name: web-config
+            - secretRef:
+                name: web-secrets
       containers:
         - name: web
           # Built on the node and imported into k3s containerd (deploy/build-and-load-images.sh).
