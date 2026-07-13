@@ -214,6 +214,36 @@ try {
             ),
         );
 
+    } else if ($source === 'donation') {
+        // ---- DONATION: variable amount chosen by the donor (nothing to recompute).
+        $amount = round((float) (isset($_REQUEST['amount']) ? $_REQUEST['amount'] : 0), 2);
+        if ($amount < 1 || $amount > 10000) {
+            fail('HTTP/1.1 400 Bad Request', 'Please enter a donation amount between $1 and $10,000.');
+        }
+        $custom = array('source' => 'DONATION');
+        $item_name = 'UNT Robotics Donation';
+        $session_params = array(
+            'mode' => 'payment',
+            'payment_method_types' => array('card'),
+            'line_items' => array(array(
+                'price_data' => array(
+                    'currency' => 'usd',
+                    'product_data' => array('name' => $item_name),
+                    'unit_amount' => intval(round($amount * 100)),
+                ),
+                'quantity' => 1,
+            )),
+            'success_url' => $origin . '/sponsorships/donate/thank-you',
+            'cancel_url' => $origin . '/sponsorships',
+            'metadata' => array(
+                'source' => 'DONATION',
+                'custom' => serialize($custom),
+                'options' => json_encode(array()),
+                'quantity' => '1',
+                'item_name' => $item_name,
+            ),
+        );
+
     } else {
         fail('HTTP/1.1 400 Bad Request', 'Unknown payment source.');
     }

@@ -161,6 +161,20 @@ try {
 		$cost = $unit_price * $quantity;
 		$needs_shipping = true; // physical merch always ships
 
+	} else if ($source === 'donation') {
+		// ---- DONATION: variable amount chosen by the donor (nothing to recompute).
+		$amount = round((float) (isset($_REQUEST['amount']) ? $_REQUEST['amount'] : 0), 2);
+		if ($amount < 1 || $amount > 10000) {
+			throw new RuntimeException('Please enter a donation amount between $1 and $10,000.');
+		}
+		$custom = array('source' => 'DONATION');
+		$option_pairs = array();
+		$item_name = 'UNT Robotics Donation';
+		$currency = 'USD';
+		$quantity = 1;
+		$cost = $amount;
+		$needs_shipping = false;
+
 	} else {
 		fail('HTTP/1.1 400 Bad Request', 'Unknown payment source.');
 	}

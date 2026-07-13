@@ -40,6 +40,7 @@ if (!class_exists('Source')) {
     class Source {
         const PRINTFUL = 'PRINTFUL_PRODUCT';
         const DUES = 'DUES_PAYMENT';
+        const DONATION = 'DONATION';
     }
 }
 
@@ -206,6 +207,12 @@ function process_normalized_payment($gateway, $payment_info, array $custom_obj, 
             require_once(__DIR__ . '/handlers/dues.php');
             handled_tx($tx_id, $source);
             DUES\handle_payment_notification($gateway, $payment_info, $custom_obj);
+            break;
+        case Source::DONATION:
+            payment_log("[{$tx_id}] Handling payment with the DONATION handler");
+            require_once(__DIR__ . '/handlers/donation.php');
+            handled_tx($tx_id, $source);
+            DONATION\handle_payment_notification($gateway, $payment_info, $custom_obj);
             break;
         default:
             payment_log("[{$tx_id}] Unhandled payment! Raw source: " . var_export($source, true));

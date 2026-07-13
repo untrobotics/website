@@ -412,6 +412,19 @@ CREATE TABLE `discord_verification_log` (
 -- Migration tracking (see sql/migrate.php). A fresh schema is already at the
 -- current version, so every existing migration file is pre-recorded as applied.
 --
+DROP TABLE IF EXISTS `donations`;
+CREATE TABLE `donations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `fee` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `txid` varchar(255) DEFAULT NULL,
+  `donated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `txid` (`txid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `schema_migrations`;
 CREATE TABLE `schema_migrations` (
   `filename` varchar(255) NOT NULL,
@@ -424,7 +437,9 @@ INSERT INTO `schema_migrations` (`filename`) VALUES
 ('URW-66.sql'),
 ('URW-147.sql'),
 ('URW-178-cache-configs.sql'),
-('stripe-payments-txid-and-order-uid.sql');
+('stripe-payments-txid-and-order-uid.sql'),
+('20260710-users-sms-consent.sql'),
+('20260713-donations-table.sql');
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
