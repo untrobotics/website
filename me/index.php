@@ -21,6 +21,16 @@ $grad_year = (int)$userinfo['grad_year'];
 $is_linked_discord = !empty($userinfo['discord_id']);
 $good_standing = $untrobotics->is_user_in_good_standing($userinfo);
 
+// Dues payment history for this user.
+$dues_history = array();
+$dq = $db->query('SELECT amount, dues_term, dues_year, payment_timestamp FROM dues_payments WHERE uid = "' . $db->real_escape_string($userinfo['id']) . '" ORDER BY payment_timestamp DESC');
+if ($dq) { while ($r = $dq->fetch_assoc()) { $dues_history[] = $r; } }
+
+// Merch/Printful order history for this user (uid was added to printful_order).
+$order_history = array();
+$oq = $db->query('SELECT order_id, order_name, order_variant_name, confirmed FROM printful_order WHERE uid = "' . $db->real_escape_string($userinfo['id']) . '" ORDER BY id DESC');
+if ($oq) { while ($r = $oq->fetch_assoc()) { $order_history[] = $r; } }
+
 // Discord OAuth authorize URL (the /auth/discord callback consumes ?code).
 $discord_link_url = DISCORD_APP_API_URL . '/oauth2/authorize?' . http_build_query(array(
     'client_id' => DISCORD_APP_CLIENT_ID,
@@ -30,6 +40,12 @@ $discord_link_url = DISCORD_APP_API_URL . '/oauth2/authorize?' . http_build_quer
 ));
 
 function e($v) { return htmlspecialchars($v ?? '', ENT_QUOTES); }
+
+// dues_term is stored as a Semester constant value (see auth/join.php / dues handler).
+function dues_term_label($term, $year) {
+    $name = class_exists('Semester') ? Semester::get_name_from_value((int)$term) : null;
+    return ($name ? ucfirst(strtolower($name)) : ('Term ' . (int)$term)) . ' ' . (int)$year;
+}
 ?>
 
 <style>
@@ -46,6 +62,13 @@ function e($v) { return htmlspecialchars($v ?? '', ENT_QUOTES); }
     color: #8a8a8a; margin: 0 0 5px; pointer-events: auto; opacity: 1;
 }
 #profile-form .form-control, #password-form .form-control { margin-top: 0; }
+/* The theme removes native select rendering, which vertically clips the selected
+   value. Restore it and give the box room. */
+#profile-form select.form-control {
+    height: auto; min-height: 46px; padding: 10px 14px; line-height: 1.4;
+    border: 1px solid #e1e1e1; border-radius: 4px; background-color: #fff; color: #333;
+    -webkit-appearance: menulist; -moz-appearance: menulist; appearance: menulist;
+}
 .sms-toggle { display: flex; align-items: flex-start; gap: 10px; font-weight: normal; font-size: 0.9rem; line-height: 1.5; color: #555; cursor: pointer; }
 .sms-toggle input { margin-top: 4px; flex: 0 0 auto; }
 </style>
@@ -164,6 +187,56 @@ function e($v) { return htmlspecialchars($v ?? '', ENT_QUOTES); }
                                 </div>
                                 <button type="submit" class="btn btn-default">Save changes</button>
                             </form>
+                        </div>
+                    </div>
+
+                    <!-- DUES HISTORY -->
+                    <div class="panel panel-default offset-bottom-30">
+                        <div class="panel-heading"><strong>Dues payment history</strong></div>
+                        <div class="panel-body">
+                            <?php if (empty($dues_history)): ?>
+                                <p class="text-gray" style="margin:0;">No dues payments on record yet.</p>
+                            <?php else: ?>
+                                <div class="table-responsive">
+                                    <table class="table" style="margin:0;">
+                                        <thead><tr><th>Date</th><th>Semester</th><th class="text-right">Amount</th></tr></thead>
+                                        <tbody>
+                                        <?php foreach ($dues_history as $d): ?>
+                                            <tr>
+                                                <td><?php echo e(date('M j, Y', strtotime($d['payment_timestamp']))); ?></td>
+                                                <td><?php echo e(dues_term_label($d['dues_term'], $d['dues_year'])); ?></td>
+                                                <td class="text-right">$<?php echo e(number_format((float)$d['amount'], 2)); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- ORDER HISTORY -->
+                    <div class="panel panel-default offset-bottom-30">
+                        <div class="panel-heading"><strong>Merch order history</strong></div>
+                        <div class="panel-body">
+                            <?php if (empty($order_history)): ?>
+                                <p class="text-gray" style="margin:0;">No merch orders on record yet.</p>
+                            <?php else: ?>
+                                <div class="table-responsive">
+                                    <table class="table" style="margin:0;">
+                                        <thead><tr><th>Item</th><th>Order #</th><th class="text-right">Status</th></tr></thead>
+                                        <tbody>
+                                        <?php foreach ($order_history as $o): ?>
+                                            <tr>
+                                                <td><?php echo e($o['order_name'] . ($o['order_variant_name'] ? ' — ' . $o['order_variant_name'] : '')); ?></td>
+                                                <td><?php echo e($o['order_id']); ?></td>
+                                                <td class="text-right"><?php echo $o['confirmed'] ? '<span style="color:#24c57c;">Confirmed</span>' : '<span class="text-gray">Pending</span>'; ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
