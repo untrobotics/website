@@ -228,7 +228,7 @@ function dues_term_label($term, $year) {
                                         <tbody>
                                         <?php foreach ($order_history as $o): ?>
                                             <tr>
-                                                <td><?php echo e($o['order_name'] . ($o['order_variant_name'] ? ' — ' . $o['order_variant_name'] : '')); ?></td>
+                                                <td><?php echo e($o['order_variant_name'] ?: $o['order_name']); ?></td>
                                                 <td><?php echo e($o['order_id']); ?></td>
                                                 <td class="text-right"><?php echo $o['confirmed'] ? '<span style="color:#24c57c;">Confirmed</span>' : '<span class="text-gray">Pending</span>'; ?></td>
                                             </tr>
