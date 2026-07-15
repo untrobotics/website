@@ -67,6 +67,9 @@ define('TWILIO_ACCOUNT_SID',        env('TWILIO_ACCOUNT_SID'));
 define('TWILIO_AUTH_TOKEN',         env('TWILIO_AUTH_TOKEN'));
 define('TWILIO_FIND_FIRST_QUEUE',   env('TWILIO_FIND_FIRST_QUEUE', 'find-first'));
 define('TWILIO_FIND_FIRST_QUEUE_SID', env('TWILIO_FIND_FIRST_QUEUE_SID'));
+// A2P 10DLC: outbound SMS must be sent through the Messaging Service that
+// carries the approved campaign, otherwise carriers reject with error 30034.
+define('TWILIO_MESSAGING_SERVICE_SID', env('TWILIO_MESSAGING_SERVICE_SID', 'MGb6d953f5f877fa5175519f04db5aa6cb'));
 
 define('PRINTFUL_API_KEY', env('PRINTFUL_API_KEY'));
 

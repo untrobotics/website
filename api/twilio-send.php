@@ -15,12 +15,21 @@ function send_sms_message($message, $to, $attachments) {
 	// StatusCallback: Twilio POSTs the FINAL delivery status to this webhook so
 	// carrier rejections (e.g. A2P 10DLC 30034) are logged/alerted instead of
 	// being masked by the initial 'queued' response.
-	$body = $media . http_build_query(array(
+	$params = array(
 		'Body' => $message,
-		'From' => PHONE_NUMBER,
 		'To'   => $to,
 		'StatusCallback' => 'https://www.untrobotics.com/twilio/sms-status.php?code=' . API_SECRET,
-	));
+	);
+	// A2P 10DLC: send through the Messaging Service that carries the approved
+	// campaign so carriers accept the message. Sending via the raw From number
+	// (even a registered one) routes outside the campaign and returns 30034.
+	// Fall back to From only if no Messaging Service is configured.
+	if (defined('TWILIO_MESSAGING_SERVICE_SID') && TWILIO_MESSAGING_SERVICE_SID) {
+		$params['MessagingServiceSid'] = TWILIO_MESSAGING_SERVICE_SID;
+	} else {
+		$params['From'] = PHONE_NUMBER;
+	}
+	$body = $media . http_build_query($params);
 
 	$ch = curl_init();
 
