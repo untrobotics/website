@@ -31,9 +31,28 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $data = json_decode(file_get_contents('php://input'), true);
-if (!is_array($data) || empty($data['to']) || !isset($data['body']) || trim((string) $data['body']) === '') {
+
+// Optional MMS media: an array of publicly-fetchable https URLs (e.g. Discord
+// CDN attachment URLs). Twilio fetches each MediaUrl itself; it accepts at most
+// 10 media per message, so cap the list.
+$media = array();
+if (is_array($data) && isset($data['media']) && is_array($data['media'])) {
+    foreach ($data['media'] as $url) {
+        $url = trim((string) $url);
+        if ($url !== '' && preg_match('#^https://#i', $url)) {
+            $media[] = $url;
+        }
+        if (count($media) >= 10) {
+            break;
+        }
+    }
+}
+
+// A message needs a body OR at least one media attachment (or both).
+$body = (is_array($data) && isset($data['body'])) ? trim((string) $data['body']) : '';
+if (!is_array($data) || empty($data['to']) || ($body === '' && empty($media))) {
     http_response_code(400);
-    echo json_encode(array('error' => 'to and body are required'));
+    echo json_encode(array('error' => 'to and (body or media) are required'));
     exit;
 }
 
@@ -59,8 +78,8 @@ if (!empty($data['respect_consent'])) {
     }
 }
 
-$status = send_sms_message((string) $data['body'], $to, array());
+$status = send_sms_message($body, $to, $media);
 // Audit every send (initial status only; the final delivery status arrives via
 // twilio/sms-status.php). Goes to the Apache log -> Discord web-logs channel.
-error_log('[sms] internal send to=' . $to . ' -> ' . var_export($status, true));
+error_log('[sms] internal send to=' . $to . ' media=' . count($media) . ' -> ' . var_export($status, true));
 echo json_encode(array('status' => $status));

@@ -32,7 +32,13 @@ async function handleSmsReply(message) {
   }
   const to = m[1];
   const body = (message.content || '').trim();
-  if (!body) {
+  // Forward any image/video/audio attachments as MMS media. Discord CDN URLs are
+  // public, so Twilio can fetch them directly. Twilio caps media at 10 per message.
+  const media = [...message.attachments.values()]
+    .filter((a) => !a.contentType || /^(image|video|audio)\//i.test(a.contentType))
+    .map((a) => a.url)
+    .slice(0, 10);
+  if (!body && media.length === 0) {
     await message.react('🚫').catch(() => {});
     return true;
   }
@@ -44,8 +50,8 @@ async function handleSmsReply(message) {
         'Content-Type': 'application/json',
         'X-Internal-Secret': config.internalEmailSecret || '',
       },
-      body: JSON.stringify({ to, body }),
-      signal: AbortSignal.timeout(15000),
+      body: JSON.stringify({ to, body, media }),
+      signal: AbortSignal.timeout(20000),
     });
     const json = await res.json().catch(() => ({}));
     if (res.ok && json.status && json.status !== 'failed') {
