@@ -54,12 +54,55 @@ if ($product_can_be_handled) {
 	
 	$selected_variant = $product->get_variants()[$selected_product_variant_index];
 	
-	$mockup_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::PREVIEW);
-	if ($mockup_file == null) {
-		// TODO
-		$mockup_file = "";
+	// Assemble an image gallery for a variant from EVERY mockup Printful returns
+	// (the primary preview plus each print placement: front/default, back,
+	// sleeves). Printful gives a preview_url per placement, so a design that
+	// lives on the back - like the Aerospace shirt - now shows its artwork
+	// instead of only a blank front. Deduped by preview_url, ordered sensibly.
+	$placement_order = array(
+		PrintfulVariantFilesTypes::PREVIEW => 0,        // Printful's primary product shot
+		PrintfulVariantFilesTypes::VOREINSTELLUNG => 1, // "default" = front
+		PrintfulVariantFilesTypes::BACK => 2,
+		'sleeve_left' => 3,
+		'sleeve_right' => 4,
+	);
+	$build_gallery = function ($variant) use ($placement_order) {
+		$images = array();
+		$seen = array();
+		foreach ($variant->get_files() as $file) {
+			$preview = $file->get_preview_url();
+			if (empty($preview) || isset($seen[$preview])) { continue; }
+			$seen[$preview] = true;
+			$images[] = array(
+				'preview' => $preview,
+				'full' => $file->get_url() ? $file->get_url() : $preview,
+				'thumb' => $file->get_thumbnail_url() ? $file->get_thumbnail_url() : $preview,
+				'type' => $file->get_type(),
+			);
+		}
+		usort($images, function ($a, $b) use ($placement_order) {
+			$oa = isset($placement_order[$a['type']]) ? $placement_order[$a['type']] : 99;
+			$ob = isset($placement_order[$b['type']]) ? $placement_order[$b['type']] : 99;
+			return $oa - $ob;
+		});
+		return $images;
+	};
+	$gallery = $build_gallery($selected_variant);
+	if (empty($gallery)) {
+		$pf = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::PREVIEW);
+		if ($pf !== null && $pf->get_preview_url()) {
+			$gallery[] = array('preview' => $pf->get_preview_url(), 'full' => $pf->get_url() ? $pf->get_url() : $pf->get_preview_url(), 'thumb' => $pf->get_preview_url(), 'type' => 'preview');
+		}
 	}
-	$back_file = $selected_variant->get_file_by_type(PrintfulVariantFilesTypes::BACK);
+	// Every variant's gallery + sync id, for instant client-side colour switching.
+	$variants_js = array();
+	foreach ($product->get_variants() as $variant) {
+		$variants_js[$variant->get_product()->get_variant_id()] = array(
+			'sync' => (string) $variant->get_id(),
+			'gallery' => $build_gallery($variant),
+		);
+	}
+	$default_catalog_variant_id = $selected_variant->get_product()->get_variant_id();
 	
 	head("Buy {$product->get_name()}", true);
 	$category_name = strtolower(preg_replace('@^.*\(([^()]+)\)$@i', '$1', $product->get_name()));
@@ -152,6 +195,12 @@ function get_variant_variant($variant_name) {
 		color: white;
 		text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;
 	}
+		.merch-gallery { display: inline-block; }
+		.merch-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; max-width: 500px; }
+		.merch-thumb { padding: 0; border: 1px solid #cacaca; background: #fff; cursor: pointer; width: 72px; height: 72px; overflow: hidden; line-height: 0; }
+		.merch-thumb.is-active { border-color: #1f1f1f; box-shadow: inset 0 0 0 2px #1f1f1f; }
+		.merch-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+		.variant-btn.variant-active { outline: 2px solid #1f1f1f; outline-offset: 1px; }
 </style>
 <main class="page-content">
 	<!-- Classic Breadcrumbs-->
@@ -198,22 +247,24 @@ function get_variant_variant($variant_name) {
 				  
 					<div class="range">
 						<div class="col-lg-6 col-md-12 col-lg-push-6">
-							<div class="merch-image">
-								<a href="<?php echo $mockup_file->get_url() ? $mockup_file->get_url() : $mockup_file->get_preview_url(); ?>">
-									<img src="<?php echo $mockup_file->get_preview_url(); ?>"/>
-								</a>
+							<?php if (!empty($gallery)) { $hero = $gallery[0]; ?>
+							<div class="merch-gallery">
+								<div class="merch-image">
+									<a id="merch-hero-link" href="<?php echo htmlspecialchars($hero['full']); ?>" target="_blank" rel="noopener">
+										<img id="merch-hero-img" src="<?php echo htmlspecialchars($hero['preview']); ?>" alt="<?php echo htmlspecialchars($product->get_name()); ?>"/>
+									</a>
+								</div>
+								<?php if (count($gallery) > 1) { ?>
+								<div class="merch-thumbs" id="merch-thumbs">
+									<?php foreach ($gallery as $gi => $img) { ?>
+									<button type="button" class="merch-thumb<?php echo $gi === 0 ? ' is-active' : ''; ?>" data-preview="<?php echo htmlspecialchars($img['preview']); ?>" data-full="<?php echo htmlspecialchars($img['full']); ?>">
+										<img src="<?php echo htmlspecialchars($img['thumb']); ?>" alt="product view"/>
+									</button>
+									<?php } ?>
+								</div>
+								<?php } ?>
 							</div>
-							<?php
-								if ($back_file && false) { // TODO: find a back picture
-								?>
-									<div class="merch-image">
-										<a href="<?php echo $back_file->get_url() ? $back_file->get_url() : $back_file->get_preview_url(); ?>">
-											<img src="<?php echo $back_file->get_preview_url(); ?>"/>
-										</a>
-									</div>
-								<?php
-								}
-							?>
+							<?php } ?>
 						</div>
 						<div class="col-lg-6 col-md-12 col-lg-pull-6">
 						  <h6 style="margin-top: 25px;"><strong><?php echo $catalog_product->get_type_name(); ?> variants</strong></h6>
@@ -234,7 +285,8 @@ function get_variant_variant($variant_name) {
 								<!--<span class="whitebg"></span>
 								<span class="blackbg"></span>-->
 								<a
-										class="btn variant-btn"
+										class="btn variant-btn<?php echo ($variant->get_product()->get_variant_id() == $default_catalog_variant_id) ? ' variant-active' : ''; ?>"
+										data-catalog="<?php echo $variant->get_product()->get_variant_id(); ?>"
 										style="
 											   background-color: <?php echo $colour_code; ?>;
 										"
@@ -335,7 +387,7 @@ footer(false);
 				const params = new URLSearchParams();
 				params.set('source', 'merch');
 				params.set('product', PAYPAL_MERCH_PRODUCT);
-				params.set('variant', PAYPAL_MERCH_VARIANT);
+				params.set('variant', window.MERCH_CURRENT_VARIANT || PAYPAL_MERCH_VARIANT);
 				return fetch('/api/paypal/orders/create.php', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -393,7 +445,7 @@ footer(false);
 		const params = new URLSearchParams();
 		params.set('source', 'merch');
 		params.set('product', $btn.data('product'));
-		params.set('variant', $btn.data('variant'));
+		params.set('variant', window.MERCH_CURRENT_VARIANT || $btn.data('variant'));
 		fetch('/api/stripe/create-checkout-session', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -415,3 +467,54 @@ footer(false);
 			});
 	});
 </script>
+<?php if ($product_can_be_handled) { ?>
+<script>
+(function () {
+	window.MERCH_CURRENT_VARIANT = <?php echo json_encode((string) $selected_variant->get_id()); ?>;
+	var VARIANTS = <?php echo json_encode($variants_js); ?>;
+	var heroImg = document.getElementById("merch-hero-img");
+	var heroLink = document.getElementById("merch-hero-link");
+	var thumbWrap = document.getElementById("merch-thumbs");
+	function setHero(preview, full) {
+		if (heroImg) { heroImg.src = preview; }
+		if (heroLink && full) { heroLink.setAttribute("href", full); }
+	}
+	function bindThumbs() {
+		if (!thumbWrap) { return; }
+		var thumbs = thumbWrap.querySelectorAll(".merch-thumb");
+		thumbs.forEach(function (t) {
+			t.addEventListener("click", function () {
+				setHero(t.getAttribute("data-preview"), t.getAttribute("data-full"));
+				thumbs.forEach(function (x) { x.classList.remove("is-active"); });
+				t.classList.add("is-active");
+			});
+		});
+	}
+	function renderGallery(images) {
+		if (!thumbWrap || !images || !images.length) { return; }
+		var html = "";
+		images.forEach(function (img, i) {
+			html += '<button type="button" class="merch-thumb' + (i === 0 ? " is-active" : "") + '" data-preview="' + img.preview + '" data-full="' + img.full + '"><img src="' + img.thumb + '" alt="product view"/></button>';
+		});
+		thumbWrap.innerHTML = html;
+		setHero(images[0].preview, images[0].full);
+		bindThumbs();
+	}
+	bindThumbs();
+	document.querySelectorAll(".variant-btn").forEach(function (btn) {
+		btn.addEventListener("click", function (e) {
+			var cat = btn.getAttribute("data-catalog");
+			if (!cat || !VARIANTS[cat]) { return; }
+			e.preventDefault();
+			var v = VARIANTS[cat];
+			renderGallery(v.gallery);
+			window.MERCH_CURRENT_VARIANT = v.sync;
+			var sb = document.getElementById("stripe-pay-button");
+			if (sb) { sb.setAttribute("data-variant", v.sync); }
+			document.querySelectorAll(".variant-btn").forEach(function (x) { x.classList.remove("variant-active"); });
+			btn.classList.add("variant-active");
+		});
+	});
+})();
+</script>
+<?php } ?>
