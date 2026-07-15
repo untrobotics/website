@@ -66,11 +66,16 @@ if ($product_can_be_handled) {
 		'sleeve_left' => 3,
 		'sleeve_right' => 4,
 	);
-	$build_gallery = function ($variant) use ($placement_order) {
+	// Printful also returns raw print-file previews for sleeve/label placements
+	// that are usually a flat solid colour and make poor product shots — skip
+	// them so the gallery stays to the garment preview + front/back design views.
+	$minor_placements = array('sleeve_left', 'sleeve_right', 'sleeve', 'inside_label', 'outside_label', 'label_inside', 'label_outside');
+	$build_gallery = function ($variant) use ($placement_order, $minor_placements) {
 		$images = array();
 		$seen = array();
 		foreach ($variant->get_files() as $file) {
 			$preview = $file->get_preview_url();
+			if (in_array($file->get_type(), $minor_placements, true)) { continue; }
 			if (empty($preview) || isset($seen[$preview])) { continue; }
 			$seen[$preview] = true;
 			$images[] = array(
