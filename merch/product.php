@@ -51,7 +51,19 @@ if ($product_can_be_handled) {
 			break;
 		}
 	}
-	
+	// When no specific variant is requested, prefer a brand-colour (green)
+	// variant as the default instead of whatever Printful lists first (often
+	// an off-brand colour such as blue).
+	if ($variant_id == -1) {
+		$preferred_colours = array('kelly', 'green', 'forest', 'irish', 'military');
+		foreach ($product->get_variants() as $index => $variant) {
+			$vname = strtolower($variant->get_name());
+			foreach ($preferred_colours as $pc) {
+				if (strpos($vname, $pc) !== false) { $selected_product_variant_index = $index; break 2; }
+			}
+		}
+	}
+
 	$selected_variant = $product->get_variants()[$selected_product_variant_index];
 	
 	// Assemble an image gallery for a variant from EVERY mockup Printful returns
@@ -77,6 +89,11 @@ if ($product_can_be_handled) {
 			$preview = $file->get_preview_url();
 			if (in_array($file->get_type(), $minor_placements, true)) { continue; }
 			if (empty($preview) || isset($seen[$preview])) { continue; }
+			// Only keep genuine garment mockups: Printful's primary "preview"
+			// shot, and all-over-print "printfile-preview" placement renders.
+			// Embroidery/DTG placements (back, chest, etc.) return a bare artwork
+			// swatch or a blank tile, not a wearable mockup - skip those.
+			if ($file->get_type() !== 'preview' && strpos($preview, 'printfile-preview') === false) { continue; }
 			$seen[$preview] = true;
 			$images[] = array(
 				'preview' => $preview,
@@ -275,7 +292,11 @@ function get_variant_variant($variant_name) {
 						  <h6 style="margin-top: 25px;"><strong><?php echo $catalog_product->get_type_name(); ?> variants</strong></h6>
 								<?php
 									foreach ($product->get_variants() as $index => $variant) {
-										$variant_name = preg_replace("@.* - (.+)$@i", "$1", $variant->get_name());
+										// Printful variant names look like "Product Name / Colour / Size"
+									// (or "... - Variant"). Strip the product-name prefix so the
+									// button shows just the colour/size, not the whole product name.
+									$variant_name = trim(str_ireplace($product->get_name(), '', $variant->get_name()), " /-\t");
+									if ($variant_name === '') { $variant_name = preg_replace("@.* - (.+)$@i", "$1", $variant->get_name()); }
 										$caps_variant_name = strtoupper($variant_name);
 										//$variant_colours = constant("PrintfulVariantColours::{$caps_variant_name}");
 
