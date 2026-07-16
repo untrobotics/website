@@ -89,11 +89,14 @@ if ($product_can_be_handled) {
 			$preview = $file->get_preview_url();
 			if (in_array($file->get_type(), $minor_placements, true)) { continue; }
 			if (empty($preview) || isset($seen[$preview])) { continue; }
-			// Only keep genuine garment mockups: Printful's primary "preview"
-			// shot, and all-over-print "printfile-preview" placement renders.
-			// Embroidery/DTG placements (back, chest, etc.) return a bare artwork
-			// swatch or a blank tile, not a wearable mockup - skip those.
-			if ($file->get_type() !== 'preview' && strpos($preview, 'printfile-preview') === false) { continue; }
+			// Keep the primary garment "preview" mockup, the main design
+			// placements (front/default/back — a back-printed design like the
+			// Aerospace tee is shown here even when Printful only returns the raw
+			// artwork for it), and all-over "printfile-preview" garment renders.
+			// Everything else (embroidery close-ups, sleeves, labels, blank
+			// tiles) is skipped since it makes a poor product image.
+			$gallery_types = array('preview', 'default', 'front', 'back');
+			if (!in_array($file->get_type(), $gallery_types, true) && strpos($preview, 'printfile-preview') === false) { continue; }
 			$seen[$preview] = true;
 			$images[] = array(
 				'preview' => $preview,

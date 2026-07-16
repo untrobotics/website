@@ -91,7 +91,7 @@ function merch_template($type, $search) {
                                                             <div class="product-images"><img src="<?php echo htmlspecialchars(merch_listing_image($printfulapi, $item)); ?>"  alt="<?php echo $item->name; ?>"/></div>
                                                         </div>
                                                         <div class="product-item-action">
-                                                            <a id="buy-item-now" class="btn btn-primary" href="/merch/product/<?php echo $item->external_id; ?>/<?php echo post_slug($item->name); ?>">Buy Now</a>
+                                                            <a id="buy-item-now" class="btn btn-primary" href="/merch/product/<?php echo $item->external_id; ?>/<?php echo post_slug($item->name); ?>">View Product</a>
                                                         </div>
                                                     </div>
                                                 </div>
