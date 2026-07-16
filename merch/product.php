@@ -128,6 +128,33 @@ if ($product_can_be_handled) {
 		);
 	}
 	$default_catalog_variant_id = $selected_variant->get_product()->get_variant_id();
+	// --- Colour + size pickers --------------------------------------------
+	// Printful variant names are "<product> / <colour> / <size>" (or just
+	// "<size>" for single-colour products). Split them so the page can show a
+	// clean colour-swatch + size-button picker instead of one button per combo.
+	$size_rank = array('xxs'=>0,'xs'=>1,'s'=>2,'m'=>3,'l'=>4,'xl'=>5,'2xl'=>6,'xxl'=>6,'3xl'=>7,'xxxl'=>7,'4xl'=>8,'5xl'=>9,'6xl'=>10);
+	$variant_colours = array();
+	$variant_sizes = array();
+	$variant_combo = array();
+	$split_label = function ($name) use ($product) {
+		$label = trim(str_ireplace($product->get_name(), '', $name), " /-");
+		$parts = array_map('trim', explode(' / ', $label));
+		if (count($parts) >= 2) { $size = array_pop($parts); return array(implode(' / ', $parts), $size); }
+		return array('', $label);
+	};
+	foreach ($product->get_variants() as $variant) {
+		$cat = $variant->get_product()->get_variant_id();
+		list($colour, $size) = $split_label($variant->get_name());
+		$code = null;
+		foreach ($catalog_product->get_variants() as $cv) { if ($cv->get_id() == $cat) { $code = $cv->get_colour_code(); break; } }
+		if ($colour !== '' && !isset($variant_colours[$colour])) { $variant_colours[$colour] = $code; }
+		if (!isset($variant_sizes[$size])) { $lc = strtolower($size); $variant_sizes[$size] = is_numeric($size) ? (100 + floatval($size)) : (isset($size_rank[$lc]) ? $size_rank[$lc] : 50); }
+		$variant_combo[$colour . '|' . $size] = (string) $cat;
+		$variants_js[$cat]['colour'] = $colour;
+		$variants_js[$cat]['size'] = $size;
+	}
+	asort($variant_sizes);
+	list($default_colour, $default_size) = $split_label($selected_variant->get_name());
 	
 	head("Buy {$product->get_name()}", true);
 	$category_name = strtolower(preg_replace('@^.*\(([^()]+)\)$@i', '$1', $product->get_name()));
@@ -226,6 +253,17 @@ function get_variant_variant($variant_name) {
 		.merch-thumb.is-active { border-color: #1f1f1f; box-shadow: inset 0 0 0 2px #1f1f1f; }
 		.merch-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 		.variant-btn.variant-active { outline: 2px solid #1f1f1f; outline-offset: 1px; }
+		.variant-picker { margin: 16px 0; text-align: left; }
+		.variant-picker-label { font-weight: 600; margin-bottom: 8px; color: #1f1f1f; }
+		.colour-swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+		.colour-swatch { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #d0d0d0; cursor: pointer; padding: 0; transition: transform .1s; }
+		.colour-swatch:hover { transform: scale(1.08); }
+		.colour-swatch.is-active { border-color: #1f1f1f; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1f1f1f; }
+		.size-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+		.size-btn { min-width: 46px; padding: 9px 12px; border: 1px solid #cacaca; background: #fff; color: #1f1f1f; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all .1s; }
+		.size-btn:hover { border-color: #1f1f1f; }
+		.size-btn.is-active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
+		.size-btn:disabled { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
 </style>
 <main class="page-content">
 	<!-- Classic Breadcrumbs-->
@@ -292,41 +330,24 @@ function get_variant_variant($variant_name) {
 							<?php } ?>
 						</div>
 						<div class="col-lg-6 col-md-12 col-lg-pull-6">
-						  <h6 style="margin-top: 25px;"><strong><?php echo $catalog_product->get_type_name(); ?> variants</strong></h6>
-								<?php
-									foreach ($product->get_variants() as $index => $variant) {
-										// Printful variant names look like "Product Name / Colour / Size"
-									// (or "... - Variant"). Strip the product-name prefix so the
-									// button shows just the colour/size, not the whole product name.
-									$variant_name = trim(str_ireplace($product->get_name(), '', $variant->get_name()), " /-\t");
-									if ($variant_name === '') { $variant_name = preg_replace("@.* - (.+)$@i", "$1", $variant->get_name()); }
-										$caps_variant_name = strtoupper($variant_name);
-										//$variant_colours = constant("PrintfulVariantColours::{$caps_variant_name}");
-
-										$colour_code = null;
-										foreach ($catalog_product->get_variants() as $catalog_variant) {
-											if ($catalog_variant->get_id() == $variant->get_product()->get_variant_id()) {
-												$colour_code = $catalog_variant->get_colour_code();
-											}
-										}
-										?>
-							<span class="variant-btn-container">
-								<!--<span class="whitebg"></span>
-								<span class="blackbg"></span>-->
-								<a
-										class="btn variant-btn<?php echo ($variant->get_product()->get_variant_id() == $default_catalog_variant_id) ? ' variant-active' : ''; ?>"
-										data-catalog="<?php echo $variant->get_product()->get_variant_id(); ?>"
-										style="
-											   background-color: <?php echo $colour_code; ?>;
-										"
-									href="/merch/product/<?php echo $external_product_id; ?>/<?php echo post_slug($product->get_name()); ?>/<?php echo $variant->get_product()->get_variant_id(); ?>">
-									<span><?php echo $variant_name; ?></span>
-								</a>
-							</span>
-										<?php
-									}
-								?>
-
+							<?php if (count($variant_colours) > 1) { ?>
+							<div class="variant-picker">
+								<div class="variant-picker-label">Colour: <span id="selected-colour-name"><?php echo htmlspecialchars($default_colour); ?></span></div>
+								<div class="colour-swatches" id="colour-swatches">
+									<?php foreach ($variant_colours as $cname => $ccode) { ?>
+									<button type="button" class="colour-swatch<?php echo $cname === $default_colour ? ' is-active' : ''; ?>" data-colour="<?php echo htmlspecialchars($cname); ?>" title="<?php echo htmlspecialchars($cname); ?>" style="background-color: <?php echo htmlspecialchars($ccode ? $ccode : '#cccccc'); ?>;"></button>
+									<?php } ?>
+								</div>
+							</div>
+							<?php } ?>
+							<div class="variant-picker">
+								<div class="variant-picker-label">Size</div>
+								<div class="size-buttons" id="size-buttons">
+									<?php foreach ($variant_sizes as $sname => $srank) { ?>
+									<button type="button" class="size-btn<?php echo $sname === $default_size ? ' is-active' : ''; ?>" data-size="<?php echo htmlspecialchars($sname); ?>"><?php echo htmlspecialchars($sname); ?></button>
+									<?php } ?>
+								</div>
+							</div>
 							<?php
 								preg_match("@^(.+?)•@ims", $catalog_product->get_description(), $m);
 								//var_dump($m);
@@ -530,20 +551,54 @@ footer(false);
 		bindThumbs();
 	}
 	bindThumbs();
-	document.querySelectorAll(".variant-btn").forEach(function (btn) {
-		btn.addEventListener("click", function (e) {
-			var cat = btn.getAttribute("data-catalog");
-			if (!cat || !VARIANTS[cat]) { return; }
-			e.preventDefault();
-			var v = VARIANTS[cat];
-			renderGallery(v.gallery);
-			window.MERCH_CURRENT_VARIANT = v.sync;
-			var sb = document.getElementById("stripe-pay-button");
-			if (sb) { sb.setAttribute("data-variant", v.sync); }
-			document.querySelectorAll(".variant-btn").forEach(function (x) { x.classList.remove("variant-active"); });
-			btn.classList.add("variant-active");
+	var COMBO = <?php echo json_encode($variant_combo); ?>;
+	var selColour = <?php echo json_encode($default_colour); ?>;
+	var selSize = <?php echo json_encode($default_size); ?>;
+	var swatches = document.querySelectorAll(".colour-swatch");
+	var sizeBtns = document.querySelectorAll(".size-btn");
+	var colourNameEl = document.getElementById("selected-colour-name");
+	function applyVariant() {
+		var cat = COMBO[selColour + "|" + selSize];
+		if (!cat || !VARIANTS[cat]) { return; }
+		var v = VARIANTS[cat];
+		renderGallery(v.gallery);
+		window.MERCH_CURRENT_VARIANT = v.sync;
+		var sb = document.getElementById("stripe-pay-button");
+		if (sb) { sb.setAttribute("data-variant", v.sync); }
+	}
+	function refreshSizes() {
+		sizeBtns.forEach(function (b) {
+			var sz = b.getAttribute("data-size");
+			var ok = !!COMBO[selColour + "|" + sz];
+			b.disabled = !ok;
+			b.classList.toggle("is-active", ok && sz === selSize);
+		});
+	}
+	swatches.forEach(function (sw) {
+		sw.addEventListener("click", function () {
+			selColour = sw.getAttribute("data-colour");
+			swatches.forEach(function (x) { x.classList.remove("is-active"); });
+			sw.classList.add("is-active");
+			if (colourNameEl) { colourNameEl.textContent = selColour; }
+			if (!COMBO[selColour + "|" + selSize]) {
+				for (var i = 0; i < sizeBtns.length; i++) {
+					var sz = sizeBtns[i].getAttribute("data-size");
+					if (COMBO[selColour + "|" + sz]) { selSize = sz; break; }
+				}
+			}
+			refreshSizes();
+			applyVariant();
 		});
 	});
+	sizeBtns.forEach(function (b) {
+		b.addEventListener("click", function () {
+			if (b.disabled) { return; }
+			selSize = b.getAttribute("data-size");
+			refreshSizes();
+			applyVariant();
+		});
+	});
+	refreshSizes();
 })();
 </script>
 <?php } ?>
