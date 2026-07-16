@@ -1,6 +1,41 @@
 <?php
 require(BASE . '/api/printful/printful.php');
 
+// Listing thumbnail: Printful's product-level thumbnail_url follows whatever
+// variant it lists first (often an off-brand colour like blue). Prefer a
+// brand-green variant's garment mockup instead so the category page matches the
+// product page's green default. Falls back to Printful's thumbnail on any error.
+function merch_listing_image($printfulapi, $item) {
+    try {
+        $product = $printfulapi->get_product('@' . $item->external_id);
+        if ($product) {
+            $preferred = array('kelly', 'green', 'forest', 'irish', 'military');
+            $first_preview = null;
+            foreach ($product->get_variants() as $variant) {
+                $pf = $variant->get_file_by_type(PrintfulVariantFilesTypes::PREVIEW);
+                if (!$pf || !$pf->get_preview_url()) {
+                    continue;
+                }
+                if ($first_preview === null) {
+                    $first_preview = $pf->get_preview_url();
+                }
+                $vname = strtolower($variant->get_name());
+                foreach ($preferred as $pc) {
+                    if (strpos($vname, $pc) !== false) {
+                        return $pf->get_preview_url();
+                    }
+                }
+            }
+            if ($first_preview !== null) {
+                return $first_preview;
+            }
+        }
+    } catch (Exception $e) {
+        // fall through to Printful's default thumbnail
+    }
+    return $item->thumbnail_url;
+}
+
 function merch_template($type, $search) {
     $printfulapi = new PrintfulCustomAPI();
 ?>
@@ -53,7 +88,7 @@ function merch_template($type, $search) {
                                                                     ?></span>
                                                                 <span><?php echo '$' . $product_price[0]; ?></span>
                                                             </h4>
-                                                            <div class="product-images"><img src="<?php echo $item->thumbnail_url; ?>"  alt="<?php echo $item->name; ?>"/></div>
+                                                            <div class="product-images"><img src="<?php echo htmlspecialchars(merch_listing_image($printfulapi, $item)); ?>"  alt="<?php echo $item->name; ?>"/></div>
                                                         </div>
                                                         <div class="product-item-action">
                                                             <a id="buy-item-now" class="btn btn-primary" href="/merch/product/<?php echo $item->external_id; ?>/<?php echo post_slug($item->name); ?>">Buy Now</a>
