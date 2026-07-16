@@ -1,0 +1,64 @@
+{
+    "67239e31a58b49": {
+        "": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-gear-default-back.jpg"
+            },
+            {
+                "view": "back-right",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-gear-default-back-right.jpg"
+            },
+            {
+                "view": "left",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-gear-default-left.jpg"
+            },
+            {
+                "view": "right",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-gear-default-right.jpg"
+            }
+        ]
+    },
+    "636ea56986bad9": {
+        "True Royal": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/aerospace-division-t-gear-true-royal-back.jpg"
+            }
+        ],
+        "Kelly": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/aerospace-division-t-gear-kelly-back.jpg"
+            }
+        ],
+        "Leaf": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/aerospace-division-t-gear-leaf-back.jpg"
+            }
+        ],
+        "Ocean Blue": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/aerospace-division-t-gear-ocean-blue-back.jpg"
+            }
+        ]
+    },
+    "6381955fba63c8": {
+        "": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/unt-robotics-aerospace-shirt-default-back.jpg"
+            },
+            {
+                "view": "left",
+                "path": "/images/merch/generated/unt-robotics-aerospace-shirt-default-left.jpg"
+            },
+            {
+                "view": "right",
+                "path": "/images/merch/generated/unt-robotics-aerospace-shirt-default-right.jpg"
+            }
+        ]
+    }
+}

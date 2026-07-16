@@ -66,47 +66,24 @@ if ($product_can_be_handled) {
 
 	$selected_variant = $product->get_variants()[$selected_product_variant_index];
 	
-	// Assemble an image gallery for a variant from EVERY mockup Printful returns
-	// (the primary preview plus each print placement: front/default, back,
-	// sleeves). Printful gives a preview_url per placement, so a design that
-	// lives on the back - like the Aerospace shirt - now shows its artwork
-	// instead of only a blank front. Deduped by preview_url, ordered sensibly.
-	$placement_order = array(
-		PrintfulVariantFilesTypes::PREVIEW => 0,        // Printful's primary product shot
-		PrintfulVariantFilesTypes::VOREINSTELLUNG => 1, // "default" = front
-		PrintfulVariantFilesTypes::BACK => 2,
-		'sleeve_left' => 3,
-		'sleeve_right' => 4,
-	);
-	// Printful also returns raw print-file previews for sleeve/label placements
-	// that are usually a flat solid colour and make poor product shots — skip
-	// them so the gallery stays to the garment preview + front/back design views.
-	$minor_placements = array('sleeve_left', 'sleeve_right', 'sleeve', 'inside_label', 'outside_label', 'label_inside', 'label_outside');
-	$build_gallery = function ($variant) use ($placement_order, $minor_placements) {
+	// Printful's per-variant "preview" is the only wearable garment shot it
+	// returns; its other files are flat print artwork. Take the preview here
+	// and append back/side angles from the generated mockups further down.
+	$build_gallery = function ($variant) {
 		$images = array();
 		$seen = array();
 		foreach ($variant->get_files() as $file) {
+			if ($file->get_type() !== 'preview') { continue; }
 			$preview = $file->get_preview_url();
 			if (empty($preview) || isset($seen[$preview])) { continue; }
-			// Only real garment mockups belong in the gallery. Printful's
-			// "preview" file is the wearable product shot; every other file type
-			// (all-over "printfile-preview" flat prints, embroidery close-ups,
-			// raw back artwork, sleeves, labels) is a print layout, not a mockup.
-			// Extra angles come from the generated-mockup override below.
-			if ($file->get_type() !== 'preview') { continue; }
 			$seen[$preview] = true;
 			$images[] = array(
 				'preview' => $preview,
 				'full' => $file->get_url() ? $file->get_url() : $preview,
 				'thumb' => $file->get_thumbnail_url() ? $file->get_thumbnail_url() : $preview,
-				'type' => $file->get_type(),
+				'type' => 'preview',
 			);
 		}
-		usort($images, function ($a, $b) use ($placement_order) {
-			$oa = isset($placement_order[$a['type']]) ? $placement_order[$a['type']] : 99;
-			$ob = isset($placement_order[$b['type']]) ? $placement_order[$b['type']] : 99;
-			return $oa - $ob;
-		});
 		return $images;
 	};
 	$gallery = $build_gallery($selected_variant);
@@ -133,25 +110,30 @@ if ($product_can_be_handled) {
 	$variant_colours = array();
 	$variant_sizes = array();
 	$variant_combo = array();
-	// Locally-hosted, Mockup-Generator-rendered on-shirt back views, for products
-	// where Printful's sync data only exposes the raw back artwork (no wearable
-	// back mockup). Keyed by product external_id -> colour name -> image path.
-	$GENERATED_BACK_MOCKUPS = array(
-		'636ea56986bad9' => array(
-			'True Royal' => '/images/merch/generated/gear-back-true-royal.jpg',
-			'Kelly'      => '/images/merch/generated/gear-back-kelly.jpg',
-			'Leaf'       => '/images/merch/generated/gear-back-leaf.jpg',
-			'Ocean Blue' => '/images/merch/generated/gear-back-ocean-blue.jpg',
-		),
-	);
-	$apply_back_mockup = function ($images, $colour) use ($GENERATED_BACK_MOCKUPS, $external_product_id) {
-		if (!isset($GENERATED_BACK_MOCKUPS[$external_product_id][$colour])) {
+	// Extra angle mockups rendered by merch/tools/generate-mockups.php, keyed by
+	// external_id -> colour ('' for a single design) -> [{view, path}]. Appended
+	// to Printful's front preview so the gallery shows back/side angles too.
+	$generated_mockups = array();
+	$mockups_file = BASE . '/images/merch/generated/mockups.json';
+	if (is_readable($mockups_file)) {
+		$decoded = json_decode(file_get_contents($mockups_file), true);
+		if (is_array($decoded)) {
+			$generated_mockups = $decoded;
+		}
+	}
+	$apply_generated_mockups = function ($images, $colour) use ($generated_mockups, $external_product_id) {
+		$extra = null;
+		if (isset($generated_mockups[$external_product_id][$colour])) {
+			$extra = $generated_mockups[$external_product_id][$colour];
+		} elseif (isset($generated_mockups[$external_product_id][''])) {
+			$extra = $generated_mockups[$external_product_id][''];
+		}
+		if (!$extra) {
 			return $images;
 		}
-		$mock = $GENERATED_BACK_MOCKUPS[$external_product_id][$colour];
-		// Drop the raw 'back' artwork and append the real on-shirt back mockup.
-		$images = array_values(array_filter($images, function ($img) { return $img['type'] !== 'back'; }));
-		$images[] = array('preview' => $mock, 'full' => $mock, 'thumb' => $mock, 'type' => 'back');
+		foreach ($extra as $m) {
+			$images[] = array('preview' => $m['path'], 'full' => $m['path'], 'thumb' => $m['path'], 'type' => $m['view']);
+		}
 		return $images;
 	};
 	$split_label = function ($name) use ($product) {
@@ -170,11 +152,11 @@ if ($product_can_be_handled) {
 		$variant_combo[$colour . '|' . $size] = (string) $cat;
 		$variants_js[$cat]['colour'] = $colour;
 		$variants_js[$cat]['size'] = $size;
-		$variants_js[$cat]['gallery'] = $apply_back_mockup($variants_js[$cat]['gallery'], $colour);
+		$variants_js[$cat]['gallery'] = $apply_generated_mockups($variants_js[$cat]['gallery'], $colour);
 	}
 	asort($variant_sizes);
 	list($default_colour, $default_size) = $split_label($selected_variant->get_name());
-	$gallery = $apply_back_mockup($gallery, $default_colour);
+	$gallery = $apply_generated_mockups($gallery, $default_colour);
 	
 	head("Buy {$product->get_name()}", true);
 	$category_name = strtolower(preg_replace('@^.*\(([^()]+)\)$@i', '$1', $product->get_name()));
