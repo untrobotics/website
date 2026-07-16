@@ -39,6 +39,16 @@ function merch_listing_image($printfulapi, $item) {
 function merch_template($type, $search) {
     $printfulapi = new PrintfulCustomAPI();
 ?>
+    <style>
+    /* The theme absolutely-positions the product name and floats the price,
+       which overlap once a name wraps. Lay the card header out as a flex row. */
+    .product-listing.extern-items .product-item-listing { height: auto; }
+    .product-listing.extern-items .product-item-listing > h4 { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 17px; line-height: 1.3; margin: 0 0 12px; text-align: left; }
+    .product-listing.extern-items h4 > span:first-child { position: static; max-width: none; flex: 1 1 auto; }
+    .product-listing.extern-items h4 > span:last-child { float: none; white-space: nowrap; font-weight: 600; }
+    .product-listing.extern-items .product-images { height: 240px; margin-top: 4px; }
+    .product-listing.extern-items .product-images img { position: static; height: 240px; transform: none; display: block; margin: 0 auto; max-width: 100%; }
+    </style>
     <main class="page-content">
     <!-- Classic Breadcrumbs-->
     <section class="breadcrumb-classic">
