@@ -87,16 +87,13 @@ if ($product_can_be_handled) {
 		$seen = array();
 		foreach ($variant->get_files() as $file) {
 			$preview = $file->get_preview_url();
-			if (in_array($file->get_type(), $minor_placements, true)) { continue; }
 			if (empty($preview) || isset($seen[$preview])) { continue; }
-			// Keep the primary garment "preview" mockup, the main design
-			// placements (front/default/back — a back-printed design like the
-			// Aerospace tee is shown here even when Printful only returns the raw
-			// artwork for it), and all-over "printfile-preview" garment renders.
-			// Everything else (embroidery close-ups, sleeves, labels, blank
-			// tiles) is skipped since it makes a poor product image.
-			$gallery_types = array('preview', 'default', 'front', 'back');
-			if (!in_array($file->get_type(), $gallery_types, true) && strpos($preview, 'printfile-preview') === false) { continue; }
+			// Only real garment mockups belong in the gallery. Printful's
+			// "preview" file is the wearable product shot; every other file type
+			// (all-over "printfile-preview" flat prints, embroidery close-ups,
+			// raw back artwork, sleeves, labels) is a print layout, not a mockup.
+			// Extra angles come from the generated-mockup override below.
+			if ($file->get_type() !== 'preview') { continue; }
 			$seen[$preview] = true;
 			$images[] = array(
 				'preview' => $preview,
@@ -199,7 +196,7 @@ function get_variant_variant($variant_name) {
 			float: none !important;
 		}
 	}
-	.merch-tagline, .merch-image {
+	.merch-tagline {
 		float: right;
 	}
 	.merch-section {
@@ -270,11 +267,19 @@ function get_variant_variant($variant_name) {
 		color: white;
 		text-shadow: 1px 1px 0 black, -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black;
 	}
-		.merch-gallery { display: inline-block; }
-		.merch-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; max-width: 500px; }
-		.merch-thumb { padding: 0; border: 1px solid #cacaca; background: #fff; cursor: pointer; width: 72px; height: 72px; overflow: hidden; line-height: 0; }
+		.merch-gallery { display: flex; gap: 12px; align-items: flex-start; max-width: 100%; }
+		.merch-image { float: none; margin: 0; flex: 1 1 auto; max-width: 440px; display: block; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; background: #fff; order: 1; }
+		.merch-image img { width: 100%; display: block; }
+		.merch-thumbs { display: flex; flex-direction: column; gap: 8px; margin: 0; flex: 0 0 auto; order: 0; }
+		.merch-thumb { padding: 0; border: 1px solid #cacaca; border-radius: 6px; background: #fff; cursor: pointer; width: 64px; height: 64px; overflow: hidden; line-height: 0; transition: border-color .1s; }
+		.merch-thumb:hover { border-color: #999; }
 		.merch-thumb.is-active { border-color: #1f1f1f; box-shadow: inset 0 0 0 2px #1f1f1f; }
 		.merch-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+		@media (max-width: 767px) {
+			.merch-gallery { flex-direction: column; align-items: center; }
+			.merch-image { order: 0; max-width: 100%; }
+			.merch-thumbs { order: 1; flex-direction: row; flex-wrap: wrap; justify-content: center; }
+		}
 		.variant-btn.variant-active { outline: 2px solid #1f1f1f; outline-offset: 1px; }
 		.variant-picker { margin: 16px 0; text-align: left; }
 		.variant-picker-label { font-weight: 600; margin-bottom: 8px; color: #1f1f1f; }
