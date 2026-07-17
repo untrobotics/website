@@ -374,8 +374,8 @@ function get_variant_variant($variant_name) {
 							?>
 
 							<ul style="list-style: circle; margin-left: 25px; margin-top: 20px; text-align: left;">
-								<li><strong>Brand:</strong> <?php echo $catalog_product->get_brand(); ?></li>
-								<li><strong>Model:</strong> <?php echo $catalog_product->get_model(); ?></li>
+								<?php $brand = trim((string) $catalog_product->get_brand()); if ($brand !== '') { ?><li><strong>Brand:</strong> <?php echo $brand; ?></li><?php } ?>
+								<?php $model = trim((string) $catalog_product->get_model()); if ($model !== '') { ?><li><strong>Model:</strong> <?php echo $model; ?></li><?php } ?>
 								<?php
 										if (!empty($description)) {
 								?>
