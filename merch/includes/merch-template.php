@@ -79,32 +79,49 @@ function merch_template($type, $search) {
                                     <div class="cell-lg-10 cell-sm-12">
                                         <div class="product-items-container">
                                             <?php
-                                            $items = $printfulapi->get_products("{$search}");
-                                            foreach ($items->get_results() as $item) {
-                                                // One product fetch per item, reused for price + thumbnail.
-                                                $product = null;
-                                                try { $product = $printfulapi->get_product('@' . $item->external_id); } catch (Exception $e) {}
-                                                if ($product) {
-                                                    $product_price = array($product->get_product_price(), $product->get_product_currency());
-                                                } else {
-                                                    $product_price = $printfulapi->get_product_price($item->id);
+                                            // The listing pulls a full product per item to derive price + brand thumbnail,
+                                            // which is slow to parse. Cache that derived data per category for an hour so
+                                            // only the first visitor pays the cost; the file auto-refreshes after the TTL.
+                                            $listing_cache = sys_get_temp_dir() . '/merch-listing-' . md5($search) . '.json';
+                                            $rows = null;
+                                            if (is_file($listing_cache) && (time() - filemtime($listing_cache)) < 3600) {
+                                                $rows = json_decode(file_get_contents($listing_cache), true);
+                                            }
+                                            if (!is_array($rows)) {
+                                                $rows = array();
+                                                $items = $printfulapi->get_products("{$search}");
+                                                foreach ($items->get_results() as $item) {
+                                                    $product = null;
+                                                    try { $product = $printfulapi->get_product('@' . $item->external_id); } catch (Exception $e) {}
+                                                    if ($product) {
+                                                        $price = $product->get_product_price();
+                                                    } else {
+                                                        $pp = $printfulapi->get_product_price($item->id);
+                                                        $price = $pp[0];
+                                                    }
+                                                    $rows[] = array(
+                                                        'name' => $item->name,
+                                                        'external_id' => $item->external_id,
+                                                        'price' => $price,
+                                                        'thumb' => merch_listing_image($product, $item),
+                                                    );
                                                 }
+                                                @file_put_contents($listing_cache, json_encode($rows));
+                                            }
+                                            foreach ($rows as $row) {
+                                                $display_name = preg_replace('@' . preg_quote($search) . '$@', '', $row['name']);
                                                 ?>
                                                 <div class="col-lg-6 col-sm-12 product-item product-listing extern-items">
                                                     <div class="product-container-pad">
                                                         <div class="product-item-listing">
                                                             <h4>
-                                                                <span><?php
-                                                                    echo htmlspecialchars(
-                                                                            preg_replace('@' . preg_quote($search) . '$@', '', $item->name)
-                                                                    );
-                                                                    ?></span>
-                                                                <span><?php echo '$' . $product_price[0]; ?></span>
+                                                                <span><?php echo htmlspecialchars($display_name); ?></span>
+                                                                <span><?php echo '$' . $row['price']; ?></span>
                                                             </h4>
-                                                            <div class="product-images"><img src="<?php echo htmlspecialchars(merch_listing_image($product, $item)); ?>"  alt="<?php echo $item->name; ?>"/></div>
+                                                            <div class="product-images"><img src="<?php echo htmlspecialchars($row['thumb']); ?>" alt="<?php echo htmlspecialchars($row['name']); ?>"/></div>
                                                         </div>
                                                         <div class="product-item-action">
-                                                            <a id="buy-item-now" class="btn btn-primary" href="/merch/product/<?php echo $item->external_id; ?>/<?php echo post_slug($item->name); ?>">View Product</a>
+                                                            <a id="buy-item-now" class="btn btn-primary" href="/merch/product/<?php echo $row['external_id']; ?>/<?php echo post_slug($row['name']); ?>">View Product</a>
                                                         </div>
                                                     </div>
                                                 </div>
