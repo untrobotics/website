@@ -67,7 +67,8 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
     /* Payment buttons all share one centred column width so they tessellate. */
     #express-checkout-element:empty { display: none; }
     .dues-payment-button { display: block !important; width: 100%; max-width: 400px; margin: 0 auto 10px; }
-    #stripe-pay-button { display: block; width: 100%; max-width: 400px; margin: 0 auto; height: 46px; border: 0; border-radius: 4px; background: #635bff; color: #fff; font-weight: 600; }
+    #stripe-pay-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; max-width: 400px; margin: 0 auto; height: 46px; border: 0; border-radius: 4px; background: #635bff; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
+    .stripe-note { text-align: center; font-size: 11px; color: #9aa0a6; margin: 6px auto 0; max-width: 400px; }
     #stripe-pay-button:hover { background: #544dff; }
 </style>
 
@@ -128,7 +129,8 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
 					<div class="dues-payment-button"></div>
 
                     <div class="offset-top-10">
-                        <button id="stripe-pay-button" type="button" class="btn btn-primary">Pay with Card</button>
+                        <button id="stripe-pay-button" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span class="pay-label">Pay with card</span></button>
+                        <div class="stripe-note">Card &amp; saved payment info &mdash; powered by <strong>Stripe</strong></div>
                     </div>
 
 					<?php
@@ -285,7 +287,7 @@ footer(false);
     // only send which options were chosen.
     $('#stripe-pay-button').on('click', function() {
         const $btn = $(this);
-        $btn.prop('disabled', true).text('Redirecting...');
+        $btn.prop('disabled', true).find('.pay-label').text('Redirecting...');
         const params = new URLSearchParams();
         params.set('source', 'dues');
         params.set('full-year', fullYear ? 'true' : 'false');
@@ -302,12 +304,12 @@ footer(false);
                     window.location = data.url;
                 } else {
                     alert((data && data.error) ? data.error : 'Unable to start checkout.');
-                    $btn.prop('disabled', false).text('Pay with Card');
+                    $btn.prop('disabled', false).find('.pay-label').text('Pay with card');
                 }
             })
             .catch(() => {
                 alert('Unable to start checkout. Please try again.');
-                $btn.prop('disabled', false).text('Pay with Card');
+                $btn.prop('disabled', false).find('.pay-label').text('Pay with card');
             });
     });
 </script>
