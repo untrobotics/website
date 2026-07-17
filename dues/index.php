@@ -70,7 +70,8 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
     #stripe-pay-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; max-width: 400px; margin: 0 auto; height: 46px; border: 0; border-radius: 4px; background: #635bff; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
     .stripe-note { text-align: center; font-size: 11px; color: #9aa0a6; margin: 6px auto 0; max-width: 400px; }
     #stripe-pay-button:hover { background: #544dff; }
-</style>
+    #applepay-redirect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; max-width: 400px; height: 46px; margin: 0 auto 10px; border: 0; border-radius: 6px; background: #000; color: #fff; font-size: 18px; font-weight: 500; cursor: pointer; }
+    </style>
 
 <main class="page-content">
 	<section class="section-50 section-md-75 section-lg-100">
@@ -126,6 +127,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
                         <p><strong style="font-size: 20px;"><pre style="display: inline-block;border-radius: 10px;">Cost: <span id="dues_cost">$<?php echo $single_semester_dues_price; ?></span></pre></strong></p>
 
 					<div id="express-checkout-element" style="max-width:400px;margin:0 auto 10px;"></div>
+                        <button id="applepay-redirect" type="button" style="max-width:400px;margin:0 auto 10px;"><svg width="16" height="20" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C60.7 141.5 0 184.1 0 270c0 25.4 4.6 51.6 13.9 78.6 12.5 35.5 57.5 122.6 104.4 121.2 24.6-.6 42-17.4 74-17.4 31.1 0 47.3 17.4 74.7 17.4 47.4-.7 88-79.7 100-115.3-63.5-30-62.3-87.6-62.3-89.8zm-51.7-165c25-29.7 22.7-56.7 22-66.5-22.1 1.3-47.6 15-62.2 32.9-16 19.2-25.4 42.9-23.4 66 23.9 1.8 45.7-10.5 63.6-32.4z"/></svg> Pay</button>
 					<div class="dues-payment-button"></div>
 
                     <div class="offset-top-10">
@@ -199,6 +201,10 @@ footer(false);
         if (needShip) { opts.shippingAddressRequired = true; opts.allowedShippingCountries = ['US']; opts.shippingRates = [{ id: 'free', displayName: 'Free shipping', amount: 0 }]; }
         __ece = __elements.create('expressCheckout', opts);
         __ece.mount('#express-checkout-element');
+        var apRedirect = document.getElementById('applepay-redirect');
+        __ece.on('ready', function (e) {
+            if (apRedirect) { apRedirect.style.display = (e && e.availablePaymentMethods && e.availablePaymentMethods.applePay) ? 'none' : 'flex'; }
+        });
         if (needShip) { __ece.on('shippingaddresschange', function (e) { e.resolve(); }); }
         __ece.on('confirm', function (event) {
             __elements.submit().then(function (sub) {
@@ -223,6 +229,21 @@ footer(false);
         __eceShip = needShip;
     }
     buildEce();
+    (function () {
+        var apRedirect = document.getElementById('applepay-redirect');
+        if (!apRedirect) { return; }
+        apRedirect.addEventListener('click', function () {
+            apRedirect.disabled = true;
+            var rp = new URLSearchParams();
+            rp.set('source', 'dues');
+            rp.set('full-year', fullYear ? 'true' : 'false');
+            rp.set('t-shirt', tShirt || '');
+            fetch('/api/stripe/create-checkout-session', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: rp.toString(), credentials: 'same-origin' })
+                .then(function (r) { return r.json(); })
+                .then(function (d) { if (d && d.url) { window.location = d.url; } else { apRedirect.disabled = false; alert((d && d.error) || 'Unable to start checkout.'); } })
+                .catch(function () { apRedirect.disabled = false; alert('Unable to start checkout.'); });
+        });
+    })();
 
     // PayPal Smart Buttons (Orders v2). The button is rendered once; createOrder
     // reads the current options at click time and the SERVER recomputes the price
