@@ -64,6 +64,11 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
     .dues-shirt-preview img {
         width: 300px;
     }
+    /* Payment buttons all share one centred column width so they tessellate. */
+    #express-checkout-element:empty { display: none; }
+    .dues-payment-button { display: block !important; width: 100%; max-width: 400px; margin: 0 auto 10px; }
+    #stripe-pay-button { display: block; width: 100%; max-width: 400px; margin: 0 auto; height: 46px; border: 0; border-radius: 4px; background: #635bff; color: #fff; font-weight: 600; }
+    #stripe-pay-button:hover { background: #544dff; }
 </style>
 
 <main class="page-content">
@@ -189,7 +194,7 @@ footer(false);
         if (__ece && __eceShip === needShip) { __elements.update({ amount: cents }); return; }
         if (__ece) { __ece.unmount(); }
         __elements = __stripe.elements({ mode: 'payment', amount: cents, currency: 'usd' });
-        var opts = { paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'auto', amazonPay: 'never', paypal: 'never', klarna: 'never' } };
+        var opts = { paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' } };
         if (needShip) { opts.shippingAddressRequired = true; opts.allowedShippingCountries = ['US']; opts.shippingRates = [{ id: 'free', displayName: 'Free shipping', amount: 0 }]; }
         __ece = __elements.create('expressCheckout', opts);
         __ece.mount('#express-checkout-element');

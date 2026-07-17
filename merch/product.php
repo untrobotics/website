@@ -274,6 +274,12 @@ function get_variant_variant($variant_name) {
 		.size-btn:hover { border-color: #1f1f1f; }
 		.size-btn.is-active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
 		.size-btn:disabled { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+		.pay-buttons { max-width: 440px; }
+		.pay-buttons #express-checkout-element:empty { display: none; }
+		.pay-buttons #paypal-button-container { margin-top: 10px; }
+		.pay-buttons .offset-top-10 { margin-top: 10px; }
+		.pay-buttons #stripe-pay-button { display: block; width: 100%; height: 46px; margin: 0; border: 0; border-radius: 4px; background: #635bff; color: #fff; font-weight: 600; }
+		.pay-buttons #stripe-pay-button:hover { background: #544dff; }
 </style>
 <main class="page-content">
 	<!-- Classic Breadcrumbs-->
@@ -392,7 +398,7 @@ function get_variant_variant($variant_name) {
 									}
 								?>
 							</ul>
-							<div class="offset-top-20">
+							<div class="offset-top-20 pay-buttons">
 								<?php
 									// PayPal Smart Buttons (Orders v2) render here. The price is
 									// recomputed server-side from Printful by the create endpoint;
@@ -448,7 +454,7 @@ footer(false);
 		var amountCents = <?php echo intval(round($product->get_product_price() * 100)); ?> || 1000;
 		var mElements = stripe.elements({ mode: 'payment', amount: amountCents, currency: 'usd' });
 		var ece = mElements.create('expressCheckout', {
-			paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'auto', amazonPay: 'never', paypal: 'never', klarna: 'never' },
+			paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' },
 			shippingAddressRequired: true,
 			allowedShippingCountries: ['US'],
 			shippingRates: [{ id: 'free', displayName: 'Free shipping', amount: 0 }]

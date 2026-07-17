@@ -80,7 +80,7 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
     if (stripe) {
         elements = stripe.elements({ mode: 'payment', amount: currentCents() || 2500, currency: 'usd' });
         var expressEl = elements.create('expressCheckout', {
-            paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'auto', amazonPay: 'never', paypal: 'never', klarna: 'never' }
+            paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' }
         });
         expressEl.mount('#express-checkout-element');
         expressEl.on('confirm', function () {
