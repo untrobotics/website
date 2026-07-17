@@ -398,6 +398,7 @@ function get_variant_variant($variant_name) {
 									// recomputed server-side from Printful by the create endpoint;
 									// the client only sends the product + variant.
 								?>
+								<div id="express-checkout-element" style="margin-bottom:10px;"></div>
 								<div id="paypal-button-container"></div>
 								<div class="offset-top-10">
 									<button id="stripe-pay-button" type="button" class="btn btn-primary"
@@ -436,6 +437,57 @@ footer(false);
 	$paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAYPAL_CLIENT_ID;
 ?>
 <script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD&disable-funding=card"></script>
+<script>
+	// Express Checkout Element: native Apple Pay / Google Pay / Link with US
+	// shipping collection (physical goods). The PaymentIntent recomputes the
+	// selected variant's price server-side; the wallet's shipping address is
+	// attached at confirm and read back by the payment_intent webhook.
+	(function () {
+		var stripe = window.Stripe ? Stripe('<?php echo htmlspecialchars(STRIPE_PUBLISHABLE_KEY, ENT_QUOTES); ?>') : null;
+		if (!stripe) { return; }
+		var amountCents = <?php echo intval(round($product->get_product_price() * 100)); ?> || 1000;
+		var mElements = stripe.elements({ mode: 'payment', amount: amountCents, currency: 'usd' });
+		var ece = mElements.create('expressCheckout', {
+			paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'auto', amazonPay: 'never', paypal: 'never', klarna: 'never' },
+			shippingAddressRequired: true,
+			allowedShippingCountries: ['US'],
+			shippingRates: [{ id: 'free', displayName: 'Free shipping', amount: 0 }]
+		});
+		ece.mount('#express-checkout-element');
+		ece.on('shippingaddresschange', function (event) { event.resolve(); });
+		ece.on('confirm', function (event) {
+			mElements.submit().then(function (sub) {
+				if (sub.error) { alert(sub.error.message); return; }
+				var params = new URLSearchParams();
+				params.set('source', 'merch');
+				params.set('product', <?php echo json_encode($external_product_id); ?>);
+				params.set('variant', window.MERCH_CURRENT_VARIANT || <?php echo json_encode((string) $selected_variant->get_id()); ?>);
+				return fetch('/api/stripe/create-payment-intent.php', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params.toString(), credentials: 'same-origin' })
+					.then(function (r) { return r.json(); })
+					.then(function (d) {
+						if (!d || !d.clientSecret) { alert((d && d.error) || 'Unable to start payment.'); return; }
+						var confirmParams = { return_url: location.origin + '/merch/buy/complete' };
+						var sa = event.shippingAddress;
+						if (sa && sa.address) {
+							confirmParams.shipping = {
+								name: sa.name || '',
+								address: {
+									line1: sa.address.line1 || '',
+									line2: sa.address.line2 || '',
+									city: sa.address.city || '',
+									state: sa.address.state || '',
+									postal_code: sa.address.postal_code || '',
+									country: sa.address.country || 'US'
+								}
+							};
+						}
+						return stripe.confirmPayment({ elements: mElements, clientSecret: d.clientSecret, confirmParams: confirmParams })
+							.then(function (res) { if (res.error) { alert(res.error.message); } });
+					});
+			}).catch(function () { alert('Unable to start payment.'); });
+		});
+	})();
+</script>
 <script>
 	// PayPal Smart Buttons (Orders v2). The server recomputes the price from
 	// Printful; we only send which product/variant was chosen.

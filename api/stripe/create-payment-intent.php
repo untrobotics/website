@@ -51,7 +51,144 @@ try {
             ),
         ));
 
-        echo json_encode(array('clientSecret' => $intent->client_secret));
+        echo json_encode(array('clientSecret' => $intent->client_secret, 'needsShipping' => false));
+    } else if ($source === 'merch') {
+        require(BASE . '/api/printful/printful.php');
+        require(BASE . '/template/functions/functions.php');
+
+        $external_product_id = isset($_REQUEST['product']) ? $_REQUEST['product'] : '';
+        $variant_id = isset($_REQUEST['variant']) ? $_REQUEST['variant'] : '';
+        $quantity = isset($_REQUEST['quantity']) ? max(1, intval($_REQUEST['quantity'])) : 1;
+        if (empty($external_product_id) || empty($variant_id)) {
+            throw new RuntimeException("Missing product or variant.");
+        }
+
+        $printfulapi = new PrintfulCustomAPI();
+        $product = $printfulapi->get_product('@' . $external_product_id);
+        if ($product === null) {
+            throw new RuntimeException("Unknown product.");
+        }
+        $selected_variant = null;
+        foreach ($product->get_variants() as $variant) {
+            if ($variant->get_id() == $variant_id) {
+                $selected_variant = $variant;
+                break;
+            }
+        }
+        if ($selected_variant === null) {
+            throw new RuntimeException("Unknown variant for this product.");
+        }
+        $catalog_product = $printfulapi->get_catalog_product($product->get_variants()[0]->get_product()->get_product_id());
+
+        $unit_price = $selected_variant->get_price();
+        $currency = $selected_variant->get_currency();
+        if (empty($currency)) {
+            $currency = $product->get_product_currency();
+        }
+        if (!is_numeric($unit_price) || $unit_price <= 0) {
+            throw new RuntimeException("Unable to determine the product price.");
+        }
+
+        $variant_variant_name = preg_replace("@.* - (.+)$@i", "$1", $selected_variant->get_name());
+        $custom = array(
+            'source' => 'PRINTFUL_PRODUCT',
+            'product' => $external_product_id,
+            'variant' => $selected_variant->get_id(),
+        );
+        $merch_auth = auth();
+        if (is_array($merch_auth) && isset($merch_auth[0]['id'])) {
+            $custom['uid'] = $merch_auth[0]['id'];
+        }
+        $option_pairs = array(
+            array('Type', $catalog_product->get_type_name()),
+            array('Product', $product->get_name()),
+            array('Variant', $variant_variant_name),
+        );
+        $item_name = $product->get_name() . ' - ' . $variant_variant_name;
+
+        $intent = \Stripe\PaymentIntent::create(array(
+            'amount' => intval(round($unit_price * $quantity * 100)),
+            'currency' => strtolower($currency),
+            'automatic_payment_methods' => array('enabled' => true),
+            'description' => $item_name,
+            'metadata' => array(
+                'source' => 'PRINTFUL_PRODUCT',
+                'custom' => serialize($custom),
+                'options' => json_encode($option_pairs),
+                'quantity' => (string) $quantity,
+                'item_name' => $item_name,
+            ),
+        ));
+
+        echo json_encode(array('clientSecret' => $intent->client_secret, 'needsShipping' => true));
+    } else if ($source === 'dues') {
+        $auth = auth();
+        if (!$auth) {
+            fail('HTTP/1.1 401 Unauthorized', 'You must be logged in to pay dues.');
+        }
+        $userinfo = $auth[0];
+
+        $tshirt = !empty($_REQUEST['t-shirt']) ? $_REQUEST['t-shirt'] : false;
+        $fullyear = filter_var(@$_REQUEST['full-year'], FILTER_VALIDATE_BOOLEAN);
+
+        $q = $db->query("SELECT `key`,`value` FROM dues_config WHERE `key` = 'semester_price' OR `key` = 't_shirt_dues_purchase_price'");
+        if (!$q || $q->num_rows !== 2) {
+            AdminBot::send_message("Unable to determine the dues payment price (stripe PI)");
+            throw new RuntimeException("Unable to determine dues payment price");
+        }
+        $r = $q->fetch_all(MYSQLI_ASSOC);
+        $mapped_config = array();
+        array_walk($r, function (&$val, $_key) use (&$mapped_config) {
+            $mapped_config[$val['key']] = $val['value'];
+        });
+
+        $t_shirt_dues_purchase_price = $mapped_config['t_shirt_dues_purchase_price'];
+        $single_semester_dues_price = $mapped_config['semester_price'];
+        $full_year_dues_price = $single_semester_dues_price * 2;
+        $current_term = $untrobotics->get_current_term();
+        $next_term = $untrobotics->get_next_term();
+
+        $permit_full_year_payment = $current_term == Semester::AUTUMN;
+        if (!$permit_full_year_payment && $fullyear) {
+            throw new RuntimeException("Unable to pay for full year at this time");
+        }
+
+        $custom = array(
+            'source' => 'DUES_PAYMENT',
+            'uid' => $userinfo['id'],
+            'include-tshirt' => $tshirt,
+        );
+        $cost = $fullyear ? $full_year_dues_price : $single_semester_dues_price;
+        if ($tshirt) {
+            $cost += $t_shirt_dues_purchase_price;
+        }
+        $n_semesters = $fullyear ? 2 : 1;
+
+        $option_pairs = array(
+            array('Semester', Semester::get_name_from_value($current_term)),
+            array('Year', (string) $untrobotics->get_current_year()),
+        );
+        if ($fullyear) {
+            $option_pairs[] = array('Semester1', Semester::get_name_from_value($next_term));
+            $option_pairs[] = array('Year1', (string) $untrobotics->get_next_year());
+        }
+        $item_name = "UNT Robotics Dues (x{$n_semesters})" . ($tshirt ? " + T-shirt" : "");
+
+        $intent = \Stripe\PaymentIntent::create(array(
+            'amount' => intval(round($cost * 100)),
+            'currency' => 'usd',
+            'automatic_payment_methods' => array('enabled' => true),
+            'description' => $item_name,
+            'metadata' => array(
+                'source' => 'DUES_PAYMENT',
+                'custom' => serialize($custom),
+                'options' => json_encode($option_pairs),
+                'quantity' => '1',
+                'item_name' => $item_name,
+            ),
+        ));
+
+        echo json_encode(array('clientSecret' => $intent->client_secret, 'needsShipping' => $tshirt ? true : false));
     } else {
         fail('HTTP/1.1 400 Bad Request', 'Unknown payment source.');
     }
