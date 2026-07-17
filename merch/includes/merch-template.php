@@ -4,34 +4,30 @@ require(BASE . '/api/printful/printful.php');
 // Listing thumbnail: Printful's product-level thumbnail_url follows whatever
 // variant it lists first (often an off-brand colour like blue). Prefer a
 // brand-green variant's garment mockup instead so the category page matches the
-// product page's green default. Falls back to Printful's thumbnail on any error.
-function merch_listing_image($printfulapi, $item) {
-    try {
-        $product = $printfulapi->get_product('@' . $item->external_id);
-        if ($product) {
-            $preferred = array('kelly', 'green', 'forest', 'irish', 'military');
-            $first_preview = null;
-            foreach ($product->get_variants() as $variant) {
-                $pf = $variant->get_file_by_type(PrintfulVariantFilesTypes::PREVIEW);
-                if (!$pf || !$pf->get_preview_url()) {
-                    continue;
-                }
-                if ($first_preview === null) {
-                    $first_preview = $pf->get_preview_url();
-                }
-                $vname = strtolower($variant->get_name());
-                foreach ($preferred as $pc) {
-                    if (strpos($vname, $pc) !== false) {
-                        return $pf->get_preview_url();
-                    }
-                }
+// product page's green default. Takes the already-fetched product (so the
+// listing only pulls each product once) and falls back to Printful's thumbnail.
+function merch_listing_image($product, $item) {
+    if ($product) {
+        $preferred = array('kelly', 'green', 'forest', 'irish', 'military');
+        $first_preview = null;
+        foreach ($product->get_variants() as $variant) {
+            $pf = $variant->get_file_by_type(PrintfulVariantFilesTypes::PREVIEW);
+            if (!$pf || !$pf->get_preview_url()) {
+                continue;
             }
-            if ($first_preview !== null) {
-                return $first_preview;
+            if ($first_preview === null) {
+                $first_preview = $pf->get_preview_url();
+            }
+            $vname = strtolower($variant->get_name());
+            foreach ($preferred as $pc) {
+                if (strpos($vname, $pc) !== false) {
+                    return $pf->get_preview_url();
+                }
             }
         }
-    } catch (Exception $e) {
-        // fall through to Printful's default thumbnail
+        if ($first_preview !== null) {
+            return $first_preview;
+        }
     }
     return $item->thumbnail_url;
 }
@@ -85,7 +81,14 @@ function merch_template($type, $search) {
                                             <?php
                                             $items = $printfulapi->get_products("{$search}");
                                             foreach ($items->get_results() as $item) {
-                                                $product_price = $printfulapi->get_product_price($item->id);
+                                                // One product fetch per item, reused for price + thumbnail.
+                                                $product = null;
+                                                try { $product = $printfulapi->get_product('@' . $item->external_id); } catch (Exception $e) {}
+                                                if ($product) {
+                                                    $product_price = array($product->get_product_price(), $product->get_product_currency());
+                                                } else {
+                                                    $product_price = $printfulapi->get_product_price($item->id);
+                                                }
                                                 ?>
                                                 <div class="col-lg-6 col-sm-12 product-item product-listing extern-items">
                                                     <div class="product-container-pad">
@@ -98,7 +101,7 @@ function merch_template($type, $search) {
                                                                     ?></span>
                                                                 <span><?php echo '$' . $product_price[0]; ?></span>
                                                             </h4>
-                                                            <div class="product-images"><img src="<?php echo htmlspecialchars(merch_listing_image($printfulapi, $item)); ?>"  alt="<?php echo $item->name; ?>"/></div>
+                                                            <div class="product-images"><img src="<?php echo htmlspecialchars(merch_listing_image($product, $item)); ?>"  alt="<?php echo $item->name; ?>"/></div>
                                                         </div>
                                                         <div class="product-item-action">
                                                             <a id="buy-item-now" class="btn btn-primary" href="/merch/product/<?php echo $item->external_id; ?>/<?php echo post_slug($item->name); ?>">View Product</a>
