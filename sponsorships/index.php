@@ -43,7 +43,7 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
                     </div>
                     <div class="amount-field">
                         <span class="currency">$</span>
-                        <input type="number" id="donation-amount" min="1" max="10000" step="1" value="25" placeholder="Amount">
+                        <input type="text" inputmode="decimal" id="donation-amount" value="25" placeholder="Amount" autocomplete="off">
                     </div>
 
                     <div id="express-checkout-element" style="margin-bottom: 10px;"></div>
