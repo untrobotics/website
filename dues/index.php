@@ -129,8 +129,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
 					<div class="dues-payment-button"></div>
 
                     <div class="offset-top-10">
-                        <button id="stripe-pay-button" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span class="pay-label">Pay with card</span></button>
-                        <div class="stripe-note">Card &amp; saved payment info &mdash; powered by <strong>Stripe</strong></div>
+                        <button id="stripe-pay-button" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><span class="pay-label">Pay with card (Stripe)</span></button>
                     </div>
 
 					<?php
@@ -304,12 +303,12 @@ footer(false);
                     window.location = data.url;
                 } else {
                     alert((data && data.error) ? data.error : 'Unable to start checkout.');
-                    $btn.prop('disabled', false).find('.pay-label').text('Pay with card');
+                    $btn.prop('disabled', false).find('.pay-label').text('Pay with card (Stripe)');
                 }
             })
             .catch(() => {
                 alert('Unable to start checkout. Please try again.');
-                $btn.prop('disabled', false).find('.pay-label').text('Pay with card');
+                $btn.prop('disabled', false).find('.pay-label').text('Pay with card (Stripe)');
             });
     });
 </script>

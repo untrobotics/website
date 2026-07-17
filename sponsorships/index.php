@@ -51,9 +51,8 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
                     <div style="margin-top: 10px;">
                         <button id="stripe-donate-button" type="button">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                            <span id="stripe-donate-label">Donate with card</span>
+                            <span id="stripe-donate-label">Donate with card (Stripe)</span>
                         </button>
-                        <div class="stripe-note">Card &amp; saved payment info &mdash; powered by <strong>Stripe</strong></div>
                     </div>
                     <div id="donation-error" class="text-danger offset-top-10" style="display:none;"></div>
                 </div>
@@ -117,9 +116,9 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
             .then(function (r) { return r.json(); })
             .then(function (d) {
                 if (d && d.url) { window.location = d.url; }
-                else { showErr((d && d.error) || 'Unable to start checkout.'); btn.disabled = false; lbl.textContent = 'Donate with card'; }
+                else { showErr((d && d.error) || 'Unable to start checkout.'); btn.disabled = false; lbl.textContent = 'Donate with card (Stripe)'; }
             })
-            .catch(function () { showErr('Unable to start checkout.'); btn.disabled = false; lbl.textContent = 'Donate with card'; });
+            .catch(function () { showErr('Unable to start checkout.'); btn.disabled = false; lbl.textContent = 'Donate with card (Stripe)'; });
     });
 
     // PayPal Smart Buttons.
