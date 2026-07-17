@@ -4,6 +4,7 @@ head('Sponsorships', true);
 
 // PayPal JS SDK client id for the active environment (sandbox flag set by auth()).
 $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAYPAL_CLIENT_ID;
+$stripe_pk = STRIPE_PUBLISHABLE_KEY;
 ?>
 <section class="section-50 section-md-75 section-lg-100">
     <div class="shell">
@@ -28,6 +29,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
                                class="form-control" style="padding-left:24px;" placeholder="Amount">
                     </div>
 
+                    <div id="express-checkout-element" style="max-width:400px;margin-bottom:12px;"></div>
                     <div id="paypal-button-container" style="max-width:400px;"></div>
                     <div class="offset-top-10">
                         <button id="stripe-donate-button" type="button" class="btn btn-primary">Donate with Card</button>
@@ -49,8 +51,36 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
     function getAmount() { var v = parseFloat(amtInput.value); return (isNaN(v) || v < 1) ? 0 : Math.round(v * 100) / 100; }
     function showErr(m) { var e = document.getElementById('donation-error'); e.style.display = m ? 'block' : 'none'; e.textContent = m || ''; }
 
+    // Express Checkout Element: native Apple Pay / Google Pay / Link, inline.
+    var stripe = window.Stripe ? Stripe('<?php echo htmlspecialchars($stripe_pk, ENT_QUOTES); ?>') : null;
+    var elements = null;
+    function currentCents() { var a = getAmount(); return a >= 1 ? Math.round(a * 100) : 0; }
+    function syncExpressAmount() { if (elements && currentCents() >= 100) { elements.update({ amount: currentCents() }); } }
+    if (stripe) {
+        elements = stripe.elements({ mode: 'payment', amount: currentCents() || 2500, currency: 'usd' });
+        var expressEl = elements.create('expressCheckout');
+        expressEl.mount('#express-checkout-element');
+        expressEl.on('confirm', function () {
+            var amt = getAmount();
+            if (amt < 1) { showErr('Please enter a donation amount of at least $1.'); return; }
+            showErr('');
+            elements.submit().then(function (sub) {
+                if (sub.error) { showErr(sub.error.message); return; }
+                var p = new URLSearchParams(); p.set('source', 'donation'); p.set('amount', amt);
+                return fetch('/api/stripe/create-payment-intent.php', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: p.toString(), credentials: 'same-origin' })
+                    .then(function (r) { return r.json(); })
+                    .then(function (d) {
+                        if (!d || !d.clientSecret) { showErr((d && d.error) || 'Unable to start payment.'); return; }
+                        return stripe.confirmPayment({ elements: elements, clientSecret: d.clientSecret, confirmParams: { return_url: location.origin + '/sponsorships/donate/thank-you' } })
+                            .then(function (res) { if (res.error) { showErr(res.error.message); } });
+                    });
+            }).catch(function () { showErr('Unable to start payment.'); });
+        });
+    }
+    amtInput.addEventListener('input', syncExpressAmount);
+
     document.querySelectorAll('#preset-amounts .preset').forEach(function (b) {
-        b.addEventListener('click', function () { amtInput.value = b.getAttribute('data-amount'); showErr(''); });
+        b.addEventListener('click', function () { amtInput.value = b.getAttribute('data-amount'); showErr(''); syncExpressAmount(); });
     });
 
     // Stripe Checkout (Card).
