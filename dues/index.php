@@ -122,7 +122,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
 					<div class="dues-payment-button"></div>
 
                     <div class="offset-top-10">
-                        <button id="stripe-pay-button" type="button" class="btn btn-primary">Pay with Card / Apple Pay</button>
+                        <button id="stripe-pay-button" type="button" class="btn btn-primary">Pay with Card</button>
                     </div>
 
 					<?php
@@ -151,7 +151,7 @@ footer(false);
 
 <script src="https://js.stripe.com/v3/"></script>
 <?php if (is_current_user_authenticated() && !$untrobotics->is_user_in_good_standing($userinfo)) { ?>
-<script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD&disable-funding=card"></script>
 <?php } ?>
 <script>
     const single_semester_price = <?php echo intval($single_semester_dues_price); ?>;
@@ -230,7 +230,7 @@ footer(false);
         $("#dues_cost").text("$" + getDuesCost());
     })
 
-    // Stripe Checkout (Card / Apple Pay). The server recomputes the price; we
+    // Stripe Checkout (Card). The server recomputes the price; we
     // only send which options were chosen.
     $('#stripe-pay-button').on('click', function() {
         const $btn = $(this);
@@ -251,12 +251,12 @@ footer(false);
                     window.location = data.url;
                 } else {
                     alert((data && data.error) ? data.error : 'Unable to start checkout.');
-                    $btn.prop('disabled', false).text('Pay with Card / Apple Pay');
+                    $btn.prop('disabled', false).text('Pay with Card');
                 }
             })
             .catch(() => {
                 alert('Unable to start checkout. Please try again.');
-                $btn.prop('disabled', false).text('Pay with Card / Apple Pay');
+                $btn.prop('disabled', false).text('Pay with Card');
             });
     });
 </script>

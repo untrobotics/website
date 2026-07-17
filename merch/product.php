@@ -403,7 +403,7 @@ function get_variant_variant($variant_name) {
 									<button id="stripe-pay-button" type="button" class="btn btn-primary"
 										data-product="<?php echo htmlspecialchars($external_product_id); ?>"
 										data-variant="<?php echo htmlspecialchars($selected_variant->get_id()); ?>">
-										Pay with Card / Apple Pay
+										Pay with Card
 									</button>
 								</div>
 							</div>
@@ -435,7 +435,7 @@ footer(false);
 	// the auth() call inside head() for sandbox users; guests/live get the live id).
 	$paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAYPAL_CLIENT_ID;
 ?>
-<script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD&disable-funding=card"></script>
 <script>
 	// PayPal Smart Buttons (Orders v2). The server recomputes the price from
 	// Printful; we only send which product/variant was chosen.
@@ -497,7 +497,7 @@ footer(false);
 		}
 	});
 
-	// Stripe Checkout (Card / Apple Pay). The server recomputes the price from
+	// Stripe Checkout (Card). The server recomputes the price from
 	// Printful; we only send which product/variant was chosen.
 	$('#stripe-pay-button').on('click', function() {
 		const $btn = $(this);
@@ -518,12 +518,12 @@ footer(false);
 					window.location = data.url;
 				} else {
 					alert((data && data.error) ? data.error : 'Unable to start checkout.');
-					$btn.prop('disabled', false).text('Pay with Card / Apple Pay');
+					$btn.prop('disabled', false).text('Pay with Card');
 				}
 			})
 			.catch(() => {
 				alert('Unable to start checkout. Please try again.');
-				$btn.prop('disabled', false).text('Pay with Card / Apple Pay');
+				$btn.prop('disabled', false).text('Pay with Card');
 			});
 	});
 </script>

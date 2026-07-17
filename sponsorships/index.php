@@ -12,7 +12,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
 
                 <h1>Sponsorships</h1>
                 <h6>Help us achieve our mission!</h6>
-                <p>Your donation directly funds our robots, competitions, and workshops. Choose an amount below and give securely by card, Apple Pay, or PayPal.</p>
+                <p>Your donation directly funds our robots, competitions, and workshops. Choose an amount below and give securely by card or PayPal.</p>
 
                 <div class="offset-top-30" id="donation-widget">
                     <label class="form-label" style="display:block;margin-bottom:10px;font-weight:600;">Donation amount (USD)</label>
@@ -30,7 +30,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
 
                     <div id="paypal-button-container" style="max-width:400px;"></div>
                     <div class="offset-top-10">
-                        <button id="stripe-donate-button" type="button" class="btn btn-primary">Donate with Card / Apple Pay</button>
+                        <button id="stripe-donate-button" type="button" class="btn btn-primary">Donate with Card</button>
                     </div>
                     <div id="donation-error" class="text-danger offset-top-10" style="display:none;"></div>
                 </div>
@@ -42,7 +42,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
 
 <?php footer(false); ?>
 <script src="https://js.stripe.com/v3/"></script>
-<script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD&disable-funding=card"></script>
 <script>
 (function () {
     var amtInput = document.getElementById('donation-amount');
@@ -53,7 +53,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
         b.addEventListener('click', function () { amtInput.value = b.getAttribute('data-amount'); showErr(''); });
     });
 
-    // Stripe Checkout (Card / Apple Pay).
+    // Stripe Checkout (Card).
     document.getElementById('stripe-donate-button').addEventListener('click', function () {
         var amt = getAmount();
         if (amt < 1) { showErr('Please enter a donation amount of at least $1.'); return; }
@@ -64,9 +64,9 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
             .then(function (r) { return r.json(); })
             .then(function (d) {
                 if (d && d.url) { window.location = d.url; }
-                else { showErr((d && d.error) || 'Unable to start checkout.'); btn.disabled = false; btn.textContent = 'Donate with Card / Apple Pay'; }
+                else { showErr((d && d.error) || 'Unable to start checkout.'); btn.disabled = false; btn.textContent = 'Donate with Card'; }
             })
-            .catch(function () { showErr('Unable to start checkout.'); btn.disabled = false; btn.textContent = 'Donate with Card / Apple Pay'; });
+            .catch(function () { showErr('Unable to start checkout.'); btn.disabled = false; btn.textContent = 'Donate with Card'; });
     });
 
     // PayPal Smart Buttons.
