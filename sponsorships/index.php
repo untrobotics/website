@@ -58,7 +58,9 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
     function syncExpressAmount() { if (elements && currentCents() >= 100) { elements.update({ amount: currentCents() }); } }
     if (stripe) {
         elements = stripe.elements({ mode: 'payment', amount: currentCents() || 2500, currency: 'usd' });
-        var expressEl = elements.create('expressCheckout');
+        var expressEl = elements.create('expressCheckout', {
+            paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'auto', amazonPay: 'never', paypal: 'never', klarna: 'never' }
+        });
         expressEl.mount('#express-checkout-element');
         expressEl.on('confirm', function () {
             var amt = getAmount();
