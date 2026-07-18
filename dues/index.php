@@ -71,6 +71,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
     .stripe-note { text-align: center; font-size: 11px; color: #9aa0a6; margin: 6px auto 0; max-width: 400px; }
     #stripe-pay-button:hover { background: #544dff; }
     #applepay-redirect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; max-width: 400px; height: 46px; margin: 0 auto 10px; border: 0; border-radius: 6px; background: #000; color: #fff; font-size: 18px; font-weight: 500; cursor: pointer; }
+        .stripe-mark { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 4px; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.32); }
     </style>
 
 <main class="page-content">

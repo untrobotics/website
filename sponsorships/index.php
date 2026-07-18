@@ -33,7 +33,8 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
                     #stripe-donate-button:disabled { opacity: .6; cursor: default; }
                     .stripe-note { text-align: center; font-size: 11px; color: #9aa0a6; margin-top: 6px; }
                     #applepay-redirect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 46px; margin-bottom: 10px; border: 0; border-radius: 6px; background: #000; color: #fff; font-size: 18px; font-weight: 500; cursor: pointer; }
-                </style>
+                    .stripe-mark { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 4px; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.32); }
+    </style>
                 <div class="offset-top-30" id="donation-widget">
                     <label class="field-label">Donation amount (USD)</label>
                     <div id="preset-amounts">
