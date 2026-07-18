@@ -127,6 +127,8 @@ CREATE TABLE `dues_payments` (
   `dues_term` int(1) NOT NULL,
   `dues_year` int(4) NOT NULL,
   `uid` int(11) NOT NULL,
+  `refunded` tinyint(1) NOT NULL DEFAULT '0',
+  `refunded_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_dues_uid` (`uid`),
   CONSTRAINT `fk_dues_uid` FOREIGN KEY (`uid`) REFERENCES `users` (`id`)
@@ -280,6 +282,8 @@ CREATE TABLE `printful_order` (
   `last_name` varchar(50) DEFAULT NULL,
   `returned` int(1) NOT NULL DEFAULT '0',
   `uid` int(11) DEFAULT NULL,
+  `refunded` tinyint(1) NOT NULL DEFAULT '0',
+  `refunded_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_id` (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
@@ -430,6 +434,8 @@ CREATE TABLE `donations` (
   `fee` decimal(10,2) NOT NULL DEFAULT '0.00',
   `txid` varchar(255) DEFAULT NULL,
   `donated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `refunded` tinyint(1) NOT NULL DEFAULT '0',
+  `refunded_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `txid` (`txid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

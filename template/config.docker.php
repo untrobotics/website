@@ -72,6 +72,16 @@ define('TWILIO_FIND_FIRST_QUEUE_SID', env('TWILIO_FIND_FIRST_QUEUE_SID'));
 define('TWILIO_MESSAGING_SERVICE_SID', env('TWILIO_MESSAGING_SERVICE_SID', 'MGb6d953f5f877fa5175519f04db5aa6cb'));
 
 define('PRINTFUL_API_KEY', env('PRINTFUL_API_KEY'));
+// Shared secret for the Printful webhook (carried as ?secret=... in the webhook
+// URL). Leave unset to skip verification; set it — and add ?secret=<value> to the
+// webhook URL in the Printful dashboard — to require it.
+define('PRINTFUL_WEBHOOK_SECRET', env('PRINTFUL_WEBHOOK_SECRET', ''));
+
+// Mailchimp Marketing API — used to push newsletter sign-ups into an audience.
+// MAILCHIMP_API_KEY is "<key>-<dc>" (the dc suffix, e.g. us21, picks the server).
+// Leave unset to store sign-ups only in the newsletter_signups table.
+define('MAILCHIMP_API_KEY', env('MAILCHIMP_API_KEY', ''));
+define('MAILCHIMP_LIST_ID', env('MAILCHIMP_LIST_ID', ''));
 
 // Non-secret GroupMe channel→bot identifiers.
 define('CHANNEL_TO_BOT', array(

@@ -45,6 +45,98 @@ try {
 
 \Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
 
+/**
+ * Reverse the side effects of a payment that was refunded or disputed. Marks the
+ * dues_payments / donations / printful_order rows for the transaction as
+ * refunded, and strips the Discord Good Standing role from any member who is no
+ * longer in standing as a result. Idempotent — safe to run on a redelivered event.
+ */
+function process_stripe_refund($pi_id, $reason) {
+    global $db, $untrobotics;
+
+    // We key records on either the PaymentIntent id (Express Checkout Element) or
+    // the Checkout Session id (redirect flow) — collect both for this PI.
+    $txids = array($pi_id);
+    try {
+        $sessions = \Stripe\Checkout\Session::all(array('payment_intent' => $pi_id, 'limit' => 1));
+        foreach ($sessions->data as $s) { $txids[] = $s->id; }
+    } catch (Exception $e) {
+        payment_log("[refund:{$pi_id}] session lookup failed: " . $e->getMessage());
+    }
+    $in = array();
+    foreach ($txids as $t) { $in[] = '"' . $db->real_escape_string($t) . '"'; }
+    $inClause = implode(',', $in);
+
+    $summary = array();
+
+    // Dues — collect the affected members before flipping the flag so we can
+    // re-check their standing afterwards.
+    $uids = array();
+    $r = $db->query('SELECT DISTINCT uid FROM dues_payments WHERE txid IN (' . $inClause . ') AND refunded = 0');
+    if ($r) { while ($x = $r->fetch_assoc()) { $uids[] = $x['uid']; } }
+    if ($uids) {
+        $db->query('UPDATE dues_payments SET refunded = 1, refunded_at = NOW() WHERE txid IN (' . $inClause . ') AND refunded = 0');
+        $summary[] = count($uids) . ' member(s) dues';
+    }
+
+    // Donations.
+    $db->query('UPDATE donations SET refunded = 1, refunded_at = NOW() WHERE txid IN (' . $inClause . ') AND refunded = 0');
+    if ($db->affected_rows > 0) { $summary[] = $db->affected_rows . ' donation(s)'; }
+
+    // Merch orders (linked to the tx through printful_order_tx).
+    $oids = array();
+    $r = $db->query('SELECT printful_order_id FROM printful_order_tx WHERE txid IN (' . $inClause . ')');
+    if ($r) { while ($x = $r->fetch_assoc()) { $oids[] = '"' . $db->real_escape_string($x['printful_order_id']) . '"'; } }
+    if ($oids) {
+        $db->query('UPDATE printful_order SET refunded = 1, refunded_at = NOW() WHERE order_id IN (' . implode(',', $oids) . ') AND refunded = 0');
+        if ($db->affected_rows > 0) { $summary[] = $db->affected_rows . ' merch order(s)'; }
+    }
+
+    // Strip Good Standing from anyone the refund pushed out of standing.
+    foreach ($uids as $uid) {
+        if ($untrobotics->is_user_in_good_standing($uid)) { continue; }
+        $u = $db->query('SELECT discord_id, name FROM users WHERE id = "' . $db->real_escape_string($uid) . '" LIMIT 1');
+        if ($u && $u->num_rows) {
+            $ur = $u->fetch_assoc();
+            if (!empty($ur['discord_id'])) {
+                try {
+                    AdminBot::remove_user_role($ur['discord_id']);
+                    payment_log("[refund:{$pi_id}] Removed Good Standing role from uid {$uid} ({$ur['name']})");
+                } catch (Exception $e) {
+                    payment_log("[refund:{$pi_id}] FAILED to remove role from uid {$uid}: " . $e->getMessage());
+                    AdminBot::send_message("(Stripe) Refund: could not remove Good Standing role from {$ur['name']} (uid {$uid}); remove manually.");
+                }
+            }
+        }
+    }
+
+    $msg = empty($summary) ? 'no matching records found' : implode(', ', $summary);
+    payment_log("[refund:{$pi_id}] {$reason} — reversed: {$msg}");
+    AdminBot::send_message("(Stripe) {$reason} for PI {$pi_id} — reversed: {$msg}.");
+}
+
+if ($event->type === 'charge.refunded' || $event->type === 'charge.dispute.created') {
+    try {
+        $obj = $event->data->object;
+        // charge.refunded -> a Charge (has payment_intent); dispute -> a Dispute
+        // (also has payment_intent).
+        $pi_id = isset($obj->payment_intent) ? $obj->payment_intent : null;
+        if ($pi_id) {
+            process_stripe_refund($pi_id, $event->type === 'charge.refunded' ? 'Refund' : 'Dispute/chargeback');
+        } else {
+            payment_log("[stripe] {$event->type} with no payment_intent; skipped");
+        }
+        http_response_code(200);
+        echo json_encode(array('received' => true));
+    } catch (Exception $ex) {
+        payment_log("[stripe] ERROR processing {$event->type}: " . $ex);
+        AdminBot::send_message("(Stripe) Exception processing {$event->type}: " . $ex->getMessage());
+        http_response_code(500);
+        echo json_encode(array('received' => false, 'note' => 'retry'));
+    }
+    die();
+}
+
 // Inline Express Checkout Element (Apple Pay / Google Pay / Link) fulfils via
 // the PaymentIntent directly. A Checkout Session's own PI has no source/custom
 // metadata (that lives on the session), so it's skipped here and handled by the

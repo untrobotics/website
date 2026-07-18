@@ -23,12 +23,12 @@ $good_standing = $untrobotics->is_user_in_good_standing($userinfo);
 
 // Dues payment history for this user.
 $dues_history = array();
-$dq = $db->query('SELECT amount, dues_term, dues_year, payment_timestamp FROM dues_payments WHERE uid = "' . $db->real_escape_string($userinfo['id']) . '" ORDER BY payment_timestamp DESC');
+$dq = $db->query('SELECT amount, dues_term, dues_year, payment_timestamp, refunded FROM dues_payments WHERE uid = "' . $db->real_escape_string($userinfo['id']) . '" ORDER BY payment_timestamp DESC');
 if ($dq) { while ($r = $dq->fetch_assoc()) { $dues_history[] = $r; } }
 
 // Merch/Printful order history for this user (uid was added to printful_order).
 $order_history = array();
-$oq = $db->query('SELECT order_id, order_name, order_variant_name, confirmed FROM printful_order WHERE uid = "' . $db->real_escape_string($userinfo['id']) . '" ORDER BY id DESC');
+$oq = $db->query('SELECT order_id, order_name, order_variant_name, confirmed, refunded FROM printful_order WHERE uid = "' . $db->real_escape_string($userinfo['id']) . '" ORDER BY id DESC');
 if ($oq) { while ($r = $oq->fetch_assoc()) { $order_history[] = $r; } }
 
 // Discord OAuth authorize URL (the /auth/discord callback consumes ?code).
@@ -202,10 +202,10 @@ function dues_term_label($term, $year) {
                                         <thead><tr><th>Date</th><th>Semester</th><th class="text-right">Amount</th></tr></thead>
                                         <tbody>
                                         <?php foreach ($dues_history as $d): ?>
-                                            <tr>
+                                            <tr<?php echo !empty($d['refunded']) ? ' class="text-gray"' : ''; ?>>
                                                 <td><?php echo e(date('M j, Y', strtotime($d['payment_timestamp']))); ?></td>
                                                 <td><?php echo e(dues_term_label($d['dues_term'], $d['dues_year'])); ?></td>
-                                                <td class="text-right">$<?php echo e(number_format((float)$d['amount'], 2)); ?></td>
+                                                <td class="text-right"><?php if (!empty($d['refunded'])): ?><span style="text-decoration:line-through;">$<?php echo e(number_format((float)$d['amount'], 2)); ?></span> <span class="label label-warning">Refunded</span><?php else: ?>$<?php echo e(number_format((float)$d['amount'], 2)); ?><?php endif; ?></td>
                                             </tr>
                                         <?php endforeach; ?>
                                         </tbody>
@@ -227,10 +227,10 @@ function dues_term_label($term, $year) {
                                         <thead><tr><th>Item</th><th>Order #</th><th class="text-right">Status</th></tr></thead>
                                         <tbody>
                                         <?php foreach ($order_history as $o): ?>
-                                            <tr>
+                                            <tr<?php echo !empty($o['refunded']) ? ' class="text-gray"' : ''; ?>>
                                                 <td><?php echo e($o['order_variant_name'] ?: $o['order_name']); ?></td>
                                                 <td><?php echo e($o['order_id']); ?></td>
-                                                <td class="text-right"><?php echo $o['confirmed'] ? '<span style="color:#24c57c;">Confirmed</span>' : '<span class="text-gray">Pending</span>'; ?></td>
+                                                <td class="text-right"><?php echo !empty($o['refunded']) ? '<span class="label label-warning">Refunded</span>' : ($o['confirmed'] ? '<span style="color:#24c57c;">Confirmed</span>' : '<span class="text-gray">Pending</span>'); ?></td>
                                             </tr>
                                         <?php endforeach; ?>
                                         </tbody>

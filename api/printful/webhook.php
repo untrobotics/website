@@ -7,6 +7,20 @@ function webhook_log($message) {
 	file_put_contents(BASE . '/admin/logging/printful-webhook.log', '[' . date('c', time()) . '] ' . $message . PHP_EOL, FILE_APPEND);
 }
 
+// Shared-secret verification. Printful does not HMAC-sign webhooks, so we gate on
+// a secret carried in the webhook URL (?secret=...). Enforcement turns on only
+// once PRINTFUL_WEBHOOK_SECRET is set, so this can't break an existing webhook:
+// add the secret to the Printful dashboard URL first, confirm delivery still
+// works, then set PRINTFUL_WEBHOOK_SECRET to require it.
+if (defined('PRINTFUL_WEBHOOK_SECRET') && PRINTFUL_WEBHOOK_SECRET !== '') {
+	$provided = isset($_GET['secret']) ? $_GET['secret'] : '';
+	if (!is_string($provided) || !hash_equals(PRINTFUL_WEBHOOK_SECRET, $provided)) {
+		http_response_code(403);
+		webhook_log('Rejected webhook: bad or missing secret from ' . (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '?'));
+		die();
+	}
+}
+
 $raw_data = file_get_contents('php://input');
 $data = json_decode($raw_data);
 

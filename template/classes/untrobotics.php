@@ -60,7 +60,8 @@ class untrobotics {
 			WHERE
 				uid = "' . $this->db->real_escape_string($uid) . '" AND
 				dues_term = "' . $this->get_current_term() . '" AND
-				dues_year = "' . $this->get_current_year() . '"
+				dues_year = "' . $this->get_current_year() . '" AND
+				refunded = 0
 			');
 		
 		if (!$q) {
