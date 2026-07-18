@@ -28,7 +28,7 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
                     #donation-amount { flex: 1; width: 100%; border: 0; outline: 0; background: transparent; padding: 0; font-size: 22px; font-weight: 600; color: #1f1f1f; -moz-appearance: textfield; }
                     #donation-amount::-webkit-outer-spin-button,
                     #donation-amount::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-                    #stripe-donate-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 48px; border: 0; border-radius: 4px; background: #635bff; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s; }
+                    #stripe-donate-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; border: 0; border-radius: 6px; background: #635bff; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s; }
                     #stripe-donate-button:hover { background: #544dff; }
                     #stripe-donate-button:disabled { opacity: .6; cursor: default; }
                     .stripe-note { text-align: center; font-size: 11px; color: #9aa0a6; margin-top: 6px; }

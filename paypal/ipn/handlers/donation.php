@@ -23,6 +23,14 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
         return;
     }
 
+    // Idempotency: a retry re-running this handler must not record the donation
+    // twice (donations.txid is UNIQUE, but skip cleanly rather than erroring).
+    $dup = $db->query('SELECT id FROM donations WHERE txid = "' . $db->real_escape_string($txid) . '" LIMIT 1');
+    if ($dup && $dup->num_rows > 0) {
+        payment_log("[{$txid}] Donation already recorded for this tx; skipping.");
+        return;
+    }
+
     $q = $db->query('INSERT INTO donations (name, email, amount, fee, txid)
         VALUES (
             "' . $db->real_escape_string($name) . '",

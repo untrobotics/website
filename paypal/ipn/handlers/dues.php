@@ -91,6 +91,14 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
             throw new IPNHandlerException("[{$payment_info->txn_id}]: Amount paid did not match the expected amount ({$amount_paid} vs {$expected_amount})");
         }
 
+        // Idempotency: if a retry re-runs this handler after dues rows were
+        // already written for this tx, don't record the payment (and shirt) twice.
+        $dup = $db->query('SELECT id FROM dues_payments WHERE txid = "' . $db->real_escape_string($txid) . '" LIMIT 1');
+        if ($dup && $dup->num_rows > 0) {
+            payment_log("[{$payment_info->txn_id}] Dues already recorded for this tx; skipping re-fulfilment.");
+            return;
+        }
+
 	    foreach ($paid_for_terms as $term) {
             $q = $db->query('INSERT INTO dues_payments (name, email, euid, amount, fee, txid, dues_term, dues_year, uid)
             VALUES (

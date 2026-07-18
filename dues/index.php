@@ -67,7 +67,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
     /* Payment buttons all share one centred column width so they tessellate. */
     #express-checkout-element:empty { display: none; }
     .dues-payment-button { display: block !important; width: 100%; max-width: 400px; margin: 0 auto 10px; }
-    #stripe-pay-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; max-width: 400px; margin: 0 auto; height: 46px; border: 0; border-radius: 4px; background: #635bff; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
+    #stripe-pay-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; max-width: 400px; margin: 0 auto; height: 46px; border: 0; border-radius: 6px; background: #635bff; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
     .stripe-note { text-align: center; font-size: 11px; color: #9aa0a6; margin: 6px auto 0; max-width: 400px; }
     #stripe-pay-button:hover { background: #544dff; }
     #applepay-redirect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; max-width: 400px; height: 46px; margin: 0 auto 10px; border: 0; border-radius: 6px; background: #000; color: #fff; font-size: 18px; font-weight: 500; cursor: pointer; }

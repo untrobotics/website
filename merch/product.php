@@ -108,6 +108,7 @@ if ($product_can_be_handled) {
 		$variants_js[$variant->get_product()->get_variant_id()] = array(
 			'sync' => (string) $variant->get_id(),
 			'gallery' => $build_gallery($variant),
+			'price' => $variant->get_price(),
 		);
 	}
 	$default_catalog_variant_id = $selected_variant->get_product()->get_variant_id();
@@ -300,11 +301,11 @@ function get_variant_variant($variant_name) {
 		.size-btn:hover { border-color: #1f1f1f; }
 		.size-btn.is-active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
 		.size-btn:disabled { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
-		.pay-buttons { max-width: 440px; }
+		.pay-buttons { max-width: 400px; }
 		.pay-buttons #express-checkout-element:empty { display: none; }
 		.pay-buttons #paypal-button-container { margin-top: 10px; }
 		.pay-buttons .offset-top-10 { margin-top: 10px; }
-		.pay-buttons #stripe-pay-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; margin: 0; border: 0; border-radius: 4px; background: #635bff; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
+		.pay-buttons #stripe-pay-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 46px; margin: 0; border: 0; border-radius: 6px; background: #635bff; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; }
 		.pay-buttons .stripe-note { text-align: center; font-size: 11px; color: #9aa0a6; margin-top: 6px; }
 		.pay-buttons #applepay-redirect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 46px; margin-bottom: 10px; border: 0; border-radius: 6px; background: #000; color: #fff; font-size: 18px; font-weight: 500; cursor: pointer; }
 		.pay-buttons #stripe-pay-button:hover { background: #544dff; }
@@ -339,10 +340,10 @@ function get_variant_variant($variant_name) {
 		<div class="range merch-header">
 			<div class="cell-lg-7 cell-md-12">
 				<h1 class="text-center text-lg-left"><?php echo htmlspecialchars($product->get_name()); ?></h1>
-				<div class="product-price"><?php
+				<div class="product-price"><span id="product-price-amount"><?php
 					$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
-					echo $fmt->formatCurrency($product->get_product_price(), $product->get_product_currency());
-					?><small> &amp; <strong>FREE</strong> SHIPPING</small>
+					echo $fmt->formatCurrency($selected_variant->get_price(), $product->get_product_currency());
+					?></span><small> &amp; <strong>FREE</strong> SHIPPING</small>
 				</div>
 			</div>
 			<div class="cell-lg-5 cell-md-12">
@@ -484,8 +485,14 @@ footer(false);
 	(function () {
 		var stripe = window.Stripe ? Stripe('<?php echo htmlspecialchars(STRIPE_PUBLISHABLE_KEY, ENT_QUOTES); ?>') : null;
 		if (!stripe) { return; }
-		var amountCents = <?php echo intval(round($product->get_product_price() * 100)); ?> || 1000;
+		var amountCents = <?php echo intval(round($selected_variant->get_price() * 100)); ?> || 1000;
 		var mElements = stripe.elements({ mode: 'payment', amount: amountCents, currency: 'usd' });
+		// Let the size/colour picker re-price the wallet sheet so Apple/Google Pay
+		// shows the same amount the PaymentIntent will actually charge.
+		window.MERCH_SET_AMOUNT = function (cents) {
+			cents = Math.round(cents);
+			if (cents > 0 && cents !== amountCents) { amountCents = cents; mElements.update({ amount: cents }); }
+		};
 		var ece = mElements.create('expressCheckout', {
 			paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' },
 			shippingAddressRequired: true,
@@ -683,6 +690,12 @@ footer(false);
 		window.MERCH_CURRENT_VARIANT = v.sync;
 		var sb = document.getElementById("stripe-pay-button");
 		if (sb) { sb.setAttribute("data-variant", v.sync); }
+		if (v.price) {
+			var amt = parseFloat(v.price);
+			var priceEl = document.getElementById("product-price-amount");
+			if (priceEl) { priceEl.textContent = "$" + amt.toFixed(2); }
+			if (window.MERCH_SET_AMOUNT) { window.MERCH_SET_AMOUNT(amt * 100); }
+		}
 	}
 	function refreshSizes() {
 		sizeBtns.forEach(function (b) {

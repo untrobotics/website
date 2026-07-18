@@ -26,6 +26,14 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 	
 	// ensure price is positive (if negative, it's a reversal)
 	if ($amount_paid > 0) {
+		// Idempotency: if a retry re-runs this handler after a Printful order was
+		// already placed for this tx, don't create a second order/shipment.
+		$dup = $db->query('SELECT printful_order_id FROM printful_order_tx WHERE txid = "' . $db->real_escape_string($payment_info->txn_id) . '" LIMIT 1');
+		if ($dup && $dup->num_rows > 0) {
+			payment_log("[{$payment_info->txn_id}] Printful order already placed for this tx; skipping re-fulfilment.");
+			return;
+		}
+
 		// get the ID
 		$variant_id = $custom['variant'];
 		

@@ -3,7 +3,7 @@
   <head>
     <title><?php echo $title; ?></title>
     <meta name="format-detection" content="telephone=no">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
     <link rel="icon" href="/favicon.png" type="image/png">
@@ -62,7 +62,6 @@
               <ul class="list-inline list-inline-lg offset-top-0">
 				<li><a href="/events" class="ioon icon-md2 icon-silver-chalice fa-calendar"></a></li>
                 <li><a href="<?php echo SOCIAL_MEDIA_FACEBOOK_URL; ?>" class="ioon icon-md2 icon-silver-chalice fa-facebook"></a></li>
-                <li><a href="<?php echo SOCIAL_MEDIA_TWITTER_URL; ?>" class="ioon icon-md2 icon-silver-chalice fa-twitter"></a></li>
                 <li><a href="<?php echo SOCIAL_MEDIA_INSTAGRAM_URL; ?>" class="ioon icon-md2 icon-silver-chalice fa-instagram"></a></li>
               </ul>
             </div>
@@ -101,7 +100,6 @@
                   <ul class="list-inline list-inline-lg offset-top-0">
 					<li><a href="/events" class="ioon icon-sm icon-silver-chalice fa-calendar"></a></li>
                     <li><a href="<?php echo SOCIAL_MEDIA_FACEBOOK_URL; ?>" class="ioon icon-sm icon-silver-chalice fa-facebook"></a></li>
-                    <li><a href="<?php echo SOCIAL_MEDIA_TWITTER_URL; ?>" class="ioon icon-sm icon-silver-chalice fa-twitter"></a></li>
                     <li><a href="<?php echo SOCIAL_MEDIA_INSTAGRAM_URL; ?>" class="ioon icon-sm icon-silver-chalice fa-instagram"></a></li>
                   </ul>
                 </div>
@@ -161,6 +159,7 @@
                       <!--<li><a href="/botathon/botathon-teams">Teams</a></li>-->
                     </ul>
                   </li>
+                  <li><a href="/sponsorships">Sponsor Us</a></li>
                   <li><a href="/contact">Contact us</a></li>
 			<?php
 			if (count($userinfo)) {

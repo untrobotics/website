@@ -78,6 +78,16 @@ if (!function_exists('already_handled')) {
     }
 }
 
+// Release a claim so a retry can re-run the fulfilment. Used only when the
+// handler failed before completing, so the up-front claim must not permanently
+// block the retry that would actually fulfil the (already-charged) order.
+if (!function_exists('release_tx')) {
+    function release_tx($tx_id) {
+        global $db;
+        $db->query('DELETE FROM handled_ipns WHERE txid = "' . $db->real_escape_string($tx_id) . '"');
+    }
+}
+
 /**
  * Minimal stand-in for the PayPalIPN object the handlers expect. The handlers
  * only ever call getSandbox() on it (to decide whether to actually confirm a
@@ -195,28 +205,42 @@ function process_normalized_payment($gateway, $payment_info, array $custom_obj, 
         return false;
     }
 
-    switch ($source) {
-        case Source::PRINTFUL:
-            payment_log("[{$tx_id}] Handling payment with the PRINTFUL handler");
-            require_once(__DIR__ . '/handlers/printful.php');
-            handled_tx($tx_id, $source);
-            PRINTFUL\handle_payment_notification($gateway, $payment_info, $custom_obj);
-            break;
-        case Source::DUES:
-            payment_log("[{$tx_id}] Handling payment with the DUES handler");
-            require_once(__DIR__ . '/handlers/dues.php');
-            handled_tx($tx_id, $source);
-            DUES\handle_payment_notification($gateway, $payment_info, $custom_obj);
-            break;
-        case Source::DONATION:
-            payment_log("[{$tx_id}] Handling payment with the DONATION handler");
-            require_once(__DIR__ . '/handlers/donation.php');
-            handled_tx($tx_id, $source);
-            DONATION\handle_payment_notification($gateway, $payment_info, $custom_obj);
-            break;
-        default:
-            payment_log("[{$tx_id}] Unhandled payment! Raw source: " . var_export($source, true));
-            throw new IPNHandlerException("[{$tx_id}]: Unknown payment source: " . var_export($source, true));
+    // Reject an unknown source before claiming so we don't record a tx we can't
+    // fulfil.
+    if ($source !== Source::PRINTFUL && $source !== Source::DUES && $source !== Source::DONATION) {
+        payment_log("[{$tx_id}] Unhandled payment! Raw source: " . var_export($source, true));
+        throw new IPNHandlerException("[{$tx_id}]: Unknown payment source: " . var_export($source, true));
+    }
+
+    // Claim the tx up-front: handled_ipns.txid is UNIQUE, so this is an atomic
+    // mutex that stops two concurrent deliveries of the same payment from both
+    // fulfilling. If the handler then fails, we RELEASE the claim and rethrow so
+    // the caller returns a non-2xx and the gateway's retry can fulfil the order
+    // — the handlers below are idempotent by txid, so a retry never double-fulfils.
+    handled_tx($tx_id, $source);
+
+    try {
+        switch ($source) {
+            case Source::PRINTFUL:
+                payment_log("[{$tx_id}] Handling payment with the PRINTFUL handler");
+                require_once(__DIR__ . '/handlers/printful.php');
+                PRINTFUL\handle_payment_notification($gateway, $payment_info, $custom_obj);
+                break;
+            case Source::DUES:
+                payment_log("[{$tx_id}] Handling payment with the DUES handler");
+                require_once(__DIR__ . '/handlers/dues.php');
+                DUES\handle_payment_notification($gateway, $payment_info, $custom_obj);
+                break;
+            case Source::DONATION:
+                payment_log("[{$tx_id}] Handling payment with the DONATION handler");
+                require_once(__DIR__ . '/handlers/donation.php');
+                DONATION\handle_payment_notification($gateway, $payment_info, $custom_obj);
+                break;
+        }
+    } catch (\Throwable $e) {
+        release_tx($tx_id);
+        payment_log("[{$tx_id}] Handler failed, released claim for retry: " . $e->getMessage());
+        throw $e;
     }
 
     return true;
