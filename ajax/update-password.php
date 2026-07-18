@@ -40,8 +40,7 @@ if ($new === $current) {
 
 $hash = password_hash($new, PASSWORD_BCRYPT, array('cost' => 12));
 $q = $db->query('UPDATE users SET
-        password = "' . $db->real_escape_string($hash) . '",
-        reg_timestamp = reg_timestamp
+        password = "' . $db->real_escape_string($hash) . '"
     WHERE id = "' . $db->real_escape_string($uid) . '"');
 
 if ($q) {

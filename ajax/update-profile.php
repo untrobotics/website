@@ -61,8 +61,6 @@ if ($er && $er->num_rows > 0) {
     respond(false, 'That email address is already in use by another account.');
 }
 
-// reg_timestamp = reg_timestamp prevents the column's ON UPDATE CURRENT_TIMESTAMP
-// from resetting the "member since" date on every edit.
 $q = $db->query('UPDATE users SET
         name = "' . $db->real_escape_string($name) . '",
         email = "' . $db->real_escape_string($email) . '",
@@ -70,8 +68,7 @@ $q = $db->query('UPDATE users SET
         grad_term = "' . $db->real_escape_string($grad_term) . '",
         grad_year = "' . $db->real_escape_string($grad_year) . '",
         timezone = "' . $db->real_escape_string($timezone) . '",
-        sms_consent = ' . intval($sms_consent) . ',
-        reg_timestamp = reg_timestamp
+        sms_consent = ' . intval($sms_consent) . '
     WHERE id = "' . $db->real_escape_string($uid) . '"');
 
 if ($q) {
