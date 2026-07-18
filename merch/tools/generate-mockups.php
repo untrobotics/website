@@ -84,15 +84,35 @@ function canon_view($label) {
     return null;
 }
 
-// colour + size out of "<product> / <colour> / <size>" (or "<product> / <size>")
-function split_variant($product_name, $variant_name) {
-    $label = trim(str_ireplace($product_name, '', $variant_name), " /-\t");
-    $parts = array_map('trim', explode(' / ', $label));
-    if (count($parts) >= 2) {
-        $size = array_pop($parts);
-        return array(implode(' / ', $parts), $size);
+// Deduped catalog colour name, matching merch/product.php's lookup key exactly
+// ("Black / Charcoal gray / Charcoal gray" -> "Black / Charcoal gray"). The
+// mockups.json key MUST equal what product.php derives from the catalog `color`
+// field, or the angles won't resolve on the page.
+function clean_colour($colour) {
+    $colour = trim((string) $colour);
+    if (strpos($colour, '/') === false) {
+        return $colour;
     }
-    return array('', $label);
+    $segs = array_map('trim', explode('/', $colour));
+    $clean = array();
+    foreach ($segs as $seg) {
+        if ($seg !== '' && (empty($clean) || end($clean) !== $seg)) {
+            $clean[] = $seg;
+        }
+    }
+    return implode(' / ', $clean);
+}
+
+// variant_id -> deduped catalog colour, from the catalog product endpoint.
+function catalog_colours($key, $catalog_product_id) {
+    list($code, $data) = printful($key, 'GET', "products/$catalog_product_id");
+    $out = array();
+    if ($code === 200 && !empty($data['result']['variants'])) {
+        foreach ($data['result']['variants'] as $v) {
+            $out[$v['id']] = clean_colour(isset($v['color']) ? $v['color'] : '');
+        }
+    }
+    return $out;
 }
 
 $map = array();
@@ -131,14 +151,17 @@ foreach ($ids as $store_id) {
         }
     }
 
-    // one representative variant per colour
+    // one representative variant per colour, keyed by the catalog colour so the
+    // mockups.json key matches merch/product.php's lookup.
+    $cat_colour = catalog_colours($api_key, $catalog_product);
     $by_colour = array();
     $colour_of = array();
     foreach ($result['sync_variants'] as $sv) {
-        list($colour) = split_variant($store_name, $sv['name']);
+        $vid = $sv['product']['variant_id'];
+        $colour = isset($cat_colour[$vid]) ? $cat_colour[$vid] : '';
         if (!isset($by_colour[$colour])) {
             $by_colour[$colour] = $sv;
-            $colour_of[$sv['product']['variant_id']] = $colour;
+            $colour_of[$vid] = $colour;
         }
     }
 
@@ -175,8 +198,21 @@ foreach ($ids as $store_id) {
             if ($f['type'] === 'preview' || empty($f['preview_url'])) {
                 continue;
             }
-            $placement = isset($placement_alias[$f['type']]) ? $placement_alias[$f['type']] : $f['type'];
-            if (!isset($placement_file[$placement]) || !isset($area[$placement_file[$placement]])) {
+            // Map the sync file type to one of this variant's placement keys. The
+            // keys vary by product (plain "front"/"back" for prints,
+            // "embroidery_front_large"/"embroidery_back" for embroidery), so match
+            // on the side ("front"/"back"/"left"/"right") rather than an exact key.
+            $side = isset($placement_alias[$f['type']]) ? $placement_alias[$f['type']] : $f['type'];
+            $placement = null;
+            if (isset($placement_file[$side])) {
+                $placement = $side;
+            } else {
+                foreach ($placement_file as $pk => $pid) {
+                    if (strpos($pk, 'addon') !== false) { continue; }
+                    if (strpos($pk, $side) !== false) { $placement = $pk; break; }
+                }
+            }
+            if ($placement === null || !isset($placement_file[$placement]) || !isset($area[$placement_file[$placement]])) {
                 continue;
             }
             list($aw, $ah) = $area[$placement_file[$placement]];

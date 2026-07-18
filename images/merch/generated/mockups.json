@@ -60,5 +60,35 @@
                 "path": "/images/merch/generated/unt-robotics-aerospace-shirt-default-right.jpg"
             }
         ]
+    },
+    "5f5a8f462d3964": {
+        "Kelly green": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/unt-robotics-snapback-front-back-logo-hat-kelly-green-back.jpg"
+            }
+        ],
+        "Black / Charcoal gray": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/unt-robotics-snapback-front-back-logo-hat-black-charcoal-gray-back.jpg"
+            }
+        ]
+    },
+    "6709f06a911e33": {
+        "White": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/unt-robotics-jersey-shirt-white-back.jpg"
+            },
+            {
+                "view": "right",
+                "path": "/images/merch/generated/unt-robotics-jersey-shirt-white-right.jpg"
+            },
+            {
+                "view": "left",
+                "path": "/images/merch/generated/unt-robotics-jersey-shirt-white-left.jpg"
+            }
+        ]
     }
 }
