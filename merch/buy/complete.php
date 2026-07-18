@@ -140,6 +140,22 @@ if (isset($_GET['tx'])) {
 	$valid_pdt = validate_pdt($_GET['tx']);
 }
 
+// Stripe Express Checkout Element (Apple Pay / Google Pay) returns here with
+// ?payment_intent=...&redirect_status=succeeded. Fulfilment is handled by the
+// webhook; this page just confirms the payment to the buyer.
+$stripe_pi = null;
+$stripe_status = null;
+if (isset($_GET['payment_intent'])) {
+	require_once(BASE . '/api/stripe/vendor/autoload.php');
+	\Stripe\Stripe::setApiKey(STRIPE_SECRET_KEY);
+	try {
+		$stripe_pi = \Stripe\PaymentIntent::retrieve($_GET['payment_intent']);
+		$stripe_status = $stripe_pi->status;
+	} catch (Exception $e) {
+		$stripe_pi = null;
+	}
+}
+
 //$pdt = new PayPalPDT($_POST);
 ?>
 <style>
@@ -163,7 +179,44 @@ if (isset($_GET['tx'])) {
               <div class="cell-md-12">
                 <div class="inset-md-right-30 inset-lg-right-0 text-center">
 					<?php
-					if ($valid_pdt !== false) {
+					if ($stripe_pi && $stripe_status === 'succeeded') {
+						$s_item = isset($stripe_pi->metadata['item_name']) ? $stripe_pi->metadata['item_name'] : 'your order';
+						$s_amount = number_format($stripe_pi->amount / 100, 2);
+						$s_ship = $stripe_pi->shipping;
+						?>
+					<h1>Merch Ordered!</h1>
+					<h4>Thank you for your order.</h4>
+					<div>
+						<p>Your payment was successful. You&rsquo;ll receive an e-mail receipt shortly, and a tracking number once your order ships.</p>
+					</div>
+					<div class="payment-information offset-top-20">
+						<h5>Order Information</h5>
+						<div class="payment-information-container">
+							<ul>
+								<li><strong>Item</strong>: <?php echo htmlspecialchars($s_item); ?></li>
+								<li><strong>Payment Amount</strong>: $<?php echo htmlspecialchars($s_amount); ?></li>
+							</ul>
+						</div>
+						<?php if ($s_ship && isset($s_ship->address)) { ?>
+						<h5 class="offset-top-10">Shipping Address</h5>
+						<div class="payment-information-container">
+							<p><strong><?php echo htmlspecialchars($s_ship->name); ?></strong></p>
+							<p><?php echo htmlspecialchars($s_ship->address->line1); ?><?php echo $s_ship->address->line2 ? ', ' . htmlspecialchars($s_ship->address->line2) : ''; ?></p>
+							<p><?php echo htmlspecialchars($s_ship->address->city); ?>, <?php echo htmlspecialchars($s_ship->address->state); ?> <?php echo htmlspecialchars($s_ship->address->postal_code); ?></p>
+							<p><?php echo htmlspecialchars($s_ship->address->country); ?></p>
+						</div>
+						<?php } ?>
+					</div>
+						<?php
+					} elseif ($stripe_pi) {
+						?>
+					<h1>Payment Processing</h1>
+					<h4>Your payment is being processed.</h4>
+					<div>
+						<p>This can take a moment. You&rsquo;ll receive an e-mail receipt once it completes &mdash; no need to pay again. If you don&rsquo;t hear from us, contact <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a>.</p>
+					</div>
+						<?php
+					} elseif ($valid_pdt !== false) {
 						$pdt = $valid_pdt;
 						?>
                   <h1>Merch Ordered!</h1>
