@@ -136,26 +136,43 @@ if ($product_can_be_handled) {
 		}
 		return $images;
 	};
-	$split_label = function ($name) use ($product) {
-		$label = trim(str_ireplace($product->get_name(), '', $name), " /-");
-		$parts = array_map('trim', explode(' / ', $label));
-		if (count($parts) >= 2) { $size = array_pop($parts); return array(implode(' / ', $parts), $size); }
-		return array('', $label);
-	};
+	// Read colour/size from Printful's authoritative per-variant `color` and
+	// `size` fields, keyed by catalog variant id. Parsing the sync-variant name
+	// is unreliable: one-size products (hats, bags) carry no size, and multi-
+	// panel colour names contain slashes (e.g. "Black / Charcoal gray / Charcoal
+	// gray") that a "/" split mistakes for a colour/size divider.
+	$cat_lookup = array();
+	foreach ($catalog_product->get_variants() as $cv) {
+		$colour = trim((string) $cv->get_colour_name());
+		// Collapse consecutive repeated panel colours for a cleaner label:
+		// "Black / Charcoal gray / Charcoal gray" -> "Black / Charcoal gray".
+		if (strpos($colour, '/') !== false) {
+			$segs = array_map('trim', explode('/', $colour));
+			$clean = array();
+			foreach ($segs as $seg) { if ($seg !== '' && (empty($clean) || end($clean) !== $seg)) { $clean[] = $seg; } }
+			$colour = implode(' / ', $clean);
+		}
+		$cat_lookup[$cv->get_id()] = array('colour' => $colour, 'size' => trim((string) $cv->get_size()), 'code' => $cv->get_colour_code());
+	}
 	foreach ($product->get_variants() as $variant) {
 		$cat = $variant->get_product()->get_variant_id();
-		list($colour, $size) = $split_label($variant->get_name());
-		$code = null;
-		foreach ($catalog_product->get_variants() as $cv) { if ($cv->get_id() == $cat) { $code = $cv->get_colour_code(); break; } }
-		if ($colour !== '' && !isset($variant_colours[$colour])) { $variant_colours[$colour] = $code; }
-		if (!isset($variant_sizes[$size])) { $lc = strtolower($size); $variant_sizes[$size] = is_numeric($size) ? (100 + floatval($size)) : (isset($size_rank[$lc]) ? $size_rank[$lc] : 50); }
+		$info = isset($cat_lookup[$cat]) ? $cat_lookup[$cat] : array('colour' => '', 'size' => '', 'code' => null);
+		$colour = $info['colour'];
+		$size = $info['size'];
+		if ($colour !== '' && !isset($variant_colours[$colour])) { $variant_colours[$colour] = $info['code']; }
+		if ($size !== '' && !isset($variant_sizes[$size])) { $lc = strtolower($size); $variant_sizes[$size] = is_numeric($size) ? (100 + floatval($size)) : (isset($size_rank[$lc]) ? $size_rank[$lc] : 50); }
 		$variant_combo[$colour . '|' . $size] = (string) $cat;
 		$variants_js[$cat]['colour'] = $colour;
 		$variants_js[$cat]['size'] = $size;
 		$variants_js[$cat]['gallery'] = $apply_generated_mockups($variants_js[$cat]['gallery'], $colour);
 	}
 	asort($variant_sizes);
-	list($default_colour, $default_size) = $split_label($selected_variant->get_name());
+	// A single size (e.g. "One size") is not a real choice — hide the size picker
+	// but keep the value so the colour|size combo lookup still resolves.
+	$has_size_axis = count($variant_sizes) > 1;
+	$default_info = isset($cat_lookup[$default_catalog_variant_id]) ? $cat_lookup[$default_catalog_variant_id] : array('colour' => '', 'size' => '');
+	$default_colour = $default_info['colour'];
+	$default_size = $default_info['size'];
 	$gallery = $apply_generated_mockups($gallery, $default_colour);
 	
 	head("Buy {$product->get_name()}", true);
@@ -359,6 +376,7 @@ function get_variant_variant($variant_name) {
 								</div>
 							</div>
 							<?php } ?>
+							<?php if ($has_size_axis) { ?>
 							<div class="variant-picker">
 								<div class="variant-picker-label">Size</div>
 								<div class="size-buttons" id="size-buttons">
@@ -367,6 +385,7 @@ function get_variant_variant($variant_name) {
 									<?php } ?>
 								</div>
 							</div>
+							<?php } ?>
 							<div class="offset-top-20 pay-buttons">
 								<?php
 									// PayPal Smart Buttons (Orders v2) render here. The price is

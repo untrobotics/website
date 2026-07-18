@@ -484,11 +484,15 @@ class PrintfulCatalogVariantVariant {
     private $id;
     private $colour_code;
     private $colour_code2;
+    private $colour_name;
+    private $size;
 
     public function __construct($object) {
         $this->id = $object->id;
         $this->colour_code = $object->color_code;
         $this->colour_code2 = $object->color_code2;
+        $this->colour_name = property_exists($object, 'color') ? $object->color : '';
+        $this->size = property_exists($object, 'size') ? $object->size : '';
     }
 
     public function get_id() {
@@ -499,6 +503,12 @@ class PrintfulCatalogVariantVariant {
     }
     public function get_secondary_colour_code() {
         return $this->colour_code2;
+    }
+    public function get_colour_name() {
+        return $this->colour_name;
+    }
+    public function get_size() {
+        return $this->size;
     }
 }
 
