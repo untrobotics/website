@@ -139,8 +139,11 @@ if ($event->type === 'payment_intent.succeeded') {
     } catch (Exception $ex) {
         payment_log("[stripe] ERROR processing payment_intent webhook: " . $ex);
         AdminBot::send_message("(Stripe) Exception while processing payment_intent webhook: " . $ex->getMessage());
-        http_response_code(200);
-        echo json_encode(array('received' => true, 'note' => 'logged'));
+        // Return 5xx so Stripe retries — the handler released its claim, and the
+        // handlers are idempotent by txid, so a retry fulfils exactly once rather
+        // than leaving the buyer charged with no order.
+        http_response_code(500);
+        echo json_encode(array('received' => false, 'note' => 'retry'));
     }
     die();
 }
@@ -269,11 +272,11 @@ try {
     http_response_code(200);
     echo json_encode(array('received' => true));
 } catch (Exception $ex) {
-    // The tx is already recorded in handled_ipns before the handler runs, so a
-    // Stripe retry will be a no-op. Acknowledge with 200 and alert the admins,
-    // matching the PayPal IPN's catch-and-alert behavior.
+    // Handler failed and released its claim; return 5xx so Stripe retries. The
+    // handlers are idempotent by txid, so the retry fulfils exactly once instead
+    // of leaving the buyer charged with no order.
     payment_log("[stripe] ERROR processing webhook: " . $ex);
     AdminBot::send_message("(Stripe) Exception while processing webhook: " . $ex->getMessage());
-    http_response_code(200);
-    echo json_encode(array('received' => true, 'note' => 'logged'));
+    http_response_code(500);
+    echo json_encode(array('received' => false, 'note' => 'retry'));
 }
