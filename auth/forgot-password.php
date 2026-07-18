@@ -19,8 +19,8 @@ if (isset($_POST['email'])) {
             $reset_token = bin2hex(random_bytes(40));
             $uid = $r['id'];
             $expires = date('Y-m-d H:i:s', strtotime("+2 days"));
-            $ip = $_SERVER['REMOTE_ADDR'];
-            $host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+            $ip = $db->real_escape_string($_SERVER['REMOTE_ADDR']);
+            $host = $db->real_escape_string(gethostbyaddr($_SERVER['REMOTE_ADDR']));
 
             // delete any previous tokens
             $db->query("DELETE FROM password_reset_tokens WHERE uid = '" . $db->real_escape_string($uid) . "'");

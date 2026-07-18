@@ -35,7 +35,6 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 
     $tshirt_size = $custom['include-tshirt'];
     $is_tshirt_included = !empty($custom['include-tshirt']) && $custom['include-tshirt'] != false;
-    var_dump($custom, $is_tshirt_included);
 
     $paid_for_terms = array();
 
@@ -199,7 +198,6 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
             }
             AdminBot::send_message("Amount received in dues so far this academic year: \${$sum}");
 
-            var_dump($is_tshirt_included);
             // process t-shirt order
             if ($is_tshirt_included) {
                 AdminBot::send_message("Processing T-shirt order with this dues payment: @{$tshirt_size}");

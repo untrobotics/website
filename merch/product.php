@@ -70,20 +70,29 @@ if ($product_can_be_handled) {
 	// returns; its other files are flat print artwork. Take the preview here
 	// and append back/side angles from the generated mockups further down.
 	$build_gallery = function ($variant) {
-		$images = array();
-		$seen = array();
-		foreach ($variant->get_files() as $file) {
-			if ($file->get_type() !== 'preview') { continue; }
-			$preview = $file->get_preview_url();
-			if (empty($preview) || isset($seen[$preview])) { continue; }
-			$seen[$preview] = true;
-			$images[] = array(
-				'preview' => $preview,
-				'full' => $file->get_url() ? $file->get_url() : $preview,
-				'thumb' => $file->get_thumbnail_url() ? $file->get_thumbnail_url() : $preview,
-				'type' => 'preview',
-			);
-		}
+		$collect = function ($types) use ($variant) {
+			$images = array();
+			$seen = array();
+			foreach ($variant->get_files() as $file) {
+				if (!in_array($file->get_type(), $types, true)) { continue; }
+				$preview = $file->get_preview_url();
+				if (empty($preview) || isset($seen[$preview])) { continue; }
+				$seen[$preview] = true;
+				$images[] = array(
+					'preview' => $preview,
+					'full' => $file->get_url() ? $file->get_url() : $preview,
+					'thumb' => $file->get_thumbnail_url() ? $file->get_thumbnail_url() : $preview,
+					'type' => $file->get_type(),
+				);
+			}
+			return $images;
+		};
+		// Printful's "preview" is the wearable garment shot; its other files are
+		// flat print artwork, so prefer preview. But some products (e.g. the Under
+		// Armour backpack) ship no preview file at all — fall back to their real
+		// product photos in mockup/default so the page is never imageless.
+		$images = $collect(array('preview'));
+		if (empty($images)) { $images = $collect(array('mockup', 'default')); }
 		return $images;
 	};
 	$gallery = $build_gallery($selected_variant);

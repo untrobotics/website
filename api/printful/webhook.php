@@ -84,7 +84,7 @@ try {
 			// check if the shipment notification has already been sent!
             $retry = false;
 
-			$q = $db->query("SELECT * FROM printful_shipment WHERE shipment_id = " . $db->real_escape_string($shipment_id));
+			$q = $db->query("SELECT * FROM printful_shipment WHERE shipment_id = " . (int) $shipment_id);
 			if (!$q) {
 				webhook_log("[{$log_prefix}] Failed to check if shipment was already processed, returned error: {$db->error}.");
 				throw new PrintfulWebhookException("Failed to check if shipment was already processed for order #{$printful_event->get_order()->get_id()}.");
