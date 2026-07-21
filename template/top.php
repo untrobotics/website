@@ -171,7 +171,45 @@ function notify_brevo_failure($detail) {
     }
 }
 
-function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array(), $branded = true) {
+// --- Brevo free-plan daily send budget ---------------------------------------
+// Every successful Brevo send bumps a per-day counter; the newsletter drip sender
+// reads it so it never sends past DAILY_LIMIT - TRANSACTIONAL_RESERVE, leaving the
+// reserve as headroom that transactional email always has on Brevo.
+function brevo_record_send() {
+    global $db;
+    $db->query('INSERT INTO brevo_daily_sends (send_date, sent) VALUES (CURDATE(), 1) ON DUPLICATE KEY UPDATE sent = sent + 1');
+}
+function brevo_sent_today() {
+    global $db;
+    $q = $db->query('SELECT sent FROM brevo_daily_sends WHERE send_date = CURDATE()');
+    if ($q && $q->num_rows > 0) { $r = $q->fetch_assoc(); return (int) $r['sent']; }
+    return 0;
+}
+// How many newsletter emails may still go out today without eating the reserve.
+function brevo_newsletter_remaining_today() {
+    $limit = defined('BREVO_DAILY_LIMIT') ? BREVO_DAILY_LIMIT : 300;
+    $reserve = defined('BREVO_TRANSACTIONAL_RESERVE') ? BREVO_TRANSACTIONAL_RESERVE : 50;
+    return max(0, $limit - $reserve - brevo_sent_today());
+}
+
+// One-click unsubscribe token (HMAC of the email, no per-row storage needed).
+function newsletter_unsub_token($email) {
+    $secret = defined('INTERNAL_EMAIL_SECRET') ? INTERNAL_EMAIL_SECRET : 'unset';
+    return substr(hash_hmac('sha256', 'newsletter-unsub:' . strtolower(trim($email)), $secret), 0, 32);
+}
+function newsletter_unsub_url($email) {
+    return 'https://' . (defined('WEBSITE_DOMAIN') ? WEBSITE_DOMAIN : 'untrobotics.com')
+        . '/newsletter/unsubscribe?e=' . urlencode($email) . '&t=' . newsletter_unsub_token($email);
+}
+function newsletter_unsub_footer($email) {
+    $url = newsletter_unsub_url($email);
+    return '<hr style="margin-top:28px;border:none;border-top:1px solid #e0e0e0;">'
+        . '<p style="font-size:12px;color:#888;text-align:center;margin-top:12px;">'
+        . 'You are receiving this because you signed up for UNT Robotics updates. '
+        . '<a href="' . htmlspecialchars($url) . '" style="color:#888;">Unsubscribe</a>.</p>';
+}
+
+function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array(), $branded = true, $archive = true) {
     global $db;
     // Outbound now goes through the self-hosted Postfix relay via PHPMailer/SMTP.
     // SendGrid is INBOUND-ingest only (api/sendgrid-inbound/*) and no longer used
@@ -256,7 +294,12 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
             // Keep a filable copy of every outbound email (plus-addressed so it can
             // be filtered/foldered in Gmail).
             $mail->setFrom("no-reply@untrobotics.com", "UNT Robotics");
-            $mail->addBCC("untrobotics+sebastian.thomas.king@gmail.com");
+            // Archive copy of every transactional email. Skipped for bulk newsletter
+            // sends ($archive=false) so we don't double the Brevo send count or flood
+            // the archive at list scale.
+            if ($archive) {
+                $mail->addBCC("untrobotics+sebastian.thomas.king@gmail.com");
+            }
 
             if (is_array($to)) {
                 $mail->addAddress($to[0], isset($to[1]) ? $to[1] : '');
@@ -293,6 +336,7 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
 
             $mail->send();
             $sent = true;
+            if ($t['label'] === 'brevo') { brevo_record_send(); }
             error_log("email(): delivered via {$t['label']}");
             break; // first transport that succeeds wins
         } catch (\Throwable $e) {

@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: send-newsletter
+spec:
+  # Hourly. Each run sends up to the per-run cap and stops once the day's Brevo
+  # budget (limit - transactional reserve) is used, so a large campaign drips out
+  # over successive days. Harmless to run when there's no active campaign.
+  schedule: "0 * * * *"
+  timeZone: America/Chicago
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 900
+      template:
+        spec:
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: ghcr-pull
+          containers:
+            - name: send-newsletter
+              image: untrobotics-web
+              command:
+                - php
+                - /var/www/html/cron/send-newsletter.php
+              envFrom:
+                - configMapRef:
+                    name: web-config
+                - secretRef:
+                    name: web-secrets

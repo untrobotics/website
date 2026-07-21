@@ -6,6 +6,7 @@ resources:
   - ../../base
   - ingress.yaml
   - good-standing-cronjob.yaml
+  - newsletter-cronjob.yaml
 patches:
   - path: config-patch.yaml
   # Pull the private GHCR images using the out-of-band ghcr-pull secret

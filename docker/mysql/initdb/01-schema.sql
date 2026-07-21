@@ -100,9 +100,43 @@ CREATE TABLE `newsletter_signups` (
   `email` varchar(255) NOT NULL,
   `ip` varchar(64) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `unsubscribed` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- Running tally of Brevo sends per day. email() bumps this on a successful Brevo
+-- send; the newsletter drip sender reads it to stay under the free-plan daily cap
+-- while leaving a reserve for transactional mail.
+CREATE TABLE `brevo_daily_sends` (
+  `send_date` date NOT NULL,
+  `sent` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`send_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `newsletter_campaigns` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subject` varchar(255) NOT NULL,
+  `body` mediumtext NOT NULL,
+  `status` enum('draft','sending','paused','sent') NOT NULL DEFAULT 'draft',
+  `created_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `total_recipients` int(11) NOT NULL DEFAULT '0',
+  `sent_count` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `newsletter_queue` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `campaign_id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `status` enum('pending','sent','failed') NOT NULL DEFAULT 'pending',
+  `attempts` int(11) NOT NULL DEFAULT '0',
+  `sent_at` timestamp NULL DEFAULT NULL,
+  `error` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `campaign_status` (`campaign_id`,`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `dues_config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
