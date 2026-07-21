@@ -81,7 +81,7 @@
                         <div class="unit-left"><span class="icon icon-primary fa-phone"></span></div>
                         <div class="unit-body">
                           <div class="title"><span class="small">CALL US</span></div>
-                          <h6><a href="callto:<?php echo PHONE_NUMBER; ?>"><?php echo PHONE_NUMBER_FORMATTED; ?></a></h6>
+                          <h6><a href="tel:<?php echo PHONE_NUMBER; ?>"><?php echo PHONE_NUMBER_FORMATTED; ?></a></h6>
                         </div>
                       </div>
                     </li>
@@ -109,7 +109,7 @@
               <div class="rd-navbar-nav-wrap">
                 <!-- RD Navbar Nav-->
                 <ul class="rd-navbar-nav">
-                  <li class="active"><a href="/">Home</a></li>
+                  <li class="<?php echo (in_array($_SERVER['REQUEST_URI'], array('/', '/index', '/index.php'), true)) ? 'active' : ''; ?>"><a href="/">Home</a></li>
 					<li><a href="/about">About Us</a>
 						<ul class="rd-navbar-dropdown">
 						  <li><a href="/about">What We Do</a></li>

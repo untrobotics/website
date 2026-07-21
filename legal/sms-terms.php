@@ -7,7 +7,7 @@ head("SMS Terms and Conditions", true);
         <div class="range range-md-justify">
             <div class="cell-md-10 cell-lg-9 text-left">
                 <h2>UNT Robotics — SMS Terms &amp; Conditions</h2>
-                <p><em>Last updated <?php echo date('F j, Y'); ?></em></p>
+                <p><em>Last updated July 6, 2026</em></p>
 
                 <p><strong>Program name:</strong> UNT Robotics Member Support &amp; Verification.</p>
 

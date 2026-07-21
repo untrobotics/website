@@ -57,7 +57,7 @@ head('Contact Us', true);
 				  <div class="unit unit-horizontal unit-spacing-md">
 					<div class="unit-left"><span class="icon icon-primary fa-phone"></span></div>
 					<div class="unit-body">
-					  <h6><a href="callto:<?php echo PHONE_NUMBER_INTERNATIONAL_PREFIX.PHONE_NUMBER; ?>" class="text-darker"><?php echo PHONE_NUMBER_INTERNATIONAL_PREFIX; ?> <?php echo PHONE_NUMBER_FORMATTED; ?></a></h6>
+					  <h6><a href="tel:<?php echo PHONE_NUMBER_INTERNATIONAL_PREFIX.PHONE_NUMBER; ?>" class="text-darker"><?php echo PHONE_NUMBER_INTERNATIONAL_PREFIX; ?> <?php echo PHONE_NUMBER_FORMATTED; ?></a></h6>
 					</div>
 				  </div>
 				</li>

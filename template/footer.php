@@ -28,7 +28,7 @@
                   <li>
                     <div class="unit unit-horizontal unit-spacing-xs">
                       <div class="unit-left"><span class="icon icon-primary fa-phone"></span></div>
-                      <div class="unit-body"><a href="callto:<?php echo PHONE_NUMBER_INTERNATIONAL_PREFIX.PHONE_NUMBER; ?>" class="text-gray-lighter"><?php echo PHONE_NUMBER_FORMATTED; ?></a></div>
+                      <div class="unit-body"><a href="tel:<?php echo PHONE_NUMBER_INTERNATIONAL_PREFIX.PHONE_NUMBER; ?>" class="text-gray-lighter"><?php echo PHONE_NUMBER_FORMATTED; ?></a></div>
                     </div>
                   </li>
                   <li>

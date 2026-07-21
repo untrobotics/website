@@ -23,8 +23,11 @@ function get_cached_api_response(string $endpoint, ...$args) {
                 AND
                     cache.endpoint_args = '{$db->real_escape_string(serialize($args))}'
                 ");
-    if ($q) {
-        return $q->fetch_field();
+    if ($q && $q->num_rows > 0) {
+        // Return the row's id value. (fetch_field() returns column *metadata*, not
+        // the value — that bug made cache() never find the existing row, so every
+        // refresh INSERTed a duplicate instead of updating in place.)
+        return $q->fetch_row()[0];
     }
     return false;
 }
