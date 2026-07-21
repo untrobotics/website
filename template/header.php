@@ -164,7 +164,12 @@
 			<?php
 			if (count($userinfo)) {
 			?>
+				<?php if (!empty($userinfo['is_admin'])) { ?>
+				<li class="thin auth" style="margin-left: auto;"><a href="/admin/" class="stacked">Admin</a></li>
+				<li class="thin auth" style="margin-left: 0;"><a href="/me/" class="stacked">My<br>Profile</a></li>
+				<?php } else { ?>
 				<li class="thin auth" style="margin-left: auto;"><a href="/me/" class="stacked">My<br>Profile</a></li>
+				<?php } ?>
 				<li class="thin auth" style="margin-left: 0;"><a href="/auth/logout" class="stacked">Log<br>Out</a></li>
 			<?php } else { ?>
 				<li class="thin" style="margin-left: auto;"><a href="/auth/login" class="stacked">Log<br>In</a></li>

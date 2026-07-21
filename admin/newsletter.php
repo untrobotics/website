@@ -45,6 +45,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $notice = array('error', 'Campaign is not a draft.');
             }
+        } elseif ($action === 'test') {
+            $cid = (int) @$_POST['campaign_id'];
+            $c = $db->query('SELECT subject, body FROM newsletter_campaigns WHERE id = "' . $db->real_escape_string($cid) . '"');
+            if ($c && $c->num_rows) {
+                $cc = $c->fetch_assoc();
+                $to = $userinfo['email'];
+                $body = $cc['body'] . newsletter_unsub_footer($to);
+                // $archive=false to mirror a real newsletter send; only goes to the admin.
+                $sent_ok = email($to, '[TEST] ' . $cc['subject'], $body, false, null, array(), true, false);
+                $notice = $sent_ok
+                    ? array('ok', 'Test sent to ' . $to . ' — check the formatting before you Start sending.')
+                    : array('error', 'Test send failed. Check the mail logs.');
+            } else {
+                $notice = array('error', 'Campaign not found.');
+            }
         } elseif ($action === 'pause' || $action === 'resume') {
             $cid = (int) @$_POST['campaign_id'];
             $new = $action === 'pause' ? 'paused' : 'sending';
@@ -113,6 +128,12 @@ head('Newsletter', 'Newsletter');
                             <td><?php echo $total ? ($done . ' / ' . $total) : '&mdash;'; ?></td>
                             <td>
                                 <?php if ($c['status'] === 'draft'): ?>
+                                    <form method="post" action="/admin/newsletter" style="display:inline">
+                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                                        <input type="hidden" name="action" value="test">
+                                        <input type="hidden" name="campaign_id" value="<?php echo (int) $c['id']; ?>">
+                                        <button class="btn btn-sm btn-default">Send test to me</button>
+                                    </form>
                                     <form method="post" action="/admin/newsletter" style="display:inline" onsubmit="return confirm('Queue this to all <?php echo $subs; ?> subscribers?');">
                                         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
                                         <input type="hidden" name="action" value="start">
