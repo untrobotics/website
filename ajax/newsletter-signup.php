@@ -2,36 +2,30 @@
 require('../template/top.php');
 require('../api/discord/bots/admin.php');
 
-// Best-effort add to a Mailchimp audience. Upserts the member: new addresses are
-// subscribed, existing ones keep their current status (so we never resurrect an
-// unsubscribe). Returns silently on any failure — the DB row is the source of
-// truth and the signup must not fail because Mailchimp is down.
-function mailchimp_subscribe($email) {
-	if (!defined('MAILCHIMP_API_KEY') || MAILCHIMP_API_KEY === '' || MAILCHIMP_LIST_ID === '') {
+// Best-effort add to the Brevo contact list. Upserts (updateEnabled) so a repeat
+// sign-up doesn't error, and re-subscribes anyone who had been removed. Returns
+// silently on any failure — the newsletter_signups row is the source of truth and
+// the sign-up must not fail because Brevo is briefly unreachable.
+function brevo_subscribe($email) {
+	if (!defined('BREVO_API_KEY') || BREVO_API_KEY === '' || !BREVO_NEWSLETTER_LIST_ID) {
 		return;
 	}
-	$parts = explode('-', MAILCHIMP_API_KEY);
-	$dc = end($parts);
-	if (!$dc || $dc === MAILCHIMP_API_KEY) {
-		return;
-	}
-	$hash = md5(strtolower($email));
-	$url = 'https://' . $dc . '.api.mailchimp.com/3.0/lists/' . MAILCHIMP_LIST_ID . '/members/' . $hash;
-	$ch = curl_init($url);
-	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+	$ch = curl_init('https://api.brevo.com/v3/contacts');
+	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-	curl_setopt($ch, CURLOPT_USERPWD, 'anystring:' . MAILCHIMP_API_KEY);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('api-key: ' . BREVO_API_KEY, 'Content-Type: application/json', 'accept: application/json'));
 	curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array(
-		'email_address' => $email,
-		'status_if_new' => 'subscribed',
+		'email' => $email,
+		'listIds' => array(BREVO_NEWSLETTER_LIST_ID),
+		'updateEnabled' => true,
 	)));
 	$resp = curl_exec($ch);
 	$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	curl_close($ch);
-	if ($code < 200 || $code >= 300) {
-		error_log('mailchimp subscribe failed (' . $code . '): ' . $resp);
+	// 201 created, 204 updated — anything else is a soft failure worth logging.
+	if ($code !== 201 && $code !== 204) {
+		error_log('brevo subscribe failed (' . $code . '): ' . $resp);
 	}
 }
 
@@ -56,7 +50,7 @@ if (isset($_POST['email'])) {
 
 	if ($q) {
 		echo 'SUCCESS';
-		mailchimp_subscribe($email);
+		brevo_subscribe($email);
 		if ($db->affected_rows > 0) {
 			AdminBot::send_message('Newsletter sign-up: ' . $email);
 		}

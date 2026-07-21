@@ -77,11 +77,18 @@ define('PRINTFUL_API_KEY', env('PRINTFUL_API_KEY'));
 // webhook URL in the Printful dashboard — to require it.
 define('PRINTFUL_WEBHOOK_SECRET', env('PRINTFUL_WEBHOOK_SECRET', ''));
 
-// Mailchimp Marketing API — used to push newsletter sign-ups into an audience.
-// MAILCHIMP_API_KEY is "<key>-<dc>" (the dc suffix, e.g. us21, picks the server).
-// Leave unset to store sign-ups only in the newsletter_signups table.
-define('MAILCHIMP_API_KEY', env('MAILCHIMP_API_KEY', ''));
-define('MAILCHIMP_LIST_ID', env('MAILCHIMP_LIST_ID', ''));
+// Brevo (Sendinblue) v3 API — used to push newsletter sign-ups into a contact
+// list and to send the newsletter as a self-throttled drip. Leave the key unset
+// to store sign-ups only in the newsletter_signups table.
+define('BREVO_API_KEY', env('BREVO_API_KEY', ''));
+define('BREVO_NEWSLETTER_LIST_ID', (int) env('BREVO_NEWSLETTER_LIST_ID', '3'));
+
+// Daily send budget for the free Brevo plan (300/day, shared by transactional +
+// marketing). The drip sender never sends past DAILY_LIMIT - TRANSACTIONAL_RESERVE,
+// so transactional email always keeps that many sends of headroom on Brevo each
+// day (with the Postfix relay as the hard failover beyond that).
+define('BREVO_DAILY_LIMIT', (int) env('BREVO_DAILY_LIMIT', '300'));
+define('BREVO_TRANSACTIONAL_RESERVE', (int) env('BREVO_TRANSACTIONAL_RESERVE', '50'));
 
 // Non-secret GroupMe channel→bot identifiers.
 define('CHANNEL_TO_BOT', array(
