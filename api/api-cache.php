@@ -11,10 +11,10 @@ function get_cached_api_response(string $endpoint, ...$args) {
     global $db;
     $q = $db->query("
                 SELECT
-                    id
+                    cache.id
                 FROM
                     api_cache cache
-                INNER JOIN 
+                INNER JOIN
                     outgoing_request_cache_config config
                 ON
                     cache.config_id = config.id
