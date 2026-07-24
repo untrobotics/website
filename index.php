@@ -215,11 +215,16 @@ head('Home', true);
 				  </div>
 				  <div class="cell-md-6 cell-xl-5 cell-xl-preffix-1 cell-md-bottom">
 					<style>
-					  /* Let the captcha drop to its own row instead of being squeezed into the input/button flex row. */
-					  .rd-mailform-subscribe { flex-wrap: wrap; }
-					  .rd-mailform-subscribe .g-recaptcha { flex: 0 0 100%; margin-top: 18px; }
+					  /* Clean, aligned stack: input, full-width button, and captcha all the
+					     same left edge and width. Overrides the theme's flex row that was
+					     squeezing the captcha off the side. */
+					  .newsletter-form { display: block !important; max-width: 304px; }
+					  .newsletter-form .form-group { min-width: 0 !important; width: 100%; margin-bottom: 0; }
+					  .newsletter-form .form-control-subscribe { width: 100%; }
+					  .newsletter-form .btn { display: block; width: 100%; min-width: 0 !important; margin: 14px 0 0 !important; }
+					  .newsletter-form .g-recaptcha { margin-top: 16px; }
 					</style>
-					<form data-form-output="form-output-global" data-form-type="subscribe" method="post" action="/ajax/newsletter-signup" class="rd-mailform text-left rd-mailform-subscribe">
+					<form data-form-output="form-output-global" data-form-type="subscribe" method="post" action="/ajax/newsletter-signup" class="rd-mailform text-left rd-mailform-subscribe newsletter-form">
 					  <div class="form-group">
 						<label for="footer-subscribe-email" class="form-label form-label-subscribe">Enter your e-mail</label>
 						<input id="footer-subscribe-email" type="email" name="email" data-constraints="@Email @Required" class="form-control form-control-subscribe">
