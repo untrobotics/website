@@ -1650,6 +1650,7 @@ $document.ready(function () {
         'INVALID_EUID': 'Please enter a valid EUID, for example abc1234.',
         'INVALID_PROMISE': 'Please confirm you will come to the event.',
 		'INVALID_MESSAGE': 'Please enter a longer message.',
+		'CAPTCHA': 'Please complete the reCAPTCHA to confirm you are human.',
 		'ERROR': 'A server error occurred, please contact support.'
       };
 

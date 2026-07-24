@@ -34,6 +34,26 @@ function brevo_subscribe($email) {
 if (isset($_POST['email'])) {
 	$email = trim(@$_POST['email']);
 
+	// Honeypot: a hidden field real users never fill. Bots that fill every field
+	// out themselves; pretend success so they don't learn they were caught.
+	if (!empty($_POST['website'])) {
+		echo 'SUCCESS';
+		exit;
+	}
+
+	// reCAPTCHA (same v2 checkbox the contact form uses). Blocks the bot spam that
+	// was POSTing straight to this endpoint.
+	$captcha = @$_POST['g-recaptcha-response'];
+	if (empty($captcha)) {
+		echo 'CAPTCHA';
+		exit;
+	}
+	$verify = @json_decode(@file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . GOOGLE_RECAPTCHA_KEY . '&response=' . urlencode($captcha) . '&remoteip=' . urlencode($_SERVER['REMOTE_ADDR'])), true);
+	if (empty($verify['success'])) {
+		echo 'CAPTCHA';
+		exit;
+	}
+
 	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 		echo 'INVALID_EMAIL';
 		exit;
