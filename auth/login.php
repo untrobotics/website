@@ -3,6 +3,11 @@ require("../template/top.php");
 require(BASE . "/template/functions/hash.php");
 if (isset($_POST['email'])) {
 	do {
+		// Throttle brute-force: cap login attempts per client IP.
+		if (rate_limited('login:' . client_ip(), 15, 900)) {
+			$error = "Too many login attempts. Please wait a few minutes and try again.";
+			break;
+		}
 		$required = array("email", "password");
 		foreach ($required as $key => $val) {
 			if (!isset($_POST[$val]) || !strlen($_POST[$val]) > 0) {

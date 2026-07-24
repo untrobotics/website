@@ -3,6 +3,18 @@ require("../template/top.php");
 require("../api/discord/bots/admin.php");
 if (isset($_POST['email'])) {
     do {
+        // Anti-abuse: honeypot, reCAPTCHA, and a per-IP rate limit — this endpoint
+        // sends email via Brevo, so an unthrottled bot could email-bomb a target
+        // and burn the daily send quota.
+        if (!empty($_POST['website'])) { $error = "Something went wrong. Please try again."; break; }
+        if (!recaptcha_verify(@$_POST['g-recaptcha-response'])) {
+            $error = "Please complete the reCAPTCHA to confirm you are human.";
+            break;
+        }
+        if (rate_limited('forgot:' . client_ip(), 5, 3600)) {
+            $error = "Too many reset requests. Please wait a while and try again.";
+            break;
+        }
         if (!isset($_POST["email"]) || !strlen($_POST["email"]) > 0) {
             $error = "You must enter your e-mail address.";
             break;
@@ -109,6 +121,9 @@ head('Forgot Password', true);
                                         <input id="email" type="email" name="email" data-constraints="@Required" class="form-control">
                                     </div>
                                 </div>
+                                <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
+                                <div class="g-recaptcha offset-top-20" style="display:inline-block;" data-sitekey="6LeWt9MUAAAAADskIvjv8Vt49_-riUjAq6O8Uihq"></div>
+                                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
                                 <button type="submit" class="btn btn-default offset-top-35">Submit</button>
 
                                 <p style="margin-top: 40px;"><a href='/auth/login'>Back to Login</a></p>

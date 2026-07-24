@@ -206,6 +206,9 @@ head('Botathon Registration', true);
 							</label>
 							</div>
 						</div>-->
+						<input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
+						<div class="g-recaptcha offset-top-20" style="display:inline-block;" data-sitekey="6LeWt9MUAAAAADskIvjv8Vt49_-riUjAq6O8Uihq"></div>
+						<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 						<button type="submit" class="btn btn-form btn-default">Sign Up</button>
 					</div>
 

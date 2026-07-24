@@ -95,6 +95,14 @@ CREATE TABLE `contact_form` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=320 DEFAULT CHARSET=latin1;
 
+CREATE TABLE `rate_limits` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `bucket` varchar(191) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `bucket_time` (`bucket`,`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE `dues_alternative_requests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,

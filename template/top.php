@@ -209,6 +209,38 @@ function newsletter_unsub_footer($email) {
         . '<a href="' . htmlspecialchars($url) . '" style="color:#888;">Unsubscribe</a>.</p>';
 }
 
+// --- Public-form anti-abuse helpers ------------------------------------------
+// Real client IP (behind the k3s ingress, REMOTE_ADDR is the internal proxy).
+function client_ip() {
+    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        return trim($parts[0]);
+    }
+    return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+}
+// Verify a Google reCAPTCHA v2 response. Returns true if the key isn't configured
+// (so a misconfigured env doesn't lock every form), false on a missing/failed token.
+function recaptcha_verify($response) {
+    if (!defined('GOOGLE_RECAPTCHA_KEY') || GOOGLE_RECAPTCHA_KEY === '') { return true; }
+    if (empty($response)) { return false; }
+    $r = @json_decode(@file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . GOOGLE_RECAPTCHA_KEY . '&response=' . urlencode($response) . '&remoteip=' . urlencode(client_ip())), true);
+    return !empty($r['success']);
+}
+// Sliding-window rate limit. Returns true if $bucket has hit $max requests within
+// the last $window_secs (and does NOT count this one); otherwise records it and
+// returns false.
+function rate_limited($bucket, $max, $window_secs) {
+    global $db;
+    $b = $db->real_escape_string($bucket);
+    $w = (int) $window_secs;
+    $q = $db->query("SELECT COUNT(*) c FROM rate_limits WHERE bucket = '{$b}' AND created_at > UTC_TIMESTAMP - INTERVAL {$w} SECOND");
+    $count = $q ? (int) $q->fetch_assoc()['c'] : 0;
+    if ($count >= $max) { return true; }
+    $db->query("INSERT INTO rate_limits (bucket) VALUES ('{$b}')");
+    if (mt_rand(1, 25) === 1) { $db->query("DELETE FROM rate_limits WHERE created_at < UTC_TIMESTAMP - INTERVAL 1 DAY"); }
+    return false;
+}
+
 function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array(), $branded = true, $archive = true) {
     global $db;
     // Outbound now goes through the self-hosted Postfix relay via PHPMailer/SMTP.

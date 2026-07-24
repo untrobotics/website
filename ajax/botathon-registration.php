@@ -19,8 +19,11 @@ if (isset($_POST)) {
 	
 	$valid_genders = array('male', 'female', 'other');
 	$valid_classifications = array('freshman', 'sophomore', 'junior', 'senior', 'postgraduate');
-	
+
 	do {
+		// Anti-abuse: honeypot + reCAPTCHA.
+		if (!empty($_POST['website'])) { echo 'SUCCESS'; break; }
+		if (!recaptcha_verify(@$_POST['g-recaptcha-response'])) { echo 'CAPTCHA'; break; }
 		if (strlen($name) < 4) {
 			echo 'INVALID_NAME';
 			break;

@@ -15,6 +15,12 @@ if (!empty($_POST)) {
 	$valid_grad_terms = array('spring', 'fall', 'summer');
 
 	do {
+		// Anti-abuse: honeypot + reCAPTCHA to stop bots creating junk accounts.
+		if (!empty($_POST['website'])) { $error = "Something went wrong. Please try again."; break; }
+		if (!recaptcha_verify(@$_POST['g-recaptcha-response'])) {
+			$error = "Please complete the reCAPTCHA to confirm you are human.";
+			break;
+		}
 		if (strlen($name) < 4) {
 			$error = "Please enter a valid name";
 			break;
@@ -203,6 +209,9 @@ head('Join', true);
 					<label for="password2" class="form-label">Confirm Password</label>
 					<input id="password2" type="password" name="password2" data-constraints="@Required" class="form-control">
 				  </div>
+			  <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
+			  <div class="g-recaptcha offset-top-20" style="display:inline-block;" data-sitekey="6LeWt9MUAAAAADskIvjv8Vt49_-riUjAq6O8Uihq"></div>
+			  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 			  <button type="submit" class="btn btn-default offset-top-35">Create Account</button>
 			</form>
 		  </div>
