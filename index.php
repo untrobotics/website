@@ -115,11 +115,11 @@ head('Home', true);
             </div>
             <div class="range">
               <div class="cell-sm-6 cell-lg-4 cell-xl-3 cell-xl-preffix-1"><span class="icon icon-lg icon-primary thin-icon-lightbulb"></span>
-                <h5 class="offset-top-15 offset-lg-top-25"><a href="/discord"> Learn</a></h5>
+                <h5 class="offset-top-15 offset-lg-top-25"><a href="/activities"> Learn</a></h5>
                 <p class="text-gray-light-1 text-justify">Check out our guides for getting started with the components we commonly use in robotics.</p>
               </div>
               <div class="cell-sm-6 cell-lg-4 cell-xl-3 offset-top-50 offset-sm-top-0 cell-xl-preffix-1"><span class="icon icon-lg icon-primary thin-icon-study"></span>
-                <h5 class="offset-top-15 offset-lg-top-25"><a href="/discord" class="postfix-xl-right--25">Workshops</a></h5>
+                <h5 class="offset-top-15 offset-lg-top-25"><a href="/events" class="postfix-xl-right--25">Workshops</a></h5>
                 <p class="text-gray-light-1 text-justify">Come learn a valuable new skill, such as CAD or microcontroller programming.</p>
               </div>
               <div class="cell-sm-6 cell-lg-4 cell-xl-3 offset-top-50 offset-lg-top-0 cell-xl-preffix-1"><span class="icon icon-lg icon-primary thin-icon-pointer"></span>
@@ -135,7 +135,7 @@ head('Home', true);
                 <p class="text-gray-light-1 text-justify">Get involved in our recreational robotics projects, everything from a self-driving sofa to a racecar dashboard.</p>
               </div>
               <div class="cell-sm-6 cell-lg-4 cell-xl-3 offset-top-50 cell-xl-preffix-1"><span class="icon icon-lg icon-primary thin-icon-chart"></span>
-                <h5 class="offset-top-15 offset-lg-top-25"><a href="/discord">Compete</a></h5>
+                <h5 class="offset-top-15 offset-lg-top-25"><a href="/events">Compete</a></h5>
                 <p class="text-gray-light-1 text-justify">Finding all of this too easy? Dive into the nitty-gritty by competing in inter-collegiate robotics with us.</p>
               </div>
             </div>

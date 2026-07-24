@@ -10,6 +10,7 @@ head('Admin', 'Admin');
 
 $tools = array(
     array('/admin/newsletter', 'Newsletter', 'Compose and send the email newsletter (drips out within the daily limit).'),
+    array('/admin/dues-requests', 'Dues Requests', 'Approve alternative-dues requests + mark members paid (in-person / manual).'),
     array('/admin/users', 'Users', 'Member list + Good Standing CSV export.'),
     array('/admin/check-good-standing', 'Check Good Standing', 'Look up a single member\'s standing by UID.'),
     array('/admin/botathon_registration', 'Botathon Registrations', 'Botathon sign-ups.'),

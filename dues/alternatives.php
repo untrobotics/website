@@ -4,7 +4,19 @@ require(BASE . '/api/discord/bots/admin.php');
 head('Pay Dues via Alternatives', true);
 
 if (isset($_POST['submit'])) {
-    AdminBot::send_message("Alternative dues payment submitted by " . $userinfo['name'] . " (uid " . $userinfo['id'] . "): " . var_export($_POST, true));
+    $reason = isset($_POST['alternative_payment_reason']) ? $_POST['alternative_payment_reason'] : '';
+
+    // Persist the request so leadership can review + approve it in the admin queue
+    // (previously it was only a fire-and-forget Discord message). Skip if this
+    // member already has a pending request.
+    $existing = $db->query('SELECT id FROM dues_alternative_requests WHERE uid = "' . $db->real_escape_string($userinfo['id']) . '" AND status = "pending" LIMIT 1');
+    if (!$existing || $existing->num_rows === 0) {
+        $db->query('INSERT INTO dues_alternative_requests (uid, reason) VALUES ("'
+            . $db->real_escape_string($userinfo['id']) . '", "'
+            . $db->real_escape_string($reason) . '")');
+    }
+
+    AdminBot::send_message("Alternative dues request from " . $userinfo['name'] . " (uid " . $userinfo['id'] . ", reason: " . $reason . "). Review + approve: https://untrobotics.com/admin/dues-requests");
 
     $authorise_user = true;
 }

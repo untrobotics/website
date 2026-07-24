@@ -38,10 +38,10 @@ head('Activities', true);
 			 	  <p>UNT Robotics worked with Kappa Delta Pi, an education honor society, to host a STEM education workshop for future teachers where we discussed the Engineering portion of STEM. We taught programming using Scratch, gear ratios using LEGO, and computer structure and design using skits. </p>
 					
 				  <h4>Inter-collegiate Competitions</h4>
-			 	  <p>Our collegiate team just came back from a competition in Louisiana where we competed in the IEEE R5 Autonomous Rover competition where we were commended for our mechanical engineering prowess. </p>
-				
+			 	  <p>Our collegiate team competes in the IEEE Region 5 Autonomous Rover competition, where we have been commended for our mechanical engineering prowess. </p>
+
 				  <h4>Botathon</h4>
-			 	  <p>UNT Robotics also hosts a 12 hour Hackathon for robotics. It is on April 27th. We expect around 60 people to attend. It is intended to be an intro to robotics for anyone who wants to attend.</p>
+			 	  <p>UNT Robotics also hosts Botathon, a 12-hour hackathon for robotics. It is intended to be an intro to robotics for anyone who wants to attend.</p>
                 	
 				</div>
 			</div>

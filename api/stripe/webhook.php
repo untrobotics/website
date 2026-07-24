@@ -149,6 +149,23 @@ if ($event->type === 'payment_intent.succeeded') {
             'expand' => array('latest_charge.balance_transaction'),
         ));
 
+        // Definitive double-fulfilment guard: if this PaymentIntent belongs to a
+        // Checkout Session, the checkout.session.completed branch already fulfils
+        // it — skip here regardless of metadata. A hosted Checkout fires BOTH
+        // payment_intent.succeeded AND checkout.session.completed for one payment;
+        // keying each branch on a different id (PI vs session) means only this
+        // ownership check stops them both fulfilling. The metadata check below is a
+        // secondary guard; if this lookup ever fails we still fall back to it.
+        try {
+            $owning = \Stripe\Checkout\Session::all(array('payment_intent' => $pi_id, 'limit' => 1));
+            if (!empty($owning->data)) {
+                http_response_code(200); // owned by a Checkout Session; handled there
+                die();
+            }
+        } catch (Exception $e) {
+            payment_log("[{$pi_id}] Checkout Session ownership lookup failed: " . $e->getMessage());
+        }
+
         $metadata = $intent->metadata ? $intent->metadata->toArray() : array();
         $source = isset($metadata['source']) ? $metadata['source'] : null;
         $custom_obj = isset($metadata['custom']) ? @unserialize($metadata['custom']) : false;
