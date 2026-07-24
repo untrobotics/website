@@ -214,14 +214,19 @@ head('Home', true);
 					</div>
 				  </div>
 				  <div class="cell-md-6 cell-xl-5 cell-xl-preffix-1 cell-md-bottom">
+					<style>
+					  /* Let the captcha drop to its own row instead of being squeezed into the input/button flex row. */
+					  .rd-mailform-subscribe { flex-wrap: wrap; }
+					  .rd-mailform-subscribe .g-recaptcha { flex: 0 0 100%; margin-top: 18px; }
+					</style>
 					<form data-form-output="form-output-global" data-form-type="subscribe" method="post" action="/ajax/newsletter-signup" class="rd-mailform text-left rd-mailform-subscribe">
 					  <div class="form-group">
 						<label for="footer-subscribe-email" class="form-label form-label-subscribe">Enter your e-mail</label>
 						<input id="footer-subscribe-email" type="email" name="email" data-constraints="@Email @Required" class="form-control form-control-subscribe">
 					  </div>
 					  <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
-					  <div class="g-recaptcha offset-top-10" data-sitekey="6LeWt9MUAAAAADskIvjv8Vt49_-riUjAq6O8Uihq"></div>
-					  <button type="submit" class="btn btn-default btn-default-white offset-top-10">subscribe</button>
+					  <button type="submit" class="btn btn-default btn-default-white">subscribe</button>
+					  <div class="g-recaptcha" data-sitekey="6LeWt9MUAAAAADskIvjv8Vt49_-riUjAq6O8Uihq"></div>
 					</form>
 					<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 				  </div>
