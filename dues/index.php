@@ -199,7 +199,7 @@ footer(false);
         if (__ece && __eceShip === needShip) { __elements.update({ amount: cents }); return; }
         if (__ece) { __ece.unmount(); }
         __elements = __stripe.elements({ mode: 'payment', amount: cents, currency: 'usd' });
-        var opts = { paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' } };
+        var opts = { emailRequired: true, paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' } };
         if (needShip) { opts.shippingAddressRequired = true; opts.allowedShippingCountries = ['US']; opts.shippingRates = [{ id: 'free', displayName: 'Free shipping', amount: 0 }]; }
         __ece = __elements.create('expressCheckout', opts);
         __ece.mount('#express-checkout-element');
@@ -215,6 +215,7 @@ footer(false);
                 params.set('source', 'dues');
                 params.set('full-year', fullYear ? 'true' : 'false');
                 params.set('t-shirt', tShirt || '');
+                params.set('email', (event.billingDetails && event.billingDetails.email) || '');
                 return fetch('/api/stripe/create-payment-intent.php', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params.toString(), credentials: 'same-origin' })
                     .then(function (r) { return r.json(); })
                     .then(function (d) {

@@ -84,12 +84,31 @@ function process_stripe_refund($pi_id, $reason) {
     if ($db->affected_rows > 0) { $summary[] = $db->affected_rows . ' donation(s)'; }
 
     // Merch orders (linked to the tx through printful_order_tx).
-    $oids = array();
+    $oids_raw = array();
     $r = $db->query('SELECT printful_order_id FROM printful_order_tx WHERE txid IN (' . $inClause . ')');
-    if ($r) { while ($x = $r->fetch_assoc()) { $oids[] = '"' . $db->real_escape_string($x['printful_order_id']) . '"'; } }
-    if ($oids) {
-        $db->query('UPDATE printful_order SET refunded = 1, refunded_at = NOW() WHERE order_id IN (' . implode(',', $oids) . ') AND refunded = 0');
+    if ($r) { while ($x = $r->fetch_assoc()) { $oids_raw[] = $x['printful_order_id']; } }
+    if ($oids_raw) {
+        $quoted = array();
+        foreach ($oids_raw as $oid) { $quoted[] = '"' . $db->real_escape_string($oid) . '"'; }
+        $db->query('UPDATE printful_order SET refunded = 1, refunded_at = NOW() WHERE order_id IN (' . implode(',', $quoted) . ') AND refunded = 0');
         if ($db->affected_rows > 0) { $summary[] = $db->affected_rows . ' merch order(s)'; }
+
+        // Best-effort: cancel the Printful order so a refunded purchase doesn't
+        // ship. Only works while it's still draft/pending; a shipped order can't
+        // be cancelled, so alert an admin to handle it.
+        require_once(BASE . '/api/printful/printful.php');
+        $pf = new PrintfulCustomAPI();
+        foreach ($oids_raw as $oid) {
+            try {
+                $code = $pf->cancel_order($oid);
+                payment_log("[refund:{$pi_id}] Printful cancel order {$oid} -> HTTP {$code}");
+                if ($code < 200 || $code >= 300) {
+                    AdminBot::send_message("(Stripe) Refund: Printful order {$oid} could NOT be cancelled (HTTP {$code}) — likely already shipped. Cancel/handle it in Printful.");
+                }
+            } catch (Exception $e) {
+                payment_log("[refund:{$pi_id}] Printful cancel order {$oid} failed: " . $e->getMessage());
+            }
+        }
     }
 
     // Strip Good Standing from anyone the refund pushed out of standing.
@@ -184,6 +203,18 @@ if ($event->type === 'payment_intent.succeeded') {
         $amount_total = isset($intent->amount) ? $intent->amount : 0;
         $currency = isset($intent->currency) ? strtoupper($intent->currency) : 'USD';
         $charge = (isset($intent->latest_charge) && is_object($intent->latest_charge)) ? $intent->latest_charge : null;
+
+        // Never fulfil a payment that has already been refunded. This guards the
+        // race where a webhook retry (or a delayed delivery) lands after a refund
+        // — without it we'd create + confirm a Printful order the buyer got money
+        // back for.
+        if ($charge && !empty($charge->refunded)) {
+            payment_log("[{$pi_id}] Charge already refunded; skipping fulfilment.");
+            http_response_code(200);
+            echo json_encode(array('received' => true, 'note' => 'refunded'));
+            die();
+        }
+
         $fee_cents = 0;
         if ($charge && isset($charge->balance_transaction) && is_object($charge->balance_transaction)) {
             $fee_cents = (int) $charge->balance_transaction->fee;
@@ -192,7 +223,13 @@ if ($event->type === 'payment_intent.succeeded') {
         $mc_fee = number_format($fee_cents / 100, 2, '.', '');
 
         $billing = ($charge && isset($charge->billing_details)) ? $charge->billing_details : null;
-        $email = ($billing && isset($billing->email)) ? $billing->email : '';
+        // Wallets (Apple/Google Pay) often don't put an email on billing_details.
+        // Fall back to the PI's receipt_email, then the email we captured from the
+        // Express Checkout Element and stored in metadata — otherwise the buyer
+        // gets no receipt or tracking.
+        $email = ($billing && !empty($billing->email)) ? $billing->email : '';
+        if ($email === '' && !empty($intent->receipt_email)) { $email = $intent->receipt_email; }
+        if ($email === '' && !empty($metadata['email'])) { $email = $metadata['email']; }
         $phone = ($billing && isset($billing->phone)) ? $billing->phone : '';
         $full_name = ($billing && isset($billing->name)) ? $billing->name : '';
 

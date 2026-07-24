@@ -28,6 +28,12 @@ if (empty(STRIPE_SECRET_KEY)) {
 
 $source = isset($_REQUEST['source']) ? $_REQUEST['source'] : '';
 
+// Email the Express Checkout Element collected from the wallet (Apple/Google Pay
+// don't reliably put an email on the charge). We stash it in metadata + set it as
+// the PI's receipt_email so the webhook can always reach the buyer.
+$buyer_email = (!empty($_REQUEST['email']) && filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)) ? $_REQUEST['email'] : '';
+$receipt_email = $buyer_email !== '' ? $buyer_email : null;
+
 try {
     if ($source === 'donation') {
         $amount = round((float) (isset($_REQUEST['amount']) ? $_REQUEST['amount'] : 0), 2);
@@ -42,12 +48,14 @@ try {
             'currency' => 'usd',
             'automatic_payment_methods' => array('enabled' => true),
             'description' => $item_name,
+            'receipt_email' => $receipt_email,
             'metadata' => array(
                 'source' => 'DONATION',
                 'custom' => serialize($custom),
                 'options' => json_encode(array()),
                 'quantity' => '1',
                 'item_name' => $item_name,
+                'email' => $buyer_email,
             ),
         ));
 
@@ -111,12 +119,14 @@ try {
             'currency' => strtolower($currency),
             'automatic_payment_methods' => array('enabled' => true),
             'description' => $item_name,
+            'receipt_email' => $receipt_email,
             'metadata' => array(
                 'source' => 'PRINTFUL_PRODUCT',
                 'custom' => serialize($custom),
                 'options' => json_encode($option_pairs),
                 'quantity' => (string) $quantity,
                 'item_name' => $item_name,
+                'email' => $buyer_email,
             ),
         ));
 
@@ -179,12 +189,14 @@ try {
             'currency' => 'usd',
             'automatic_payment_methods' => array('enabled' => true),
             'description' => $item_name,
+            'receipt_email' => $receipt_email,
             'metadata' => array(
                 'source' => 'DUES_PAYMENT',
                 'custom' => serialize($custom),
                 'options' => json_encode($option_pairs),
                 'quantity' => '1',
                 'item_name' => $item_name,
+                'email' => $buyer_email,
             ),
         ));
 

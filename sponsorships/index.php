@@ -82,6 +82,7 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
     if (stripe) {
         elements = stripe.elements({ mode: 'payment', amount: currentCents() || 2500, currency: 'usd' });
         var expressEl = elements.create('expressCheckout', {
+            emailRequired: true,
             paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' }
         });
         expressEl.mount('#express-checkout-element');
@@ -101,13 +102,14 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
                     .catch(function () { apRedirect.disabled = false; showErr('Unable to start checkout.'); });
             });
         }
-        expressEl.on('confirm', function () {
+        expressEl.on('confirm', function (event) {
             var amt = getAmount();
             if (amt < 1) { showErr('Please enter a donation amount of at least $1.'); return; }
             showErr('');
             elements.submit().then(function (sub) {
                 if (sub.error) { showErr(sub.error.message); return; }
                 var p = new URLSearchParams(); p.set('source', 'donation'); p.set('amount', amt);
+                p.set('email', (event.billingDetails && event.billingDetails.email) || '');
                 return fetch('/api/stripe/create-payment-intent.php', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: p.toString(), credentials: 'same-origin' })
                     .then(function (r) { return r.json(); })
                     .then(function (d) {

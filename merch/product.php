@@ -495,6 +495,7 @@ footer(false);
 		};
 		var ece = mElements.create('expressCheckout', {
 			paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' },
+			emailRequired: true,
 			shippingAddressRequired: true,
 			allowedShippingCountries: ['US'],
 			shippingRates: [{ id: 'free', displayName: 'Free shipping', amount: 0 }]
@@ -525,6 +526,7 @@ footer(false);
 				params.set('source', 'merch');
 				params.set('product', <?php echo json_encode($external_product_id); ?>);
 				params.set('variant', window.MERCH_CURRENT_VARIANT || <?php echo json_encode((string) $selected_variant->get_id()); ?>);
+				params.set('email', (event.billingDetails && event.billingDetails.email) || '');
 				return fetch('/api/stripe/create-payment-intent.php', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params.toString(), credentials: 'same-origin' })
 					.then(function (r) { return r.json(); })
 					.then(function (d) {

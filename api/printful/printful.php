@@ -90,6 +90,21 @@ class PrintfulCustomAPI {
         return $order;
     }
 
+    // Cancel a Printful order (DELETE /orders/{id}). Only succeeds while the order
+    // is still cancellable (draft/pending) — a fulfilled/shipped order can't be
+    // cancelled. Direct request (not cached, since it mutates). Returns the HTTP
+    // status code.
+    public function cancel_order($order_id) {
+        $ch = curl_init('https://api.printful.com/orders/' . rawurlencode($order_id));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: Bearer ' . $this->api_key));
+        curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        return $code;
+    }
+
     public function get_products($search_string = "") {
         if (!empty($search_string)) {
             $search_string = "&search=" . $search_string;
