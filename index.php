@@ -230,8 +230,8 @@ head('Home', true);
 						<input id="footer-subscribe-email" type="email" name="email" data-constraints="@Email @Required" class="form-control form-control-subscribe">
 					  </div>
 					  <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
-					  <button type="submit" class="btn btn-default btn-default-white">subscribe</button>
 					  <div class="g-recaptcha" data-sitekey="6LeWt9MUAAAAADskIvjv8Vt49_-riUjAq6O8Uihq"></div>
+					  <button type="submit" class="btn btn-default btn-default-white">subscribe</button>
 					</form>
 					<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 				  </div>
