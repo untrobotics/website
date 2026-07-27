@@ -210,9 +210,9 @@ head('Join', true);
 					<input id="password2" type="password" name="password2" data-constraints="@Required" class="form-control">
 				  </div>
 			  <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
-			  <div class="g-recaptcha offset-top-20" style="display:inline-block;" data-sitekey="6LeWt9MUAAAAADskIvjv8Vt49_-riUjAq6O8Uihq"></div>
+			  <div style="clear:both;overflow:hidden;margin-top:25px;"><div class="g-recaptcha" data-sitekey="6LeWt9MUAAAAADskIvjv8Vt49_-riUjAq6O8Uihq"></div></div>
 			  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-			  <button type="submit" class="btn btn-default offset-top-35">Create Account</button>
+			  <button type="submit" class="btn btn-default offset-top-20">Create Account</button>
 			</form>
 		  </div>
 		</div>
