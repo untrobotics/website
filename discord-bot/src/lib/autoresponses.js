@@ -9,21 +9,9 @@
  *    by default; fill in with channel IDs and unicode/custom emoji as needed.
  */
 
-const KEYWORD_RESPONSES = [
-  {
-    triggers: ['how do i verify', 'how to verify', 'get verified', 'verify me'],
-    reply:
-      'To get verified, run `/verify your-euid@unt.edu` in the verification ' +
-      "channel, then `/token <code>` with the code we email you. You'll get " +
-      'the **Verified UNT** role automatically.',
-  },
-  {
-    triggers: ['when is the meeting', 'next meeting', 'meeting time'],
-    reply:
-      'Check the announcements channel and https://www.untrobotics.com for the ' +
-      'latest meeting schedule!',
-  },
-];
+// Keyword auto-responses are disabled — the bot no longer replies to messages
+// based on their content.
+const KEYWORD_RESPONSES = [];
 
 // channelId -> ['👍', '🤖', ...]. Empty by default.
 const CHANNEL_REACTIONS = {

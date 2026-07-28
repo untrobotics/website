@@ -1,7 +1,7 @@
 'use strict';
 
 const { Events } = require('discord.js');
-const { matchKeyword, reactionsForChannel } = require('../lib/autoresponses');
+const { reactionsForChannel } = require('../lib/autoresponses');
 const { handleSmsReply } = require('../lib/sms');
 const log = require('../logger');
 
@@ -29,18 +29,6 @@ module.exports = {
         await message.react(emoji);
       } catch (err) {
         log.warn('messageCreate: react failed', emoji, err.message);
-      }
-    }
-
-    // --- Keyword auto-responses --------------------------------------------
-    if (message.content) {
-      const reply = matchKeyword(message.content);
-      if (reply) {
-        try {
-          await message.reply({ content: reply, allowedMentions: { repliedUser: false } });
-        } catch (err) {
-          log.warn('messageCreate: auto-reply failed', err.message);
-        }
       }
     }
   },
