@@ -36,13 +36,7 @@ if (isset($_POST['email'])) {
 
 	// reCAPTCHA (same v2 checkbox the contact form uses). Blocks the bot spam that
 	// was POSTing straight to this endpoint.
-	$captcha = @$_POST['g-recaptcha-response'];
-	if (empty($captcha)) {
-		echo 'CAPTCHA';
-		exit;
-	}
-	$verify = @json_decode(@file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . GOOGLE_RECAPTCHA_KEY . '&response=' . urlencode($captcha) . '&remoteip=' . urlencode($_SERVER['REMOTE_ADDR'])), true);
-	if (empty($verify['success'])) {
+	if (!recaptcha_verify(@$_POST['g-recaptcha-response'])) {
 		echo 'CAPTCHA';
 		exit;
 	}
