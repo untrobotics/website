@@ -229,7 +229,6 @@ head('Home', true);
 						<label for="footer-subscribe-email" class="form-label form-label-subscribe">Enter your e-mail</label>
 						<input id="footer-subscribe-email" type="email" name="email" data-constraints="@Email @Required" class="form-control form-control-subscribe">
 					  </div>
-					  <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
 					  <div class="g-recaptcha" data-sitekey="6LeWt9MUAAAAADskIvjv8Vt49_-riUjAq6O8Uihq"></div>
 					  <button type="submit" class="btn btn-default btn-default-white">subscribe</button>
 					</form>

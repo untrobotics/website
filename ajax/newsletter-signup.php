@@ -34,13 +34,6 @@ function brevo_subscribe($email) {
 if (isset($_POST['email'])) {
 	$email = trim(@$_POST['email']);
 
-	// Honeypot: a hidden field real users never fill. Bots that fill every field
-	// out themselves; pretend success so they don't learn they were caught.
-	if (!empty($_POST['website'])) {
-		echo 'SUCCESS';
-		exit;
-	}
-
 	// reCAPTCHA (same v2 checkbox the contact form uses). Blocks the bot spam that
 	// was POSTing straight to this endpoint.
 	$captcha = @$_POST['g-recaptcha-response'];

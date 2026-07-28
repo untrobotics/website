@@ -21,8 +21,7 @@ if (isset($_POST)) {
 	$valid_classifications = array('freshman', 'sophomore', 'junior', 'senior', 'postgraduate');
 
 	do {
-		// Anti-abuse: honeypot + reCAPTCHA.
-		if (!empty($_POST['website'])) { echo 'SUCCESS'; break; }
+		// Anti-abuse: reCAPTCHA.
 		if (!recaptcha_verify(@$_POST['g-recaptcha-response'])) { echo 'CAPTCHA'; break; }
 		if (strlen($name) < 4) {
 			echo 'INVALID_NAME';

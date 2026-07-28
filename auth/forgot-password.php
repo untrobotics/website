@@ -6,7 +6,6 @@ if (isset($_POST['email'])) {
         // Anti-abuse: honeypot, reCAPTCHA, and a per-IP rate limit — this endpoint
         // sends email via Brevo, so an unthrottled bot could email-bomb a target
         // and burn the daily send quota.
-        if (!empty($_POST['website'])) { $error = "Something went wrong. Please try again."; break; }
         if (!recaptcha_verify(@$_POST['g-recaptcha-response'])) {
             $error = "Please complete the reCAPTCHA to confirm you are human.";
             break;
@@ -121,7 +120,6 @@ head('Forgot Password', true);
                                         <input id="email" type="email" name="email" data-constraints="@Required" class="form-control">
                                     </div>
                                 </div>
-                                <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;" aria-hidden="true">
                                 <div style="clear:both;overflow:hidden;margin-top:25px;display:flex;justify-content:center;"><div class="g-recaptcha" data-sitekey="6LeWt9MUAAAAADskIvjv8Vt49_-riUjAq6O8Uihq"></div></div>
                                 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
                                 <button type="submit" class="btn btn-default offset-top-20">Submit</button>
