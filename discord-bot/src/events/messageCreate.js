@@ -1,8 +1,9 @@
 'use strict';
 
 const { Events } = require('discord.js');
-const { reactionsForChannel } = require('../lib/autoresponses');
+const { matchKeyword, reactionsForChannel } = require('../lib/autoresponses');
 const { handleSmsReply } = require('../lib/sms');
+const config = require('../config');
 const log = require('../logger');
 
 module.exports = {
@@ -29,6 +30,21 @@ module.exports = {
         await message.react(emoji);
       } catch (err) {
         log.warn('messageCreate: react failed', emoji, err.message);
+      }
+    }
+
+    // --- Keyword auto-responses (verification help only) --------------------
+    // Restricted to the verification channel(s) so the bot never butts into
+    // general conversation.
+    const verifyChannels = [config.verifyChannelId, config.verifyHelpChannelId].filter(Boolean);
+    if (message.content && verifyChannels.includes(message.channelId)) {
+      const reply = matchKeyword(message.content);
+      if (reply) {
+        try {
+          await message.reply({ content: reply, allowedMentions: { repliedUser: false } });
+        } catch (err) {
+          log.warn('messageCreate: auto-reply failed', err.message);
+        }
       }
     }
   },
