@@ -23,12 +23,6 @@ const KEYWORD_RESPONSES = [
       'Check the announcements channel and https://www.untrobotics.com for the ' +
       'latest meeting schedule!',
   },
-  {
-    triggers: ['botathon'],
-    reply:
-      'Botathon info lives at https://www.untrobotics.com/botathon — registration ' +
-      'and details are posted there.',
-  },
 ];
 
 // channelId -> ['👍', '🤖', ...]. Empty by default.
