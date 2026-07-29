@@ -72,7 +72,8 @@ $projects = array(
     .proj { display: flex; gap: 34px; align-items: flex-start; margin-bottom: 64px; }
     .proj:nth-child(even) { flex-direction: row-reverse; }
     .proj-media { flex: 0 0 46%; max-width: 46%; }
-    .proj-media .main { width: 100%; border-radius: 10px; display: block; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
+    .proj-media .main { width: 100%; height: 380px; object-fit: cover; border-radius: 10px; display: block; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
+    @media (max-width: 767px) { .proj-media .main { height: 280px; } }
     .proj-thumbs { display: flex; gap: 8px; margin-top: 8px; }
     .proj-thumbs img { width: 100%; height: 84px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: opacity .15s, transform .15s; }
     .proj-thumbs img:hover { opacity: .85; transform: translateY(-2px); }
