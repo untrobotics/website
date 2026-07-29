@@ -209,7 +209,14 @@ footer(false);
         __ece.mount('#express-checkout-element');
         var apRedirect = document.getElementById('applepay-redirect');
         __ece.on('ready', function (e) {
-            if (apRedirect) { apRedirect.style.display = (e && e.availablePaymentMethods && e.availablePaymentMethods.applePay) ? 'none' : 'flex'; }
+            var avail = e && e.availablePaymentMethods;
+            if (apRedirect) { apRedirect.style.display = (avail && avail.applePay) ? 'none' : 'flex'; }
+            // No wallet on this device: ECE renders an empty sliver — hide it so it
+            // doesn't leave a stray gap above the fallback buttons.
+            if (!avail || (!avail.applePay && !avail.googlePay)) {
+                var eceEl = document.getElementById('express-checkout-element');
+                if (eceEl) { eceEl.style.display = 'none'; }
+            }
         });
         if (needShip) { __ece.on('shippingaddresschange', function (e) { e.resolve(); }); }
         __ece.on('confirm', function (event) {

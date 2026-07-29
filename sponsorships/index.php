@@ -95,7 +95,14 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
         expressEl.mount('#express-checkout-element');
         var apRedirect = document.getElementById('applepay-redirect');
         expressEl.on('ready', function (e) {
-            if (apRedirect && e && e.availablePaymentMethods && e.availablePaymentMethods.applePay) { apRedirect.style.display = 'none'; }
+            var avail = e && e.availablePaymentMethods;
+            if (apRedirect && avail && avail.applePay) { apRedirect.style.display = 'none'; }
+            // No wallet on this device: ECE renders an empty sliver — hide it so it
+            // doesn't leave a stray gap above the fallback buttons.
+            if (!avail || (!avail.applePay && !avail.googlePay)) {
+                var eceEl = document.getElementById('express-checkout-element');
+                if (eceEl) { eceEl.style.display = 'none'; }
+            }
         });
         if (apRedirect) {
             apRedirect.addEventListener('click', function () {
