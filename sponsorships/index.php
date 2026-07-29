@@ -36,7 +36,10 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
                     /* Uniform spacing so every payment button (incl. PayPal's) is evenly stacked. */
                     #express-checkout-element, #applepay-redirect, #paypal-button-container, #stripe-donate-button { margin: 0 0 10px !important; }
                     #express-checkout-element:empty { margin: 0 !important; }
-                    #paypal-button-container { min-height: 0; }
+                    /* PayPal reserves ~8px of empty space below its buttons inside its own
+                       container; trim its bottom margin so the gap below PayPal matches the
+                       10px used between every other button. */
+                    #paypal-button-container { min-height: 0; margin-bottom: 2px !important; }
                     .stripe-mark { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 4px; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.32); }
     </style>
                 <div class="offset-top-30" id="donation-widget">
