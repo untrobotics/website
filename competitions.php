@@ -36,7 +36,7 @@ head('Competitions', true);
         </div>
 
         <div class="comp">
-            <div class="comp-img"><img src="/images/content/aerospace/nasa-sl-2023-1.jpg" alt="NASA Student Launch rocket" loading="lazy"></div>
+            <div class="comp-img"><img src="/images/content/aerospace/rocket-launch-still.jpg" alt="High-power rocket launch" loading="lazy"></div>
             <div class="comp-text">
                 <span class="tag">NASA Student Launch</span>
                 <h3>NASA Student Launch (USLI)</h3>

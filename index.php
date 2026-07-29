@@ -161,7 +161,7 @@ head('Home', true);
             <div data-items="1" data-sm-items="2" data-md-items="3" data-lg-items="4" data-stage-padding="0" data-loop="true" data-margin="15" data-mouse-drag="true" data-autoplay="true" data-autoplay-timeout="4000" data-dots="true" data-nav-custom=".owl-custom-navigation" class="owl-carousel">
               <?php
                 $featured = array(
-                  array('High-Power Rocketry', 'aerospace/hpr-launch-prep.jpg'),
+                  array('High-Power Rocketry', 'aerospace/rocket-launch-still.jpg'),
                   array('Scrapp-E', 'scrappe/build-hdr.jpg'),
                   array('JPL Rover', 'rover/system-integration.jpg'),
                   array('Sofabot', 'sofabot/build-1.jpg'),

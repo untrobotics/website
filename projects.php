@@ -8,9 +8,9 @@ $projects = array(
     array(
         'title' => 'High-Power Rocketry',
         'tag' => 'Aerospace Division',
-        'img' => 'aerospace/hpr-launch-prep.jpg',
+        'img' => 'aerospace/rocket-launch-still.jpg',
         'body' => "Our Aerospace Division designs, builds, and flies high-power rockets from the ground up &mdash; custom fiberglass airframes, hand-sewn parachutes, 3D-printed fin cans, and full paint jobs. We competed in <strong>NASA Student Launch</strong> for two seasons, culminating in a launch at NASA&rsquo;s Marshall Space Flight Center in Huntsville, Alabama. Members earn their Level 1 and Level 2 certifications and fly regularly with the North Texas rocketry community.",
-        'gallery' => array('aerospace/nasa-sl-2023-1.jpg', 'aerospace/hpr-custom-paint.jpg', 'aerospace/rocket-launch-still.jpg'),
+        'gallery' => array('aerospace/hpr-launch-prep.jpg', 'aerospace/hpr-custom-paint.jpg', 'aerospace/nasa-sl-2023-1.jpg'),
     ),
     array(
         'title' => 'Scrapp-E',
@@ -75,8 +75,8 @@ $projects = array(
     .proj-media { flex: 0 0 46%; max-width: 46%; }
     .proj-media .main { width: 100%; height: 380px; object-fit: cover; border-radius: 10px; display: block; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
     @media (max-width: 767px) { .proj-media .main { height: 280px; } }
-    .proj-thumbs { display: flex; flex-wrap: nowrap; gap: 8px; margin-top: 8px; }
-    .proj-thumbs img { flex: 1 1 0; min-width: 0; width: auto; height: 84px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: opacity .15s, transform .15s; }
+    .proj-thumbs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 8px; }
+    .proj-thumbs img { width: 100%; height: 84px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: opacity .15s, transform .15s; }
     .proj-thumbs img:hover { opacity: .85; transform: translateY(-2px); }
     .proj-media .main { cursor: zoom-in; }
     .proj-body { flex: 1 1 auto; }
@@ -133,23 +133,12 @@ $projects = array(
 </div>
 <script>
 (function () {
-    // Clicking a thumbnail swaps it into that project's main image.
-    document.querySelectorAll('.proj-media').forEach(function (media) {
-        var main = media.querySelector('img.main');
-        if (!main) return;
-        media.querySelectorAll('.proj-thumbs img').forEach(function (thumb) {
-            thumb.addEventListener('click', function () {
-                var prev = main.getAttribute('src');
-                main.setAttribute('src', thumb.getAttribute('src'));
-                thumb.setAttribute('src', prev); // swap so the gallery keeps all images
-            });
-        });
-    });
-    // Clicking a main image opens it full-size in a lightbox.
+    // Clicking any project image (main or thumbnail) opens it full-size in a
+    // lightbox. No swapping — thumbnails stay put.
     var lb = document.getElementById('lightbox'), lbImg = document.getElementById('lightbox-img');
-    document.querySelectorAll('.proj-media img.main').forEach(function (m) {
-        m.addEventListener('click', function () {
-            lbImg.setAttribute('src', m.getAttribute('src'));
+    document.querySelectorAll('.proj-media img.main, .proj-thumbs img').forEach(function (img) {
+        img.addEventListener('click', function () {
+            lbImg.setAttribute('src', img.getAttribute('src'));
             lb.style.display = 'flex';
         });
     });
