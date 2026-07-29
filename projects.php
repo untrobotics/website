@@ -65,9 +65,9 @@ $sections = array(
             array(
                 'title' => 'IEEE Region 5',
                 'tag' => 'Competition &mdash; 1st Place',
-                'img' => 'ieee2019/build-1.jpg',
+                'img' => 'ieee2019/build-5.jpg',
                 'body' => "Our competition team represents UNT at the IEEE Region 5 student competitions &mdash; including a <strong>first-place autonomous drone</strong> that identified and popped balloons by color using computer vision, beating out eleven other universities. The team continues to build for IEEE&rsquo;s autonomous robotics challenges, putting our controls, vision, and mechanical work to the test against schools across the region.",
-                'gallery' => array('ieee2019/build-3.jpg', 'ieee2019/build-4.jpg', 'ieee2019/build-5.jpg'),
+                'gallery' => array('ieee2019/build-1.jpg', 'ieee2019/build-3.jpg', 'ieee2019/build-4.jpg'),
             ),
             array(
                 'title' => 'Botathon',
