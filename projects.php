@@ -32,7 +32,7 @@ $projects = array(
         'img' => 'sofabot/build-1.jpg',
         'body' => "Exactly what it sounds like: a fully rideable, self-driving <strong>electric sofa</strong>. Two batteries, a geared drivetrain, and a Raspberry Pi with a high-torque steering servo push it to around 12 mph. Built over years in members&rsquo; garages, Sofabot is the club&rsquo;s favorite &ldquo;because we can&rdquo; project &mdash; and yes, there&rsquo;s video of its very first drive.",
         'gallery' => array('sofabot/circle-done.jpg', 'sofabot/early-build.jpg'),
-        'video' => 'video/sofabot-first-drive.mov',
+        'video' => 'video/sofabot-first-drive.mp4',
     ),
     array(
         'title' => 'Botathon',
@@ -74,7 +74,9 @@ $projects = array(
     .proj-media { flex: 0 0 46%; max-width: 46%; }
     .proj-media .main { width: 100%; border-radius: 10px; display: block; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
     .proj-thumbs { display: flex; gap: 8px; margin-top: 8px; }
-    .proj-thumbs img { width: 100%; height: 84px; object-fit: cover; border-radius: 6px; }
+    .proj-thumbs img { width: 100%; height: 84px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: opacity .15s, transform .15s; }
+    .proj-thumbs img:hover { opacity: .85; transform: translateY(-2px); }
+    .proj-media .main { cursor: zoom-in; }
     .proj-body { flex: 1 1 auto; }
     .proj-tag { display: inline-block; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #24c57c; font-weight: 700; margin-bottom: 6px; }
     .proj-body h3 { margin: 0 0 12px; font-size: 26px; }
@@ -99,8 +101,8 @@ $projects = array(
                 <div class="proj-media">
                     <img class="main" src="/images/content/<?php echo htmlspecialchars($p['img']); ?>" alt="<?php echo htmlspecialchars($p['title']); ?>" loading="lazy">
                     <?php if (!empty($p['video'])): ?>
-                        <video class="proj-video" controls preload="none" poster="/images/content/<?php echo htmlspecialchars($p['img']); ?>">
-                            <source src="/images/content/<?php echo htmlspecialchars($p['video']); ?>" type="video/quicktime">
+                        <video class="proj-video" controls preload="metadata" poster="/images/content/<?php echo htmlspecialchars($p['img']); ?>">
+                            <source src="/images/content/<?php echo htmlspecialchars($p['video']); ?>" type="video/mp4">
                         </video>
                     <?php endif; ?>
                     <?php if (!empty($p['gallery'])): ?>
@@ -123,5 +125,35 @@ $projects = array(
         </div>
     </div>
 </main>
+
+<div id="lightbox" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.9);align-items:center;justify-content:center;cursor:zoom-out;">
+    <img id="lightbox-img" src="" alt="" style="max-width:92vw;max-height:92vh;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.5);">
+</div>
+<script>
+(function () {
+    // Clicking a thumbnail swaps it into that project's main image.
+    document.querySelectorAll('.proj-media').forEach(function (media) {
+        var main = media.querySelector('img.main');
+        if (!main) return;
+        media.querySelectorAll('.proj-thumbs img').forEach(function (thumb) {
+            thumb.addEventListener('click', function () {
+                var prev = main.getAttribute('src');
+                main.setAttribute('src', thumb.getAttribute('src'));
+                thumb.setAttribute('src', prev); // swap so the gallery keeps all images
+            });
+        });
+    });
+    // Clicking a main image opens it full-size in a lightbox.
+    var lb = document.getElementById('lightbox'), lbImg = document.getElementById('lightbox-img');
+    document.querySelectorAll('.proj-media img.main').forEach(function (m) {
+        m.addEventListener('click', function () {
+            lbImg.setAttribute('src', m.getAttribute('src'));
+            lb.style.display = 'flex';
+        });
+    });
+    lb.addEventListener('click', function () { lb.style.display = 'none'; lbImg.setAttribute('src', ''); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { lb.style.display = 'none'; } });
+})();
+</script>
 <?php
 footer();
