@@ -34,10 +34,10 @@ patches:
 images:
   - name: untrobotics-web
     newName: ghcr.io/untrobotics/website
-    newTag: "v1.0.72"
+    newTag: "v1.0.73"
   - name: untrobotics-driver-ws
     newName: ghcr.io/untrobotics/website-driver-ws
     newTag: "v1.0.3"
   - name: untrobotics-discord-bot
     newName: ghcr.io/untrobotics/website-discord-bot
-    newTag: "v1.0.72"
+    newTag: "v1.0.73"
