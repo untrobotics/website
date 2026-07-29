@@ -33,6 +33,7 @@ $projects = array(
         'body' => "Exactly what it sounds like: a fully rideable, self-driving <strong>electric sofa</strong>. Two batteries, a geared drivetrain, and a Raspberry Pi with a high-torque steering servo push it to around 12 mph. Built over years in members&rsquo; garages, Sofabot is the club&rsquo;s favorite &ldquo;because we can&rdquo; project &mdash; and yes, there&rsquo;s video of its very first drive.",
         'gallery' => array('sofabot/circle-done.jpg', 'sofabot/early-build.jpg'),
         'video' => 'video/sofabot-first-drive.mp4',
+        'poster' => 'video/sofabot-poster.jpg',
     ),
     array(
         'title' => 'Botathon',
@@ -74,8 +75,8 @@ $projects = array(
     .proj-media { flex: 0 0 46%; max-width: 46%; }
     .proj-media .main { width: 100%; height: 380px; object-fit: cover; border-radius: 10px; display: block; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
     @media (max-width: 767px) { .proj-media .main { height: 280px; } }
-    .proj-thumbs { display: flex; gap: 8px; margin-top: 8px; }
-    .proj-thumbs img { width: 100%; height: 84px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: opacity .15s, transform .15s; }
+    .proj-thumbs { display: flex; flex-wrap: nowrap; gap: 8px; margin-top: 8px; }
+    .proj-thumbs img { flex: 1 1 0; min-width: 0; width: auto; height: 84px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: opacity .15s, transform .15s; }
     .proj-thumbs img:hover { opacity: .85; transform: translateY(-2px); }
     .proj-media .main { cursor: zoom-in; }
     .proj-body { flex: 1 1 auto; }
@@ -102,7 +103,7 @@ $projects = array(
                 <div class="proj-media">
                     <img class="main" src="/images/content/<?php echo htmlspecialchars($p['img']); ?>" alt="<?php echo htmlspecialchars($p['title']); ?>" loading="lazy">
                     <?php if (!empty($p['video'])): ?>
-                        <video class="proj-video" controls preload="metadata" poster="/images/content/<?php echo htmlspecialchars($p['img']); ?>">
+                        <video class="proj-video" controls preload="metadata" poster="/images/content/<?php echo htmlspecialchars(!empty($p['poster']) ? $p['poster'] : $p['img']); ?>">
                             <source src="/images/content/<?php echo htmlspecialchars($p['video']); ?>" type="video/mp4">
                         </video>
                     <?php endif; ?>
