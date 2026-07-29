@@ -10,7 +10,7 @@ $projects = array(
         'tag' => 'Aerospace Division',
         'img' => 'aerospace/hpr-launch-prep.jpg',
         'body' => "Our Aerospace Division designs, builds, and flies high-power rockets from the ground up &mdash; custom fiberglass airframes, hand-sewn parachutes, 3D-printed fin cans, and full paint jobs. We competed in <strong>NASA Student Launch</strong> for two seasons, culminating in a launch at NASA&rsquo;s Marshall Space Flight Center in Huntsville, Alabama. Members earn their Level 1 and Level 2 certifications and fly regularly with the North Texas rocketry community.",
-        'gallery' => array('aerospace/hpr-custom-paint.jpg', 'aerospace/rocket-launch-still.jpg', 'aerospace/hpr-parachute-sewing.jpg'),
+        'gallery' => array('aerospace/nasa-sl-2023-1.jpg', 'aerospace/hpr-custom-paint.jpg', 'aerospace/rocket-launch-still.jpg'),
     ),
     array(
         'title' => 'Scrapp-E',
@@ -51,9 +51,9 @@ $projects = array(
     array(
         'title' => 'IEEE Region 5',
         'tag' => 'Competition',
-        'img' => 'aerospace/hpr-third-scale-model.jpg',
+        'img' => 'ieee2019/build-1.jpg',
         'body' => "Our competition team represents UNT at the IEEE Region 5 student competitions &mdash; including a <strong>first-place autonomous drone</strong> that identified and popped balloons by color using computer vision. The team continues to build for IEEE&rsquo;s autonomous robotics challenges, putting our controls, vision, and mechanical work to the test against schools across the region.",
-        'gallery' => array(),
+        'gallery' => array('ieee2019/build-3.jpg', 'ieee2019/build-4.jpg', 'ieee2019/build-5.jpg'),
     ),
     array(
         'title' => 'Recreational Builds',

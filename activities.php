@@ -26,7 +26,13 @@ head('Activities', true);
               <div class="cell-lg-10 text-left">
 
                 <h2 class="text-center">What We Do</h2>
-                <p class="text-center offset-top-10">UNT Robotics is a student-run engineering organization at the University of North Texas. Since our founding in 2018, our mission has been simple: inspire people and teach them the skills to reach their goals in robotics. Everything we do &mdash; workshops, competitions, projects, and industry connections &mdash; is open to <strong>every major and every skill level</strong>, from first-time beginners to seasoned builders.</p>
+                <p class="text-center offset-top-10">UNT Robotics is a student-run engineering organization at the University of North Texas with roots going back decades on campus. After a period of dormancy, the club was <strong>revived in 2018</strong> and has grown ever since. Our mission is simple: inspire people and teach them the skills to reach their goals in robotics. Everything we do &mdash; workshops, competitions, projects, and industry connections &mdash; is open to <strong>every major and every skill level</strong>, from first-time beginners to seasoned builders.</p>
+
+                <div class="range offset-top-30" style="gap:10px 0;">
+                    <div class="cell-sm-4"><img src="/images/content/events/hackunt-2024-1.jpg" alt="Members at an event" style="width:100%;height:180px;object-fit:cover;border-radius:8px;" loading="lazy"></div>
+                    <div class="cell-sm-4"><img src="/images/content/aerospace/hpr-launch-prep.jpg" alt="High-power rocket" style="width:100%;height:180px;object-fit:cover;border-radius:8px;" loading="lazy"></div>
+                    <div class="cell-sm-4"><img src="/images/content/rover/system-integration.jpg" alt="Rover build" style="width:100%;height:180px;object-fit:cover;border-radius:8px;" loading="lazy"></div>
+                </div>
 
                 <h3 class="offset-top-50">Workshops &amp; Learning</h3>
                 <p>We host hands-on workshops throughout the semester that take members from the fundamentals all the way to advanced builds. Past workshops have covered electrical circuits, programming microcontrollers, computer-aided design (CAD), image processing, and using Bluetooth to control robots. They&rsquo;re beginner-friendly and open to all &mdash; no experience required.</p>

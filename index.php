@@ -141,57 +141,40 @@ head('Home', true);
             </div>
           </div>
         </section>
-        <!-- Our projects-->
-        <!--<section class="section-top-50 section-lg-0">
+        <!-- Featured projects -->
+        <section class="section-top-50 section-lg-0">
           <div class="shell">
             <div class="range">
               <div class="cell-md-10 cell-lg-7 cell-xl-6">
                 <div class="divider-block">
                   <h2>Featured Projects</h2>
-                  <h6>We have made all kinds of robots to complete all sorts of tasks<br class="veil reveal-md-block">check out some of our favourites below.
-                  </h6>
+                  <h6>From high-power rockets to a self-driving sofa &mdash; here are a few of our favourites.<br class="veil reveal-md-block"><a href="/projects">See all our projects &rarr;</a></h6>
                 </div>
               </div>
             </div>
           </div>
-          <div class="owl-carousel-wrap text-center wrap-fluid">
-            <div data-items="1" data-sm-items="2" data-md-items="3" data-lg-items="4" data-xl-items="5" data-stage-padding="0" data-loop="true" data-margin="15" data-mouse-drag="true" data-autoplay="false" data-dots="true" data-nav-custom=".owl-custom-navigation" class="owl-carousel">
-              <div class="owl-item">
-                <div class="product product-custom"><img src="images/.." alt="" width="372" height="500" class="img-responsive"><a href="#">
-                    <div class="product-content">
-                      <div class="small">Sofabot</div>
-                    </div></a></div>
-              </div>
-              <div class="owl-item">
-                <div class="product product-custom"><img src="images/..." alt="" width="372" height="500" class="img-responsive"><a href="#">
-                    <div class="product-content">
-                      <div class="small">T-Shirt Cannon Bot</div>
-                    </div></a></div>
-              </div>
-              <div class="owl-item">
-                <div class="product product-custom"><img src="images/..." alt="" width="372" height="500" class="img-responsive"><a href="#">
-                    <div class="product-content">
-                      <div class="small">Botathon 2019</div>
-                    </div></a></div>
-              </div>
-              <div class="owl-item">
-                <div class="product product-custom"><img src="images/..." alt="" width="372" height="500" class="img-responsive"><a href="#">
-                    <div class="product-content">
-                      <div class="small">IEEE R5 2019</div>
-                    </div></a></div>
-              </div>
-              <div class="owl-item">
-                <div class="product product-custom"><img src="images/..." alt="" width="372" height="500" class="img-responsive"><a href="#">
-                    <div class="product-content">
-                      <div class="small">SAE Dashboard</div>
-                    </div></a></div>
-              </div>
-			  <div class="owl-item">
-                <div class="product product-custom"><img src="images/..." alt="" width="372" height="500" class="img-responsive"><a href="#">
-                    <div class="product-content">
-                      <div class="small">Quadcopter Workshop</div>
-                    </div></a></div>
-              </div>
+          <style>
+            .feat-carousel .product-custom img { height: 300px; width: 100%; object-fit: cover; }
+            .feat-carousel .product-content .small { font-size: 18px; }
+          </style>
+          <div class="owl-carousel-wrap text-center wrap-fluid feat-carousel">
+            <div data-items="1" data-sm-items="2" data-md-items="3" data-lg-items="4" data-stage-padding="0" data-loop="true" data-margin="15" data-mouse-drag="true" data-autoplay="true" data-autoplay-timeout="4000" data-dots="true" data-nav-custom=".owl-custom-navigation" class="owl-carousel">
+              <?php
+                $featured = array(
+                  array('High-Power Rocketry', 'aerospace/hpr-launch-prep.jpg'),
+                  array('Scrapp-E', 'scrappe/build-hdr.jpg'),
+                  array('JPL Rover', 'rover/system-integration.jpg'),
+                  array('Sofabot', 'sofabot/build-1.jpg'),
+                  array('Botathon', 'botathon/s7-1.jpg'),
+                  array('3D Printing', 'printing/nosecone-ocean-pattern.jpg'),
+                );
+                foreach ($featured as $f) {
+                  echo '<div class="owl-item"><div class="product product-custom">'
+                     . '<img src="/images/content/' . htmlspecialchars($f[1]) . '" alt="' . htmlspecialchars($f[0]) . '" class="img-responsive">'
+                     . '<a href="/projects"><div class="product-content"><div class="small">' . htmlspecialchars($f[0]) . '</div></div></a>'
+                     . '</div></div>';
+                }
+              ?>
             </div>
             <div class="owl-custom-navigation">
               <div class="owl-nav">
@@ -200,7 +183,7 @@ head('Home', true);
               </div>
             </div>
           </div>
-        </section>-->
+        </section>
       </main>
 
 		<footer class="page-footer page-footer-default">

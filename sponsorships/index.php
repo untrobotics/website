@@ -32,7 +32,11 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
                     #stripe-donate-button:hover { background: #544dff; }
                     #stripe-donate-button:disabled { opacity: .6; cursor: default; }
                     .stripe-note { text-align: center; font-size: 11px; color: #9aa0a6; margin-top: 6px; }
-                    #applepay-redirect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 46px; margin-bottom: 10px; border: 0; border-radius: 6px; background: #000; color: #fff; font-size: 18px; font-weight: 500; cursor: pointer; }
+                    #applepay-redirect { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 46px; border: 0; border-radius: 6px; background: #000; color: #fff; font-size: 18px; font-weight: 500; cursor: pointer; }
+                    /* Uniform spacing so every payment button (incl. PayPal's) is evenly stacked. */
+                    #express-checkout-element, #applepay-redirect, #paypal-button-container, #stripe-donate-button { margin: 0 0 10px !important; }
+                    #express-checkout-element:empty { margin: 0 !important; }
+                    #paypal-button-container { min-height: 0; }
                     .stripe-mark { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 4px; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.32); }
     </style>
                 <div class="offset-top-30" id="donation-widget">
@@ -48,10 +52,10 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
                         <input type="text" inputmode="decimal" id="donation-amount" value="25" placeholder="Amount" autocomplete="off">
                     </div>
 
-                    <div id="express-checkout-element" style="margin-bottom: 10px;"></div>
+                    <div id="express-checkout-element"></div>
                     <button id="applepay-redirect" type="button"><svg width="16" height="20" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C60.7 141.5 0 184.1 0 270c0 25.4 4.6 51.6 13.9 78.6 12.5 35.5 57.5 122.6 104.4 121.2 24.6-.6 42-17.4 74-17.4 31.1 0 47.3 17.4 74.7 17.4 47.4-.7 88-79.7 100-115.3-63.5-30-62.3-87.6-62.3-89.8zm-51.7-165c25-29.7 22.7-56.7 22-66.5-22.1 1.3-47.6 15-62.2 32.9-16 19.2-25.4 42.9-23.4 66 23.9 1.8 45.7-10.5 63.6-32.4z"/></svg> Pay</button>
                     <div id="paypal-button-container"></div>
-                    <div style="margin-top: 10px;">
+                    <div>
                         <button id="stripe-donate-button" type="button">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
                             <span id="stripe-donate-label">Donate with card</span><svg class="stripe-mark" width="40" height="17" viewBox="0 0 468 222.5" fill="currentColor" aria-hidden="true"><path d="M414 113.4c0-25.6-12.4-45.8-36.1-45.8-23.8 0-38.2 20.2-38.2 45.6 0 30.1 17 45.3 41.4 45.3 11.9 0 20.9-2.7 27.7-6.5v-20c-6.8 3.4-14.6 5.5-24.5 5.5-9.7 0-18.3-3.4-19.4-15.2h48.9c0-1.3.2-6.5.2-8.9zm-49.4-9.5c0-11.3 6.9-16 13.2-16 6.1 0 12.6 4.7 12.6 16h-25.8zM301.1 67.6c-9.8 0-16.1 4.6-19.6 7.8l-1.3-6.2h-22v116.6l25-5.3.1-28.3c3.6 2.6 8.9 6.3 17.7 6.3 17.9 0 34.2-14.4 34.2-46.1-.1-29-16.6-44.8-34.1-44.8zm-6 68.9c-5.9 0-9.4-2.1-11.8-4.7l-.1-37.1c2.6-2.9 6.2-4.9 11.9-4.9 9.1 0 15.4 10.2 15.4 23.3 0 13.4-6.2 23.4-15.4 23.4zM223.8 61.7l25.1-5.4V36l-25.1 5.3v20.4zM223.8 69.3h25.1v87.5h-25.1zM196.9 76.7l-1.6-7.4h-21.6v87.5h25V97.8c5.9-7.7 15.9-6.3 19-5.2v-23c-3.2-1.2-14.9-3.4-20.8 7.1zM146.9 47.6l-24.4 5.2-.1 80.1c0 14.8 11.1 25.7 25.9 25.7 8.2 0 14.2-1.5 17.5-3.3V135c-3.2 1.3-19 5.9-19-8.9V90.6h19V69.3h-19l.1-21.7zM79.3 94.7c0-3.9 3.2-5.4 8.5-5.4 7.6 0 17.2 2.3 24.8 6.4V72.2c-8.3-3.3-16.5-4.6-24.8-4.6C67.5 67.6 54 78.2 54 95.9c0 27.6 38 23.2 38 35.1 0 4.6-4 6.1-9.6 6.1-8.3 0-18.9-3.4-27.3-8v23.8c9.3 4 18.7 5.7 27.3 5.7 20.8 0 35.1-10.3 35.1-28.2-.1-29.8-38.2-24.5-38.2-35.7z"/></svg>

@@ -207,19 +207,13 @@ head('Botathon Info', true);
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <h2>Registration</h2>
-                        <p>Registration for Season <?php echo BOTATHON_SEASON?> <em>is open now</em> for all currently enrolled UNT students.</p>
-
-                        <div class="cell-md-8 cell-lg-9">
-                            <h4><strong>Mar. 8:</strong> Registration Opened</h4>
-                            <h4><strong>Mar. 28:</strong> Registration Ends</h4>
-                            <h4><strong>Mar. 30:</strong> Day of Event</h4>
-                        </div>
+                        <p>Botathon runs each spring and is open to all currently enrolled UNT students &mdash; every major, every skill level. For this season&rsquo;s exact dates and theme, check our <a href="https://untro.bo/join/discord">Discord</a> and the announcements channel.</p>
 
                         <div class="well-custom">
                             <div><h5><strong>Open to all UNT students.</strong></h5></div>
                             <div><h5>Learn something new and make new friends!</h5></div>
                             <div class="text-center"><a href="register" class="btn btn-default btn-round"
-                                                        style="margin: 20px;">Register Now</a></div>
+                                                        style="margin: 20px;">Register</a></div>
                         </div>
 
                         <div class="inset-md-right-30 inset-lg-right-0">
@@ -227,6 +221,31 @@ head('Botathon Info', true);
                     </div>
                 </div>
             </div>
+    </section>
+
+    <section class="section-50" id="history" style="background:#f7f7f7;">
+        <div class="shell">
+            <h2>Season History</h2>
+            <p>Every Botathon gets a fresh theme, dreamed up by our officers. Here&rsquo;s the story so far:</p>
+            <div class="range offset-top-20" style="gap:12px 0;">
+                <div class="cell-md-6"><img src="/images/content/botathon/s7-1.jpg" alt="Botathon competition" style="width:100%;height:240px;object-fit:cover;border-radius:8px;" loading="lazy"></div>
+                <div class="cell-md-6"><img src="/images/content/botathon/s3-1.jpg" alt="Botathon build" style="width:100%;height:240px;object-fit:cover;border-radius:8px;" loading="lazy"></div>
+            </div>
+            <div class="table-responsive offset-top-20">
+                <table class="table">
+                    <thead><tr><th>Season</th><th>Year</th><th>Theme</th></tr></thead>
+                    <tbody>
+                        <tr><td>Season 1</td><td>2019</td><td>Balloons &mdash; the very first Botathon</td></tr>
+                        <tr><td>Season 2</td><td>2020</td><td><em>Cancelled (COVID-19)</em></td></tr>
+                        <tr><td>Season 3</td><td>2021</td><td>Pirates</td></tr>
+                        <tr><td>Season 4</td><td>2022</td><td>Football</td></tr>
+                        <tr><td>Season 5</td><td>2023</td><td>Mario Kart</td></tr>
+                        <tr><td>Season 6</td><td>2024</td><td>Capture the Flag</td></tr>
+                        <tr><td>Season 7</td><td>2025</td><td>Keep on Trucking (IR-laser combat)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </section>
 
     <!--<section class="section-50" id="event-details">
@@ -248,7 +267,7 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <p class="inset-md-right-30 inset-lg-right-0">
-                        <p>Botathon Season 5 will be a capture the flag style event, where robots will face off 1v1 and must capture blocks from the opposing team. The blue side must capture the red blocks, and the red side must capture the blue blocks.</p>
+                        <p>Gameplay changes with each season&rsquo;s theme. As an example, one recent season was a capture-the-flag style event, where robots faced off 1v1 and had to capture blocks from the opposing team &mdash; the blue side capturing red blocks, and the red side capturing blue blocks.</p>
                         <p>These blocks will be of two types:</p>
                         <p>
                             <ol>
@@ -259,7 +278,7 @@ head('Botathon Info', true);
                         <p>To capture a block, it must be placed on the robot’s home side within a marked boundary called the ‘capture area’ (marked using tape) and remain within the boundary at the end of the match.</p>
                         <p>A secondary capture area atop a ramp will provide the team one extra point per block. So, a wooden block in the secondary capture area will be worth 2 points, and a nickel block worth 3 points.</p>
                         <p>Each round will have a 3 minute time limit. At the end of the match, a referee will count all of the blocks in each area and determine the scores and winner. In the case of a tie, a sudden death round will occur with a single block placed in the center of the field and the first team to capture the block and place it into one of their capture areas will be the winner.</p>
-                        <div><img src="/images/botathon-photos/season-5/botathon-2024-field.jpg" alt="Mecanum wheeled robot" class="img-responsive"/></div>
+                        <div><img src="/images/content/botathon/s7-2.jpg" alt="Botathon robots competing" class="img-responsive" style="border-radius:8px;margin-top:15px;"/></div>
                     </p>
                 </div>
             </div>
@@ -272,7 +291,7 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <div>Event Date: <strong>March 30, 2024</strong></div>
+                        <div>A typical event-day schedule looks like this:</div>
                         <table id="schedule">
                             <tr><td>&nbsp;9:00 am</td><td>Check-in Opens</td></tr>
                             <tr><td>&nbsp;9:30 am</td><td>Team Finding Event</td></tr>

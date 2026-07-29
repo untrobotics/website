@@ -35,7 +35,7 @@ head('About Us', true);
                   <div class="well-custom">
                     <h5><strong><?php echo AdminBot::get_member_count(); ?></strong> members from <strong>12</strong> majors.</h5>
                   </div>
-                  <p>We've grown a lot since our conception in late 2018. UNT's Engineering program teaches students much of the theory of needed to flourish, however there was a gap for the invaluable hands on experience that we give our members. As a result, we've become a part of the growth and development of students here at UNT.</p>
+                  <p>UNT Robotics has roots on campus going back decades. After a period of dormancy, the club was revived in late 2018 and has grown a lot since. UNT's Engineering program teaches students much of the theory needed to flourish, but there was a gap for the invaluable hands-on experience that we give our members. As a result, we've become a part of the growth and development of students here at UNT.</p>
                   <p>As a student organisation, we also develop the social skills of students. We host social and team building events and extensively network with industry partners who value the skills that we have given their recruits.</p>
 
                     <h3>Workshops</h3>
