@@ -19,15 +19,17 @@ const ITEMS = [
   ['755879832486805696','1213196706741620746','IMG_1298','aerospace/hpr-fiberglassing.jpg'],
   ['755879832486805696','1121278439895347230','IMG_0664','aerospace/hpr-l2-clearcoat.jpg'],
   ['676948293426741259','899364703908806726','image2','aerospace/hpr-third-scale-model.jpg'],
-  // 3D printing
-  ['676948293426741259','1011386188617236531','IMG_9420','printing/nosecone-ocean-pattern.jpg'],
-  ['676948293426741259','900374357510070302','image0','printing/finished-print.jpg'],
-  ['676948293426741259','1011664215288856697','IMG_9425','printing/paint-booth.jpg'],
+  // 3D printing (real printer/print shots from the _3d-printing_ channel)
+  ['765377315357851658','1281272809594814485','20240904_130320','printing/printer-in-action.jpg'],
+  ['765377315357851658','1364335460121579522','IMG_20250421_020937_142','printing/prusa-xl-print.jpg'],
+  ['765377315357851658','975924891452850247','IMG_3944','printing/print-bed.jpg'],
   // Rover
-  ['894034907536453715','940675945751265332','IMG_0185','rover/six-motors.jpg'],
   ['894034907536453715','1087555795383750747','IMG_5822','rover/system-integration.jpg'],
+  ['894034907536453715','1087555795383750747','IMG_5821','rover/frame-assembly.jpg'],
+  ['894034907536453715','944317857011994637','IMG_5483','rover/laser-cut-parts.jpg'],
   ['894034907536453715','1044429039210876948','IMG_5195','rover/workshop-wide.jpg'],
   ['894034907536453715','1081664257688612924','IMG_0190','rover/raspberry-pi-wiring.jpg'],
+  ['894034907536453715','1077405445225975891','45B08F7C','rover/bench-work.jpg'],
   // Scrapp-E
   ['1286515459402895482','1356351731071586414','','scrappe/build-hdr.jpg'],
   ['1286515459402895482','1357869602855588021','IMG_0041','scrappe/first-chassis-mount.jpg'],
