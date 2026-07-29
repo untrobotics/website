@@ -166,7 +166,7 @@ head('Home', true);
                   array('JPL Rover', 'rover/system-integration.jpg'),
                   array('Sofabot', 'sofabot/build-1.jpg'),
                   array('Botathon', 'botathon/s7-1.jpg'),
-                  array('3D Printing', 'printing/nosecone-ocean-pattern.jpg'),
+                  array('3D Printing', 'printing/printer-in-action.jpg'),
                 );
                 foreach ($featured as $f) {
                   echo '<div class="owl-item"><div class="product product-custom">'

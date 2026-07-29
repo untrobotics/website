@@ -32,14 +32,14 @@ $sections = array(
                 'tag' => 'Robotics',
                 'img' => 'rover/system-integration.jpg',
                 'body' => "A six-wheel rocker-bogie rover built from NASA JPL&rsquo;s open-source design, running <strong>ROS 2</strong> on a Raspberry Pi with RoboClaw motor controllers. Members split into chassis, computer-vision, sensors, and movement teams to bring it together &mdash; and even visited the real rover at JPL. It&rsquo;s our hands-on introduction to real robotics software and systems integration.",
-                'gallery' => array('rover/six-motors.jpg', 'rover/workshop-wide.jpg', 'rover/raspberry-pi-wiring.jpg'),
+                'gallery' => array('rover/frame-assembly.jpg', 'rover/laser-cut-parts.jpg', 'rover/workshop-wide.jpg', 'rover/raspberry-pi-wiring.jpg', 'rover/bench-work.jpg'),
             ),
             array(
                 'title' => '3D Printing Lab',
                 'tag' => 'Fabrication',
-                'img' => 'printing/nosecone-ocean-pattern.jpg',
-                'body' => "A growing fleet of printers &mdash; Creality Ender 3, Bambu A1, the large-format Modix Big 120X, and a Stratasys uPrint &mdash; backs every other project: rocket nose cones, fin cans, custom ejection baffles, robot gearboxes, and more. We run workshops on CAD and printing, and are spinning up a filament-recycling effort to keep it sustainable.",
-                'gallery' => array('printing/finished-print.jpg', 'printing/print-result.jpg'),
+                'img' => 'printing/printer-in-action.jpg',
+                'body' => "A growing fleet of printers &mdash; Creality Ender 3, Bambu A1, the large-format Modix Big 120X, and a Stratasys uPrint &mdash; backs every other project: robot gearboxes, custom brackets, rocket parts, and more. Members dial in their own machines too, and we run workshops on CAD and printing &mdash; plus a filament-recycling effort to keep it sustainable.",
+                'gallery' => array('printing/prusa-xl-print.jpg', 'printing/print-bed.jpg'),
             ),
             array(
                 'title' => 'Recreational Builds',
