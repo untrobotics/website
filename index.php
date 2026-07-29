@@ -135,7 +135,7 @@ head('Home', true);
                 <p class="text-gray-light-1 text-justify">Get involved in our recreational robotics projects, everything from a self-driving sofa to a racecar dashboard.</p>
               </div>
               <div class="cell-sm-6 cell-lg-4 cell-xl-3 offset-top-50 cell-xl-preffix-1"><span class="icon icon-lg icon-primary thin-icon-chart"></span>
-                <h5 class="offset-top-15 offset-lg-top-25"><a href="/competitions">Compete</a></h5>
+                <h5 class="offset-top-15 offset-lg-top-25"><a href="/projects#competitions">Compete</a></h5>
                 <p class="text-gray-light-1 text-justify">Finding all of this too easy? Dive into the nitty-gritty by competing in inter-collegiate robotics with us.</p>
               </div>
             </div>

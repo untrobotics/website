@@ -146,7 +146,6 @@
 				  <li><a href="/equipment" class="stacked">Checkout<br>Equipment</a></li>-->
 				  <!--<li><a href="/dues">Pay Dues</a></li>-->
 				  <li><a href="/projects">Projects</a></li>
-				  <li><a href="/competitions">Competitions</a></li>
 				  <li><a href="/merch">Merch</a>
                     <ul class="rd-navbar-dropdown">
                   	    <li><a href="/merch/shirts-hoodies">Shirts &amp; Hoodies</a></li>
