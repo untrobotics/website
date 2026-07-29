@@ -76,7 +76,8 @@ $projects = array(
     .proj-media .main { width: 100%; height: 380px; object-fit: cover; border-radius: 10px; display: block; box-shadow: 0 6px 24px rgba(0,0,0,.12); }
     @media (max-width: 767px) { .proj-media .main { height: 280px; } }
     .proj-thumbs { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 8px; }
-    .proj-thumbs img { width: 100%; height: 84px; object-fit: cover; border-radius: 6px; cursor: pointer; transition: opacity .15s, transform .15s; }
+    /* margin:0 overrides a theme rule that adds 30px margin-top to stacked images. */
+    .proj-thumbs img { width: 100%; height: 84px; object-fit: cover; border-radius: 6px; cursor: pointer; margin: 0 !important; transition: opacity .15s, transform .15s; }
     .proj-thumbs img:hover { opacity: .85; transform: translateY(-2px); }
     .proj-media .main { cursor: zoom-in; }
     .proj-body { flex: 1 1 auto; }
