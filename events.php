@@ -18,7 +18,7 @@ head('Events Calendar', true);
     <main class="page-content">
         <section class="breadcrumb-classic">
           <div class="rd-parallax">
-            <div data-speed="0.25" data-type="media" data-url="/images/content/events/hackunt-2024-5.jpg" class="rd-parallax-layer"></div>
+            <div data-speed="0.25" data-type="media" data-url="/images/headers/events.jpg" class="rd-parallax-layer"></div>
             <div data-speed="0" data-type="html" class="rd-parallax-layer section-top-75 section-md-top-150 section-lg-top-260">
               <div class="shell">
                 <ul class="list-breadcrumb">

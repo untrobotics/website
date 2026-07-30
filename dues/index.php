@@ -83,7 +83,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
 <main class="page-content">
 	<section class="breadcrumb-classic">
 	  <div class="rd-parallax">
-	    <div data-speed="0.25" data-type="media" data-url="/images/content/events/hackunt-2024-3.jpg" class="rd-parallax-layer"></div>
+	    <div data-speed="0.25" data-type="media" data-url="/images/headers/dues.jpg" class="rd-parallax-layer"></div>
 	    <div data-speed="0" data-type="html" class="rd-parallax-layer section-top-75 section-md-top-150 section-lg-top-260">
 	      <div class="shell">
 	        <ul class="list-breadcrumb">
