@@ -80,6 +80,20 @@ $guides = array(
     .learn-cta p { color: #555; margin-bottom: 16px; }
 </style>
 <main class="page-content">
+    <section class="breadcrumb-classic">
+      <div class="rd-parallax">
+        <div data-speed="0.25" data-type="media" data-url="/images/content/events/meeting-pics.jpg" class="rd-parallax-layer"></div>
+        <div data-speed="0" data-type="html" class="rd-parallax-layer section-top-75 section-md-top-150 section-lg-top-260">
+          <div class="shell">
+            <ul class="list-breadcrumb">
+              <li><a href="/">Home</a></li>
+              <li><a href="/about">About</a></li>
+              <li>Learn Robotics</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
     <section class="learn-hero">
         <div class="shell">
             <h1>Learn Robotics</h1>
