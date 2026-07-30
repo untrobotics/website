@@ -91,7 +91,7 @@ head('Activities', true);
                     <span class="chip">L3</span>
                     <span class="chip">RoboKind</span>
                     <span class="chip">StandardUser CyberSecurity</span>
-                    <span class="chip">Bell &mdash; via ASME</span>
+                    <span class="chip">Bell</span>
                 </div>
             </div>
 
