@@ -204,5 +204,14 @@ define('GOOGLE_MAJORS_SPREADSHEET_RANGE', 'Form Responses 1!A2:F');
 
 define('GOOGLE_RECAPTCHA_KEY', env('GOOGLE_RECAPTCHA_KEY'));
 
+// Google Calendar service account — lets api/internal/calendar-add-event.php
+// write events (from the Discord /addevent command) to the club calendar that
+// the /events page embeds. Provide the service account's client_email and
+// private_key (from its JSON key). The calendar must be shared with the SA
+// email as "Make changes to events". Empty = the endpoint fails closed.
+define('GOOGLE_CALENDAR_ID', env('GOOGLE_CALENDAR_ID', 'untroboticsclub@gmail.com'));
+define('GOOGLE_CALENDAR_SA_EMAIL', env('GOOGLE_CALENDAR_SA_EMAIL'));
+define('GOOGLE_CALENDAR_SA_PRIVATE_KEY', env('GOOGLE_CALENDAR_SA_PRIVATE_KEY'));
+
 define('FTP_USER_CONFIG_FILE', env('FTP_USER_CONFIG_FILE'));
 define('FTP_USER_CONFIG_DIR',  env('FTP_USER_CONFIG_DIR'));

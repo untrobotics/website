@@ -79,7 +79,14 @@ const config = Object.freeze({
   // service name `web` resolves to the web Service in the bot's own namespace.
   emailEndpoint: env('EMAIL_ENDPOINT', 'http://web/api/internal/send-email.php'),
   smsEndpoint: env('SMS_ENDPOINT', 'http://web/api/internal/send-sms.php'),
+  calendarEndpoint: env('CALENDAR_ENDPOINT', 'http://web/api/internal/calendar-add-event.php'),
   internalEmailSecret: env('INTERNAL_EMAIL_SECRET'),
+
+  // --- /addevent ------------------------------------------------------------
+  // Only members with this role may add calendar events. Defaults to the
+  // guild's "Officer" role. The event timezone matches the /events embed.
+  officerRoleId: env('DISCORD_OFFICER_ROLE_ID', '674703491985309772'),
+  eventTimezone: env('EVENT_TIMEZONE', 'America/Chicago'),
 
   // --- Database -------------------------------------------------------------
   db: {

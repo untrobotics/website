@@ -57,6 +57,9 @@ spec:
             # Verification audit log channel (defaults to the admin channel).
             - name: DISCORD_LOG_CHANNEL_ID
               value: "674703370971250708"
+            # Only this role may run /addevent (the guild's "Officer" role).
+            - name: DISCORD_OFFICER_ROLE_ID
+              value: "674703491985309772"
             - name: HEARTBEAT_FILE
               value: "/tmp/discord-bot-heartbeat"
             # 4-digit code (per request). Brute force is held by attempt-burn +
