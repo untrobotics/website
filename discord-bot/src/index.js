@@ -56,9 +56,27 @@ async function main() {
   const hb = setInterval(touchHeartbeat, 30 * 1000);
   if (hb.unref) hb.unref();
 
-  // Surface gateway errors instead of swallowing them.
+  // Surface gateway errors instead of swallowing them — but transient network /
+  // Discord-side blips (5xx, dropped sockets, DNS wobble) are auto-recovered by
+  // discord.js, so log those as "reconnecting" WARNINGS, not ERRORs. Only genuinely
+  // unexpected shard errors stay at ERROR. The shard lifecycle events below make the
+  // recovery visible (disconnect → reconnecting → resumed) so a blip reads correctly.
+  const isTransientGateway = (msg) =>
+    /\b50\d\b|unexpected server response|econnreset|etimedout|socket hang ?up|network|getaddrinfo|eai_again|closed before the connection|\b1006\b/i.test(String(msg));
   client.on('error', (err) => log.error('client error', err.message));
-  client.on('shardError', (err) => log.error('shard error', err.message));
+  client.on('shardError', (err) => {
+    const msg = err && err.message;
+    if (isTransientGateway(msg)) {
+      log.warn('gateway blip (transient; discord.js will auto-reconnect):', msg);
+    } else {
+      log.error('shard error', msg);
+    }
+  });
+  client.on('shardDisconnect', (event, id) =>
+    log.warn(`shard ${id} disconnected (code ${event && event.code}); reconnecting…`));
+  client.on('shardReconnecting', (id) => log.info(`shard ${id} reconnecting…`));
+  client.on('shardResume', (id, replayed) => log.info(`shard ${id} resumed (replayed ${replayed} events)`));
+  client.on('shardReady', (id) => log.info(`shard ${id} ready`));
   client.on('warn', (msg) => log.warn('client warn', msg));
 
   // --- Graceful shutdown ----------------------------------------------------
