@@ -73,7 +73,7 @@ head('Activities', true);
             </div>
 
             <div class="act-strip">
-                <img src="/images/content/events/hackunt-2024-1.jpg" alt="Members at an event" loading="lazy">
+                <img src="/images/content/botathon/s7-3.jpg" alt="Botathon, our flagship competition" loading="lazy">
                 <img src="/images/content/aerospace/hpr-launch-prep.jpg" alt="High-power rocket" loading="lazy">
                 <img src="/images/content/rover/system-integration.jpg" alt="Rover build" loading="lazy">
             </div>
