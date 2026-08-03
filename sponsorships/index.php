@@ -22,9 +22,9 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
 <section class="section-50 section-md-75 section-lg-100">
     <div class="shell">
         <div class="range range-md-center">
-            <div class="cell-md-10 cell-lg-8 cell-xl-6 text-left">
+            <div class="cell-xs-12 text-left" style="max-width:440px; margin:0 auto;">
 
-                <h1>Sponsorships</h1>
+                <h1 style="font-size:38px;">Sponsorships</h1>
                 <h6>Help us achieve our mission!</h6>
                 <p>Your donation directly funds our robots, competitions, and workshops. Choose an amount below and give securely by card or PayPal.</p>
 
