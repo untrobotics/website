@@ -144,7 +144,7 @@ head('Sponsorship Flyer', true);
 
     <!-- Stats -->
     <section class="sp-stats"><div class="sp-wrap"><div class="sp-statrow">
-        <div class="sp-stat"><div class="n">200+</div><div class="l">Student members</div></div>
+        <div class="sp-stat"><div class="n">400+</div><div class="l">Student members</div></div>
         <div class="sp-stat"><div class="n">6</div><div class="l">Divisions</div></div>
         <div class="sp-stat"><div class="n">1st</div><div class="l">IEEE Region 5 winners</div></div>
         <div class="sp-stat"><div class="n">7</div><div class="l">Botathon seasons</div></div>
@@ -217,23 +217,25 @@ head('Sponsorship Flyer', true);
                 <thead><tr>
                     <th style="text-align:left;">Benefit</th>
                     <th>Friend<span class="amt">$250+</span></th>
-                    <th>Bronze<span class="amt">$500+</span></th>
-                    <th>Silver<span class="amt">$1,500+</span></th>
-                    <th>Gold<span class="amt">$5,000+</span></th>
-                    <th class="title">Title<span class="amt">$10,000+</span></th>
+                    <th>Bronze<span class="amt">$1,000</span></th>
+                    <th>Silver<span class="amt">$2,000</span></th>
+                    <th>Gold<span class="amt">$3,000</span></th>
+                    <th class="title">Title<span class="amt">$5,000</span></th>
                 </tr></thead>
                 <tbody>
-                    <tr><th>Thank-you on our social media</th><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
-                    <tr><th>Name / logo on our website</th><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
+                    <tr><th>Social-media shout-out (@untrobotics)</th><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
+                    <tr><th>Name &amp; logo on our website</th><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
+                    <tr><th>Sponsor goody bag (apparel, stickers, team photo)</th><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
                     <tr><th>Logo on event banners</th><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
+                    <tr><th>Logo on team shirts &amp; transport vehicles</th><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
                     <tr><th>Logo on competition robots &amp; rockets</th><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
-                    <tr><th>Campus talk / recruiting session</th><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
-                    <tr><th>Resume access &amp; priority recruiting</th><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
-                    <tr><th>Project naming &amp; premier placement</th><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
-                    <tr><th>Division / event naming rights</th><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="chk">&check;</td></tr>
+                    <tr><th>Logo / name in our project &amp; flight videos</th><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
+                    <tr><th>Campus talk &amp; resume-database access</th><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
+                    <tr><th>Premier placement &amp; project naming</th><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="chk">&check;</td><td class="chk">&check;</td></tr>
+                    <tr><th>Vehicle / experiment naming rights + first refusal next year</th><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="dash">&ndash;</td><td class="chk">&check;</td></tr>
                 </tbody>
             </table>
-            <p class="note">Tiers are a guide &mdash; we&rsquo;re happy to build a custom package around what matters to your company. Amounts shown are annual.</p>
+            <p class="note"><strong>All donations are tax-deductible</strong> &mdash; made through the UNT College of Engineering. Tiers are a guide; we&rsquo;re happy to build a custom package (including in-kind support, valued at retail) around what matters to your company. Amounts shown are annual.</p>
         </div>
     </div></section>
 
