@@ -21,18 +21,28 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
 </section>
 <section class="section-50 section-md-75 section-lg-100">
     <div class="shell">
-        <div class="range range-md-center">
-            <div class="cell-xs-12 text-left" style="max-width:440px; margin:0 auto;">
+        <style>
+            /* Two columns on desktop (pitch + callout | donation widget); stacks
+               to a single tidy column on mobile. */
+            .sp-donate-layout { display:grid; grid-template-columns:minmax(0,1fr) 400px; gap:52px; align-items:start; max-width:980px; margin:0 auto; }
+            .sp-donate-left h1 { font-size:40px; }
+            @media (max-width:900px){ .sp-donate-layout { grid-template-columns:1fr; max-width:440px; gap:26px; } }
+        </style>
+        <div class="sp-donate-layout">
+            <div class="sp-donate-left text-left">
 
-                <h1 style="font-size:38px;">Sponsorships</h1>
+                <h1>Sponsorships</h1>
                 <h6>Help us achieve our mission!</h6>
                 <p>Your donation directly funds our robots, competitions, and workshops. Choose an amount below and give securely by card or PayPal.</p>
 
-                <div style="background:#eaf5ef; border:1px solid #d3e8dc; border-radius:10px; padding:20px 22px; margin:24px 0 8px; max-width:400px;">
+                <div style="background:#eaf5ef; border:1px solid #d3e8dc; border-radius:10px; padding:20px 22px; margin:24px 0 0;">
                     <div style="font-weight:700; color:#166a3f; margin-bottom:5px;">Companies &amp; organizations</div>
                     <p style="font-size:14.5px; color:#3a403c; line-height:1.55; margin-bottom:16px;">See what your brand gets and how sponsoring works &mdash; recruiting access, brand visibility, and community impact.</p>
                     <a href="/sponsorships/flyer" class="btn btn-primary" style="display:block; width:100%; text-align:center;">View sponsorship flyer</a>
                 </div>
+
+            </div>
+            <div class="sp-donate-right">
 
                 <style>
                     /* Keep every control on one column width so the wallet, PayPal
