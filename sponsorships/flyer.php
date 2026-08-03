@@ -94,7 +94,7 @@ head('Sponsorship Flyer', true);
     .sp-logo img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; }
 
     /* CTA */
-    .sp-cta { background:linear-gradient(135deg,#00612d,#00853e); color:#fff; border-radius:16px; padding:40px 40px; text-align:center; margin:44px 0; }
+    .sp-cta { background:#00853e; color:#fff; border-radius:16px; padding:40px 40px; text-align:center; margin:44px 0; }
     .sp-cta h2 { font-size:28px; color:#fff; }
     .sp-cta p { color:#d9f0e2; margin:12px auto 22px; max-width:560px; }
     .sp-cta .btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }

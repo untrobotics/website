@@ -31,7 +31,7 @@
     svg .stroke{ fill:none; stroke-linecap:round; stroke-linejoin:round; }
 
     /* ---------- COVER ---------- */
-    .cover-logo{ width:78px; height:78px; margin-bottom:14px; }
+    .cover-logo{ width:104px; height:auto; margin-bottom:14px; display:block; }
     .cover-title{ font-size:62px; font-weight:700; letter-spacing:-.02em; }
     .cover-sub{ font-size:20px; font-weight:500; margin-top:2px; color:#eaf7ef; }
     .cover-year{ font-size:12px; letter-spacing:.2em; text-transform:uppercase; margin-top:8px; color:#bfe6cf; }
@@ -98,21 +98,10 @@
         </g>
         <g fill="#ffffff" opacity=".5"><circle cx="150" cy="140" r="2.2"/><circle cx="450" cy="330" r="2.2"/><circle cx="510" cy="470" r="2.2"/><circle cx="60" cy="520" r="2.2"/><circle cx="300" cy="90" r="2"/></g>
     </svg>
-    <!-- big rocket line-art with orbit ring, lower-right -->
-    <svg class="art" style="right:2mm;bottom:16mm;width:230px;height:400px;" viewBox="0 0 200 360" aria-hidden="true">
-        <g stroke="#ffffff" class="stroke" opacity=".92">
-            <ellipse cx="100" cy="190" rx="92" ry="150" stroke-width="1.3" opacity=".4" transform="rotate(18 100 190)"/>
-            <g stroke-width="2.6" transform="translate(25,24)">
-                <path d="M75 8 C55 40 46 80 46 130 L46 210 L104 210 L104 130 C104 80 95 40 75 8 Z"/>
-                <circle cx="75" cy="110" r="15"/>
-                <path d="M46 165 L20 205 L46 200"/><path d="M104 165 L130 205 L104 200"/>
-                <path d="M46 210 L60 250 L90 250 L104 210"/>
-                <path d="M60 258 q15 26 0 50 M75 258 q15 30 0 56 M90 258 q-15 26 0 50" stroke-width="1.8" opacity=".8"/>
-            </g>
-        </g>
-    </svg>
+    <!-- rocket line-art, lower-right -->
+    <img class="art" src="/images/content/lineart/rocket-white.svg" style="right:18mm;bottom:32mm;width:190px;opacity:.92" alt="">
 
-    <svg class="cover-logo" viewBox="0 0 100 100" aria-hidden="true"><path fill="#fff" d="M50 8c-6 10-4 20 0 26 4-6 6-16 0-26zM50 34c-14 0-30 6-42 20 10-2 18-2 24 2-10 2-20 8-26 20 12-8 22-10 30-8-6 6-10 14-10 24 8-10 16-16 24-18v20h0v-20c8 2 16 8 24 18 0-10-4-18-10-24 8-2 18 0 30 8-6-12-16-18-26-20 6-4 14-4 24-2-12-14-28-20-42-20z"/></svg>
+    <img class="cover-logo" src="/images/unt-robotics-brand-logo-white.svg" alt="UNT Robotics">
     <div class="cover-title">UNT Robotics</div>
     <div class="cover-sub">Sponsorship</div>
     <div class="cover-year">2026 &ndash; 2027</div>
@@ -123,14 +112,7 @@
 
 <!-- ============ PAGE 2 — WHO WE ARE ============ -->
 <section class="page">
-    <!-- gear line-art flourish, top-right -->
-    <svg class="art" style="right:2mm;bottom:18mm;width:270px;height:270px;opacity:.2" viewBox="0 0 150 150" aria-hidden="true">
-        <g stroke="var(--green)" stroke-width="3" class="stroke">
-            <circle cx="60" cy="60" r="30"/><circle cx="60" cy="60" r="10"/>
-            <path d="M60 28 L60 40 M60 80 L60 92 M28 60 L40 60 M80 60 L92 60 M37 37 L45 45 M75 75 L83 83 M83 37 L75 45 M45 75 L37 83"/>
-            <circle cx="112" cy="105" r="20"/><circle cx="112" cy="105" r="7"/>
-        </g>
-    </svg>
+    <img class="art" src="/images/content/lineart/cog-green.svg" style="right:12mm;bottom:34mm;width:200px;opacity:.12" alt="">
     <div class="eyebrow" style="color:var(--green)">UNT Robotics</div>
     <h2 class="sec" style="margin-top:6px">Who we are</h2><div class="rule"></div>
     <p style="max-width:150mm">UNT Robotics is an entirely student-led engineering organization at the University of North Texas &mdash; and one of the largest on campus. With roots going back decades and revived in 2018, we give students the chance to apply what they learn in class to exceptionally challenging, real-world projects.</p>
@@ -150,11 +132,7 @@
 
 <!-- ============ PAGE 3 — WHAT WE BUILD ============ -->
 <section class="page">
-    <svg class="art" style="right:16mm;top:20mm;width:120px;height:60px;opacity:.9" viewBox="0 0 120 60" aria-hidden="true">
-        <g stroke="var(--green)" stroke-width="2" class="stroke" opacity=".5">
-            <path d="M4 40 C30 10 90 10 116 40"/><circle cx="60" cy="12" r="3" fill="var(--green)"/>
-        </g>
-    </svg>
+    <img class="art" src="/images/content/lineart/rocket-green.svg" style="right:16mm;top:16mm;width:60px;opacity:.16" alt="">
     <h2 class="sec">What we build</h2><div class="rule"></div>
     <p class="lead">From high-power rockets flown at NASA Student Launch to a self-driving sofa, our members take on ambitious projects across every discipline &mdash; and win.</p>
     <div class="builds" style="margin-top:14px">
@@ -171,13 +149,7 @@
 <!-- ============ PAGE 4 — WHY SPONSOR ============ -->
 <section class="page">
     <!-- circuit line-art, bottom-right -->
-    <svg class="art" style="right:0;bottom:16mm;width:380px;height:300px;opacity:.2" viewBox="0 0 190 150" aria-hidden="true">
-        <g stroke="var(--green)" stroke-width="2.4" class="stroke">
-            <path d="M10 40 h40 v40 h50 M100 80 v-50 h60"/><path d="M50 120 h60 v-20 h50"/>
-            <rect x="86" y="66" width="28" height="28" rx="3"/>
-        </g>
-        <g fill="var(--green)"><circle cx="10" cy="40" r="4"/><circle cx="160" cy="30" r="4"/><circle cx="160" cy="100" r="4"/><circle cx="50" cy="120" r="4"/></g>
-    </svg>
+    <img class="art" src="/images/content/lineart/circuit-board-green.svg" style="right:14mm;bottom:26mm;width:220px;opacity:.11" alt="">
     <h2 class="sec">Why sponsor us?</h2><div class="rule"></div>
     <p class="lead">Sponsoring UNT Robotics puts your brand in front of exceptional engineering talent &mdash; and helps build the next generation of your industry.</p>
     <div class="why" style="margin-top:16px">
@@ -225,27 +197,14 @@
     </table>
     <p class="taxnote"><strong>All donations are tax-deductible</strong> &mdash; made through the UNT College of Engineering. Tiers are a guide; we&rsquo;re happy to build a custom package around what matters to your company. Amounts shown are annual; the Title tier includes first refusal for the following year.</p>
     <!-- rocket motif, lower-right -->
-    <svg class="art" style="right:12mm;bottom:16mm;width:135px;height:280px;opacity:.16" viewBox="0 0 150 320" aria-hidden="true">
-        <g stroke="var(--green)" stroke-width="2.6" class="stroke">
-            <path d="M75 8 C55 40 46 80 46 130 L46 210 L104 210 L104 130 C104 80 95 40 75 8 Z"/>
-            <circle cx="75" cy="110" r="15"/>
-            <path d="M46 165 L20 205 L46 200"/><path d="M104 165 L130 205 L104 200"/>
-            <path d="M46 210 L60 250 L90 250 L104 210"/>
-        </g>
-    </svg>
+    <img class="art" src="/images/content/lineart/rocket-green.svg" style="right:14mm;bottom:22mm;width:150px;opacity:.12" alt="">
     <div class="footic">UNT Robotics &middot; Sponsorship 2026&ndash;2027</div>
 </section>
 
 <!-- ============ PAGE 6 — BACK COVER ============ -->
 <section class="page green" style="display:flex;flex-direction:column">
-    <svg class="art" style="right:-40px;top:-40px;width:280px;height:280px;opacity:.5" viewBox="0 0 280 280" aria-hidden="true">
-        <g stroke="#fff" stroke-width="1.6" class="stroke" opacity=".7">
-            <circle cx="140" cy="140" r="70"/><ellipse cx="140" cy="140" rx="120" ry="46" transform="rotate(-24 140 140)"/>
-            <circle cx="228" cy="96" r="7" fill="#fff"/>
-        </g>
-        <g fill="#fff" opacity=".5"><circle cx="60" cy="60" r="2"/><circle cx="230" cy="180" r="2"/><circle cx="120" cy="40" r="1.6"/></g>
-    </svg>
-    <svg class="cover-logo" viewBox="0 0 100 100" aria-hidden="true"><path fill="#fff" d="M50 8c-6 10-4 20 0 26 4-6 6-16 0-26zM50 34c-14 0-30 6-42 20 10-2 18-2 24 2-10 2-20 8-26 20 12-8 22-10 30-8-6 6-10 14-10 24 8-10 16-16 24-18v20h0v-20c8 2 16 8 24 18 0-10-4-18-10-24 8-2 18 0 30 8-6-12-16-18-26-20 6-4 14-4 24-2-12-14-28-20-42-20z"/></svg>
+    <img class="art" src="/images/content/lineart/orbit-white.svg" style="right:14mm;top:16mm;width:170px;opacity:.5" alt="">
+    <img class="cover-logo" src="/images/unt-robotics-brand-logo-white.svg" alt="UNT Robotics">
     <div style="font-size:20px;font-weight:700;margin-top:8px">UNT Robotics</div>
     <div class="eyebrow" style="color:#bfe6cf;margin-top:4px">Design. Build. Test. Fly.</div>
 
