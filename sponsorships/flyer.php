@@ -27,13 +27,13 @@ head('Sponsorship Flyer', true);
     .sp-cover-well { display:inline-block; max-width:700px; background:rgba(10,22,14,.74);
         border:1px solid rgba(255,255,255,.14); border-radius:14px; padding:26px 32px 28px;
         backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); box-shadow:0 14px 44px rgba(0,0,0,.38); }
-    .sp-cover h1 { font-size:50px; font-weight:700; letter-spacing:-.01em; text-wrap:balance; margin-top:6px; text-shadow:0 2px 14px rgba(0,0,0,.35); }
+    .sp-cover h1 { color:#fff; font-size:50px; font-weight:700; letter-spacing:-.01em; text-wrap:balance; margin-top:6px; text-shadow:0 2px 14px rgba(0,0,0,.35); }
     .sp-cover .sub { font-size:18px; color:#eaf4ee; margin-top:14px; max-width:600px; }
     .sp-cover .yr { margin-top:20px; font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:#c6ecd6; font-weight:600; }
 
     /* Stats band */
     .sp-stats { background:var(--green); color:#fff; }
-    .sp-stats .row { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; padding:30px 0; align-items:start; }
+    .sp-stats .sp-statrow { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; padding:30px 0; align-items:start; }
     .sp-stat { text-align:center; display:flex; flex-direction:column; align-items:center; }
     .sp-stat + .sp-stat { border-left:1px solid rgba(255,255,255,.16); }
     .sp-stat .n { font-size:36px; font-weight:700; line-height:1; height:38px; display:flex; align-items:center; }
@@ -143,7 +143,7 @@ head('Sponsorship Flyer', true);
     </section>
 
     <!-- Stats -->
-    <section class="sp-stats"><div class="sp-wrap"><div class="row">
+    <section class="sp-stats"><div class="sp-wrap"><div class="sp-statrow">
         <div class="sp-stat"><div class="n">200+</div><div class="l">Student members</div></div>
         <div class="sp-stat"><div class="n">6</div><div class="l">Divisions</div></div>
         <div class="sp-stat"><div class="n">1st</div><div class="l">IEEE Region 5 win</div></div>
