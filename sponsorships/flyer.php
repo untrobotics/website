@@ -1,6 +1,6 @@
 <?php
 require('../template/top.php');
-head('Sponsorship Packet', true);
+head('Sponsorship Flyer', true);
 ?>
 <style>
     /* ---- UNT Robotics sponsorship packet -------------------------------------
@@ -22,16 +22,22 @@ head('Sponsorship Packet', true);
     .sp-cover img.bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
     .sp-cover .veil { position:absolute; inset:0; background:linear-gradient(180deg, rgba(10,25,16,.35) 0%, rgba(8,20,12,.82) 78%); }
     .sp-cover .inner { position:relative; padding:48px 0 44px; width:100%; }
-    .sp-cover h1 { font-size:52px; font-weight:700; letter-spacing:-.01em; text-wrap:balance; }
-    .sp-cover .sub { font-size:19px; color:#e7f3ec; margin-top:14px; max-width:640px; }
-    .sp-cover .yr { margin-top:22px; font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:#bfe6d1; font-weight:600; }
+    /* Text sits in a dark, slightly-blurred well so it stays legible over the
+       bright sky in the launch photo, regardless of the crop. */
+    .sp-cover-well { display:inline-block; max-width:700px; background:rgba(10,22,14,.74);
+        border:1px solid rgba(255,255,255,.14); border-radius:14px; padding:26px 32px 28px;
+        backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); box-shadow:0 14px 44px rgba(0,0,0,.38); }
+    .sp-cover h1 { font-size:50px; font-weight:700; letter-spacing:-.01em; text-wrap:balance; margin-top:6px; text-shadow:0 2px 14px rgba(0,0,0,.35); }
+    .sp-cover .sub { font-size:18px; color:#eaf4ee; margin-top:14px; max-width:600px; }
+    .sp-cover .yr { margin-top:20px; font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:#c6ecd6; font-weight:600; }
 
     /* Stats band */
     .sp-stats { background:var(--green); color:#fff; }
-    .sp-stats .row { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; padding:30px 0; }
-    .sp-stat { text-align:center; }
-    .sp-stat .n { font-size:34px; font-weight:700; line-height:1; }
-    .sp-stat .l { font-size:13px; color:#cdeedd; margin-top:8px; letter-spacing:.03em; }
+    .sp-stats .row { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; padding:30px 0; align-items:start; }
+    .sp-stat { text-align:center; display:flex; flex-direction:column; align-items:center; }
+    .sp-stat + .sp-stat { border-left:1px solid rgba(255,255,255,.16); }
+    .sp-stat .n { font-size:36px; font-weight:700; line-height:1; height:38px; display:flex; align-items:center; }
+    .sp-stat .l { font-size:13px; color:#cdeedd; margin-top:10px; letter-spacing:.02em; white-space:nowrap; }
 
     .sp-section { padding:54px 0; }
     .sp-section.alt { background:var(--ground); }
@@ -83,8 +89,9 @@ head('Sponsorship Packet', true);
     .sp-tiers .note { font-size:12.5px; color:var(--muted); margin-top:12px; }
 
     /* Sponsors */
-    .sp-logos { display:flex; flex-wrap:wrap; gap:18px; justify-content:center; align-items:center; margin-top:24px; }
-    .sp-logos img { height:64px; width:auto; object-fit:contain; filter:grayscale(.15); }
+    .sp-logos { display:flex; flex-wrap:wrap; gap:16px; justify-content:center; margin-top:26px; }
+    .sp-logo { flex:0 0 auto; width:186px; height:100px; background:#fff; border:1px solid var(--line); border-radius:10px; display:flex; align-items:center; justify-content:center; padding:16px 22px; box-shadow:0 3px 12px rgba(0,0,0,.05); }
+    .sp-logo img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; }
 
     /* CTA */
     .sp-cta { background:linear-gradient(135deg,#00612d,#00853e); color:#fff; border-radius:16px; padding:40px 40px; text-align:center; margin:44px 0; }
@@ -108,7 +115,7 @@ head('Sponsorship Packet', true);
         @page { size:A4; margin:14mm 14mm; }
         html,body { background:#fff !important; }
         .page-head, .page-footer, .rd-navbar-wrap, header.page-head, footer,
-        .sp-toolbar, .page-loader { display:none !important; }
+        .sp-btn.pdf, .page-loader { display:none !important; }
         .sp-wrap { max-width:100%; padding:0; }
         .sp-cover { min-height:420px; break-after:page; }
         .sp-section, .sp-stats { break-inside:avoid; padding:22px 0; }
@@ -126,23 +133,21 @@ head('Sponsorship Packet', true);
         <img class="bg" src="/images/content/aerospace/rocket-launch-still.jpg" alt="">
         <div class="veil"></div>
         <div class="inner"><div class="sp-wrap">
-            <span class="kick">UNT Robotics &middot; Sponsorship</span>
-            <h1>Fuel the next generation of engineers.</h1>
-            <p class="sub">We design, build, test, and fly &mdash; rockets, robots, and everything in between. Your sponsorship puts your brand alongside the most ambitious student engineers at the University of North Texas.</p>
-            <div class="yr">Sponsorship Packet &middot; 2026&ndash;2027</div>
+            <div class="sp-cover-well">
+                <span class="kick">UNT Robotics &middot; Sponsorship</span>
+                <h1>Fuel the next generation of engineers.</h1>
+                <p class="sub">We design, build, test, and fly &mdash; rockets, robots, and everything in between. Your sponsorship puts your brand alongside the most ambitious student engineers at the University of North Texas.</p>
+                <div class="yr">Sponsorship Flyer &middot; 2026&ndash;2027</div>
+            </div>
         </div></div>
     </section>
-
-    <div class="sp-wrap sp-toolbar">
-        <a class="sp-btn pdf" href="/downloads/unt-robotics-sponsorship.pdf" target="_blank" rel="noopener">&#8681; Download PDF</a>
-    </div>
 
     <!-- Stats -->
     <section class="sp-stats"><div class="sp-wrap"><div class="row">
         <div class="sp-stat"><div class="n">200+</div><div class="l">Student members</div></div>
-        <div class="sp-stat"><div class="n">6</div><div class="l">Engineering divisions</div></div>
-        <div class="sp-stat"><div class="n">1st</div><div class="l">IEEE Region 5 &mdash; national win</div></div>
-        <div class="sp-stat"><div class="n">7</div><div class="l">Seasons of Botathon</div></div>
+        <div class="sp-stat"><div class="n">6</div><div class="l">Divisions</div></div>
+        <div class="sp-stat"><div class="n">1st</div><div class="l">IEEE Region 5 win</div></div>
+        <div class="sp-stat"><div class="n">7</div><div class="l">Botathon seasons</div></div>
     </div></div></section>
 
     <!-- Who we are -->
@@ -169,10 +174,10 @@ head('Sponsorship Packet', true);
         <p class="lead">From high-power rockets flown at NASA Student Launch to a self-driving sofa, our members take on projects across every discipline.</p>
         <div class="sp-grid">
             <div class="sp-card"><img src="/images/content/aerospace/nasa-sl-2022-launch.jpg" alt="High-power rocketry"><div class="b"><span class="tag">Aerospace</span><h4>High-Power Rocketry</h4><p>Custom airframes flown at NASA Student Launch, Marshall Space Flight Center.</p></div></div>
-            <div class="sp-card"><img src="/images/content/ieee2019/build-1.jpg" alt="IEEE Region 5"><div class="b"><span class="tag">Competition &mdash; 1st place</span><h4>IEEE Region 5</h4><p>A first-place autonomous drone, beating eleven other universities.</p></div></div>
+            <div class="sp-card"><img src="/images/content/ieee2019/build-5.jpg" alt="IEEE Region 5 competition robot"><div class="b"><span class="tag">Competition &mdash; 1st place</span><h4>IEEE Region 5</h4><p>Our autonomous competition robot, built to take on &mdash; and beat &mdash; eleven other universities.</p></div></div>
             <div class="sp-card"><img src="/images/content/rover/system-integration.jpg" alt="JPL rover"><div class="b"><span class="tag">Robotics</span><h4>JPL Open-Source Rover</h4><p>A six-wheel rocker-bogie rover running ROS 2 &mdash; our intro to real robotics.</p></div></div>
             <div class="sp-card"><img src="/images/content/scrappe/build-hdr.jpg" alt="Scrapp-E"><div class="b"><span class="tag">Flagship robot</span><h4>Scrapp-E</h4><p>A tracked companion robot with an animatronic head and gripper arms.</p></div></div>
-            <div class="sp-card"><img src="/images/content/sofabot/build-1.jpg" alt="Sofabot"><div class="b"><span class="tag">Recreational</span><h4>Sofabot</h4><p>A fully rideable, self-driving electric sofa &mdash; because we can.</p></div></div>
+            <div class="sp-card"><img src="/images/content/video/sofabot-poster.jpg" alt="Sofabot"><div class="b"><span class="tag">Recreational</span><h4>Sofabot</h4><p>A fully rideable, self-driving electric sofa &mdash; because we can.</p></div></div>
             <div class="sp-card"><img src="/images/content/botathon/s7-1.jpg" alt="Botathon"><div class="b"><span class="tag">Our own event</span><h4>Botathon</h4><p>Our annual robot-combat competition &mdash; seven seasons and counting.</p></div></div>
         </div>
     </div></section>
@@ -238,11 +243,11 @@ head('Sponsorship Packet', true);
         <h2>Our sponsors</h2>
         <p class="lead" style="margin:14px auto 0;">We&rsquo;re proud to be supported by companies and organizations who believe in student engineering.</p>
         <div class="sp-logos">
-            <img src="/images/sponsor-logos/respec.jpg" alt="RESPEC">
-            <img src="/images/sponsor-logos/servocity.jpg" alt="ServoCity">
-            <img src="/images/sponsor-logos/ieee-ft-worth.jpg" alt="IEEE Fort Worth">
-            <img src="/images/sponsor-logos/eagles-nest.jpg" alt="Eagle's Nest">
-            <img src="/images/sponsor-logos/studyology.jpg" alt="Studyology">
+            <div class="sp-logo"><img src="/images/sponsor-logos/respec.jpg" alt="RESPEC"></div>
+            <div class="sp-logo"><img src="/images/sponsor-logos/servocity.jpg" alt="ServoCity"></div>
+            <div class="sp-logo"><img src="/images/sponsor-logos/ieee-ft-worth.jpg" alt="IEEE Fort Worth"></div>
+            <div class="sp-logo"><img src="/images/sponsor-logos/eagles-nest.jpg" alt="Eagle's Nest"></div>
+            <div class="sp-logo"><img src="/images/sponsor-logos/studyology.jpg" alt="Studyology"></div>
         </div>
     </div></section>
 
@@ -254,6 +259,9 @@ head('Sponsorship Packet', true);
             <a class="sp-btn solid" href="mailto:hello@untrobotics.com?subject=Sponsoring%20UNT%20Robotics">hello@untrobotics.com</a>
             <a class="sp-btn ghost" href="/sponsorships#donation-widget">Donate online</a>
             <a class="sp-btn ghost" href="tel:+19403040795">(940) 304-0795</a>
+        </div>
+        <div class="btns" style="margin-top:14px;">
+            <a class="sp-btn pdf" href="/downloads/unt-robotics-sponsorship.pdf" target="_blank" rel="noopener">&#8681; Download this flyer (PDF)</a>
         </div>
     </div></div>
 
