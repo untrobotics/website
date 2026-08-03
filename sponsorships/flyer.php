@@ -146,7 +146,7 @@ head('Sponsorship Flyer', true);
     <section class="sp-stats"><div class="sp-wrap"><div class="sp-statrow">
         <div class="sp-stat"><div class="n">200+</div><div class="l">Student members</div></div>
         <div class="sp-stat"><div class="n">6</div><div class="l">Divisions</div></div>
-        <div class="sp-stat"><div class="n">1st</div><div class="l">IEEE Region 5 win</div></div>
+        <div class="sp-stat"><div class="n">1st</div><div class="l">IEEE Region 5 winners</div></div>
         <div class="sp-stat"><div class="n">7</div><div class="l">Botathon seasons</div></div>
     </div></div></section>
 
