@@ -32,7 +32,7 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
                     <div style="font-weight:700; color:#166a3f; margin-bottom:4px;">Companies &amp; organizations</div>
                     <p style="font-size:14.5px; color:#3a403c; margin-bottom:12px;">See what your brand gets and how sponsoring works &mdash; recruiting access, brand visibility, and community impact.</p>
                     <a href="/sponsorships/packet" class="btn btn-primary" style="margin-right:8px;">View sponsorship packet</a>
-                    <a href="/downloads/unt-robotics-sponsorship-2025.pdf" target="_blank" rel="noopener" style="font-weight:600; color:#166a3f;">Download PDF &#8681;</a>
+                    <a href="/downloads/unt-robotics-sponsorship.pdf" target="_blank" rel="noopener" style="font-weight:600; color:#166a3f;">Download PDF &#8681;</a>
                 </div>
 
                 <style>

@@ -129,12 +129,12 @@ head('Sponsorship Packet', true);
             <span class="kick">UNT Robotics &middot; Sponsorship</span>
             <h1>Fuel the next generation of engineers.</h1>
             <p class="sub">We design, build, test, and fly &mdash; rockets, robots, and everything in between. Your sponsorship puts your brand alongside the most ambitious student engineers at the University of North Texas.</p>
-            <div class="yr">Sponsorship Packet &middot; 2025&ndash;2026</div>
+            <div class="yr">Sponsorship Packet &middot; 2026&ndash;2027</div>
         </div></div>
     </section>
 
     <div class="sp-wrap sp-toolbar">
-        <a class="sp-btn pdf" href="/downloads/unt-robotics-sponsorship-2025.pdf" target="_blank" rel="noopener">&#8681; Download PDF</a>
+        <a class="sp-btn pdf" href="/downloads/unt-robotics-sponsorship.pdf" target="_blank" rel="noopener">&#8681; Download PDF</a>
     </div>
 
     <!-- Stats -->
