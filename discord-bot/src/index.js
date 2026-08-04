@@ -8,6 +8,7 @@ const log = require('./logger');
 const db = require('./db');
 const { loadCommands } = require('./commands');
 const { registerEvents } = require('./events');
+const reminders = require('./lib/reminders');
 
 // Heartbeat file the k8s liveness probe `exec`s on (see k8s/base/discord-bot.yaml).
 // We touch it on every gateway heartbeat ack so a wedged connection is detected.
@@ -55,6 +56,12 @@ async function main() {
   client.on('ready', touchHeartbeat);
   const hb = setInterval(touchHeartbeat, 30 * 1000);
   if (hb.unref) hb.unref();
+
+  // Reminders scheduler (URW-83): fire any due reminders on a short interval.
+  const remindTimer = setInterval(() => {
+    reminders.tick(client).catch((err) => log.error('reminders: tick threw', err.message));
+  }, 30 * 1000);
+  if (remindTimer.unref) remindTimer.unref();
 
   // Surface gateway errors instead of swallowing them — but transient network /
   // Discord-side blips (5xx, dropped sockets, DNS wobble) are auto-recovered by

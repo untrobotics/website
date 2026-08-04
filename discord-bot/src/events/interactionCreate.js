@@ -2,11 +2,24 @@
 
 const { Events, MessageFlags } = require('discord.js');
 const log = require('../logger');
+const reminders = require('../lib/reminders');
 
 module.exports = {
   name: Events.InteractionCreate,
   once: false,
   async execute(interaction) {
+    // Button router (reminder "Mark done" buttons live outside the slash flow).
+    if (interaction.isButton()) {
+      if (interaction.customId.startsWith('remind_done:')) {
+        try {
+          await reminders.handleDoneButton(interaction);
+        } catch (err) {
+          log.error('interactionCreate: remind_done button failed', err.stack || err.message);
+        }
+      }
+      return;
+    }
+
     // Slash-command router. `client.commands` is populated in index.js.
     if (!interaction.isChatInputCommand()) return;
 
