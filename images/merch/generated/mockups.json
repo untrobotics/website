@@ -90,5 +90,25 @@
                 "path": "/images/merch/generated/unt-robotics-jersey-shirt-white-left.jpg"
             }
         ]
+    },
+    "6a721c5e56fd66": {
+        "White": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-with-back-text-gear-white-back.jpg"
+            },
+            {
+                "view": "back-right",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-with-back-text-gear-white-back-right.jpg"
+            },
+            {
+                "view": "left",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-with-back-text-gear-white-left.jpg"
+            },
+            {
+                "view": "right",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-with-back-text-gear-white-right.jpg"
+            }
+        ]
     }
 }

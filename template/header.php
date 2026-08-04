@@ -2,6 +2,30 @@
 <html lang="en" class="wide wow-animation">
   <head>
     <title><?php echo $title; ?></title>
+    <?php
+      // Open Graph / Twitter Card. Pages may set $og_title / $og_description /
+      // $og_image before head() for per-page previews; otherwise sensible defaults.
+      global $og_title, $og_description, $og_image;
+      $_ogt = !empty($og_title) ? $og_title : (isset($title) && $title !== '' ? $title : 'UNT Robotics');
+      $_ogd = !empty($og_description) ? $og_description : 'UNT Robotics is a student-led engineering organization at the University of North Texas — we design, build, test and fly robots and rockets, and build the next generation of engineers.';
+      $_ogd = str_replace('\\u2014', "\xE2\x80\x94", $_ogd);
+      $_ogi = !empty($og_image) ? $og_image : 'https://www.untrobotics.com/images/og-default.jpg';
+      $_ogu = 'https://www.untrobotics.com' . strtok(($_SERVER['REQUEST_URI'] ?? '/'), '?');
+      $_h = function ($s) { return htmlspecialchars($s, ENT_QUOTES); };
+    ?>
+    <meta name="description" content="<?php echo $_h($_ogd); ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="UNT Robotics">
+    <meta property="og:title" content="<?php echo $_h($_ogt); ?>">
+    <meta property="og:description" content="<?php echo $_h($_ogd); ?>">
+    <meta property="og:image" content="<?php echo $_h($_ogi); ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="<?php echo $_h($_ogu); ?>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?php echo $_h($_ogt); ?>">
+    <meta name="twitter:description" content="<?php echo $_h($_ogd); ?>">
+    <meta name="twitter:image" content="<?php echo $_h($_ogi); ?>">
     <meta name="format-detection" content="telephone=no">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">

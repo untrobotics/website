@@ -158,111 +158,85 @@ if (isset($_GET['payment_intent'])) {
 
 //$pdt = new PayPalPDT($_POST);
 ?>
-<style>
-	.payment-information {
-		display: inline-flex;
-    	flex-direction: column;
-	    max-width: 400px;
-	}
-	.payment-information > div.payment-information-container {
-		text-align: left;
-    	display: inline-block;
-	}
-	.payment-information > div.payment-information-container p {
-		margin-top: 0;
-	}
-</style>
-<main class="page-content">
-        <section class="section-50">
-          <div class="shell">
-            <div class="range range-md-justify">
-              <div class="cell-md-12">
-                <div class="inset-md-right-30 inset-lg-right-0 text-center">
-					<?php
-					if ($stripe_pi && $stripe_status === 'succeeded') {
-						$s_item = isset($stripe_pi->metadata['item_name']) ? $stripe_pi->metadata['item_name'] : 'your order';
-						$s_amount = number_format($stripe_pi->amount / 100, 2);
-						$s_ship = $stripe_pi->shipping;
-						?>
-					<h1>Merch Ordered!</h1>
-					<h4>Thank you for your order.</h4>
-					<div>
-						<p>Your payment was successful. You&rsquo;ll receive an e-mail receipt shortly, and a tracking number once your order ships.</p>
-					</div>
-					<div class="payment-information offset-top-20">
-						<h5>Order Information</h5>
-						<div class="payment-information-container">
-							<ul>
-								<li><strong>Item</strong>: <?php echo htmlspecialchars($s_item); ?></li>
-								<li><strong>Payment Amount</strong>: $<?php echo htmlspecialchars($s_amount); ?></li>
-							</ul>
-						</div>
-						<?php if ($s_ship && isset($s_ship->address)) { ?>
-						<h5 class="offset-top-10">Shipping Address</h5>
-						<div class="payment-information-container">
-							<p><strong><?php echo htmlspecialchars($s_ship->name); ?></strong></p>
-							<p><?php echo htmlspecialchars($s_ship->address->line1); ?><?php echo $s_ship->address->line2 ? ', ' . htmlspecialchars($s_ship->address->line2) : ''; ?></p>
-							<p><?php echo htmlspecialchars($s_ship->address->city); ?>, <?php echo htmlspecialchars($s_ship->address->state); ?> <?php echo htmlspecialchars($s_ship->address->postal_code); ?></p>
-							<p><?php echo htmlspecialchars($s_ship->address->country); ?></p>
-						</div>
-						<?php } ?>
-					</div>
-						<?php
-					} elseif ($stripe_pi) {
-						?>
-					<h1>Payment Processing</h1>
-					<h4>Your payment is being processed.</h4>
-					<div>
-						<p>This can take a moment. You&rsquo;ll receive an e-mail receipt once it completes &mdash; no need to pay again. If you don&rsquo;t hear from us, contact <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a>.</p>
-					</div>
-						<?php
-					} elseif ($valid_pdt !== false) {
-						$pdt = $valid_pdt;
-						?>
-                  <h1>Merch Ordered!</h1>
-
-					<h4>Thank you for your order.</h4>
-						
-					<div>
-						<p>You should receive an e-mail in a few minutes with your payment receipt.</p>
-					</div>
-					
-					<div class="payment-information offset-top-20">
-						<h5>Order Information</h5>
-						<div class="payment-information-container">
-							<ul>
-								<li><strong>PayPal TX ID</strong>: <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=<?php echo $pdt->txn_id; ?>"><?php echo $pdt->txn_id; ?></a></li>
-								<li><strong>Payment Amount</strong>: $<?php echo $pdt->mc_gross; ?></li>
-								<li><strong>Product Type</strong>: <?php echo $pdt->option_selection1; ?></li>
-								<li><strong>Product Name</strong>: <?php echo $pdt->option_selection2; ?></li>
-								<li><strong>Product Variant</strong>: <?php echo $pdt->option_selection3; ?></li>
-								<li><strong>Quantity</strong>: <?php echo $pdt->quantity; ?></li>
-							</ul>
-						</div>
-						<div></div>
-						<h5 class="offset-top-10">Shipping Address</h5>
-						<div class="payment-information-container">
-							<p><strong><?php echo $pdt->address_name; ?></strong></p>
-							<p><?php echo $pdt->address_street; ?></p>
-							<p><?php echo $pdt->address_city; ?>, <?php echo $pdt->address_state; ?> <?php echo $pdt->address_zip; ?></p>
-							<p><?php echo $pdt->address_country_code; ?></p>
-						</div>
-					</div>
-					
-						<?php
-					} else {
-						?>
-					<div class="alert alert-danger">This page has expired or we were unable to verify your payment.</div>
-						<?php
-					}
-					?>
-				  </div>
-				</div>
-			  </div>
-			</div>
-	</section>
-</main>
-
 <?php
+// Printful/Stripe often stores the item as "Product - Variant" where the variant
+// label repeats the product name ("Bomber Jacket (Gear) - Bomber Jacket (Gear) / XL").
+// Collapse that so the buyer sees one clean line.
+function oc_clean_item($s) {
+    $s = trim((string) $s);
+    if (strpos($s, ' - ') !== false) {
+        list($a, $b) = array_map('trim', explode(' - ', $s, 2));
+        if ($a !== '' && stripos($b, $a) === 0) {
+            return $b;
+        }
+    }
+    return $s;
+}
+
+if ($stripe_pi && $stripe_status === 'succeeded') {
+    $s_item = oc_clean_item(isset($stripe_pi->metadata['item_name']) ? $stripe_pi->metadata['item_name'] : 'Your order');
+    $s_amount = number_format($stripe_pi->amount / 100, 2);
+    $s_ship = $stripe_pi->shipping;
+    $addr = '';
+    if ($s_ship && isset($s_ship->address)) {
+        $a = $s_ship->address;
+        $addr = '<strong>' . htmlspecialchars($s_ship->name) . '</strong><br>'
+            . htmlspecialchars($a->line1) . ($a->line2 ? ', ' . htmlspecialchars($a->line2) : '') . '<br>'
+            . htmlspecialchars($a->city) . ', ' . htmlspecialchars($a->state) . ' ' . htmlspecialchars($a->postal_code) . '<br>'
+            . htmlspecialchars($a->country);
+    }
+    result_card([
+        'status'     => 'success',
+        'title'      => 'Merch Ordered!',
+        'subtitle'   => 'Thank you for your order.',
+        'lead'       => 'Your payment was successful. You&rsquo;ll receive an e-mail receipt shortly, and a tracking number once your order ships.',
+        'rows_label' => 'Order summary',
+        'rows'       => [['Item', htmlspecialchars($s_item)]],
+        'total'      => ['Amount paid', '$' . htmlspecialchars($s_amount)],
+        'address'    => $addr,
+        'button'     => ['href' => '/merch', 'label' => 'Continue shopping'],
+        'note'       => 'Questions about your order? <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a>',
+    ]);
+} elseif ($stripe_pi) {
+    result_card([
+        'status'   => 'wait',
+        'title'    => 'Payment Processing',
+        'subtitle' => 'Your payment is being processed.',
+        'lead'     => 'This can take a moment. You&rsquo;ll receive an e-mail receipt once it completes &mdash; no need to pay again. If you don&rsquo;t hear from us, contact <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a>.',
+        'button'   => ['href' => '/merch', 'label' => 'Back to merch'],
+    ]);
+} elseif ($valid_pdt !== false) {
+    $pdt = $valid_pdt;
+    $addr = '<strong>' . htmlspecialchars($pdt->address_name) . '</strong><br>'
+        . htmlspecialchars($pdt->address_street) . '<br>'
+        . htmlspecialchars($pdt->address_city) . ', ' . htmlspecialchars($pdt->address_state) . ' ' . htmlspecialchars($pdt->address_zip) . '<br>'
+        . htmlspecialchars($pdt->address_country_code);
+    $product = htmlspecialchars($pdt->option_selection2) . ($pdt->option_selection3 ? ' &middot; ' . htmlspecialchars($pdt->option_selection3) : '');
+    $txlink = '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=' . htmlspecialchars($pdt->txn_id) . '">' . htmlspecialchars($pdt->txn_id) . '</a>';
+    result_card([
+        'status'     => 'success',
+        'title'      => 'Merch Ordered!',
+        'subtitle'   => 'Thank you for your order.',
+        'lead'       => 'You should receive an e-mail in a few minutes with your payment receipt.',
+        'rows_label' => 'Order summary',
+        'rows'       => [
+            ['Product', $product],
+            ['Quantity', htmlspecialchars($pdt->quantity)],
+            ['Reference', $txlink],
+        ],
+        'total'      => ['Amount paid', '$' . htmlspecialchars($pdt->mc_gross)],
+        'address'    => $addr,
+        'button'     => ['href' => '/merch', 'label' => 'Continue shopping'],
+        'note'       => 'Questions about your order? <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a>',
+    ]);
+} else {
+    result_card([
+        'status'   => 'error',
+        'title'    => "Couldn't Confirm",
+        'subtitle' => "We couldn't verify this payment.",
+        'lead'     => 'This confirmation link may have expired. If you completed a payment, don&rsquo;t worry &mdash; your order is still processing and you&rsquo;ll get an e-mail receipt. Reach us at <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a> if anything looks wrong.',
+        'button'   => ['href' => '/merch', 'label' => 'Back to merch'],
+    ]);
+}
+
 footer();
-?>

@@ -23,22 +23,23 @@ if ($email !== '' && $token !== '' && hash_equals(newsletter_unsub_token($email)
     }
 }
 ?>
-<main class="page-content">
-    <section class="section-50">
-        <div class="shell">
-            <div class="range range-md-justify">
-                <div class="cell-md-10 cell-lg-8 text-center">
-                    <?php if ($ok): ?>
-                        <h1>You&rsquo;re unsubscribed</h1>
-                        <p><?php echo htmlspecialchars($email); ?> will no longer receive our newsletter. Changed your mind? You can sign up again any time on our home page.</p>
-                    <?php else: ?>
-                        <h1>Link not valid</h1>
-                        <p>This unsubscribe link is invalid or has expired. If you keep receiving emails you&rsquo;d rather not, contact <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a> and we&rsquo;ll take care of it.</p>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-    </section>
-</main>
 <?php
+if ($ok) {
+    result_card([
+        'status'   => 'success',
+        'title'    => "You're Unsubscribed",
+        'subtitle' => "You won't hear from our newsletter again.",
+        'lead'     => htmlspecialchars($email) . ' has been removed from our newsletter. Changed your mind? You can sign up again any time on our home page.',
+        'button'   => ['href' => '/', 'label' => 'Back to home'],
+    ]);
+} else {
+    result_card([
+        'status'   => 'error',
+        'title'    => 'Link Not Valid',
+        'subtitle' => 'We couldn&rsquo;t process this request.',
+        'lead'     => 'This unsubscribe link is invalid or has expired. If you keep receiving emails you&rsquo;d rather not, contact <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a> and we&rsquo;ll take care of it.',
+        'button'   => ['href' => '/', 'label' => 'Back to home'],
+    ]);
+}
+
 footer();
