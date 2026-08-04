@@ -262,9 +262,6 @@ head('Sponsorship Flyer', true);
             <a class="sp-btn ghost" href="/sponsorships#donation-widget">Donate online</a>
             <a class="sp-btn ghost" href="tel:+19403040795">(940) 304-0795</a>
         </div>
-        <div class="btns" style="margin-top:14px;">
-            <a class="sp-btn pdf" href="/downloads/unt-robotics-sponsorship.pdf" target="_blank" rel="noopener">&#8681; Download this flyer (PDF)</a>
-        </div>
     </div></div>
 
 </main>
