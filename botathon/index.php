@@ -227,6 +227,7 @@ head('Botathon Info', true);
         <div class="shell">
             <h2>Season History</h2>
             <p>Every Botathon gets a fresh theme, dreamed up by our officers. Here&rsquo;s the story so far:</p>
+            <p><a href="/botathon/past-events" class="text-primary"><strong>See every season in detail &rarr;</strong></a></p>
             <div class="range offset-top-20" style="gap:12px 0;">
                 <div class="cell-md-6"><img src="/images/content/botathon/s7-1.jpg" alt="Botathon competition" style="width:100%;height:240px;object-fit:cover;border-radius:8px;" loading="lazy"></div>
                 <div class="cell-md-6"><img src="/images/content/botathon/s3-1.jpg" alt="Botathon build" style="width:100%;height:240px;object-fit:cover;border-radius:8px;" loading="lazy"></div>
