@@ -122,11 +122,6 @@ define('DYNDNS_FORCE_SUBDOMAIN',			'dyndns'); // don't forget the trailing .
 define('NAMECOM_API_USERNAME',				'');
 define('NAMECOM_API_KEY',					'');
 
-define('IP2LOCATION_EMAIL',					'');
-define('IP2LOCATION_PASS',					'');
-
-define('TIMEZONEDB_API_KEY',				'');
-
 define('SENDGRID_API_KEY',					''); // inbound parse ingest only; outbound uses the SMTP relay below
 
 // Shared secret for api/sendgrid-inbound/parse.php (OrgSync auto-welcome ingest).

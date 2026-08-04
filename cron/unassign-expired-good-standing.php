@@ -5,11 +5,14 @@
  * Removes the Discord "Good Standing" role (and its dependent team roles) from
  * members whose dues have lapsed for the CURRENT term, then DMs them.
  *
- * !!! THIS SCRIPT IS DANGEROUS AND IS INTENTIONALLY LEFT *DISABLED*. !!!
- * It is NOT scheduled (no cron entry, no K8s CronJob) and must only ever be run
- * by hand, supervised, during the correct part of the year. The original version
- * would mass-strip the entire server when run off-season (see SEASON SAFETY GUARD
- * below) and had no dry-run, no rate-limit handling, and no audit trail.
+ * !!! THIS SCRIPT MUTATES ROLES AT SCALE — CHANGES ARE GATED, NOT DISABLED. !!!
+ * It IS scheduled as the `unassign-expired-good-standing` K8s CronJob (monthly,
+ * 1st @ 09:00 Central, invoked --apply --confirm). Real removals are still
+ * limited to SAFE_MONTHS (Sept-April) by the season guard below, so off-season
+ * firings run in analysis mode and change nothing. Run by hand with NO flags for
+ * a read-only dry run. The original version would mass-strip the entire server
+ * off-season and had no dry-run, rate-limit handling, or audit trail — all since
+ * fixed (see SAFETY MODEL below).
  *
  * SAFETY MODEL
  *   1. CLI-only. Refuses to run under any web SAPI.

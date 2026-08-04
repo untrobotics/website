@@ -162,11 +162,6 @@ define('DYNDNS_FORCE_SUBDOMAIN',      'dyndns');
 define('NAMECOM_API_USERNAME', env('NAMECOM_API_USERNAME'));
 define('NAMECOM_API_KEY',      env('NAMECOM_API_KEY'));
 
-define('IP2LOCATION_EMAIL', env('IP2LOCATION_EMAIL'));
-define('IP2LOCATION_PASS',  env('IP2LOCATION_PASS'));
-
-define('TIMEZONEDB_API_KEY', env('TIMEZONEDB_API_KEY'));
-
 // SendGrid stays INBOUND-only (parse webhook ingest); outbound no longer uses it.
 define('SENDGRID_API_KEY', env('SENDGRID_API_KEY'));
 
