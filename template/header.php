@@ -163,6 +163,7 @@
                     </ul>
                   </li>
                   <li><a href="/sponsorships">Sponsor Us</a></li>
+                  <li><a href="/dues">Pay Dues</a></li>
                   <li><a href="/contact">Contact us</a></li>
 			<?php
 			if (count($userinfo)) {
