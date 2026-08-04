@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs');
-const { Client, GatewayIntentBits, Partials, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Partials, Collection, Status } = require('discord.js');
 
 const { config, assertConfig } = require('./config');
 const log = require('./logger');
@@ -49,12 +49,21 @@ async function main() {
   // Wire all event handlers (ready, guildMemberAdd, messageCreate, interactionCreate).
   registerEvents(client);
 
-  // Heartbeat: refresh the liveness file on each gateway ack and right away.
+  // Liveness heartbeat: refresh the probe file, but ONLY while the gateway is
+  // actually connected (status READY). The k8s liveness probe restarts the pod
+  // if this file goes stale (>2m). So a gateway that stays wedged longer than a
+  // normal reconnect self-heals via a restart, while the frequent, harmless
+  // sub-second reconnects — which briefly drop status from READY — never trip it
+  // (the file was touched moments before). This is what makes a truly stuck
+  // connection recover instead of silently swallowing interactions forever.
   touchHeartbeat();
   client.on('clientReady', touchHeartbeat);
-  // discord.js v14: 'ready' is emitted; keep both for forward-compat.
-  client.on('ready', touchHeartbeat);
-  const hb = setInterval(touchHeartbeat, 30 * 1000);
+  client.on('ready', touchHeartbeat); // discord.js v14 forward-compat
+  const hb = setInterval(() => {
+    if (client.ws && client.ws.status === Status.Ready) {
+      touchHeartbeat();
+    }
+  }, 20 * 1000);
   if (hb.unref) hb.unref();
 
   // Reminders scheduler (URW-83): fire any due reminders on a short interval.
@@ -82,8 +91,8 @@ async function main() {
   client.on('shardDisconnect', (event, id) =>
     log.warn(`shard ${id} disconnected (code ${event && event.code}); reconnecting…`));
   client.on('shardReconnecting', (id) => log.info(`shard ${id} reconnecting…`));
-  client.on('shardResume', (id, replayed) => log.info(`shard ${id} resumed (replayed ${replayed} events)`));
-  client.on('shardReady', (id) => log.info(`shard ${id} ready`));
+  client.on('shardResume', (id, replayed) => { touchHeartbeat(); log.info(`shard ${id} resumed (replayed ${replayed} events)`); });
+  client.on('shardReady', (id) => { touchHeartbeat(); log.info(`shard ${id} ready`); });
   client.on('warn', (msg) => log.warn('client warn', msg));
 
   // --- Graceful shutdown ----------------------------------------------------
