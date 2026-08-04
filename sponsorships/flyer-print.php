@@ -119,7 +119,7 @@
     <p style="max-width:150mm;margin-top:10px">We are not a social club. Through weekly workshops, hands-on projects, and national competitions, our members design and build robots and rockets from the ground up &mdash; hardware that costs thousands of dollars and pushes what students thought was possible. Because we run on a non-commercial model, <strong>we rely entirely on sponsors and donors to make it happen.</strong></p>
 
     <div class="stats">
-        <div class="s"><div class="n">400+</div><div class="l">Student members</div></div>
+        <div class="s"><div class="n">500+</div><div class="l">Student members</div></div>
         <div class="s"><div class="n">6</div><div class="l">Divisions</div></div>
         <div class="s"><div class="n">1st</div><div class="l">IEEE Region 5 winners</div></div>
         <div class="s"><div class="n">7</div><div class="l">Botathon seasons</div></div>
