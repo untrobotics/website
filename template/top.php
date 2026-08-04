@@ -252,27 +252,24 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
 
     // Record the attempt first (status 0), then flip to 1 on a successful send —
     // preserves the original sent_emails bookkeeping and return semantics.
-    $db->query("
-				INSERT INTO sent_emails (
-					`to`,
-					`subject`,
-					`message`,
-					`headers`,
-					`replyto`,
-					`attachments`,
-					`status`
-				)
-				VALUES (
-					" . $db->real_escape_string(json_encode($to)) . ",
-					" . $db->real_escape_string(json_encode($subject)) . ",
-					" . $db->real_escape_string(json_encode($message)) . ",
-					" . $db->real_escape_string(json_encode($headers)) . ",
-					" . $db->real_escape_string($replyto) . ",
-					" . $db->real_escape_string(json_encode($attachments)) . ",
-					" . $db->real_escape_string(0) . "
-				)"
-    );
-    $insert_id = $db->insert_id;
+    // Archive a copy of every transactional email (status 0 = attempt; flipped to 1
+    // below on a successful send). Prepared statement so array/JSON fields and an
+    // empty reply-to can't break the INSERT the way the old concatenation did
+    // (json_encode() only quotes strings, so `attachments` => [] was invalid SQL).
+    $insert_id = 0;
+    if ($archive_stmt = $db->prepare("INSERT INTO sent_emails (`to`, `subject`, `message`, `headers`, `replyto`, `attachments`, `status`) VALUES (?, ?, ?, ?, ?, ?, 0)")) {
+        $a_to = json_encode($to);
+        $a_subject = json_encode($subject);
+        $a_message = json_encode($message);
+        $a_headers = json_encode($headers);
+        $a_replyto = $replyto ? (string) $replyto : '';
+        $a_attach = json_encode($attachments);
+        $archive_stmt->bind_param('ssssss', $a_to, $a_subject, $a_message, $a_headers, $a_replyto, $a_attach);
+        if ($archive_stmt->execute()) {
+            $insert_id = $archive_stmt->insert_id;
+        }
+        $archive_stmt->close();
+    }
 
     // Apply the shared branded template (header banner + footer). The banner is
     // referenced as a HOSTED image (untrobotics.com/images/...) rather than an
