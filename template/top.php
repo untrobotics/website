@@ -323,7 +323,9 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
 
             // Keep a filable copy of every outbound email (plus-addressed so it can
             // be filtered/foldered in Gmail).
-            $mail->setFrom("no-reply@untrobotics.com", "UNT Robotics");
+            // Send as hello@ — a verified Brevo sender + real monitored mailbox
+            // (no-reply@ isn't a verified sender and reads as low-trust to Gmail).
+            $mail->setFrom("hello@untrobotics.com", "UNT Robotics");
             // NB: no BCC archive copy. The old BCC to untrobotics+…@gmail.com routed to a
             // non-existent mailbox, hard-bounced, and got blocklisted in Brevo, which risked
             // suppressing the real recipient's copy. The sent_emails DB table (gated by
