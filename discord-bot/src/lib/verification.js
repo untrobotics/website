@@ -12,14 +12,33 @@ const log = require('../logger');
 /* Helpers                                                                     */
 /* -------------------------------------------------------------------------- */
 
-/** Lower-case and trim an email. */
+/**
+ * Lower-case, trim, and repair "smart punctuation". Mobile keyboards autocorrect
+ * a straight apostrophe (') into a curly one (’ U+2019) — which is NOT a valid
+ * email character, so an address like `ta’kiyahjohnson@my.unt.edu` gets rejected
+ * by the mailer and the code never sends. Straighten curly quotes and strip
+ * zero-width characters so a valid address that got "beautified" on a phone still
+ * validates and delivers.
+ */
 function normalizeEmail(email) {
-  return String(email || '').trim().toLowerCase();
+  return String(email || '')
+    .trim()
+    .replace(/[‘’ʼ]/g, "'") // curly / modifier apostrophes -> '
+    .replace(/[“”]/g, '"') // curly double quotes -> "
+    .replace(/[​-‍⁠﻿]/g, '') // zero-width / BOM
+    .toLowerCase();
 }
 
-/** Loose structural email check (the real gate is the domain allow-list). */
+/**
+ * Structural email check. Restricted to characters actually valid in an email
+ * (RFC 5322 atext local part + a normal dotted domain, ASCII only). This rejects
+ * malformed input up front — with the clear `invalid_email` message — instead of
+ * letting it through to the mailer, which would reject it and surface the
+ * misleading "couldn't send, try again" (email_failed) instead. The real
+ * authorization gate is still the domain allow-list below.
+ */
 function looksLikeEmail(email) {
-  return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+  return /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+$/.test(email);
 }
 
 /**
