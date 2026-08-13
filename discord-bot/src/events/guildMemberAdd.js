@@ -16,18 +16,19 @@ module.exports = {
       `To unlock the rest of the server, verify your UNT email in ` +
       `<#${config.verifyChannelId}> with \`/verify <your UNT email>\`.`;
 
-    // Prefer a DM; fall back to the verify channel if DMs are closed.
+    // Post the welcome publicly in the verify channel (pinging the new member so
+    // they get notified). Posting in-channel — rather than DMing — means the
+    // prompt is visible and works even for members who have DMs closed.
     try {
-      await member.send(welcome);
-      log.info('guildMemberAdd: DMed welcome to', member.user.tag);
-    } catch (_) {
-      try {
-        const channel = await member.guild.channels.fetch(config.verifyChannelId);
-        if (channel && channel.isTextBased()) await channel.send(welcome);
-        log.info('guildMemberAdd: posted welcome in verify channel for', member.user.tag);
-      } catch (err) {
-        log.warn('guildMemberAdd: could not welcome', member.user.tag, err.message);
+      const channel = await member.guild.channels.fetch(config.verifyChannelId);
+      if (channel && channel.isTextBased()) {
+        await channel.send({ content: welcome, allowedMentions: { users: [member.id] } });
+        log.info('guildMemberAdd: welcomed', member.user.tag, 'in verify channel');
+      } else {
+        log.warn('guildMemberAdd: verify channel unavailable; could not welcome', member.user.tag);
       }
+    } catch (err) {
+      log.warn('guildMemberAdd: could not welcome', member.user.tag, err.message);
     }
   },
 };
