@@ -185,6 +185,20 @@ if ($product_can_be_handled) {
 	$default_size = $default_info['size'];
 	$gallery = $apply_generated_mockups($gallery, $default_colour);
 	
+	// Per-product Open Graph preview so a shared merch link shows the product's
+	// image + blurb (header.php reads these $og_* globals).
+	$og_title = $product->get_name();
+	$__ogd = trim(strip_tags((string) $catalog_product->get_description()));
+	if (preg_match('@^(.+?)•@ms', $__ogd, $__ogm)) { $__ogd = $__ogm[1]; }
+	$__ogd = trim(preg_replace('/\s+/', ' ', $__ogd));
+	if ($__ogd !== '') {
+		if (function_exists('mb_strlen') && mb_strlen($__ogd) > 300) { $__ogd = mb_substr($__ogd, 0, 297) . '…'; }
+		$og_description = $__ogd;
+	}
+	if (!empty($gallery[0]['preview'])) {
+		$__ogi = $gallery[0]['preview'];
+		$og_image = (strpos($__ogi, 'http') === 0) ? $__ogi : 'https://www.untrobotics.com' . $__ogi;
+	}
 	head("Buy {$product->get_name()}", true);
 	$category_name = strtolower(preg_replace('@^.*\(([^()]+)\)$@i', '$1', $product->get_name()));
 	if($category_name !== 'gear' && $category_name[-1]!=='s'){

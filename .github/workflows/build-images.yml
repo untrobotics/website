@@ -7,7 +7,6 @@ on:
     branches:
       - develop
       - master
-      - chore/reconcile-prod-drift   # TEMP: remove after this branch is merged
     tags:
       - "v*"
   workflow_dispatch:
