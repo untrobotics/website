@@ -65,6 +65,10 @@ const config = Object.freeze({
   // channel used by the PHP bot (api/discord/bots/admin.php).
   logChannelId: env('DISCORD_LOG_CHANNEL_ID', '674703370971250708'),
 
+  // Verification-completion audits (verify/token successes + failures) go to a
+  // dedicated officer-only channel, separate from the bot error log above.
+  verifyUpdatesChannelId: env('DISCORD_VERIFY_UPDATES_CHANNEL_ID', '1540073411424944168'),
+
   // --- Email verification ---------------------------------------------------
   allowedEmailDomains: env(
     'ALLOWED_EMAIL_DOMAINS',

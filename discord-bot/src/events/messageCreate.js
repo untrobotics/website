@@ -9,9 +9,9 @@ const log = require('../logger');
 
 /** Post an audit line to the log channel (best-effort). */
 async function postAudit(client, content) {
-  if (!config.logChannelId) return;
+  if (!config.verifyUpdatesChannelId) return;
   try {
-    const channel = await client.channels.fetch(config.logChannelId);
+    const channel = await client.channels.fetch(config.verifyUpdatesChannelId);
     if (channel && channel.isTextBased()) await channel.send(content);
   } catch (err) {
     log.warn('messageCreate: could not post audit line', err.message);

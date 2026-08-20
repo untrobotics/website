@@ -16,9 +16,9 @@ const GENERIC_INVALID =
   'That code is invalid or has expired. Double-check it, or run `/verify` to get a new one.';
 
 async function postAudit(client, content) {
-  if (!config.logChannelId) return;
+  if (!config.verifyUpdatesChannelId) return;
   try {
-    const channel = await client.channels.fetch(config.logChannelId);
+    const channel = await client.channels.fetch(config.verifyUpdatesChannelId);
     if (channel && channel.isTextBased()) await channel.send(content);
   } catch (err) {
     log.warn('token: could not post audit line', err.message);
