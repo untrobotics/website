@@ -2,11 +2,11 @@ name: Build and push images
 
 # Builds the app / driver-ws / discord-bot container images and pushes them to
 # GitHub Container Registry (ghcr.io/<owner>/...). A `detect` job first works out
-# which images actually changed since the previous tag/push, and each build only
-# runs when its source changed — so a web-only release doesn't rebuild (and can't
-# spuriously fail on) the discord-bot / driver-ws images. Skipped jobs don't fail
-# the run, which stops the false "CI failed" emails from transient action-download
-# rate limits on images we didn't need to rebuild.
+# which images actually changed since the previous tag/push and emits a matrix of
+# only those; `build` consumes it. So a web-only release doesn't rebuild (and
+# can't spuriously fail on) the discord-bot / driver-ws images — which stops the
+# false "CI failed" emails from transient action-download rate limits on images we
+# didn't need to rebuild.
 on:
   push:
     branches:
@@ -24,9 +24,7 @@ jobs:
   detect:
     runs-on: ubuntu-latest
     outputs:
-      website: ${{ steps.f.outputs.website }}
-      driver_ws: ${{ steps.f.outputs.driver_ws }}
-      discord_bot: ${{ steps.f.outputs.discord_bot }}
+      matrix: ${{ steps.f.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,58 +34,49 @@ jobs:
           REF_TYPE: ${{ github.ref_type }}
           REF_NAME: ${{ github.ref_name }}
           BEFORE: ${{ github.event.before }}
-          DISPATCH: ${{ github.event_name }}
+          EVENT: ${{ github.event_name }}
         run: |
           set -uo pipefail
-          build_all() {
-            { echo "website=true"; echo "driver_ws=true"; echo "discord_bot=true"; } >> "$GITHUB_OUTPUT"
-          }
-          # Manual runs build everything (no reliable diff base).
-          if [ "$DISPATCH" = "workflow_dispatch" ]; then
-            echo "workflow_dispatch -> build all"; build_all; exit 0
+          W=false; D=false; B=false
+          all() { W=true; D=true; B=true; }
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            echo "workflow_dispatch -> build all"; all
+          else
+            BASE=""
+            if [ "$REF_TYPE" = "tag" ]; then
+              BASE=$(git describe --tags --abbrev=0 "${REF_NAME}^" 2>/dev/null || true)
+            elif [ -n "${BEFORE:-}" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+              BASE="$BEFORE"
+            fi
+            if [ -z "$BASE" ] || ! git rev-parse -q --verify "${BASE}^{commit}" >/dev/null; then
+              echo "No usable diff base ($BASE) -> build all"; all
+            else
+              CHANGED=$(git diff --name-only "$BASE" HEAD || true)
+              echo "Changed since ${BASE}:"; echo "$CHANGED"
+              if [ -z "$CHANGED" ]; then
+                echo "Empty diff -> build all"; all
+              else
+                echo "$CHANGED" | grep -qE '^botathon/driver-ws/' && D=true
+                echo "$CHANGED" | grep -qE '^discord-bot/'        && B=true
+                echo "$CHANGED" | grep -qvE '^(botathon/driver-ws/|discord-bot/)' && W=true
+              fi
+            fi
           fi
-          BASE=""
-          if [ "$REF_TYPE" = "tag" ]; then
-            BASE=$(git describe --tags --abbrev=0 "${REF_NAME}^" 2>/dev/null || true)
-          elif [ -n "${BEFORE:-}" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
-            BASE="$BEFORE"
-          fi
-          if [ -z "$BASE" ] || ! git rev-parse --verify -q "${BASE}^{commit}" >/dev/null; then
-            echo "No usable diff base ($BASE) -> build all"; build_all; exit 0
-          fi
-          CHANGED=$(git diff --name-only "$BASE" HEAD || true)
-          echo "Changed since ${BASE}:"; echo "$CHANGED"
-          if [ -z "$CHANGED" ]; then
-            echo "Empty diff -> build all"; build_all; exit 0
-          fi
-          echo "$CHANGED" | grep -qE '^botathon/driver-ws/' && D=true || D=false
-          echo "$CHANGED" | grep -qE '^discord-bot/'        && B=true || B=false
-          # website image copies most of the repo -> build it if anything outside
-          # the two self-contained image dirs changed.
-          echo "$CHANGED" | grep -qvE '^(botathon/driver-ws/|discord-bot/)' && W=true || W=false
-          echo "website=$W"; echo "driver_ws=$D"; echo "discord_bot=$B"
-          { echo "website=$W"; echo "driver_ws=$D"; echo "discord_bot=$B"; } >> "$GITHUB_OUTPUT"
+          INC=""
+          add() { INC="${INC:+$INC,}$1"; }
+          [ "$W" = true ] && add '{"name":"website","context":".","dockerfile":"Dockerfile"}'
+          [ "$D" = true ] && add '{"name":"website-driver-ws","context":"botathon/driver-ws","dockerfile":"botathon/driver-ws/Dockerfile"}'
+          [ "$B" = true ] && add '{"name":"website-discord-bot","context":"discord-bot","dockerfile":"discord-bot/Dockerfile"}'
+          echo "Selected images: website=$W driver_ws=$D discord_bot=$B"
+          echo "matrix={\"include\":[$INC]}" >> "$GITHUB_OUTPUT"
 
   build:
     needs: detect
+    if: ${{ fromJSON(needs.detect.outputs.matrix).include[0] != null }}
     runs-on: ubuntu-latest
-    if: ${{ needs.detect.outputs[matrix.changed] == 'true' }}
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - name: website
-            changed: website
-            context: .
-            dockerfile: Dockerfile
-          - name: website-driver-ws
-            changed: driver_ws
-            context: botathon/driver-ws
-            dockerfile: botathon/driver-ws/Dockerfile
-          - name: website-discord-bot
-            changed: discord_bot
-            context: discord-bot
-            dockerfile: discord-bot/Dockerfile
+      matrix: ${{ fromJSON(needs.detect.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
 
