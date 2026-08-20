@@ -7,11 +7,14 @@ spec:
   project: default
   source:
     repoURL: https://github.com/untrobotics/website.git
-    targetRevision: chore/reconcile-prod-drift
+    # Mail relay is stable infra — track master so it moves only with releases.
+    targetRevision: master
     path: k8s/mail
   destination:
     server: https://kubernetes.default.svc
     namespace: untrobotics-mail
   syncPolicy:
+    automated:
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true

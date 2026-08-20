@@ -7,11 +7,20 @@ spec:
   project: default
   source:
     repoURL: https://github.com/untrobotics/website.git
-    targetRevision: chore/reconcile-prod-drift
+    # Prod tracks master. Cut a release by bumping the pinned image tag in
+    # k8s/overlays/prod on develop, then promoting develop -> master; the merge
+    # to master is what deploys (automated sync below).
+    targetRevision: master
     path: k8s/overlays/prod
   destination:
     server: https://kubernetes.default.svc
     namespace: untrobotics-prod
   syncPolicy:
+    # Auto-deploy on merge to master. selfHeal reverts out-of-band drift back to
+    # git. Prune is deliberately left off so Argo never deletes resources it no
+    # longer sees in git (belt-and-braces around the out-of-band Secrets and the
+    # promote flow) — enable it later once the automated flow is trusted.
+    automated:
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true

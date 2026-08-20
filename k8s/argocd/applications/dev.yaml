@@ -7,12 +7,16 @@ spec:
   project: default
   source:
     repoURL: https://github.com/untrobotics/website.git
-    targetRevision: chore/reconcile-prod-drift
+    # Dev tracks develop for continuous deployment: every push to develop has CI
+    # build the images and bump the pinned sha tag in k8s/overlays/dev, which the
+    # automated sync below then rolls out.
+    targetRevision: develop
     path: k8s/overlays/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: untrobotics-dev
-  # Manual sync (no automated/prune) until we trust the overlays — observe first.
   syncPolicy:
+    automated:
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
