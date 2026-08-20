@@ -42,8 +42,6 @@ UPDATE `printful_order` SET
 UPDATE `sent_emails` SET `to` = 'dev@example.test', subject = '[redacted]',
   message = '[redacted]', headers = '', attachments = NULL, replyto = NULL;
 
-UPDATE `ftpusers` SET name = CONCAT('dev', id), passwd = '';
-UPDATE `ftpinvites` SET email = CONCAT('invite', id, '@example.test');
 
 -- Credentials / tokens / sessions: wipe entirely (never wanted in dev).
 TRUNCATE `auth_sessions`;
@@ -51,6 +49,5 @@ TRUNCATE `password_reset_tokens`;
 TRUNCATE `dyndns_api_keys`;
 TRUNCATE `tunnel_api_keys`;
 TRUNCATE `officers_groupme_access_tokens`;
-TRUNCATE `ftplogs`;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -201,38 +201,6 @@ CREATE TABLE `dyndns_api_keys` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `ftpinvites`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ftpinvites` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) DEFAULT NULL,
-  `registration_token` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `ftplogs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ftplogs` (
-  `msg` varchar(255) DEFAULT NULL,
-  `user` char(128) DEFAULT NULL,
-  `pid` int(11) DEFAULT NULL,
-  `host` char(128) DEFAULT NULL,
-  `rhost` char(128) DEFAULT NULL,
-  `logtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `ftpusers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ftpusers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` char(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-  `passwd` char(128) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `handled_ipns`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -503,7 +471,6 @@ CREATE TABLE `schema_migrations` (
   PRIMARY KEY (`filename`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 INSERT INTO `schema_migrations` (`filename`) VALUES
-('URW-64-ftp-users.sql'),
 ('URW-65.sql'),
 ('URW-66.sql'),
 ('URW-147.sql'),

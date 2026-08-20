@@ -140,5 +140,3 @@ define('GOOGLE_MAJORS_SPREADSHEET_RANGE',   'Form Responses 1!A2:F');
 
 define("GOOGLE_RECAPTCHA_KEY",              '');
 
-define("FTP_USER_CONFIG_FILE",              '');
-define("FTP_USER_CONFIG_DIR",              '');
