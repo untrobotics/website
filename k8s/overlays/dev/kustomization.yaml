@@ -7,3 +7,27 @@ resources:
   - ingress.yaml
 patches:
   - path: config-patch.yaml
+  # Pull the private GHCR images using the ghcr-pull secret (created out-of-band
+  # in untrobotics-dev, mirroring prod).
+  - target:
+      kind: Deployment
+    patch: |-
+      - op: add
+        path: /spec/template/spec/imagePullSecrets
+        value:
+          - name: ghcr-pull
+# Dev runs the CI-built images from develop. The `deploy-dev` job in
+# .github/workflows/build-images.yml bumps the changed images' newTag to their
+# immutable sha-<short> tag on each push to develop; Argo auto-sync then rolls
+# them out. Seeded at the rolling `develop` tag (web is the only image with a
+# running pod in dev; discord-bot + driver-ws sit at replicas: 0).
+images:
+  - name: untrobotics-web
+    newName: ghcr.io/untrobotics/website
+    newTag: "develop"
+  - name: untrobotics-driver-ws
+    newName: ghcr.io/untrobotics/website-driver-ws
+    newTag: "develop"
+  - name: untrobotics-discord-bot
+    newName: ghcr.io/untrobotics/website-discord-bot
+    newTag: "develop"
