@@ -110,3 +110,57 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # Continuous deployment to the dev environment. On a push to develop, take
+  # develop's tree, pin the just-built images to their immutable sha tag in the
+  # dev overlay, and force-publish it to the CI-owned `deploy/dev` branch. The
+  # untrobotics-dev Argo app tracks deploy/dev (auto-sync) and rolls dev.
+  #
+  # We publish to deploy/dev (not develop) on purpose: develop is protected
+  # (3-review PRs + push restricted to a person), and the built-in github-actions
+  # bot cannot be granted a branch-protection bypass. deploy/dev is unprotected,
+  # so GITHUB_TOKEN can push it; that push does not re-trigger CI (deploy/dev is
+  # not in the trigger list).
+  deploy-dev:
+    needs: [detect, build]
+    if: ${{ github.ref == 'refs/heads/develop' && github.event_name == 'push' && fromJSON(needs.detect.outputs.matrix).include[0] != null }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pin dev overlay images to this commit's sha tag
+        env:
+          MATRIX: ${{ needs.detect.outputs.matrix }}
+          SHA: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, pathlib
+          matrix = json.loads(os.environ["MATRIX"])
+          tag = "sha-" + os.environ["SHA"][:7]
+          kust_name = {
+              "website": "untrobotics-web",
+              "website-driver-ws": "untrobotics-driver-ws",
+              "website-discord-bot": "untrobotics-discord-bot",
+          }
+          p = pathlib.Path("k8s/overlays/dev/kustomization.yaml")
+          text = p.read_text()
+          for item in matrix["include"]:
+              kn = kust_name[item["name"]]
+              pat = re.compile(r'(- name: ' + re.escape(kn) + r'\n(?:    .*\n)*?    newTag: )"[^"]*"')
+              text, cnt = pat.subn(r'\g<1>"' + tag + '"', text)
+              print(("bumped " if cnt else "WARN no newTag for ") + kn + (" -> " + tag if cnt else ""))
+          p.write_text(text)
+          PY
+
+      - name: Force-publish to deploy/dev
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add k8s/overlays/dev/kustomization.yaml
+          git commit -m "dev: auto-deploy ${GITHUB_SHA:0:7}" || echo "overlay unchanged"
+          git push --force origin HEAD:deploy/dev
