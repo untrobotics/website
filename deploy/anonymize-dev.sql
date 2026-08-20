@@ -48,6 +48,5 @@ TRUNCATE `auth_sessions`;
 TRUNCATE `password_reset_tokens`;
 TRUNCATE `dyndns_api_keys`;
 TRUNCATE `tunnel_api_keys`;
-TRUNCATE `officers_groupme_access_tokens`;
 
 SET FOREIGN_KEY_CHECKS = 1;

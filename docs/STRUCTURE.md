@@ -12,9 +12,7 @@ The UNT Robotics website is organized into several key directories, each serving
 ├── api/                  # External service integrations
 │   ├── campuslabs/       # Campus Labs membership integration
 │   ├── discord/          # Discord bot integration
-│   ├── endpoint-example/ # Example endpoint implementations
 │   ├── google/           # Google services integration
-│   ├── groupme/          # GroupMe messaging
 │   ├── jira/             # Jira project management hooks
 │   ├── paypal/           # PayPal payment integration
 │   ├── printful/         # Merchandise fulfillment
@@ -75,11 +73,8 @@ api/
 │   └── bots/         # Different bot functionalities
 │       ├── admin.php
 │       └── test.php
-├── endpoint-example/  # Example endpoint implementations
-│   └── groupme-endpoint-example.php
 ├── google/           # Google services integration
 │   └── count_majors.php
-├── groupme/          # GroupMe messaging platform
 ├── jira/             # Jira project management hooks 
 │   └── webhooks.php
 ├── paypal/           # PayPal payment integration
@@ -102,7 +97,6 @@ Key API functionalities:
 1. **User Management**
    - Campus Labs for member tracking 
    - Discord for member roles and communication
-   - GroupMe for team messaging
 
 2. **Payment Processing**
    - PayPal button generation
@@ -126,7 +120,6 @@ Key API functionalities:
    - Data analysis
 
 6. **Example Implementations**
-   - GroupMe endpoint examples
    - Webhook templates
    - Integration patterns
 

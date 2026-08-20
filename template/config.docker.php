@@ -90,20 +90,6 @@ define('BREVO_NEWSLETTER_LIST_ID', (int) env('BREVO_NEWSLETTER_LIST_ID', '3'));
 define('BREVO_DAILY_LIMIT', (int) env('BREVO_DAILY_LIMIT', '300'));
 define('BREVO_TRANSACTIONAL_RESERVE', (int) env('BREVO_TRANSACTIONAL_RESERVE', '50'));
 
-// Non-secret GroupMe channel→bot identifiers.
-define('CHANNEL_TO_BOT', array(
-    '52445482' => 'e154fe069a5a0d2a1e5cdfff8a', // officers
-    '52445759' => 'befee42980f20ae879bcc66f2f', // retirees
-    '46388436' => '52377d285d052fbb53f048526d', // r5
-    '48461315' => '7db1a8992eb89135bf712bb114', // announcements
-    '48461300' => 'c4c7045f665142cc72aac214eb', // general
-    '47432153' => '03b3b464207277aba8e7087a05', // test
-));
-
-define('GROUPME_ACCESS_TOKEN',       env('GROUPME_ACCESS_TOKEN'));
-define('GROUPME_OFFICER_CHANNEL_ID', env('GROUPME_OFFICER_CHANNEL_ID'));
-define('GROUPME_MAX_MENTIONS',       25);
-
 define('DISCORD_CLIENT_PUBLIC_KEY',  env('DISCORD_CLIENT_PUBLIC_KEY'));
 define('DISCORD_APP_API_URL',        'https://discordapp.com/api');
 define('DISCORD_INVITE_URL',         env('DISCORD_INVITE_URL', 'https://discord.gg/aaaaaaa'));

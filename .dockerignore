@@ -1,6 +1,5 @@
 # --- Secrets: never bake these into the image -------------------------------
 template/config.php
-api/endpoint-example/groupme-endpoint-config.php
 
 # --- VCS / CI / editor / tooling --------------------------------------------
 .git
