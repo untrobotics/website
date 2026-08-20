@@ -83,7 +83,7 @@ spec:
             - |
               touch /var/log/forward/error.log
               tail -n0 -F /var/log/forward/error.log \
-                | grep --line-buffered -vE 'not found or unable to stat|File does not exist' \
+                | grep --line-buffered -vE 'not found or unable to stat|File does not exist|\[(mpm_prefork|mpm_event|core):notice\]' \
                 | while IFS= read -r line; do
                     [ -n "$line" ] && php /var/www/html/api/discord/bots/admin-cli.php "$line" 0 0 >/dev/null 2>&1 || true
                   done

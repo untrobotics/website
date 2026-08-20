@@ -71,6 +71,12 @@ if ($did_match) {
         $request_info = $matches[4][$k];
         $error_message = $matches[5][$k];
 
+        // Skip low-value notice-level entries (Apache/PHP lifecycle + info) — these
+        // are not actionable and were spamming #web-logs on every deploy/restart.
+        if (stripos($error_type, 'notice') !== false) {
+            continue;
+        }
+
         foreach ($offending_patterns as $pattern) {
             if (preg_match($pattern, $error_message)) {
                 continue 2;
@@ -81,6 +87,7 @@ if ($did_match) {
             "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel
         );
     }
-} else {
-    var_dump(AdminBot::send_message("```({$prev} => {$current})\n[ERROR LOG MESSAGE PARSE FAILED]\n{$message}```", $discord_channel));
 }
+// Lines that don't match the standard Apache error format (module lifecycle
+// notices, multi-line-entry fragments, etc.) are dropped silently — posting an
+// "[ERROR LOG MESSAGE PARSE FAILED]" for each just spammed #web-logs.
