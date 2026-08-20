@@ -6,6 +6,7 @@ CREATE TABLE `outgoing_request_cache_config`(
     `ttl` int(6) NOT NULL, -- ttl measured in seconds
     `config_name` varchar(255) NOT NULL,
     `endpoint` varchar(4000) NOT NULL, -- endpoint with '{}' replacing specific info, e.g., https://api.printful.com/store/products/{} instead of https://api.printful.com/store/products/@5f6ceb2cf3a5e5
+    `async_refresh` tinyint(1) NOT NULL DEFAULT 0, -- URW-208: 1 = serve stale + refresh in background on expiry
     PRIMARY KEY (id)
 )AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 

@@ -73,11 +73,13 @@ function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
     global $db;
     $q = $db->query("
                     SELECT
-                        outgoing_request_cache_config.id AS conf_id, 
-                        ttl, 
-                        UNCOMPRESS(content) AS content, 
-                        last_successfully_retrieved
-                    FROM 
+                        outgoing_request_cache_config.id AS conf_id,
+                        ttl,
+                        async_refresh,
+                        UNCOMPRESS(content) AS content,
+                        last_successfully_retrieved,
+                        last_attempted_retrieval
+                    FROM
                         outgoing_request_cache_config
                     LEFT JOIN 
                         api_cache 
@@ -99,6 +101,15 @@ function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
             $now = time();
             $retrieval_time = $r['last_successfully_retrieved'];
             if ($retrieval_time !== null && $now - strtotime($retrieval_time . ' UTC') < $ttl) {
+                return new CacheResult($r['content']);
+            }
+            // URW-208: stale-while-revalidate. For endpoints opted in via the
+            // async_refresh config flag, serve the stale content immediately and
+            // refresh in the background — UNLESS this request is itself the
+            // background refresh (CACHE_FORCE_SYNC), which must fetch
+            // synchronously so the cache actually updates.
+            if (!empty($r['async_refresh']) && !defined('CACHE_FORCE_SYNC')) {
+                maybe_trigger_cache_refresh($endpoint, $r['last_attempted_retrieval'], ...$args);
                 return new CacheResult($r['content']);
             }
         }
@@ -126,6 +137,58 @@ function get_valid_cache_entry(string $endpoint, $ch, ...$args) {
     }
 
     return new CacheResult($result, true, $response_code, curl_errno($ch));
+}
+
+/**
+ * URW-208: kick off a background refresh for a stale (but opted-in) cache entry,
+ * with a cooldown so a burst of stale hits doesn't fire many overlapping
+ * refreshes. Records last_attempted_retrieval up front so parallel requests
+ * debounce against each other.
+ * @param string $endpoint The cache endpoint template
+ * @param string|null $last_attempted The row's last_attempted_retrieval (UTC) or null
+ * @param mixed ...$args Endpoint args (part of the cache key)
+ */
+function maybe_trigger_cache_refresh(string $endpoint, $last_attempted, ...$args) {
+    global $db;
+    $cooldown = defined('CACHE_ASYNC_REFRESH_COOLDOWN') ? CACHE_ASYNC_REFRESH_COOLDOWN : 60;
+    if ($last_attempted !== null && time() - strtotime($last_attempted . ' UTC') < $cooldown) {
+        return; // a refresh was kicked off recently — don't stampede the upstream API
+    }
+    $id = get_cached_api_response($endpoint, ...$args);
+    if ($id) {
+        // Mark the attempt now so concurrent stale hits within the cooldown skip.
+        $db->query("UPDATE api_cache SET last_attempted_retrieval = UTC_TIMESTAMP WHERE id = " . intval($id));
+    }
+    trigger_cache_refresh($endpoint, ...$args);
+}
+
+/**
+ * Fire-and-forget an internal request that synchronously refreshes ONE cache
+ * entry. Uses a tiny timeout so the current page isn't blocked; the endpoint
+ * runs with ignore_user_abort(true) and completes the fetch after we
+ * disconnect. Mirrors the internal-endpoint pattern used elsewhere
+ * (api/internal/send-sms.php, twilio/find-first/find-first-available.php).
+ * @param string $endpoint The cache endpoint template
+ * @param mixed ...$args Endpoint args (part of the cache key)
+ */
+function trigger_cache_refresh(string $endpoint, ...$args) {
+    if (!defined('API_SECRET') || !API_SECRET) {
+        return; // no internal secret configured — skip async refresh silently
+    }
+    $host = defined('WEBSITE_DOMAIN') ? WEBSITE_DOMAIN : 'localhost';
+    $ch = curl_init('http://127.0.0.1/api/internal/refresh-cache.php');
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array(
+        'secret'   => API_SECRET,
+        'endpoint' => $endpoint,
+        'args'     => serialize($args),
+    )));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Host: ' . $host));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
+    curl_setopt($ch, CURLOPT_TIMEOUT_MS, 300); // just long enough to hand off the request
+    @curl_exec($ch);
+    curl_close($ch);
 }
 
 /**

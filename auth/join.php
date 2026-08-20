@@ -110,7 +110,8 @@ if (!empty($_POST)) {
 				setcookie(COOKIE_PREFIX . '_SESSION_ID', $auth_session_id, 0, '/', WEBSITE_DOMAIN, true, true);
 				setcookie(COOKIE_PREFIX . '_SESSION_NAME', $auth_session_name, 0, '/', WEBSITE_DOMAIN, true, true);
 
-				header('Location: /auth/welcome');
+				$dest = safe_returnto(isset($_GET['returnto']) ? $_GET['returnto'] : null); // URW-52
+				header('Location: ' . ($dest !== null ? $dest : '/auth/welcome'));
 			} else {
 				$error = 'An internal error occurred, please contact support.';
 				AdminBot::send_message("Failed to register new user due to database error: $db->error. Please investigate.");

@@ -9,12 +9,12 @@ INSERT INTO `dues_config` (`key`, `value`) VALUES
   ('semester_price', '10'),
   ('t_shirt_dues_purchase_price', '15');
 
-INSERT INTO `outgoing_request_cache_config` (`id`, `ttl`, `config_name`, `endpoint`) VALUES
-  (8,  86400, 'printful', 'https://api.printful.com/products/$1'),
-  (9,  86400, 'printful', 'https://api.printful.com/products/variant/$1'),
-  (10, 86400, 'printful', 'https://api.printful.com/store/products/$1'),
-  (11, 86400, 'printful', 'https://api.printful.com/store/products$1'),
-  (12, 86400, 'printful', 'https://api.printful.com/store/variants/$1');
+INSERT INTO `outgoing_request_cache_config` (`id`, `ttl`, `config_name`, `endpoint`, `async_refresh`) VALUES
+  (8,  86400, 'printful', 'https://api.printful.com/products/$1', 1),
+  (9,  86400, 'printful', 'https://api.printful.com/products/variant/$1', 1),
+  (10, 86400, 'printful', 'https://api.printful.com/store/products/$1', 1),
+  (11, 86400, 'printful', 'https://api.printful.com/store/products$1', 1),
+  (12, 86400, 'printful', 'https://api.printful.com/store/variants/$1', 1);
 
 -- Synthetic test data ---------------------------------------------------------
 -- Test member. password is a placeholder bcrypt hash, not a working login.

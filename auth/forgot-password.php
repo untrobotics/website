@@ -124,7 +124,7 @@ head('Forgot Password', true);
                                 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
                                 <button type="submit" class="btn btn-default offset-top-20">Submit</button>
 
-                                <p style="margin-top: 40px;"><a href='/auth/login'>Back to Login</a></p>
+                                <p style="margin-top: 40px;"><a href='/auth/login<?php echo returnto_qs(isset($_GET['returnto']) ? $_GET['returnto'] : null); ?>'>Back to Login</a></p>
                             </center>
                         </form>
                     </div>

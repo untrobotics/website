@@ -57,11 +57,8 @@ if (isset($_POST['email'])) {
 			setcookie(COOKIE_PREFIX . "_SESSION_NAME", $auth_session_name, $expires, '/', WEBSITE_DOMAIN, false, true);
 			setcookie("remember", encode_hash($r['id']), time()*2, '/auth/', WEBSITE_DOMAIN);
 
-			if (isset($_GET['returnto']) && !preg_match("@^/auth@", $_GET['returnto'])) {
-				header("Location: //{$_SERVER['SERVER_NAME']}/".preg_replace("@^/@i", "", $_GET['returnto']));
-			} else {
-				header("Location: /me/");
-			}
+			$dest = safe_returnto(isset($_GET['returnto']) ? $_GET['returnto'] : null); // URW-52
+			header("Location: " . ($dest !== null ? $dest : "/me/"));
 			die();
 		}
 	} while (false);
@@ -116,7 +113,7 @@ head('Login', true);
 						</div>
                   		<button type="submit" class="btn btn-default offset-top-35">Sign in</button>
 						
-						<p style="margin-top: 40px;"><a href='/auth/join'>Create an Account</a> <span>-</span> <a href='/auth/forgot-password'>Forgot password?</a></p>
+						<p style="margin-top: 40px;"><a href='/auth/join<?php echo returnto_qs(isset($_GET['returnto']) ? $_GET['returnto'] : null); ?>'>Create an Account</a> <span>-</span> <a href='/auth/forgot-password<?php echo returnto_qs(isset($_GET['returnto']) ? $_GET['returnto'] : null); ?>'>Forgot password?</a></p>
 					</center>
                 </form>
               </div>

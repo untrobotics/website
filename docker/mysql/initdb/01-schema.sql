@@ -233,6 +233,7 @@ CREATE TABLE `outgoing_request_cache_config` (
   `ttl` int(6) NOT NULL,
   `config_name` varchar(255) NOT NULL,
   `endpoint` varchar(4000) NOT NULL,
+  `async_refresh` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
