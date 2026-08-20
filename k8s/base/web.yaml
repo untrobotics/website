@@ -85,6 +85,11 @@ spec:
               tail -n0 -F /var/log/forward/error.log \
                 | grep --line-buffered -vE 'not found or unable to stat|File does not exist|\[(mpm_prefork|mpm_event|core):notice\]' \
                 | while IFS= read -r line; do
+                    # URW-211: cap the line before it becomes an argv arg. A giant
+                    # error-log line (long stack trace / dumped request body) would
+                    # otherwise exceed MAX_ARG_STRLEN and fail exec with E2BIG
+                    # ("Argument list too long"), silently dropping the forwarder.
+                    line=$(printf '%.8000s' "$line")
                     [ -n "$line" ] && php /var/www/html/api/discord/bots/admin-cli.php "$line" 0 0 >/dev/null 2>&1 || true
                   done
           envFrom:

@@ -171,6 +171,20 @@ strong.no-wrap {
 										$user = get_user_information($discord_access_token);
 
 
+										// URW-10: if this user previously linked a *different* Discord account,
+										// strip the Good Standing role from that old account before repointing the
+										// record — otherwise the abandoned account keeps the role forever.
+										$prev = $db->query('SELECT discord_id FROM users WHERE id = "' . $db->real_escape_string($userinfo['id']) . '"');
+										$prev_discord_id = ($prev && ($prev_row = $prev->fetch_assoc())) ? $prev_row['discord_id'] : null;
+										if (!empty($prev_discord_id) && $prev_discord_id !== $user->id) {
+											$removed = AdminBot::remove_user_role($prev_discord_id);
+											// 204 = removed, 404 = member/role already gone; both are fine. Anything
+											// else is non-fatal here — log it but don't block the re-link.
+											if (!isset($removed->status_code) || ($removed->status_code != 204 && $removed->status_code != 404)) {
+												AdminBot::send_message("[AUTHDIS] Could not remove Good Standing from previous Discord account {$prev_discord_id} for '{$userinfo['name']}' (status " . ($removed->status_code ?? 'n/a') . ").");
+											}
+										}
+
 										$q = $db->query('UPDATE users SET discord_id = "' . $db->real_escape_string($user->id) . '" WHERE id = "' . $db->real_escape_string($userinfo['id']) . '"');
 										if (!$q || $db->affected_rows !== 1) {
 											// Alert!

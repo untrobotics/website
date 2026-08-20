@@ -311,7 +311,8 @@ function get_variant_variant($variant_name) {
 		.colour-swatch:hover { transform: scale(1.08); }
 		.colour-swatch.is-active { border-color: #1f1f1f; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1f1f1f; }
 		.size-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
-		.size-btn { min-width: 46px; padding: 9px 12px; border: 1px solid #cacaca; background: #fff; color: #1f1f1f; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all .1s; }
+		/* URW-196: fixed equal width + centered label so S/M/L and 2XL/3XL don't render at different widths. */
+		.size-btn { width: 52px; padding: 9px 0; text-align: center; border: 1px solid #cacaca; background: #fff; color: #1f1f1f; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all .1s; }
 		.size-btn:hover { border-color: #1f1f1f; }
 		.size-btn.is-active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
 		.size-btn:disabled { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
@@ -374,7 +375,7 @@ function get_variant_variant($variant_name) {
 			  <div class="cell-lg-12 merch-section">
 				  
 					<div class="range">
-						<div class="col-lg-6 col-md-12 col-lg-push-6">
+						<div class="cell-lg-6 cell-md-12 cell-lg-push-6">
 							<?php if (!empty($gallery)) { $hero = $gallery[0]; ?>
 							<div class="merch-gallery">
 								<div class="merch-image">
@@ -394,7 +395,7 @@ function get_variant_variant($variant_name) {
 							</div>
 							<?php } ?>
 						</div>
-						<div class="col-lg-6 col-md-12 col-lg-pull-6">
+						<div class="cell-lg-6 cell-md-12">
 							<?php if (count($variant_colours) > 1) { ?>
 							<div class="variant-picker">
 								<div class="variant-picker-label">Colour: <span id="selected-colour-name"><?php echo htmlspecialchars($default_colour); ?></span></div>

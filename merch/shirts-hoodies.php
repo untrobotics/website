@@ -92,7 +92,10 @@ head('Order Shirts & Hoodies', true);
 	}
 	*/
 	.product-listing.shirt-hoodie {
-		height: 475px;
+		/* URW-62: min-height, not a fixed height — at 1200–1484px the shell caps
+		   at 1200px so the 4 columns narrow and titles/labels wrap taller than
+		   475px; a hard height overflowed the card onto the row below. */
+		min-height: 475px;
 	}
 	
 	.product-listing .product-container-pad {

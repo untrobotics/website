@@ -10,6 +10,14 @@ require_once(__DIR__ . '/admin.php');
 $message = $argv[1];
 $prev = $argv[2];
 $current = $argv[3];
+
+// URW-211: defence-in-depth. The log-forwarder already truncates the line
+// before exec (the E2BIG limit is enforced at the argv boundary, not here), but
+// keep a cap so a pathological line can't produce an oversized Discord payload.
+if (strlen($message) > 6000) {
+    $message = substr($message, 0, 6000) . ' …[truncated]';
+}
+
 $len = strlen(trim($message));
 
 if ($len == 0) {
