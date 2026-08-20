@@ -1,7 +1,12 @@
 name: Build and push images
 
-# Builds the app and driver-ws container images and pushes them to GitHub
-# Container Registry (ghcr.io/<owner>/website and .../website-driver-ws).
+# Builds the app / driver-ws / discord-bot container images and pushes them to
+# GitHub Container Registry (ghcr.io/<owner>/...). A `detect` job first works out
+# which images actually changed since the previous tag/push, and each build only
+# runs when its source changed — so a web-only release doesn't rebuild (and can't
+# spuriously fail on) the discord-bot / driver-ws images. Skipped jobs don't fail
+# the run, which stops the false "CI failed" emails from transient action-download
+# rate limits on images we didn't need to rebuild.
 on:
   push:
     branches:
@@ -16,19 +21,71 @@ permissions:
   packages: write
 
 jobs:
-  build:
+  detect:
     runs-on: ubuntu-latest
+    outputs:
+      website: ${{ steps.f.outputs.website }}
+      driver_ws: ${{ steps.f.outputs.driver_ws }}
+      discord_bot: ${{ steps.f.outputs.discord_bot }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: f
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          BEFORE: ${{ github.event.before }}
+          DISPATCH: ${{ github.event_name }}
+        run: |
+          set -uo pipefail
+          build_all() {
+            { echo "website=true"; echo "driver_ws=true"; echo "discord_bot=true"; } >> "$GITHUB_OUTPUT"
+          }
+          # Manual runs build everything (no reliable diff base).
+          if [ "$DISPATCH" = "workflow_dispatch" ]; then
+            echo "workflow_dispatch -> build all"; build_all; exit 0
+          fi
+          BASE=""
+          if [ "$REF_TYPE" = "tag" ]; then
+            BASE=$(git describe --tags --abbrev=0 "${REF_NAME}^" 2>/dev/null || true)
+          elif [ -n "${BEFORE:-}" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            BASE="$BEFORE"
+          fi
+          if [ -z "$BASE" ] || ! git rev-parse --verify -q "${BASE}^{commit}" >/dev/null; then
+            echo "No usable diff base ($BASE) -> build all"; build_all; exit 0
+          fi
+          CHANGED=$(git diff --name-only "$BASE" HEAD || true)
+          echo "Changed since ${BASE}:"; echo "$CHANGED"
+          if [ -z "$CHANGED" ]; then
+            echo "Empty diff -> build all"; build_all; exit 0
+          fi
+          echo "$CHANGED" | grep -qE '^botathon/driver-ws/' && D=true || D=false
+          echo "$CHANGED" | grep -qE '^discord-bot/'        && B=true || B=false
+          # website image copies most of the repo -> build it if anything outside
+          # the two self-contained image dirs changed.
+          echo "$CHANGED" | grep -qvE '^(botathon/driver-ws/|discord-bot/)' && W=true || W=false
+          echo "website=$W"; echo "driver_ws=$D"; echo "discord_bot=$B"
+          { echo "website=$W"; echo "driver_ws=$D"; echo "discord_bot=$B"; } >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: detect
+    runs-on: ubuntu-latest
+    if: ${{ needs.detect.outputs[matrix.changed] == 'true' }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - name: website
+            changed: website
             context: .
             dockerfile: Dockerfile
           - name: website-driver-ws
+            changed: driver_ws
             context: botathon/driver-ws
             dockerfile: botathon/driver-ws/Dockerfile
           - name: website-discord-bot
+            changed: discord_bot
             context: discord-bot
             dockerfile: discord-bot/Dockerfile
     steps:
