@@ -23,8 +23,8 @@ if (!$fields || !isset($request->changelog->items) || !is_array($request->change
 $ticket   = isset($_GET['id']) ? $_GET['id'] : (isset($issue->key) ? $issue->key : 'a ticket');
 $summary  = isset($fields->summary) ? trim((string) $fields->summary) : '';
 $assignee = (isset($fields->assignee->displayName) && $fields->assignee->displayName !== '')
-    ? $fields->assignee->displayName
-    : 'Unassigned';
+    ? "`{$fields->assignee->displayName}`"
+    : '_no assignee_';
 
 $status = null;
 foreach ($request->changelog->items as $item) {
@@ -37,7 +37,7 @@ foreach ($request->changelog->items as $item) {
 if ($status === 'Done') {
     $title = $summary !== '' ? " — **{$summary}**" : '';
     AdminBot::send_message(
-        "Ticket `{$ticket}`{$title} has been deployed to production. Assignee: `{$assignee}`. Woohoo! :tada:",
+        "Ticket `{$ticket}`{$title} has been deployed to production. Assignee: {$assignee}. Woohoo! :tada:",
         755954745490800781
     );
 }
