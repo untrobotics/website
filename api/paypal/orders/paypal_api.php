@@ -119,4 +119,50 @@ class PayPalOrdersAPI {
 	public function capture_order($order_id) {
 		return $this->request('POST', '/v2/checkout/orders/' . rawurlencode($order_id) . '/capture', new stdClass());
 	}
+
+	/**
+	 * Attach shipment tracking to a captured transaction (URW-203). Uses the
+	 * Track Shipments API, which keys on the transaction (capture) id we already
+	 * store as the txid — no order-id lookup needed. Registering the shipment on
+	 * PayPal's side gets the order Seller-Protection coverage and shows the buyer
+	 * their tracking in their PayPal activity. $carrier is a free-text carrier
+	 * name (e.g. "USPS", "DHL eCommerce"); it's mapped to PayPal's enum, falling
+	 * back to OTHER + carrier_name_other. Returns the decoded response; throws
+	 * PayPalAPIException on failure.
+	 */
+	public function add_tracking($transaction_id, $tracking_number, $carrier) {
+		list($carrier_enum, $carrier_other) = self::map_carrier($carrier);
+		$tracker = array(
+			'transaction_id'  => $transaction_id,
+			'tracking_number' => $tracking_number,
+			'status'          => 'SHIPPED',
+			'carrier'         => $carrier_enum,
+		);
+		if ($carrier_enum === 'OTHER' && $carrier_other !== '') {
+			$tracker['carrier_name_other'] = $carrier_other;
+		}
+		return $this->request('POST', '/v1/shipping/trackers-batch', array('trackers' => array($tracker)));
+	}
+
+	/** Map a free-text carrier to a PayPal carrier enum, else OTHER + raw name. */
+	private static function map_carrier($carrier) {
+		$c = strtoupper(trim((string) $carrier));
+		if ($c === '') {
+			return array('OTHER', '');
+		}
+		if (strpos($c, 'USPS') !== false) {
+			return array('USPS', '');
+		}
+		if (strpos($c, 'FEDEX') !== false || strpos($c, 'FED EX') !== false) {
+			return array('FEDEX', '');
+		}
+		if (strpos($c, 'DHL') !== false && strpos($c, 'EXPRESS') !== false) {
+			return array('DHL_EXPRESS', '');
+		}
+		if (strpos($c, 'UPS') !== false) {
+			return array('UPS', '');
+		}
+		// DHL eCommerce, Asendia, DPD, Royal Mail, Canada Post, etc.
+		return array('OTHER', trim((string) $carrier));
+	}
 }

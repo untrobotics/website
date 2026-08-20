@@ -221,6 +221,27 @@ try {
 				webhook_log("[{$log_prefix}] Successfully finished processing this shipment notification.");
 				AdminBot::send_message("(PRW) Notice: Order #[{$printful_event->get_shipment()->get_id()}/{$printful_event->get_order()->get_id()}] has shipped.");
 			}
+
+			// URW-203: register the shipment on the PayPal transaction so the order
+			// gets Seller-Protection coverage and the buyer sees tracking in their
+			// PayPal activity. Best-effort: a failure here must never affect the
+			// buyer email or the webhook ack. PayPal-paid orders only — Stripe txids
+			// start with cs_/pi_ and need no equivalent (buyers already get the
+			// tracking email; Stripe dispute evidence is submitted at dispute time).
+			try {
+				$pf_order_id = $printful_event->get_order()->get_id();
+				$txq = $db->query('SELECT txid FROM printful_order_tx WHERE printful_order_id = "' . $db->real_escape_string($pf_order_id) . '" ORDER BY id DESC LIMIT 1');
+				$txid = ($txq && ($txrow = $txq->fetch_assoc())) ? $txrow['txid'] : null;
+				if ($txid && strpos($txid, 'cs_') !== 0 && strpos($txid, 'pi_') !== 0) {
+					require_once(BASE . '/api/paypal/orders/paypal_api.php');
+					$ppapi = new PayPalOrdersAPI($untrobotics->get_sandbox());
+					$ppapi->add_tracking($txid, $printful_event->get_shipment()->get_tracking_number(), $printful_event->get_shipment()->get_carrier());
+					webhook_log("[{$log_prefix}] Pushed tracking to PayPal transaction {$txid}.");
+				}
+			} catch (\Throwable $e) {
+				webhook_log("[{$log_prefix}] PayPal tracking push skipped/failed: " . $e->getMessage());
+			}
+
 			break;
 		default:
 			webhook_log(PHP_EOL . PHP_EOL . "Received a notification which does not have a corresponding handler: " . $type);
