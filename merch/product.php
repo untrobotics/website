@@ -375,7 +375,7 @@ function get_variant_variant($variant_name) {
 			  <div class="cell-lg-12 merch-section">
 				  
 					<div class="range">
-						<div class="cell-lg-6 cell-md-12 cell-lg-push-6">
+						<div class="col-lg-6 col-md-12 col-lg-push-6">
 							<?php if (!empty($gallery)) { $hero = $gallery[0]; ?>
 							<div class="merch-gallery">
 								<div class="merch-image">
@@ -395,7 +395,7 @@ function get_variant_variant($variant_name) {
 							</div>
 							<?php } ?>
 						</div>
-						<div class="cell-lg-6 cell-md-12">
+						<div class="col-lg-6 col-md-12 col-lg-pull-6">
 							<?php if (count($variant_colours) > 1) { ?>
 							<div class="variant-picker">
 								<div class="variant-picker-label">Colour: <span id="selected-colour-name"><?php echo htmlspecialchars($default_colour); ?></span></div>
