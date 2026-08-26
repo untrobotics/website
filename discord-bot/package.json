@@ -9,14 +9,16 @@
   },
   "scripts": {
     "start": "node src/index.js",
-    "register": "node src/lib/register.js"
+    "register": "node src/lib/register.js",
+    "test": "jest"
   },
   "dependencies": {
     "discord.js": "^14.27.0",
     "mysql2": "^3.10.0"
   },
   "devDependencies": {
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "jest": "^29.7.0"
   },
   "license": "MIT"
 }

@@ -106,3 +106,7 @@ botathon/old/teamScores.json
 
 # Real deploy secrets (per-server, never committed)
 deploy/secrets.env
+# PHP dev tooling (root PHPUnit) — not deployed
+/vendor/
+/.phpunit.cache/
+/composer.lock

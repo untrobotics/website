@@ -1,0 +1,58 @@
+name: CI tests
+
+# Lint + unit tests. Runs on every PR and on pushes to develop, so broken syntax
+# or a failing unit test is caught before it can be tagged/promoted to prod.
+on:
+  pull_request:
+  push:
+    branches:
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  php:
+    name: PHP lint + PHPUnit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Lint every PHP file (skip vendored deps)
+        run: |
+          set -uo pipefail
+          rc=0
+          while IFS= read -r f; do
+            php -l "$f" > /dev/null || { echo "::error file=$f::PHP syntax error"; rc=1; }
+          done < <(find . -type d -name vendor -prune -o -type f -name '*.php' -print)
+          exit $rc
+
+      - name: Install dev dependencies (PHPUnit)
+        run: composer install --no-interaction --no-progress
+
+      - name: PHPUnit
+        run: vendor/bin/phpunit
+
+  bot:
+    name: discord-bot Jest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: discord-bot
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Run tests
+        run: npm test

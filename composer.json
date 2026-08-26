@@ -1,0 +1,10 @@
+{
+    "name": "untrobotics/website-dev-tools",
+    "description": "Dev-only tooling for the UNT Robotics website (PHPUnit). NOT deployed — the app itself has no root composer dependency; this manifest exists solely to run the unit tests in tests/.",
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
