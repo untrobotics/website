@@ -91,9 +91,50 @@ if ($did_match) {
             }
         }
 
-        AdminBot::send_message(
-            "```accesslog\n({$prev} => {$current})\n[{$timestamp}]\n[{$error_type}]\n[{$process_pid}]\n[{$request_info}]\n\n{$error_message}```", $discord_channel
-        );
+        // URW-14: post the log entry as a rich embed instead of a raw code block —
+        // colour-coded by severity with structured fields, far more readable in
+        // #web-logs than a wall of monospace.
+        $sev = strtolower($error_type);
+        $color = 0x95A5A6; // grey (default / info-ish)
+        if (preg_match('/(emerg|alert|crit|error|fatal)/', $sev)) {
+            $color = 0xE74C3C; // red
+        } elseif (strpos($sev, 'warn') !== false) {
+            $color = 0xE67E22; // orange
+        } elseif (preg_match('/(info|debug)/', $sev)) {
+            $color = 0x3498DB; // blue
+        }
+
+        $embed = new stdClass();
+        $embed->color = $color;
+        $embed->title = mb_substr($error_type, 0, 256);
+        // Wrap the message in a code block for monospace; embed descriptions cap at 4096.
+        $embed->description = "```\n" . mb_substr($error_message, 0, 3900) . "\n```";
+        $embed->timestamp = date('c'); // when it was forwarded (Apache time is in a field)
+        $embed->fields = array();
+        if (trim($request_info) !== '') {
+            $rf = new stdClass();
+            $rf->name = 'Request';
+            $rf->value = mb_substr($request_info, 0, 1024);
+            $rf->inline = false;
+            $embed->fields[] = $rf;
+        }
+        $pf = new stdClass();
+        $pf->name = 'PID';
+        $pf->value = (string) ($process_pid !== '' ? $process_pid : '—');
+        $pf->inline = true;
+        $embed->fields[] = $pf;
+        $tf = new stdClass();
+        $tf->name = 'Apache time';
+        $tf->value = mb_substr($timestamp, 0, 1024);
+        $tf->inline = true;
+        $embed->fields[] = $tf;
+        $footer = new stdClass();
+        $footer->text = "log offset {$prev} → {$current}";
+        $embed->footer = $footer;
+
+        $payload = new stdClass();
+        $payload->embeds = array($embed);
+        AdminBot::send_message($payload, $discord_channel);
     }
 }
 // Lines that don't match the standard Apache error format (module lifecycle
