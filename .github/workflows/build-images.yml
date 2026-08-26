@@ -164,3 +164,76 @@ jobs:
           git add k8s/overlays/dev/kustomization.yaml
           git commit -m "dev: auto-deploy ${GITHUB_SHA:0:7}" || echo "overlay unchanged"
           git push --force origin HEAD:deploy/dev
+
+  # Release deploy to prod (URW-47). On a version tag (vX.Y.Z), take the tagged
+  # tree, set each image's prod overlay tag to the release version — changed
+  # images were built as :vX.Y.Z this run; unchanged images keep the version
+  # already running in prod (read from deploy/prod) so they aren't downgraded —
+  # then force-publish to the CI-owned `deploy/prod` branch. The untrobotics-prod
+  # Argo app tracks deploy/prod (auto-sync) and rolls prod. So a release is just
+  # `git tag vX.Y.Z && git push --tags`; no manual develop->master promote.
+  #
+  # Same rationale as deploy/dev: master is protected and the github-actions bot
+  # can't push it, so the release artifact lives on this unprotected branch.
+  deploy-prod:
+    needs: [detect, build]
+    if: ${{ github.ref_type == 'tag' && startsWith(github.ref_name, 'v') && fromJSON(needs.detect.outputs.matrix).include[0] != null }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set prod overlay image tags for release ${{ github.ref_name }}
+        env:
+          MATRIX: ${{ needs.detect.outputs.matrix }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          git fetch origin deploy/prod || true
+          python3 - <<'PY'
+          import json, os, re, subprocess, pathlib
+          matrix = json.loads(os.environ["MATRIX"])
+          version = os.environ["VERSION"]
+          changed = {i["name"] for i in matrix["include"]}
+          kust_name = {
+              "website": "untrobotics-web",
+              "website-driver-ws": "untrobotics-driver-ws",
+              "website-discord-bot": "untrobotics-discord-bot",
+          }
+          p = pathlib.Path("k8s/overlays/prod/kustomization.yaml")
+          text = p.read_text()
+
+          def tag_of(t, kn):
+              m = re.search(r'- name: ' + re.escape(kn) + r'\n(?:    .*\n)*?    newTag: "([^"]*)"', t)
+              return m.group(1) if m else None
+
+          # Current running prod versions come from deploy/prod (fall back to the
+          # tagged tree's overlay on the very first release).
+          try:
+              cur = subprocess.check_output(
+                  ["git", "show", "origin/deploy/prod:k8s/overlays/prod/kustomization.yaml"], text=True)
+          except subprocess.CalledProcessError:
+              cur = text
+
+          for ciname, kn in kust_name.items():
+              newtag = version if ciname in changed else (tag_of(cur, kn) or tag_of(text, kn))
+              text = re.sub(
+                  r'(- name: ' + re.escape(kn) + r'\n(?:    .*\n)*?    newTag: )"[^"]*"',
+                  r'\g<1>"' + newtag + '"', text)
+              print(f"{kn} -> {newtag}" + ("  (released)" if ciname in changed else "  (carried forward)"))
+          p.write_text(text)
+          PY
+
+      - name: Force-publish to deploy/prod
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add k8s/overlays/prod/kustomization.yaml
+          git commit -m "prod: release ${VERSION}" || echo "overlay unchanged"
+          git push --force origin HEAD:deploy/prod

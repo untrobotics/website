@@ -7,10 +7,14 @@ spec:
   project: default
   source:
     repoURL: https://github.com/untrobotics/website.git
-    # Prod tracks master. Cut a release by bumping the pinned image tag in
-    # k8s/overlays/prod on develop, then promoting develop -> master; the merge
-    # to master is what deploys (automated sync below).
-    targetRevision: master
+    # Prod tracks the CI-owned deploy/prod branch. Cut a release by pushing a
+    # version tag (git tag vX.Y.Z && git push --tags): CI builds the images and
+    # the deploy-prod job force-publishes the release overlay to deploy/prod,
+    # which the automated sync below then rolls out. No manual develop->master
+    # promote. (master is protected + the github-actions bot can't push it, so the
+    # release artifact lives on this separate unprotected branch — same pattern as
+    # deploy/dev for the dev environment.)
+    targetRevision: deploy/prod
     path: k8s/overlays/prod
   destination:
     server: https://kubernetes.default.svc
