@@ -1,9 +1,12 @@
 <?php
 require('../../template/top.php');
-require_once(BASE . '/api/discord/bots/admin.php');
 head('Thank you for your donation', true);
 
-AdminBot::send_message("Donation received (probably)!");
+// NOTE: this page does NOT post a Discord alert. It's just the donor's landing
+// page and fires on any visit (direct navigation, crawlers, abandoned checkouts),
+// so alerting here produced false "donation received" pings. The authoritative
+// alert comes from the webhook/IPN handler (paypal/ipn/handlers/donation.php),
+// which fires only when a real payment is recorded, with the amount + donor.
 
 result_card([
     'status'   => 'success',
