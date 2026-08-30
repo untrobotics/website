@@ -69,7 +69,9 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
           <input type="text" id="kit-first" autocomplete="given-name" maxlength="100">
           <label for="kit-last">Last name</label>
           <input type="text" id="kit-last" autocomplete="family-name" maxlength="100">
-          <label for="kit-email">Email (for pickup updates)</label>
+          <label for="kit-phone">Phone number</label>
+          <input type="tel" id="kit-phone" autocomplete="tel" maxlength="32" placeholder="(817) 555-1234">
+          <label for="kit-email">Email <span style="font-weight:400;color:#9aa0a6;">(optional)</span></label>
           <input type="email" id="kit-email" autocomplete="email" maxlength="255">
 
           <div style="margin-top:20px;">
@@ -92,11 +94,12 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
 <script>
 (function () {
   function val(id) { return (document.getElementById(id).value || '').trim(); }
-  function fields() { return { first_name: val('kit-first'), last_name: val('kit-last'), email: val('kit-email') }; }
+  function fields() { return { first_name: val('kit-first'), last_name: val('kit-last'), phone: val('kit-phone'), email: val('kit-email') }; }
   function validate() {
     var f = fields();
     if (!f.first_name || !f.last_name) return 'Please enter your first and last name.';
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) return 'Please enter a valid email address.';
+    if (f.phone.replace(/\D/g, '').length < 10) return 'Please enter a valid phone number.';
+    if (f.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(f.email)) return 'Please enter a valid email, or leave it blank.';
     return null;
   }
   function showErr(m) { var e = document.getElementById('kit-error'); e.style.display = m ? 'block' : 'none'; e.textContent = m || ''; }
@@ -106,6 +109,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
     p.set('source', 'kit');
     p.set('first_name', f.first_name);
     p.set('last_name', f.last_name);
+    p.set('phone', f.phone);
     p.set('email', f.email);
     return p;
   }

@@ -71,18 +71,21 @@ $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0
 
             <div class="table-responsive">
                 <table class="table">
-                    <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Paid</th><th>Status</th><th>Actions</th></tr></thead>
+                    <thead><tr><th>#</th><th>Name</th><th>Phone</th><th>Email</th><th>Paid</th><th>Status</th><th>Actions</th></tr></thead>
                     <tbody>
                     <?php
                     $rows = $db->query('SELECT * FROM kit_preorders ORDER BY id DESC');
                     if ($rows && $rows->num_rows):
                         while ($row = $rows->fetch_assoc()):
                             $st = $row['refunded'] ? 'refunded' : $row['status'];
+                            $phd = preg_replace('/\D/', '', (string) $row['phone']);
+                            $phDisp = strlen($phd) === 10 ? '(' . substr($phd, 0, 3) . ') ' . substr($phd, 3, 3) . '-' . substr($phd, 6) : $row['phone'];
                     ?>
                         <tr<?php echo $row['refunded'] ? ' class="text-gray"' : ''; ?>>
                             <td><?php echo (int) $row['id']; ?></td>
                             <td><?php echo htmlspecialchars(trim($row['first_name'] . ' ' . $row['last_name'])); ?></td>
-                            <td><?php echo htmlspecialchars($row['email']); ?></td>
+                            <td><a href="tel:<?php echo htmlspecialchars($phd); ?>"><?php echo htmlspecialchars($phDisp); ?></a></td>
+                            <td><?php echo htmlspecialchars($row['email'] ? $row['email'] : '—'); ?></td>
                             <td>$<?php echo htmlspecialchars(number_format((float) $row['amount'], 2)); ?><br><span class="text-gray"><?php echo htmlspecialchars(date('M j, g:ia', strtotime($row['ordered_at']))); ?></span></td>
                             <td><?php echo htmlspecialchars($st); ?></td>
                             <td>
@@ -91,7 +94,7 @@ $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0
                                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
                                     <input type="hidden" name="action" value="mark_ready">
                                     <input type="hidden" name="id" value="<?php echo (int) $row['id']; ?>">
-                                    <button class="btn btn-sm btn-success">Mark ready &amp; email</button>
+                                    <button class="btn btn-sm btn-success"><?php echo $row['email'] ? 'Mark ready &amp; email' : 'Mark ready (call them)'; ?></button>
                                 </form>
                                 <?php elseif (!$row['refunded'] && $row['status'] === 'ready'): ?>
                                 <form method="post" action="/admin/kit-preorders" style="display:inline">
@@ -104,7 +107,7 @@ $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0
                             </td>
                         </tr>
                     <?php endwhile; else: ?>
-                        <tr><td colspan="6" class="text-gray">No preorders yet.</td></tr>
+                        <tr><td colspan="7" class="text-gray">No preorders yet.</td></tr>
                     <?php endif; ?>
                     </tbody>
                 </table>

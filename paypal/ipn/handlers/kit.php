@@ -21,6 +21,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
     $first = isset($custom['first_name']) ? trim($custom['first_name']) : '';
     $last  = isset($custom['last_name'])  ? trim($custom['last_name'])  : '';
     $email = isset($custom['email'])      ? trim($custom['email'])      : '';
+    $phone = isset($custom['phone'])      ? trim($custom['phone'])      : '';
     $name  = trim($first . ' ' . $last);
 
     if (!is_numeric($amount) || $amount <= 0) {
@@ -36,10 +37,11 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
         return;
     }
 
-    $q = $db->query('INSERT INTO kit_preorders (first_name, last_name, email, amount, fee, txid)
+    $q = $db->query('INSERT INTO kit_preorders (first_name, last_name, phone, email, amount, fee, txid)
         VALUES (
             "' . $db->real_escape_string($first) . '",
             "' . $db->real_escape_string($last) . '",
+            "' . $db->real_escape_string($phone) . '",
             "' . $db->real_escape_string($email) . '",
             "' . $db->real_escape_string($amount) . '",
             "' . $db->real_escape_string($fee) . '",
@@ -50,7 +52,9 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
     }
     payment_log("[{$txid}] Recorded Robot Car Kit preorder from " . ($name !== '' ? $name : 'unknown') . " ({$email})");
 
-    $ipn->alert("Alert: Robot Car Kit preorder from " . ($name !== '' ? $name : 'someone') . ($email !== '' ? " ({$email})" : '') . " — \${$amount}. \xF0\x9F\xA4\x96");
+    $contact = $phone;
+    if ($email !== '') { $contact .= ($contact !== '' ? ' / ' : '') . $email; }
+    $ipn->alert("Alert: Robot Car Kit preorder from " . ($name !== '' ? $name : 'someone') . ($contact !== '' ? " ({$contact})" : '') . " — \${$amount}. \xF0\x9F\xA4\x96");
 
     if ($email !== '') {
         $sent = email(
