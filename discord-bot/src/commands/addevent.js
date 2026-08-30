@@ -1,6 +1,11 @@
 'use strict';
 
-const { SlashCommandBuilder, MessageFlags } = require('discord.js');
+const {
+  SlashCommandBuilder,
+  MessageFlags,
+  GuildScheduledEventEntityType,
+  GuildScheduledEventPrivacyLevel,
+} = require('discord.js');
 const { config } = require('../config');
 const log = require('../logger');
 
@@ -43,6 +48,32 @@ function validDate(s) {
 function toMinutes(hhmm) {
   const [h, m] = hhmm.split(':').map(Number);
   return h * 60 + m;
+}
+
+// Convert a wall-clock time ("YYYY-MM-DD" + "HH:MM") in `tz` to a UTC Date,
+// correctly accounting for the zone's DST offset on that date. (Discord wants an
+// absolute instant; Google Calendar took wall-clock + timeZone instead.)
+function zonedToUtc(dateStr, hhmm, tz) {
+  const [Y, Mo, D] = dateStr.split('-').map(Number);
+  const [h, m] = hhmm.split(':').map(Number);
+  const asUTC = Date.UTC(Y, Mo - 1, D, h, m, 0);
+  const dtf = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    hour12: false,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+  const p = {};
+  for (const part of dtf.formatToParts(new Date(asUTC))) p[part.type] = part.value;
+  const tzAsUTC = Date.UTC(
+    Number(p.year), Number(p.month) - 1, Number(p.day),
+    Number(p.hour) % 24, Number(p.minute), Number(p.second)
+  );
+  return new Date(asUTC - (tzAsUTC - asUTC));
 }
 
 module.exports = {
@@ -173,11 +204,57 @@ module.exports = {
       return;
     }
 
+    // --- Also create a Discord scheduled event (best-effort) -----------------
+    // The calendar add already succeeded, so a failure here must not fail the
+    // command. Discord shows this in the server's Events tab and — when it flips
+    // to ACTIVE at start time — fires the start announcement (see
+    // events/guildScheduledEventUpdate.js).
+    let discordEventNote = '';
+    try {
+      const startAt = zonedToUtc(date, allDay ? '00:00' : startTime, config.eventTimezone);
+      const endAt = zonedToUtc(date, allDay ? '23:59' : endTime, config.eventTimezone);
+      if (startAt.getTime() > Date.now()) {
+        await interaction.guild.scheduledEvents.create({
+          name: title.slice(0, 100),
+          scheduledStartTime: startAt,
+          scheduledEndTime: endAt,
+          privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
+          entityType: GuildScheduledEventEntityType.External,
+          entityMetadata: { location: (location || 'See the club calendar').slice(0, 100) },
+          description: description ? description.slice(0, 1000) : undefined,
+        });
+        discordEventNote = '\n📅 Added to the server’s **Events** tab too.';
+      } else {
+        discordEventNote = '\n_(Skipped the Discord event — its start time is in the past.)_';
+      }
+    } catch (err) {
+      log.warn('addevent: could not create Discord scheduled event', err.message);
+      discordEventNote =
+        '\n_(Calendar updated, but I couldn’t create the Discord event — check my permissions.)_';
+    }
+
     const when = allDay
       ? `${date} (all day)`
       : `${date}, ${startTime}–${endTime} ${config.eventTimezone.split('/')[1].replace('_', ' ')}`;
     const link = body.htmlLink ? `\n${body.htmlLink}` : '';
-    await interaction.editReply(`✅ Added **${title}** — ${when}.${link}`);
+
+    // Post a confirmation to the officer/admin channel — the reply above is
+    // ephemeral (only the officer who ran the command sees it), so this gives the
+    // team a shared record that an event was created, on the calendar + Discord.
+    try {
+      const adminCh = await interaction.client.channels.fetch(config.logChannelId).catch(() => null);
+      if (adminCh && adminCh.isTextBased()) {
+        let admin = `📅 **New event added** by <@${interaction.user.id}>\n**${title}** — ${when}`;
+        if (location) admin += `\n📍 ${location}`;
+        admin += discordEventNote;
+        if (body.htmlLink) admin += `\n🔗 ${body.htmlLink}`;
+        await adminCh.send({ content: admin, allowedMentions: { parse: [] } });
+      }
+    } catch (err) {
+      log.warn('addevent: could not post admin confirmation', err.message);
+    }
+
+    await interaction.editReply(`✅ Added **${title}** — ${when}.${link}${discordEventNote}`);
     log.info(`addevent: "${title}" on ${date} by ${interaction.user.tag}`);
   },
 };

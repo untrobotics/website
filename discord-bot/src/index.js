@@ -36,6 +36,7 @@ async function main() {
       GatewayIntentBits.MessageContent, // privileged — enable in Dev Portal
       GatewayIntentBits.GuildMembers, // privileged — enable in Dev Portal
       GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.GuildScheduledEvents, // /addevent creates + announces events
     ],
     // Needed so guildMemberAdd / reactions fire reliably even for uncached objects.
     partials: [Partials.GuildMember, Partials.Message, Partials.Channel, Partials.Reaction],

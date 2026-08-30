@@ -69,6 +69,10 @@ const config = Object.freeze({
   // dedicated officer-only channel, separate from the bot error log above.
   verifyUpdatesChannelId: env('DISCORD_VERIFY_UPDATES_CHANNEL_ID', '1540073411424944168'),
 
+  // Where /addevent announces that an event is starting. Defaults to the
+  // #announcements channel the website footer feed reads from.
+  announcementsChannelId: env('DISCORD_ANNOUNCEMENTS_CHANNEL_ID', '757730622843125831'),
+
   // --- Email verification ---------------------------------------------------
   allowedEmailDomains: env(
     'ALLOWED_EMAIL_DOMAINS',
