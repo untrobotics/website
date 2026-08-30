@@ -41,6 +41,7 @@ if (!class_exists('Source')) {
         const PRINTFUL = 'PRINTFUL_PRODUCT';
         const DUES = 'DUES_PAYMENT';
         const DONATION = 'DONATION';
+        const KIT = 'KIT_PREORDER';
     }
 }
 
@@ -207,7 +208,7 @@ function process_normalized_payment($gateway, $payment_info, array $custom_obj, 
 
     // Reject an unknown source before claiming so we don't record a tx we can't
     // fulfil.
-    if ($source !== Source::PRINTFUL && $source !== Source::DUES && $source !== Source::DONATION) {
+    if ($source !== Source::PRINTFUL && $source !== Source::DUES && $source !== Source::DONATION && $source !== Source::KIT) {
         payment_log("[{$tx_id}] Unhandled payment! Raw source: " . var_export($source, true));
         throw new IPNHandlerException("[{$tx_id}]: Unknown payment source: " . var_export($source, true));
     }
@@ -235,6 +236,11 @@ function process_normalized_payment($gateway, $payment_info, array $custom_obj, 
                 payment_log("[{$tx_id}] Handling payment with the DONATION handler");
                 require_once(__DIR__ . '/handlers/donation.php');
                 DONATION\handle_payment_notification($gateway, $payment_info, $custom_obj);
+                break;
+            case Source::KIT:
+                payment_log("[{$tx_id}] Handling payment with the KIT handler");
+                require_once(__DIR__ . '/handlers/kit.php');
+                KIT\handle_payment_notification($gateway, $payment_info, $custom_obj);
                 break;
         }
     } catch (\Throwable $e) {

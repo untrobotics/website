@@ -175,6 +175,27 @@ try {
 		$cost = $amount;
 		$needs_shipping = false;
 
+	} else if ($source === 'kit') {
+		// ---- KIT PREORDER: fixed $40 Robot Car Kit; buyer name/email from the form.
+		$first = trim((string) (isset($_REQUEST['first_name']) ? $_REQUEST['first_name'] : ''));
+		$last  = trim((string) (isset($_REQUEST['last_name'])  ? $_REQUEST['last_name']  : ''));
+		$email = strtolower(trim((string) (isset($_REQUEST['email']) ? $_REQUEST['email'] : '')));
+		if ($first === '' || $last === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			throw new RuntimeException('Please enter your first name, last name, and a valid email.');
+		}
+		// One kit per person.
+		$existing = $db->query('SELECT id FROM kit_preorders WHERE email = "' . $db->real_escape_string($email) . '" AND refunded = 0 LIMIT 1');
+		if ($existing && $existing->num_rows > 0) {
+			throw new RuntimeException('It looks like you have already preordered a kit with this email.');
+		}
+		$custom = array('source' => 'KIT_PREORDER', 'first_name' => $first, 'last_name' => $last, 'email' => $email);
+		$option_pairs = array();
+		$item_name = 'UNT Robotics Robot Car Kit (preorder)';
+		$currency = 'USD';
+		$quantity = 1;
+		$cost = 40.00;
+		$needs_shipping = false;
+
 	} else {
 		fail('HTTP/1.1 400 Bad Request', 'Unknown payment source.');
 	}
