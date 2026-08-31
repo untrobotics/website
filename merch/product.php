@@ -2,6 +2,7 @@
 require('../template/top.php');
 require(BASE . '/api/printful/printful.php');
 require(BASE . '/template/functions/functions.php');
+require_once(BASE . '/merch/includes/merch-data.php');
 
 $printfulapi = new PrintfulCustomAPI();
 
@@ -200,10 +201,11 @@ if ($product_can_be_handled) {
 		$og_image = (strpos($__ogi, 'http') === 0) ? $__ogi : 'https://www.untrobotics.com' . $__ogi;
 	}
 	head("Buy {$product->get_name()}", true);
-	$category_name = strtolower(preg_replace('@^.*\(([^()]+)\)$@i', '$1', $product->get_name()));
-	if($category_name !== 'gear' && $category_name[-1]!=='s'){
-	$category_name .= 's';
-	}
+	// Category for the breadcrumb: resolve to a canonical token (honouring the
+	// override map), then map to its /merch/<slug> page + display name.
+	$category_token = merch_resolve_category($product->get_name());
+	$category_slug = $category_token ? merch_category_slug($category_token) : 'gear';
+	$category_label = $category_token ? merch_category_display($category_token) : 'Merch';
 
 } else {
 	head("Invalid Product", true);
@@ -342,7 +344,7 @@ function get_variant_variant($variant_name) {
 			  <li><a href="/">Home</a></li>
 			  <li><a href="/merch">Merch</a></li>
 	<?php if ($product_can_be_handled) { ?>
-			  <li><a href="/merch/<?php echo $category_name; ?>"><?php echo $category_name; ?></a></li>
+			  <li><a href="/merch/<?php echo htmlspecialchars($category_slug); ?>"><?php echo htmlspecialchars($category_label); ?></a></li>
 	<?php } ?>
 			  <li>Product</li>
 			</ul>
