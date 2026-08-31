@@ -1,5 +1,6 @@
 <?php
 require("../template/top.php");
+require_once(BASE . '/admin/_timestamps.php');
 
 // Admin-only: this page exposes member PII (names, emails, phone/EUID) and a full
 // CSV export. Gate BEFORE any query runs or any output/CSV is produced. auth(2)
@@ -120,12 +121,13 @@ if (isset($_GET['download'])) {
                 <td><?php echo htmlspecialchars($user['email'], ENT_QUOTES); ?></td>
                 <td><?php echo Semester::get_name_from_value($user['grad_term']); ?> - <?php echo htmlspecialchars($user['grad_year'], ENT_QUOTES); ?></td>
                 <td><?php echo htmlspecialchars($user['unteuid'], ENT_QUOTES); ?></td>
-                <td><?php echo htmlspecialchars($r['payment_timestamp'], ENT_QUOTES); ?></td>
+                <td><?php echo admin_ts($r['payment_timestamp']); ?></td>
                 <td><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_view-a-trans&id=<?php echo htmlspecialchars($r['txid'], ENT_QUOTES); ?>"><?php echo htmlspecialchars($r['txid'], ENT_QUOTES); ?></a></td>
                 <td><?php echo htmlspecialchars($user['discord_id'], ENT_QUOTES); ?></td>
             </tr>
         <?php
     }
     ?></table>
+<?php admin_ts_script(); ?>
 </body>
 </html>

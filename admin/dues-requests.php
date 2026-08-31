@@ -1,6 +1,7 @@
 <?php
 require("../template/top.php");
 require(BASE . '/api/discord/bots/admin.php');
+require_once(BASE . '/admin/_timestamps.php');
 
 if (!is_array(auth(2))) {
     header("Location: /auth/login?returnto=" . $_SERVER['REQUEST_URI']);
@@ -138,7 +139,7 @@ head('Dues Requests', 'Dues Requests');
                             <td><?php echo (int) $row['id']; ?></td>
                             <td><?php echo htmlspecialchars($row['name'] ?: ('uid ' . $row['uid'])); ?><br><span class="text-gray"><?php echo htmlspecialchars($row['email']); ?></span></td>
                             <td><?php echo htmlspecialchars($row['reason']); ?></td>
-                            <td><?php echo htmlspecialchars(date('M j, Y', strtotime($row['created_at']))); ?></td>
+                            <td><?php echo admin_ts($row['created_at']); ?></td>
                             <td>
                                 <form method="post" action="/admin/dues-requests" style="display:inline" onsubmit="return confirm('Approve and mark this member paid?');">
                                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
@@ -164,4 +165,5 @@ head('Dues Requests', 'Dues Requests');
     </section>
 </main>
 <?php
+admin_ts_script();
 footer();

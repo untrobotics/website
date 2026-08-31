@@ -1,6 +1,7 @@
 <?php
 require("../template/top.php");
 require(BASE . '/api/discord/bots/admin.php');
+require_once(BASE . '/admin/_timestamps.php');
 
 if (!is_array(auth(2))) {
     header("Location: /auth/login?returnto=" . $_SERVER['REQUEST_URI']);
@@ -86,7 +87,7 @@ $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0
                             <td><?php echo htmlspecialchars(trim($row['first_name'] . ' ' . $row['last_name'])); ?></td>
                             <td><a href="tel:<?php echo htmlspecialchars($phd); ?>"><?php echo htmlspecialchars($phDisp); ?></a></td>
                             <td><?php echo htmlspecialchars($row['email'] ? $row['email'] : '—'); ?></td>
-                            <td>$<?php echo htmlspecialchars(number_format((float) $row['amount'], 2)); ?><br><span class="text-gray"><?php echo htmlspecialchars(date('M j, g:ia', strtotime($row['ordered_at']))); ?></span></td>
+                            <td>$<?php echo htmlspecialchars(number_format((float) $row['amount'], 2)); ?><br><span class="text-gray"><?php echo admin_ts($row['ordered_at'], 'M j, g:ia'); ?></span></td>
                             <td><?php echo htmlspecialchars($st); ?></td>
                             <td>
                                 <?php if (!$row['refunded'] && $row['status'] === 'paid'): ?>
@@ -116,4 +117,5 @@ $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0
     </section>
 </main>
 <?php
+admin_ts_script();
 footer();
