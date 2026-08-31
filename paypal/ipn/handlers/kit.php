@@ -1,6 +1,6 @@
 <?php
 /**
- * Kit preorder handler — records a Robot Car Kit prepayment and emails a receipt.
+ * Kit preorder handler — records an Electronics Kit prepayment and emails a receipt.
  *
  * Unlike the donation handler, the buyer's name/email come from the preorder FORM
  * (carried through the payment in $custom), not from the payment provider — the
@@ -50,18 +50,18 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
     if (!$q) {
         throw new \IPNHandlerException("[{$txid}]: Failed to record kit preorder (error: {$db->error})");
     }
-    payment_log("[{$txid}] Recorded Robot Car Kit preorder from " . ($name !== '' ? $name : 'unknown') . " ({$email})");
+    payment_log("[{$txid}] Recorded Electronics Kit preorder from " . ($name !== '' ? $name : 'unknown') . " ({$email})");
 
     $contact = $phone;
     if ($email !== '') { $contact .= ($contact !== '' ? ' / ' : '') . $email; }
-    $ipn->alert("Alert: Robot Car Kit preorder from " . ($name !== '' ? $name : 'someone') . ($contact !== '' ? " ({$contact})" : '') . " — \${$amount}. \xF0\x9F\xA4\x96");
+    $ipn->alert("Alert: Electronics Kit preorder from " . ($name !== '' ? $name : 'someone') . ($contact !== '' ? " ({$contact})" : '') . " — \${$amount}. \xF0\x9F\xA4\x96");
 
     if ($email !== '') {
         $sent = email(
             $email,
-            'Your UNT Robotics Robot Car Kit preorder',
+            'Your UNT Robotics Electronics Kit preorder',
             '<p>Hi ' . htmlspecialchars($first !== '' ? $first : 'there') . ',</p>'
-            . '<p>Thanks for preordering a <strong>Robot Car Kit</strong>! Your payment is confirmed and we have you down. We\'ll assemble your kit and email you again as soon as it\'s ready to pick up.</p>'
+            . '<p>Thanks for preordering an <strong>Electronics Kit</strong>! Your payment is confirmed and we have you down. We\'ll assemble your kit and email you again as soon as it\'s ready to pick up.</p>'
             . brand_email_code_box('$' . number_format((float) $amount, 2))
             . '<p style="margin-top:18px;">Kits are handed out at our general meetings — check the '
             . '<a href="https://www.untrobotics.com/events">event calendar</a> and our '

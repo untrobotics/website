@@ -176,7 +176,7 @@ try {
 		$needs_shipping = false;
 
 	} else if ($source === 'kit') {
-		// ---- KIT PREORDER: fixed $40 Robot Car Kit; buyer details from the form.
+		// ---- KIT PREORDER: fixed $40 Electronics Kit; buyer details from the form.
 		// Phone is required (primary contact + dedup key); email is optional.
 		$first = trim((string) (isset($_REQUEST['first_name']) ? $_REQUEST['first_name'] : ''));
 		$last  = trim((string) (isset($_REQUEST['last_name'])  ? $_REQUEST['last_name']  : ''));
@@ -196,7 +196,7 @@ try {
 		}
 		$custom = array('source' => 'KIT_PREORDER', 'first_name' => $first, 'last_name' => $last, 'phone' => $phone, 'email' => $email);
 		$option_pairs = array();
-		$item_name = 'UNT Robotics Robot Car Kit (preorder)';
+		$item_name = 'UNT Robotics Electronics Kit (preorder)';
 		$currency = 'USD';
 		$quantity = 1;
 		$cost = 40.00;

@@ -1,6 +1,6 @@
 <?php
 require('../../template/top.php');
-head('Robot Car Kit preorder received', true);
+head('Electronics Kit preorder received', true);
 
 // No Discord alert here — this page fires on any visit. The authoritative alert +
 // receipt come from the payment handler (paypal/ipn/handlers/kit.php) when the
@@ -9,7 +9,7 @@ head('Robot Car Kit preorder received', true);
 result_card([
     'status'   => 'success',
     'title'    => 'Preorder received!',
-    'subtitle' => 'Thanks for preordering a Robot Car Kit.',
+    'subtitle' => 'Thanks for preordering an Electronics Kit.',
     'lead'     => 'Your payment is confirmed and a receipt is on its way to your inbox. We&rsquo;ll assemble your kit and email you the moment it&rsquo;s ready to pick up &mdash; kits are handed out at our general meetings.',
     'buttons'  => [
         ['href' => '/events', 'label' => 'See meeting times'],

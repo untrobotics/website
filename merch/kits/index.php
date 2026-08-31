@@ -1,6 +1,6 @@
 <?php
 require('../../template/top.php');
-head('Robot Car Kit Preorder', true);
+head('Electronics Kit Preorder', true);
 
 // PayPal JS SDK client id for the active environment.
 $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAYPAL_CLIENT_ID;
@@ -13,7 +13,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
         <ul class="list-breadcrumb">
           <li><a href="/">Home</a></li>
           <li><a href="/merch">Merch</a></li>
-          <li>Robot Car Kit</li>
+          <li>Electronics Kit</li>
         </ul>
       </div>
     </div>
@@ -45,20 +45,22 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
 
     <div class="kit-layout">
       <div class="kit-left text-left">
-        <h1>Robot Car Kit</h1>
-        <h6>Preorder for our beginner workshops</h6>
-        <img src="/images/botathon-photos/traditionally-wheeled-robot.jpg" alt="Robot car kit">
-        <p>Build and program your own 4-wheel-drive robot car &mdash; the same kit we use for Botathon. It&rsquo;s a hands-on intro to microcontrollers, motors, and code. Preorder yours below; we&rsquo;ll assemble it and email you the moment it&rsquo;s ready to pick up at a general meeting.</p>
+        <h1>Electronics Kit</h1>
+        <h6>Everything you need for this semester&rsquo;s build workshops</h6>
+        <p>Your own box of parts to build along at our workshops all semester &mdash; from a light-sensing LED nightlight to sound-reactive motors and an RFID door lock. A hands-on intro to Arduino, circuits, sensors, and code. Preorder below; we&rsquo;ll put your kit together and email you the moment it&rsquo;s ready to pick up at a general meeting.</p>
         <p><strong>Each kit includes:</strong></p>
         <ul>
-          <li>Arduino UNO microcontroller</li>
-          <li>Motor driver (L293D / L298N)</li>
-          <li>ESP32 communication module</li>
-          <li>4&times; DC motors + 4&times; wheels</li>
-          <li>Robot car chassis</li>
-          <li>7.2V 2200mAh Ni-MH battery pack</li>
-          <li>Speed encoder disks</li>
-          <li>Assorted nuts, bolts &amp; wires</li>
+          <li>Arduino Uno (USB-C) + breadboard</li>
+          <li>Jumper wires (M&ndash;M and M&ndash;F) &amp; assorted resistors</li>
+          <li>LEDs (red, green, blue, yellow, orange), buttons &amp; switches</li>
+          <li>Potentiometer + buzzer</li>
+          <li>Sensors: soil-moisture, light, touch &amp; sound</li>
+          <li>RFID reader + tag</li>
+          <li>SG90 servo + 3V DC motor</li>
+          <li>Buck converter</li>
+          <li>8-bit RGB LED ring + 8&times;8 RGB LED matrix</li>
+          <li>I&sup2;C LCD display</li>
+          <li>Divided storage box to keep it all organized</li>
         </ul>
       </div>
 

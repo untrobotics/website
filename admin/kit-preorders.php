@@ -29,9 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (!empty($row['email'])) {
                         $sent = email(
                             $row['email'],
-                            'Your UNT Robotics Robot Car Kit is ready for pickup',
+                            'Your UNT Robotics Electronics Kit is ready for pickup',
                             '<p>Hi ' . htmlspecialchars($row['first_name'] !== '' ? $row['first_name'] : 'there') . ',</p>'
-                            . '<p>Good news &mdash; your <strong>Robot Car Kit</strong> is assembled and ready to pick up! &#129302;</p>'
+                            . '<p>Good news &mdash; your <strong>Electronics Kit</strong> is assembled and ready to pick up! &#129302;</p>'
                             . '<p>Kits are handed out in person at our <strong>general meetings</strong>. Check the '
                             . '<a href="https://www.untrobotics.com/events">event calendar</a> and our '
                             . '<a href="https://www.untrobotics.com/join/discord">Discord</a> for the next meeting &mdash; the robotics office is <strong>C119</strong>.</p>'
@@ -61,7 +61,7 @@ $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0
                 <div class="alert alert-<?php echo $notice[0] === 'ok' ? 'success' : 'danger'; ?>"><?php echo htmlspecialchars($notice[1]); ?></div>
             <?php endif; ?>
 
-            <h3>Robot Car Kit preorders</h3>
+            <h3>Electronics Kit preorders</h3>
             <p class="text-gray">
                 <?php echo (int) $stats['total']; ?> total &mdash;
                 <strong><?php echo (int) $stats['paid']; ?></strong> awaiting build,
