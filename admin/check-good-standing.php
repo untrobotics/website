@@ -11,7 +11,7 @@ $u = @$_GET['u'];
 $result = null;   // null = no lookup yet; array(ok, message)
 if ($u !== null && $u !== '') {
     if (!is_numeric($u)) {
-        $result = array(false, 'Invalid UID — enter a numeric member id.');
+        $result = array(false, 'Invalid UID. Enter a numeric member id.');
     } else {
         $good = $untrobotics->is_user_in_good_standing((int) $u);
         $result = array($good, 'User #' . (int) $u . ' is ' . ($good ? '' : 'NOT ') . 'in good standing.');

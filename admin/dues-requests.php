@@ -51,13 +51,13 @@ function record_manual_dues_payment($uid, $note) {
         }
     }
 
-    $role = 'Discord not linked — role assigns when they visit /join/discord';
+    $role = 'Discord not linked; role assigns when they visit /join/discord';
     if (!empty($r['discord_id'])) {
         try {
             AdminBot::add_user_role($r['discord_id']);
             $role = 'Good Standing role assigned';
         } catch (Exception $e) {
-            $role = 'role assignment FAILED (' . $e->getMessage() . ') — assign manually';
+            $role = 'role assignment FAILED (' . $e->getMessage() . '). Assign manually';
         }
     }
     AdminBot::send_message("(Dues) {$r['name']} (uid {$uid}) marked paid for the current term via admin. {$note}");
@@ -66,7 +66,7 @@ function record_manual_dues_payment($uid, $note) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($csrf, $_POST['csrf_token'])) {
-        $notice = array('error', 'Session expired — please retry.');
+        $notice = array('error', 'Session expired. Please retry.');
     } else {
         $action = isset($_POST['action']) ? $_POST['action'] : '';
         if ($action === 'approve') {
@@ -118,8 +118,8 @@ require_once(BASE . '/admin/_styles.php');
                 <div class="admin-help">
                     <strong>What these actions do</strong>
                     <ul>
-                        <li><strong>Mark paid</strong> / <strong>Approve &amp; mark paid</strong> — records a dues payment for the <em>current term</em> so the member counts as in good standing, and assigns the Discord Good Standing role if their account is linked (otherwise it's applied when they next visit <em>/join/discord</em>). Safe to click twice — it won't double-charge or double-record.</li>
-                        <li><strong>Deny</strong> — rejects the alternative-dues request without recording a payment.</li>
+                        <li><strong>Mark paid</strong> and <strong>Approve &amp; mark paid</strong> record a dues payment for the <em>current term</em>, so the member counts as in good standing, and assign the Discord Good Standing role if their account is linked (otherwise it applies when they next visit <em>/join/discord</em>). Clicking twice is safe; it won't double-record.</li>
+                        <li><strong>Deny</strong> rejects the request without recording a payment.</li>
                     </ul>
                 </div>
 

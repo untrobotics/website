@@ -6,7 +6,7 @@
  * DB TIMESTAMP columns are stored/read as UTC (the DB session tz is UTC). We
  * parse them explicitly as UTC here rather than via date()/strtotime(), because
  * template/top.php switches PHP's default tz to the logged-in admin's saved
- * timezone — which would make strtotime() misread the UTC string. The UTC label
+ * timezone, which would make strtotime() misread the UTC string. The UTC label
  * is rendered server-side; the local line is filled in by admin_ts_script()
  * from the browser's own timezone (the most reliable "user's local time").
  */

@@ -28,7 +28,7 @@ if (!$all_time) {
 // ---- The unified ledger query --------------------------------------------
 // Each stream normalised to (src, ts, descr, amount, fee, txid, refunded,
 // refunded_at). Merch amount/fee come from printful_order_tx (NULL for orders
-// recorded before those columns existed — surfaced as "unrecorded" below).
+// recorded before those columns existed, surfaced as "unrecorded" below).
 $sql = "SELECT src, ts, descr, amount, fee, txid, refunded, refunded_at FROM (
     SELECT 'Dues' src, payment_timestamp ts, COALESCE(name,'') descr, amount, fee, txid, refunded, refunded_at FROM dues_payments
     UNION ALL
@@ -50,7 +50,7 @@ function ledger_processor($txid) {
     if (strpos($txid, 'manual-') === 0) { return 'Manual'; }
     // Stripe ids: cs_ (Checkout Session), pi_ (PaymentIntent), ch_/py_ (charge), etc.
     if (preg_match('/^(cs_|pi_|ch_|py_|in_|txn_|re_|seti_)/', $txid)) { return 'Stripe'; }
-    if ($txid === '') { return '—'; }
+    if ($txid === '') { return 'Unknown'; }
     return 'PayPal';
 }
 
@@ -116,18 +116,18 @@ $money = function ($n) { return '$' . number_format($n, 2); };
             <div class="admin-wrap">
                 <a class="admin-back" href="/admin">&larr; Admin</a>
                 <div class="admin-head">
-                    <h1>Finances &mdash; AR Ledger</h1>
+                    <h1>AR Ledger</h1>
                     <p class="lead">Every payment across dues, donations, kit preorders and merch in one ledger, with gross / processor fees / net for the selected tax year. Export the CSV for your records at tax time.</p>
                 </div>
 
                 <div class="admin-help">
                     <strong>How to read this</strong>
                     <ul>
-                        <li><strong>Gross</strong> is money collected; <strong>Fees</strong> are payment processing fees; <strong>Net</strong> is what actually landed (Gross &minus; Fees). Refunded transactions are excluded from Gross/Net and totalled separately.</li>
-                        <li><strong>Heads-up on fees:</strong> a fee is only recorded when the processor reports it at payment time. <strong>PayPal</strong> does; <strong>Stripe</strong>'s fee posts a little later and isn't captured yet &mdash; so for Stripe rows <strong>fee shows $0 and Net equals Gross</strong> (Net is slightly overstated). Gross is accurate; treat Net as approximate until Stripe fee capture is added.</li>
+                        <li><strong>Gross</strong> is money collected; <strong>Fees</strong> are payment processing fees; <strong>Net</strong> is what actually landed (Gross minus Fees). Refunded transactions are excluded from Gross and Net and totalled separately.</li>
+                        <li><strong>Fees:</strong> a fee is only recorded when the processor reports it at payment time. PayPal does. Stripe reports its fee later and it isn't captured yet, so Stripe rows show a $0 fee and Net equals Gross. Gross is accurate; treat Net as approximate for Stripe rows until fee capture is added.</li>
                         <li>Periods are calendar years in <strong>UTC</strong>. The authoritative books are still Stripe + PayPal; this mirrors them for convenience.</li>
                         <?php if ($unrecorded > 0): ?>
-                        <li><strong><?php echo $unrecorded; ?> older merch order<?php echo $unrecorded === 1 ? '' : 's'; ?></strong> in this period predate local amount capture, so their dollar figures aren't included in the totals &mdash; look them up in Stripe/PayPal by the transaction id (shown as <span class="pill pill-neutral">unrecorded</span>). All merch from now on is captured automatically.</li>
+                        <li><strong><?php echo $unrecorded; ?> older merch order<?php echo $unrecorded === 1 ? '' : 's'; ?></strong> in this period predate local amount capture, so their dollar figures aren't in the totals. Look them up in Stripe/PayPal by transaction id (shown as <span class="pill pill-neutral">Unrecorded</span>). New merch is captured automatically.</li>
                         <?php endif; ?>
                     </ul>
                 </div>
@@ -173,10 +173,10 @@ $money = function ($n) { return '$' . number_format($n, 2); };
                                 <tr<?php echo $isref ? ' class="is-dim"' : ''; ?>>
                                     <td><?php echo admin_ts($r['ts'], 'M j, Y'); ?></td>
                                     <td><?php echo htmlspecialchars($r['src']); ?></td>
-                                    <td><?php echo htmlspecialchars($r['descr']) ?: '<span class="muted">&mdash;</span>'; ?></td>
-                                    <td class="num"><?php echo $amt === null ? '<span class="muted">&mdash;</span>' : $money($amt); ?></td>
-                                    <td class="num"><?php echo $amt === null ? '<span class="muted">&mdash;</span>' : $money($fee); ?></td>
-                                    <td class="num"><?php echo $amt === null ? '<span class="muted">&mdash;</span>' : $money($amt - $fee); ?></td>
+                                    <td><?php echo htmlspecialchars($r['descr']) ?: '<span class="muted">-</span>'; ?></td>
+                                    <td class="num"><?php echo $amt === null ? '<span class="muted">-</span>' : $money($amt); ?></td>
+                                    <td class="num"><?php echo $amt === null ? '<span class="muted">-</span>' : $money($fee); ?></td>
+                                    <td class="num"><?php echo $amt === null ? '<span class="muted">-</span>' : $money($amt - $fee); ?></td>
                                     <td><?php echo $isref ? admin_pill('refunded') : ($amt === null ? admin_pill('unrecorded', 'Unrecorded') : admin_pill('paid')); ?></td>
                                     <td><?php echo htmlspecialchars(ledger_processor($r['txid'])); ?></td>
                                     <td class="num"><span class="muted" style="font-size:11px;"><?php echo htmlspecialchars($r['txid']); ?></span></td>

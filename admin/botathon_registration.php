@@ -14,11 +14,11 @@ if (empty($_SESSION['csrf_token'])) {
 $csrf = $_SESSION['csrf_token'];
 $notice = null;
 
-// Change the current season (DB-backed — no redeploy). New sign-ups stamp this
+// Change the current season (DB-backed, no redeploy). New sign-ups stamp this
 // season and the roster below filters to it, so old seasons drop off cleanly.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($csrf, $_POST['csrf_token'])) {
-        $notice = array('error', 'Session expired — please retry.');
+        $notice = array('error', 'Session expired. Please retry.');
     } elseif (($_POST['action'] ?? '') === 'set_season') {
         $new = (int) ($_POST['season'] ?? 0);
         if ($new < 1 || $new > 99) {
@@ -45,7 +45,7 @@ $count = ($q ? $q->num_rows : 0);
                 <a class="admin-back" href="/admin">&larr; Admin</a>
                 <div class="admin-head">
                     <h1>Botathon Registrations</h1>
-                    <p class="lead">Everyone signed up for the current Botathon season. Registrations from previous seasons are hidden &mdash; bump the season each year instead of clearing the table.</p>
+                    <p class="lead">Everyone signed up for the current Botathon season. Older seasons are hidden. Bump the season each year instead of clearing the table.</p>
                 </div>
 
                 <?php if ($notice): ?>
@@ -60,7 +60,7 @@ $count = ($q ? $q->num_rows : 0);
                 </div>
 
                 <div class="admin-help">
-                    <strong>Season</strong> is stored in the database and controls the Botathon page title, the sign-up form, and which registrations show here. Bumping it each year means you never have to clear the registration table &mdash; old seasons simply stop appearing.
+                    <strong>Season</strong> is stored in the database and sets the Botathon page title, the sign-up form, and which registrations show here. Bump it each year and old seasons stop appearing, so you never wipe the registration table.
                 </div>
 
                 <div class="admin-card">
@@ -95,7 +95,7 @@ $count = ($q ? $q->num_rows : 0);
                                         <td><?php echo htmlspecialchars($r['gender']); ?></td>
                                         <td><?php echo htmlspecialchars($r['classification']); ?></td>
                                         <td><?php echo htmlspecialchars($r['major']); ?></td>
-                                        <td><?php echo $r['team_name'] ? htmlspecialchars($r['team_name']) : '<span class="muted">&mdash;</span>'; ?></td>
+                                        <td><?php echo $r['team_name'] ? htmlspecialchars($r['team_name']) : '<span class="muted">-</span>'; ?></td>
                                         <td><?php echo $r['diet_restrictions'] ? htmlspecialchars($r['diet_restrictions']) : '<span class="muted">none</span>'; ?></td>
                                         <td><?php echo $r['latex_allergy'] ? '<span class="pill pill-refunded">Yes</span>' : '<span class="muted">No</span>'; ?></td>
                                         <td class="num"><?php echo htmlspecialchars($r['unteuid']); ?></td>

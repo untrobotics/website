@@ -93,7 +93,7 @@ $qs = $q !== '' ? '&q=' . urlencode($q) : '';
                 <a class="admin-back" href="/admin">&larr; Admin</a>
                 <div class="admin-head">
                     <h1>Email Log</h1>
-                    <p class="lead">Every transactional email the site has sent &mdash; receipts, pickup notices, dues confirmations, newsletters. Click a row to read the full message.</p>
+                    <p class="lead">Every email the site has sent: receipts, pickup notices, dues confirmations, newsletters. Click a row to read the full message.</p>
                 </div>
 
                 <div class="admin-stats">

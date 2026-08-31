@@ -16,7 +16,7 @@ $notice = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($csrf, $_POST['csrf_token'])) {
-        $notice = array('error', 'Session expired — please retry.');
+        $notice = array('error', 'Session expired. Please retry.');
     } else {
         $action = isset($_POST['action']) ? $_POST['action'] : '';
 
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $total = $db->affected_rows;
                 $db->query('UPDATE newsletter_campaigns SET status = "sending", total_recipients = "'
                     . $db->real_escape_string($total) . '" WHERE id = "' . $db->real_escape_string($cid) . '"');
-                $notice = array('ok', "Started — {$total} recipients queued. Sending drips out within the daily limit.");
+                $notice = array('ok', "Started. {$total} recipients queued. Sends go out within the daily limit.");
             } else {
                 $notice = array('error', 'Campaign is not a draft.');
             }
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // $archive=false to mirror a real newsletter send; only goes to the admin.
                 $sent_ok = email($to, '[TEST] ' . $cc['subject'], $body, false, null, array(), true, false);
                 $notice = $sent_ok
-                    ? array('ok', 'Test sent to ' . $to . ' — check the formatting before you Start sending.')
+                    ? array('ok', 'Test sent to ' . $to . '. Check the formatting before you start sending.')
                     : array('error', 'Test send failed. Check the mail logs.');
             } else {
                 $notice = array('error', 'Campaign not found.');
@@ -86,7 +86,7 @@ require_once(BASE . '/admin/_styles.php');
                 <a class="admin-back" href="/admin">&larr; Admin</a>
                 <div class="admin-head">
                     <h1>Newsletter</h1>
-                    <p class="lead">Compose a campaign, send yourself a test, then start it. Sends drip out within the daily limit, keeping a reserve for transactional mail.</p>
+                    <p class="lead">Compose a campaign, send yourself a test, then start it. Sends go out gradually within the daily limit, with room kept for transactional mail.</p>
                 </div>
 
                 <?php if ($notice): ?>
@@ -106,7 +106,7 @@ require_once(BASE . '/admin/_styles.php');
                     <ul>
                         <li><strong>Create draft</strong> saves the campaign without sending anything.</li>
                         <li><strong>Send test to me</strong> emails just you a copy so you can check formatting.</li>
-                        <li><strong>Start sending</strong> queues every active subscriber; delivery drips out within the daily budget above. You can <strong>Pause</strong> / <strong>Resume</strong> a send at any time.</li>
+                        <li><strong>Start sending</strong> queues every active subscriber; delivery goes out within the daily budget above. You can <strong>Pause</strong> or <strong>Resume</strong> a send at any time.</li>
                     </ul>
                 </div>
 
@@ -146,8 +146,8 @@ require_once(BASE . '/admin/_styles.php');
                                     <td class="num"><?php echo (int) $c['id']; ?></td>
                                     <td><?php echo htmlspecialchars($c['subject']); ?></td>
                                     <td><?php echo admin_pill($c['status']); ?></td>
-                                    <td class="num"><?php echo $total ? ($done . ' / ' . $total) : '<span class="muted">&mdash;</span>'; ?></td>
-                                    <td><?php echo isset($c['created_at']) ? admin_ts($c['created_at']) : '<span class="muted">&mdash;</span>'; ?></td>
+                                    <td class="num"><?php echo $total ? ($done . ' / ' . $total) : '<span class="muted">-</span>'; ?></td>
+                                    <td><?php echo isset($c['created_at']) ? admin_ts($c['created_at']) : '<span class="muted">-</span>'; ?></td>
                                     <td>
                                         <div class="admin-actions">
                                         <?php if ($c['status'] === 'draft'): ?>
@@ -171,7 +171,7 @@ require_once(BASE . '/admin/_styles.php');
                                                 <button class="btn-pill neutral"><?php echo $c['status'] === 'sending' ? 'Pause' : 'Resume'; ?></button>
                                             </form>
                                         <?php else: ?>
-                                            <span class="muted">&mdash;</span>
+                                            <span class="muted">-</span>
                                         <?php endif; ?>
                                         </div>
                                     </td>

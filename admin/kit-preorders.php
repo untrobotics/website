@@ -16,7 +16,7 @@ $notice = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($_POST['csrf_token']) || !hash_equals($csrf, $_POST['csrf_token'])) {
-        $notice = array('error', 'Session expired — please retry.');
+        $notice = array('error', 'Session expired. Please retry.');
     } else {
         $action = isset($_POST['action']) ? $_POST['action'] : '';
         $id = (int) @$_POST['id'];
@@ -32,10 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $row['email'],
                             'Your UNT Robotics Electronics Kit is ready for pickup',
                             '<p>Hi ' . htmlspecialchars($row['first_name'] !== '' ? $row['first_name'] : 'there') . ',</p>'
-                            . '<p>Good news &mdash; your <strong>Electronics Kit</strong> is assembled and ready to pick up! &#129302;</p>'
+                            . '<p>Good news! Your <strong>Electronics Kit</strong> is assembled and ready to pick up. &#129302;</p>'
                             . '<p>Kits are handed out in person at our <strong>general meetings</strong>. Check the '
                             . '<a href="https://www.untrobotics.com/events">event calendar</a> and our '
-                            . '<a href="https://www.untrobotics.com/join/discord">Discord</a> for the next meeting &mdash; general meetings are held in room <strong>B185</strong>.</p>'
+                            . '<a href="https://www.untrobotics.com/join/discord">Discord</a> for the next meeting. General meetings are held in room <strong>B185</strong>.</p>'
                             . '<p>See you there! Questions? <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a>.</p>'
                         );
                         $emailed = $sent ? 'pickup email sent' : 'email send FAILED';
@@ -63,7 +63,7 @@ $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0
                 <a class="admin-back" href="/admin">&larr; Admin</a>
                 <div class="admin-head">
                     <h1>Electronics Kit preorders</h1>
-                    <p class="lead">Everyone who has preordered a $40 Electronics Kit. Mark each one ready when it's built, then handed over at pickup.</p>
+                    <p class="lead">Electronics Kit preorders and their status. Mark each one ready once it's built, then picked up when the member collects it.</p>
                 </div>
 
                 <?php if ($notice): ?>
@@ -82,8 +82,8 @@ $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0
                 <div class="admin-help">
                     <strong>What the buttons do</strong>
                     <ul>
-                        <li><strong>Mark ready &amp; email</strong> — sets the preorder to <?php echo admin_pill('ready'); ?> and emails the buyer that their kit is built and ready to collect at a general meeting (room B185). If there's no email on file the button reads <em>Mark ready (call them)</em> and just flips the status — reach out using their phone number.</li>
-                        <li><strong>Mark picked up</strong> — records that the member has collected their kit; moves it to <?php echo admin_pill('picked_up'); ?>.</li>
+                        <li><strong>Mark ready &amp; email</strong> sets the preorder to <?php echo admin_pill('ready'); ?> and emails the buyer that their kit is ready to collect at a general meeting (room B185). With no email on file the button reads <em>Mark ready (call them)</em> and just changes the status, so reach out by phone.</li>
+                        <li><strong>Mark picked up</strong> records that the member collected their kit and moves it to <?php echo admin_pill('picked_up'); ?>.</li>
                         <li><?php echo admin_pill('refunded'); ?> preorders are dimmed and have no actions.</li>
                     </ul>
                 </div>
@@ -125,7 +125,7 @@ $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0
                                             <button class="btn-pill neutral">Mark picked up</button>
                                         </form>
                                         <?php else: ?>
-                                            <span class="muted">&mdash;</span>
+                                            <span class="muted">-</span>
                                         <?php endif; ?>
                                         </div>
                                     </td>

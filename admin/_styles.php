@@ -1,6 +1,6 @@
 <?php
 /*
- * Shared admin UI kit — include right after head() on every /admin page, then
+ * Shared admin UI kit. Include right after head() on every /admin page, then
  * lay the page out with .admin-wrap / .admin-head / .admin-stats / .admin-card /
  * .admin-table, status pills via admin_pill(), and stat cards via admin_stat().
  */
@@ -113,7 +113,10 @@ if (!function_exists('admin_stat')) {
   .admin-form textarea { max-width: 100%; resize: vertical; line-height: 1.5; }
   .admin-form input:focus, .admin-form textarea:focus, .admin-form select:focus { outline: none; border-color: #45cd8f; box-shadow: 0 0 0 3px rgba(69,205,143,.18); }
   .admin-form .row-inline { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
-  .admin-form .row-inline .fld { margin-bottom: 0; }
+  .admin-form .row-inline .fld { margin-bottom: 0; flex: 0 0 auto; }
+  /* In a row-inline the field shrinks to content, so a plain width:100% input
+     collapses to its spinner arrows. Size these to their own explicit width. */
+  .admin-form .row-inline .fld input { width: 180px; max-width: 100%; }
   .btn-solid { display: inline-block; border: 0; border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: 700; cursor: pointer; }
   .btn-solid.go { background: #1a8a4f; color: #fff; }
   .btn-solid.go:hover { background: #157540; }
