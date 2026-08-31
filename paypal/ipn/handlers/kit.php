@@ -65,7 +65,7 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
             . brand_email_code_box('$' . number_format((float) $amount, 2))
             . '<p style="margin-top:18px;">Kits are handed out at our general meetings — check the '
             . '<a href="https://www.untrobotics.com/events">event calendar</a> and our '
-            . '<a href="https://www.untrobotics.com/join/discord">Discord</a> for times (the robotics office is C119).</p>'
+            . '<a href="https://www.untrobotics.com/join/discord">Discord</a> for times &mdash; general meetings are held in room <strong>B185</strong>.</p>'
             . '<p style="margin-top:14px;">This email is your receipt.<br><strong>Transaction ID:</strong> ' . htmlspecialchars($txid) . '</p>'
             . '<p>Questions? Reach us at <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a>.</p>'
         );

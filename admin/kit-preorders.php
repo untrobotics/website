@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             . '<p>Good news &mdash; your <strong>Electronics Kit</strong> is assembled and ready to pick up! &#129302;</p>'
                             . '<p>Kits are handed out in person at our <strong>general meetings</strong>. Check the '
                             . '<a href="https://www.untrobotics.com/events">event calendar</a> and our '
-                            . '<a href="https://www.untrobotics.com/join/discord">Discord</a> for the next meeting &mdash; the robotics office is <strong>C119</strong>.</p>'
+                            . '<a href="https://www.untrobotics.com/join/discord">Discord</a> for the next meeting &mdash; general meetings are held in room <strong>B185</strong>.</p>'
                             . '<p>See you there! Questions? <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a>.</p>'
                         );
                         $emailed = $sent ? 'pickup email sent' : 'email send FAILED';
@@ -82,7 +82,7 @@ $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0
                 <div class="admin-help">
                     <strong>What the buttons do</strong>
                     <ul>
-                        <li><strong>Mark ready &amp; email</strong> — sets the preorder to <?php echo admin_pill('ready'); ?> and emails the buyer that their kit is built and ready to collect at a general meeting (office C119). If there's no email on file the button reads <em>Mark ready (call them)</em> and just flips the status — reach out using their phone number.</li>
+                        <li><strong>Mark ready &amp; email</strong> — sets the preorder to <?php echo admin_pill('ready'); ?> and emails the buyer that their kit is built and ready to collect at a general meeting (room B185). If there's no email on file the button reads <em>Mark ready (call them)</em> and just flips the status — reach out using their phone number.</li>
                         <li><strong>Mark picked up</strong> — records that the member has collected their kit; moves it to <?php echo admin_pill('picked_up'); ?>.</li>
                         <li><?php echo admin_pill('refunded'); ?> preorders are dimmed and have no actions.</li>
                     </ul>
