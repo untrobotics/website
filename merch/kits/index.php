@@ -36,9 +36,15 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
       .kit-price { display:flex; align-items:baseline; gap:8px; margin:20px 0 4px; }
       .kit-price .amt { font-size:34px; font-weight:800; color:#166a3f; }
       .kit-price .lbl { color:#777; font-size:13px; }
-      #stripe-kit-button, #express-checkout-element, #applepay-redirect, #paypal-button-container { margin:0 0 10px; }
-      #express-checkout-element:empty { margin:0; }
-      #paypal-button-container { min-height:0; }
+      /* Flex gap gives every button the same rhythm regardless of which SDK
+         rendered it (the Stripe wallet iframe brings its own margins), so zero
+         each child's own margins — they'd add to the gap and read as uneven. */
+      .pay-buttons { display:flex; flex-direction:column; gap:10px; }
+      .pay-buttons > * { margin:0 !important; }
+      .pay-buttons #express-checkout-element:empty { display:none; }
+      /* PayPal reserves ~8px of empty space below its buttons; pull the note up
+         so the visible gap under PayPal matches the 10px used everywhere else. */
+      .pay-buttons #paypal-button-container { min-height:0; margin-bottom:-8px !important; }
       #stripe-kit-button { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; height:46px; border:0; border-radius:6px; background:#635bff; color:#fff; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s; }
       #stripe-kit-button:hover { background:#544dff; }
       #stripe-kit-button:disabled { opacity:.6; cursor:default; }
@@ -82,7 +88,7 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
           <label for="kit-email">Email <span style="font-weight:400;color:#9aa0a6;">(optional)</span></label>
           <input type="email" id="kit-email" autocomplete="email" maxlength="255">
 
-          <div style="margin-top:20px;">
+          <div class="pay-buttons" style="margin-top:20px;">
             <button id="stripe-kit-button" type="button">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
               <span>Pay with card</span>
