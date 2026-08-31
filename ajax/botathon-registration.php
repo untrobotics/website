@@ -75,7 +75,7 @@ if (isset($_POST)) {
 			"' . $db->real_escape_string($unteuid) . '",
 			"' . $db->real_escape_string($team) . '",
 			"' . $db->real_escape_string($disability_accommodations) . '",
-			"' . $db->real_escape_string(BOTATHON_SEASON) . '"
+			"' . $db->real_escape_string(botathon_season()) . '"
 		)
 		');
 		if ($q) {
@@ -86,7 +86,7 @@ if (isset($_POST)) {
 				$email,
 				"UNT Robotics Botathon Registration",
 				"<p>Dear " . htmlspecialchars($name) . ",</p>" .
-				"<p>Thank you for registering for Botathon Season " . BOTATHON_SEASON . "!</p>" .
+				"<p>Thank you for registering for Botathon Season " . botathon_season() . "!</p>" .
 				"<p>If you haven't already, please join our " .
 				"<a href=\"https://www.untrobotics.com/discord\"><strong>Discord server</strong></a> — it's where we'll post all event-day communications and announcements.</p>" .
 				"<p>If you need any assistance or have questions, reach out in our Discord server or email <a href=\"mailto:hello@untrobotics.com\">hello@untrobotics.com</a>.</p>" .

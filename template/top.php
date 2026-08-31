@@ -49,6 +49,9 @@ date_default_timezone_set(TIMEZONE);
 
 $untrobotics = new untrobotics($db);
 
+// DB-backed runtime settings (admin-settable values like the Botathon season).
+require_once(__DIR__ . '/functions/settings.php');
+
 function head($title, $heading, $auth = false, $return = false) {
     global $base, $userinfo, $session, $untrobotics, $db;
     $default_values = array(

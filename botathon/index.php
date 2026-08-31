@@ -174,7 +174,7 @@ head('Botathon Info', true);
             <div class="range range-md-justify">
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <h1><strong>Botathon</strong> - <em>Season <?php echo BOTATHON_SEASON?></em></h1>
+                        <h1><strong>Botathon</strong> - <em>Season <?php echo botathon_season()?></em></h1>
 
                         <h2>What is Botathon?</h2>
 
