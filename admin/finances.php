@@ -10,7 +10,9 @@ if (!is_array(auth(2))) {
 
 // ---- Period ---------------------------------------------------------------
 // Tax year = calendar year (UTC). ?year=all shows everything; ?year=YYYY a year.
-$year_param = isset($_GET['year']) ? $_GET['year'] : (string) $untrobotics->get_current_year();
+// Default to all-time so the page lands on the full picture (dues history runs
+// back years); the year links drill into a specific tax year for filing.
+$year_param = isset($_GET['year']) ? $_GET['year'] : 'all';
 $all_time = ($year_param === 'all');
 $year = $all_time ? null : (int) $year_param;
 if (!$all_time && ($year < 2000 || $year > 2100)) {
@@ -46,7 +48,8 @@ $rows = $db->query($sql);
 function ledger_processor($txid) {
     $txid = (string) $txid;
     if (strpos($txid, 'manual-') === 0) { return 'Manual'; }
-    if (preg_match('/^(pi_|ch_|py_|in_|txn_|re_)/', $txid)) { return 'Stripe'; }
+    // Stripe ids: cs_ (Checkout Session), pi_ (PaymentIntent), ch_/py_ (charge), etc.
+    if (preg_match('/^(cs_|pi_|ch_|py_|in_|txn_|re_|seti_)/', $txid)) { return 'Stripe'; }
     if ($txid === '') { return '—'; }
     return 'PayPal';
 }
@@ -120,7 +123,8 @@ $money = function ($n) { return '$' . number_format($n, 2); };
                 <div class="admin-help">
                     <strong>How to read this</strong>
                     <ul>
-                        <li><strong>Gross</strong> is money collected; <strong>Fees</strong> are Stripe/PayPal processing fees; <strong>Net</strong> is what actually landed (Gross &minus; Fees). Refunded transactions are excluded from Gross/Net and totalled separately.</li>
+                        <li><strong>Gross</strong> is money collected; <strong>Fees</strong> are payment processing fees; <strong>Net</strong> is what actually landed (Gross &minus; Fees). Refunded transactions are excluded from Gross/Net and totalled separately.</li>
+                        <li><strong>Heads-up on fees:</strong> a fee is only recorded when the processor reports it at payment time. <strong>PayPal</strong> does; <strong>Stripe</strong>'s fee posts a little later and isn't captured yet &mdash; so for Stripe rows <strong>fee shows $0 and Net equals Gross</strong> (Net is slightly overstated). Gross is accurate; treat Net as approximate until Stripe fee capture is added.</li>
                         <li>Periods are calendar years in <strong>UTC</strong>. The authoritative books are still Stripe + PayPal; this mirrors them for convenience.</li>
                         <?php if ($unrecorded > 0): ?>
                         <li><strong><?php echo $unrecorded; ?> older merch order<?php echo $unrecorded === 1 ? '' : 's'; ?></strong> in this period predate local amount capture, so their dollar figures aren't included in the totals &mdash; look them up in Stripe/PayPal by the transaction id (shown as <span class="pill pill-neutral">unrecorded</span>). All merch from now on is captured automatically.</li>
