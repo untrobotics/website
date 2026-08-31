@@ -4,6 +4,7 @@ head('Electronics Kit Preorder', true);
 
 // PayPal JS SDK client id for the active environment.
 $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAYPAL_CLIENT_ID;
+$stripe_pk = STRIPE_PUBLISHABLE_KEY;
 ?>
 <section class="breadcrumb-classic">
   <div class="rd-parallax">
@@ -35,10 +36,15 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
       .kit-price { display:flex; align-items:baseline; gap:8px; margin:20px 0 4px; }
       .kit-price .amt { font-size:34px; font-weight:800; color:#166a3f; }
       .kit-price .lbl { color:#777; font-size:13px; }
-      #paypal-button-container { margin:14px 0 10px; min-height:0; }
+      #stripe-kit-button, #express-checkout-element, #applepay-redirect, #paypal-button-container { margin:0 0 10px; }
+      #express-checkout-element:empty { margin:0; }
+      #paypal-button-container { min-height:0; }
       #stripe-kit-button { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; height:46px; border:0; border-radius:6px; background:#635bff; color:#fff; font-size:15px; font-weight:600; cursor:pointer; transition:background .15s; }
       #stripe-kit-button:hover { background:#544dff; }
       #stripe-kit-button:disabled { opacity:.6; cursor:default; }
+      #applepay-redirect { display:none; align-items:center; justify-content:center; gap:6px; width:100%; height:46px; border:0; border-radius:6px; background:#000; color:#fff; font-size:17px; font-weight:500; cursor:pointer; }
+      #applepay-redirect:disabled { opacity:.6; cursor:default; }
+      #kit-error { display:none; margin:12px 0 0; padding:10px 12px; border-radius:6px; background:#fde2e1; color:#a12622; font-size:13px; }
       .kit-note { font-size:12px; color:#8a8f8c; margin-top:12px; line-height:1.5; }
       @media (max-width:900px){ .kit-layout { grid-template-columns:1fr; max-width:440px; gap:26px; } }
     </style>
@@ -77,11 +83,13 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
           <input type="email" id="kit-email" autocomplete="email" maxlength="255">
 
           <div style="margin-top:20px;">
-            <div id="paypal-button-container"></div>
             <button id="stripe-kit-button" type="button">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
               <span>Pay with card</span>
             </button>
+            <div id="express-checkout-element"></div>
+            <button id="applepay-redirect" type="button"><svg width="16" height="20" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C60.7 141.5 0 184.1 0 270c0 25.4 4.6 51.6 13.9 78.6 12.5 35.5 57.5 122.6 104.4 121.2 24.6-.6 42-17.4 74-17.4 31.1 0 47.3 17.4 74.7 17.4 47.4-.7 88-79.7 100-115.3-63.5-30-62.3-87.6-62.3-89.8zm-51.7-165c25-29.7 22.7-56.7 22-66.5-22.1 1.3-47.6 15-62.2 32.9-16 19.2-25.4 42.9-23.4 66 23.9 1.8 45.7-10.5 63.6-32.4z"/></svg> Pay</button>
+            <div id="paypal-button-container"></div>
           </div>
           <div id="kit-error" class="text-danger offset-top-10" style="display:none;"></div>
           <p class="kit-note">1 kit per person. Kits are picked up in person at our general meetings &mdash; see the <a href="/events">event calendar</a> and <a href="/join/discord">Discord</a> for times.</p>
@@ -92,6 +100,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
 </section>
 
 <?php footer(false); ?>
+<script src="https://js.stripe.com/v3/"></script>
 <script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD&disable-funding=card"></script>
 <script>
 (function () {
@@ -105,14 +114,14 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
     return null;
   }
   function showErr(m) { var e = document.getElementById('kit-error'); e.style.display = m ? 'block' : 'none'; e.textContent = m || ''; }
-  function params() {
+  function params(extraEmail) {
     var f = fields();
     var p = new URLSearchParams();
     p.set('source', 'kit');
     p.set('first_name', f.first_name);
     p.set('last_name', f.last_name);
     p.set('phone', f.phone);
-    p.set('email', f.email);
+    p.set('email', f.email || extraEmail || '');
     return p;
   }
 
@@ -130,6 +139,56 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
       })
       .catch(function () { showErr('Unable to start checkout.'); btn.disabled = false; if (lbl) lbl.textContent = old; });
   });
+
+  // Inline wallet — Apple Pay / Google Pay via the Express Checkout Element.
+  var pk = '<?php echo htmlspecialchars($stripe_pk, ENT_QUOTES); ?>';
+  if (window.Stripe && pk) {
+    var stripe = Stripe(pk);
+    var elements = stripe.elements({ mode: 'payment', amount: 4000, currency: 'usd' });
+    var expressEl = elements.create('expressCheckout', {
+      emailRequired: true,
+      paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' }
+    });
+    expressEl.mount('#express-checkout-element');
+    var apRedirect = document.getElementById('applepay-redirect');
+    expressEl.on('ready', function (e) {
+      var avail = e && e.availablePaymentMethods;
+      // If no inline wallet is available, offer the hosted-checkout Apple Pay fallback button.
+      if (apRedirect && (!avail || (!avail.applePay && !avail.googlePay))) { apRedirect.style.display = 'flex'; }
+    });
+    // Validate the form BEFORE the wallet sheet opens; refusing to resolve keeps it closed.
+    expressEl.on('click', function (event) {
+      var err = validate(); if (err) { showErr(err); return; }
+      showErr('');
+      event.resolve();
+    });
+    expressEl.on('confirm', function (event) {
+      var err = validate(); if (err) { showErr(err); return; }
+      showErr('');
+      elements.submit().then(function (sub) {
+        if (sub && sub.error) { showErr(sub.error.message); return; }
+        var walletEmail = (event && event.billingDetails && event.billingDetails.email) || '';
+        return fetch('/api/stripe/create-payment-intent.php', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params(walletEmail).toString(), credentials: 'same-origin' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            if (!d || !d.clientSecret) { showErr((d && d.error) || 'Unable to start payment.'); return; }
+            return stripe.confirmPayment({ elements: elements, clientSecret: d.clientSecret, confirmParams: { return_url: location.origin + '/merch/kits/thank-you' } })
+              .then(function (res) { if (res && res.error) { showErr(res.error.message); } });
+          });
+      }).catch(function () { showErr('Unable to start payment.'); });
+    });
+    // Fallback button (only shown when no inline wallet) → hosted checkout, which offers Apple Pay itself.
+    if (apRedirect) {
+      apRedirect.addEventListener('click', function () {
+        var err = validate(); if (err) { showErr(err); return; }
+        showErr(''); apRedirect.disabled = true;
+        fetch('/api/stripe/create-checkout-session', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params().toString(), credentials: 'same-origin' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) { if (d && d.url) { window.location = d.url; } else { apRedirect.disabled = false; showErr((d && d.error) || 'Unable to start checkout.'); } })
+          .catch(function () { apRedirect.disabled = false; showErr('Unable to start checkout.'); });
+      });
+    }
+  }
 
   // PayPal Smart Buttons.
   if (window.paypal) {
