@@ -53,65 +53,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 head('Kit Preorders', 'Kit Preorders');
+require_once(BASE . '/admin/_styles.php');
 $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0) paid, SUM(status = "ready") ready, SUM(status = "picked_up") picked_up FROM kit_preorders')->fetch_assoc();
 ?>
 <main class="page-content">
     <section class="section-50">
         <div class="shell">
-            <?php if ($notice): ?>
-                <div class="alert alert-<?php echo $notice[0] === 'ok' ? 'success' : 'danger'; ?>"><?php echo htmlspecialchars($notice[1]); ?></div>
-            <?php endif; ?>
+            <div class="admin-wrap">
+                <a class="admin-back" href="/admin">&larr; Admin</a>
+                <div class="admin-head">
+                    <h1>Electronics Kit preorders</h1>
+                    <p class="lead">Everyone who has preordered a $40 Electronics Kit. Mark each one ready when it's built, then handed over at pickup.</p>
+                </div>
 
-            <h3>Electronics Kit preorders</h3>
-            <p class="text-gray">
-                <?php echo (int) $stats['total']; ?> total &mdash;
-                <strong><?php echo (int) $stats['paid']; ?></strong> awaiting build,
-                <strong><?php echo (int) $stats['ready']; ?></strong> ready,
-                <strong><?php echo (int) $stats['picked_up']; ?></strong> picked up.
-            </p>
+                <?php if ($notice): ?>
+                    <div class="admin-notice <?php echo $notice[0] === 'ok' ? 'ok' : 'err'; ?>"><?php echo htmlspecialchars($notice[1]); ?></div>
+                <?php endif; ?>
 
-            <div class="table-responsive">
-                <table class="table">
-                    <thead><tr><th>#</th><th>Name</th><th>Phone</th><th>Email</th><th>Paid</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody>
+                <div class="admin-stats">
                     <?php
-                    $rows = $db->query('SELECT * FROM kit_preorders ORDER BY id DESC');
-                    if ($rows && $rows->num_rows):
-                        while ($row = $rows->fetch_assoc()):
-                            $st = $row['refunded'] ? 'refunded' : $row['status'];
-                            $phd = preg_replace('/\D/', '', (string) $row['phone']);
-                            $phDisp = strlen($phd) === 10 ? '(' . substr($phd, 0, 3) . ') ' . substr($phd, 3, 3) . '-' . substr($phd, 6) : $row['phone'];
+                    echo admin_stat((int) $stats['total'], 'Total preorders', 'grey');
+                    echo admin_stat((int) $stats['paid'], 'Awaiting build', 'amber');
+                    echo admin_stat((int) $stats['ready'], 'Ready for pickup', 'green');
+                    echo admin_stat((int) $stats['picked_up'], 'Picked up', 'grey');
                     ?>
-                        <tr<?php echo $row['refunded'] ? ' class="text-gray"' : ''; ?>>
-                            <td><?php echo (int) $row['id']; ?></td>
-                            <td><?php echo htmlspecialchars(trim($row['first_name'] . ' ' . $row['last_name'])); ?></td>
-                            <td><a href="tel:<?php echo htmlspecialchars($phd); ?>"><?php echo htmlspecialchars($phDisp); ?></a></td>
-                            <td><?php echo htmlspecialchars($row['email'] ? $row['email'] : '—'); ?></td>
-                            <td>$<?php echo htmlspecialchars(number_format((float) $row['amount'], 2)); ?><br><span class="text-gray"><?php echo admin_ts($row['ordered_at'], 'M j, g:ia'); ?></span></td>
-                            <td><?php echo htmlspecialchars($st); ?></td>
-                            <td>
-                                <?php if (!$row['refunded'] && $row['status'] === 'paid'): ?>
-                                <form method="post" action="/admin/kit-preorders" style="display:inline" onsubmit="return confirm('Mark ready and email the buyer that their kit is ready for pickup?');">
-                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
-                                    <input type="hidden" name="action" value="mark_ready">
-                                    <input type="hidden" name="id" value="<?php echo (int) $row['id']; ?>">
-                                    <button class="btn btn-sm btn-success"><?php echo $row['email'] ? 'Mark ready &amp; email' : 'Mark ready (call them)'; ?></button>
-                                </form>
-                                <?php elseif (!$row['refunded'] && $row['status'] === 'ready'): ?>
-                                <form method="post" action="/admin/kit-preorders" style="display:inline">
-                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
-                                    <input type="hidden" name="action" value="mark_picked_up">
-                                    <input type="hidden" name="id" value="<?php echo (int) $row['id']; ?>">
-                                    <button class="btn btn-sm btn-default">Mark picked up</button>
-                                </form>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endwhile; else: ?>
-                        <tr><td colspan="7" class="text-gray">No preorders yet.</td></tr>
-                    <?php endif; ?>
-                    </tbody>
-                </table>
+                </div>
+
+                <div class="admin-help">
+                    <strong>What the buttons do</strong>
+                    <ul>
+                        <li><strong>Mark ready &amp; email</strong> — sets the preorder to <?php echo admin_pill('ready'); ?> and emails the buyer that their kit is built and ready to collect at a general meeting (office C119). If there's no email on file the button reads <em>Mark ready (call them)</em> and just flips the status — reach out using their phone number.</li>
+                        <li><strong>Mark picked up</strong> — records that the member has collected their kit; moves it to <?php echo admin_pill('picked_up'); ?>.</li>
+                        <li><?php echo admin_pill('refunded'); ?> preorders are dimmed and have no actions.</li>
+                    </ul>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead><tr><th>#</th><th>Name</th><th>Phone</th><th>Email</th><th>Paid</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody>
+                            <?php
+                            $rows = $db->query('SELECT * FROM kit_preorders ORDER BY id DESC');
+                            if ($rows && $rows->num_rows):
+                                while ($row = $rows->fetch_assoc()):
+                                    $st = $row['refunded'] ? 'refunded' : $row['status'];
+                                    $phd = preg_replace('/\D/', '', (string) $row['phone']);
+                                    $phDisp = strlen($phd) === 10 ? '(' . substr($phd, 0, 3) . ') ' . substr($phd, 3, 3) . '-' . substr($phd, 6) : $row['phone'];
+                            ?>
+                                <tr<?php echo $row['refunded'] ? ' class="is-dim"' : ''; ?>>
+                                    <td class="num"><?php echo (int) $row['id']; ?></td>
+                                    <td><?php echo htmlspecialchars(trim($row['first_name'] . ' ' . $row['last_name'])); ?></td>
+                                    <td class="num"><a href="tel:<?php echo htmlspecialchars($phd); ?>"><?php echo htmlspecialchars($phDisp); ?></a></td>
+                                    <td><?php echo $row['email'] ? htmlspecialchars($row['email']) : '<span class="muted">no email</span>'; ?></td>
+                                    <td class="num">$<?php echo htmlspecialchars(number_format((float) $row['amount'], 2)); ?><br><span class="muted"><?php echo admin_ts($row['ordered_at'], 'M j, g:ia'); ?></span></td>
+                                    <td><?php echo admin_pill($st); ?></td>
+                                    <td>
+                                        <div class="admin-actions">
+                                        <?php if (!$row['refunded'] && $row['status'] === 'paid'): ?>
+                                        <form method="post" action="/admin/kit-preorders" onsubmit="return confirm('Mark ready and email the buyer that their kit is ready for pickup?');">
+                                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                                            <input type="hidden" name="action" value="mark_ready">
+                                            <input type="hidden" name="id" value="<?php echo (int) $row['id']; ?>">
+                                            <button class="btn-pill go"><?php echo $row['email'] ? 'Mark ready &amp; email' : 'Mark ready (call them)'; ?></button>
+                                        </form>
+                                        <?php elseif (!$row['refunded'] && $row['status'] === 'ready'): ?>
+                                        <form method="post" action="/admin/kit-preorders">
+                                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                                            <input type="hidden" name="action" value="mark_picked_up">
+                                            <input type="hidden" name="id" value="<?php echo (int) $row['id']; ?>">
+                                            <button class="btn-pill neutral">Mark picked up</button>
+                                        </form>
+                                        <?php else: ?>
+                                            <span class="muted">&mdash;</span>
+                                        <?php endif; ?>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endwhile; else: ?>
+                                <tr><td colspan="7" class="admin-empty">No preorders yet.</td></tr>
+                            <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

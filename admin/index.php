@@ -7,6 +7,7 @@ if (!is_array(auth(2))) {
 }
 
 head('Admin', 'Admin');
+require_once(BASE . '/admin/_styles.php');
 
 $tools = array(
     array('/admin/newsletter', 'Newsletter', 'Compose and send the email newsletter (drips out within the daily limit).'),
@@ -14,23 +15,25 @@ $tools = array(
     array('/admin/kit-preorders', 'Kit Preorders', 'Electronics Kit preorders — track who paid + mark ready & email pickup notices.'),
     array('/admin/users', 'Users', 'Member list + Good Standing CSV export.'),
     array('/admin/check-good-standing', 'Check Good Standing', 'Look up a single member\'s standing by UID.'),
-    array('/admin/botathon_registration', 'Botathon Registrations', 'Botathon sign-ups.'),
+    array('/admin/botathon_registration', 'Botathon Registrations', 'Botathon sign-ups for the current season.'),
 );
 ?>
 <main class="page-content">
     <section class="section-50">
         <div class="shell">
-            <div class="range">
-                <?php foreach ($tools as $t): ?>
-                    <div class="cell-md-6 cell-lg-4 offset-bottom-30">
-                        <div class="panel panel-default" style="height:100%;">
-                            <div class="panel-body">
-                                <h5 style="margin-top:0;"><a href="<?php echo htmlspecialchars($t[0]); ?>"><?php echo htmlspecialchars($t[1]); ?></a></h5>
-                                <p class="text-gray" style="margin:0;"><?php echo htmlspecialchars($t[2]); ?></p>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+            <div class="admin-wrap">
+                <div class="admin-head">
+                    <h1>Admin</h1>
+                    <p class="lead">Member, dues, merch and newsletter tools. Everything here is admin-only.</p>
+                </div>
+                <div class="admin-hub">
+                    <?php foreach ($tools as $t): ?>
+                        <a class="hub-card" href="<?php echo htmlspecialchars($t[0]); ?>">
+                            <div class="hc-title"><?php echo htmlspecialchars($t[1]); ?></div>
+                            <p class="hc-desc"><?php echo htmlspecialchars($t[2]); ?></p>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
     </section>

@@ -1,5 +1,6 @@
 <?php
 require("../template/top.php");
+require_once(BASE . '/admin/_timestamps.php');
 
 // Admin only.
 if (!is_array(auth(2))) {
@@ -76,90 +77,116 @@ $sent_today = function_exists('brevo_sent_today') ? brevo_sent_today() : 0;
 $budget = function_exists('brevo_newsletter_remaining_today') ? brevo_newsletter_remaining_today() : 0;
 
 head('Newsletter', 'Newsletter');
+require_once(BASE . '/admin/_styles.php');
 ?>
 <main class="page-content">
     <section class="section-50">
         <div class="shell">
-            <?php if ($notice): ?>
-                <div class="alert alert-<?php echo $notice[0] === 'ok' ? 'success' : 'danger'; ?>"><?php echo htmlspecialchars($notice[1]); ?></div>
-            <?php endif; ?>
-
-            <p>
-                <strong><?php echo $subs; ?></strong> active subscribers &middot;
-                <strong><?php echo $sent_today; ?></strong> Brevo sends used today &middot;
-                <strong><?php echo $budget; ?></strong> newsletter sends left today (reserve kept for transactional mail).
-            </p>
-
-            <div class="panel panel-default">
-                <div class="panel-heading"><strong>New campaign</strong></div>
-                <div class="panel-body">
-                    <form method="post" action="/admin/newsletter">
-                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
-                        <input type="hidden" name="action" value="create">
-                        <div class="form-group">
-                            <label>Subject</label>
-                            <input type="text" name="subject" class="form-control" maxlength="255" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Body (HTML allowed)</label>
-                            <textarea name="body" class="form-control" rows="10" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Create draft</button>
-                    </form>
+            <div class="admin-wrap">
+                <a class="admin-back" href="/admin">&larr; Admin</a>
+                <div class="admin-head">
+                    <h1>Newsletter</h1>
+                    <p class="lead">Compose a campaign, send yourself a test, then start it. Sends drip out within the daily limit, keeping a reserve for transactional mail.</p>
                 </div>
-            </div>
 
-            <h4>Campaigns</h4>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead><tr><th>#</th><th>Subject</th><th>Status</th><th>Progress</th><th>Actions</th></tr></thead>
-                    <tbody>
+                <?php if ($notice): ?>
+                    <div class="admin-notice <?php echo $notice[0] === 'ok' ? 'ok' : 'err'; ?>"><?php echo htmlspecialchars($notice[1]); ?></div>
+                <?php endif; ?>
+
+                <div class="admin-stats">
                     <?php
-                    $cs = $db->query('SELECT * FROM newsletter_campaigns ORDER BY id DESC LIMIT 50');
-                    if ($cs && $cs->num_rows):
-                        while ($c = $cs->fetch_assoc()):
-                            $total = (int) $c['total_recipients'];
-                            $done = (int) $c['sent_count'];
+                    echo admin_stat($subs, 'Active subscribers', 'green');
+                    echo admin_stat($sent_today, 'Brevo sends used today', 'grey');
+                    echo admin_stat($budget, 'Newsletter sends left today', 'amber');
                     ?>
-                        <tr>
-                            <td><?php echo (int) $c['id']; ?></td>
-                            <td><?php echo htmlspecialchars($c['subject']); ?></td>
-                            <td><?php echo htmlspecialchars($c['status']); ?></td>
-                            <td><?php echo $total ? ($done . ' / ' . $total) : '&mdash;'; ?></td>
-                            <td>
-                                <?php if ($c['status'] === 'draft'): ?>
-                                    <form method="post" action="/admin/newsletter" style="display:inline">
-                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
-                                        <input type="hidden" name="action" value="test">
-                                        <input type="hidden" name="campaign_id" value="<?php echo (int) $c['id']; ?>">
-                                        <button class="btn btn-sm btn-default">Send test to me</button>
-                                    </form>
-                                    <form method="post" action="/admin/newsletter" style="display:inline" onsubmit="return confirm('Queue this to all <?php echo $subs; ?> subscribers?');">
-                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
-                                        <input type="hidden" name="action" value="start">
-                                        <input type="hidden" name="campaign_id" value="<?php echo (int) $c['id']; ?>">
-                                        <button class="btn btn-sm btn-success">Start sending</button>
-                                    </form>
-                                <?php elseif ($c['status'] === 'sending' || $c['status'] === 'paused'): ?>
-                                    <form method="post" action="/admin/newsletter" style="display:inline">
-                                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
-                                        <input type="hidden" name="action" value="<?php echo $c['status'] === 'sending' ? 'pause' : 'resume'; ?>">
-                                        <input type="hidden" name="campaign_id" value="<?php echo (int) $c['id']; ?>">
-                                        <button class="btn btn-sm btn-default"><?php echo $c['status'] === 'sending' ? 'Pause' : 'Resume'; ?></button>
-                                    </form>
-                                <?php else: ?>
-                                    &mdash;
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endwhile; else: ?>
-                        <tr><td colspan="5" class="text-gray">No campaigns yet.</td></tr>
-                    <?php endif; ?>
-                    </tbody>
-                </table>
+                </div>
+
+                <div class="admin-help">
+                    <strong>How sending works</strong>
+                    <ul>
+                        <li><strong>Create draft</strong> saves the campaign without sending anything.</li>
+                        <li><strong>Send test to me</strong> emails just you a copy so you can check formatting.</li>
+                        <li><strong>Start sending</strong> queues every active subscriber; delivery drips out within the daily budget above. You can <strong>Pause</strong> / <strong>Resume</strong> a send at any time.</li>
+                    </ul>
+                </div>
+
+                <div class="admin-card">
+                    <div class="hd">New campaign</div>
+                    <div class="bd">
+                        <form method="post" action="/admin/newsletter" class="admin-form">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                            <input type="hidden" name="action" value="create">
+                            <div class="fld">
+                                <label for="nl-subject">Subject</label>
+                                <input id="nl-subject" type="text" name="subject" maxlength="255" required>
+                            </div>
+                            <div class="fld">
+                                <label for="nl-body">Body <span class="muted">(HTML allowed)</span></label>
+                                <textarea id="nl-body" name="body" rows="10" required></textarea>
+                            </div>
+                            <button type="submit" class="btn-solid primary">Create draft</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="admin-section-title">Campaigns</div>
+                <div class="admin-card">
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead><tr><th>#</th><th>Subject</th><th>Status</th><th>Progress</th><th>Created</th><th>Actions</th></tr></thead>
+                            <tbody>
+                            <?php
+                            $cs = $db->query('SELECT * FROM newsletter_campaigns ORDER BY id DESC LIMIT 50');
+                            if ($cs && $cs->num_rows):
+                                while ($c = $cs->fetch_assoc()):
+                                    $total = (int) $c['total_recipients'];
+                                    $done = (int) $c['sent_count'];
+                            ?>
+                                <tr>
+                                    <td class="num"><?php echo (int) $c['id']; ?></td>
+                                    <td><?php echo htmlspecialchars($c['subject']); ?></td>
+                                    <td><?php echo admin_pill($c['status']); ?></td>
+                                    <td class="num"><?php echo $total ? ($done . ' / ' . $total) : '<span class="muted">&mdash;</span>'; ?></td>
+                                    <td><?php echo isset($c['created_at']) ? admin_ts($c['created_at']) : '<span class="muted">&mdash;</span>'; ?></td>
+                                    <td>
+                                        <div class="admin-actions">
+                                        <?php if ($c['status'] === 'draft'): ?>
+                                            <form method="post" action="/admin/newsletter">
+                                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                                                <input type="hidden" name="action" value="test">
+                                                <input type="hidden" name="campaign_id" value="<?php echo (int) $c['id']; ?>">
+                                                <button class="btn-pill neutral">Send test to me</button>
+                                            </form>
+                                            <form method="post" action="/admin/newsletter" onsubmit="return confirm('Queue this to all <?php echo $subs; ?> subscribers?');">
+                                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                                                <input type="hidden" name="action" value="start">
+                                                <input type="hidden" name="campaign_id" value="<?php echo (int) $c['id']; ?>">
+                                                <button class="btn-pill go">Start sending</button>
+                                            </form>
+                                        <?php elseif ($c['status'] === 'sending' || $c['status'] === 'paused'): ?>
+                                            <form method="post" action="/admin/newsletter">
+                                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                                                <input type="hidden" name="action" value="<?php echo $c['status'] === 'sending' ? 'pause' : 'resume'; ?>">
+                                                <input type="hidden" name="campaign_id" value="<?php echo (int) $c['id']; ?>">
+                                                <button class="btn-pill neutral"><?php echo $c['status'] === 'sending' ? 'Pause' : 'Resume'; ?></button>
+                                            </form>
+                                        <?php else: ?>
+                                            <span class="muted">&mdash;</span>
+                                        <?php endif; ?>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endwhile; else: ?>
+                                <tr><td colspan="6" class="admin-empty">No campaigns yet.</td></tr>
+                            <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 </main>
 <?php
+admin_ts_script();
 footer();

@@ -8,16 +8,52 @@ if (!is_array(auth(2))) {
 }
 
 $u = @$_GET['u'];
-if (empty($u)) {
-    die("UID not specified.");
+$result = null;   // null = no lookup yet; array(ok, message)
+if ($u !== null && $u !== '') {
+    if (!is_numeric($u)) {
+        $result = array(false, 'Invalid UID — enter a numeric member id.');
+    } else {
+        $good = $untrobotics->is_user_in_good_standing((int) $u);
+        $result = array($good, 'User #' . (int) $u . ' is ' . ($good ? '' : 'NOT ') . 'in good standing.');
+    }
 }
 
-if (!is_numeric($u)) {
-    die("Invalid UID provided.");
-}
+head('Check Good Standing', 'Check Good Standing');
+require_once(BASE . '/admin/_styles.php');
+?>
+<main class="page-content">
+    <section class="section-50">
+        <div class="shell">
+            <div class="admin-wrap">
+                <a class="admin-back" href="/admin">&larr; Admin</a>
+                <div class="admin-head">
+                    <h1>Check Good Standing</h1>
+                    <p class="lead">Look up whether a single member is currently in good standing by their user id.</p>
+                </div>
 
-if ($untrobotics->is_user_in_good_standing($u)) {
-    echo "User #$u is in good standing. :)";
-} else {
-    echo "User #$u is <strong>NOT</strong> in good standing. :(";
-}
+                <div class="admin-card">
+                    <div class="bd">
+                        <form method="get" action="/admin/check-good-standing" class="admin-form">
+                            <div class="row-inline">
+                                <div class="fld">
+                                    <label for="u">User ID</label>
+                                    <input id="u" type="number" name="u" min="1" required value="<?php echo is_numeric($u) ? (int) $u : ''; ?>" style="max-width:160px;">
+                                </div>
+                                <button class="btn-solid go">Check</button>
+                            </div>
+                        </form>
+
+                        <?php if ($result !== null): ?>
+                            <div class="admin-notice <?php echo $result[0] ? 'ok' : 'err'; ?>" style="margin:18px 0 0;">
+                                <?php echo htmlspecialchars($result[1]); ?>
+                                <?php echo $result[0] ? '&#128522;' : '&#128533;'; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<?php
+footer();

@@ -99,67 +99,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 head('Dues Requests', 'Dues Requests');
+require_once(BASE . '/admin/_styles.php');
 ?>
 <main class="page-content">
     <section class="section-50">
         <div class="shell">
-            <?php if ($notice): ?>
-                <div class="alert alert-<?php echo $notice[0] === 'ok' ? 'success' : 'danger'; ?>"><?php echo htmlspecialchars($notice[1]); ?></div>
-            <?php endif; ?>
-
-            <div class="panel panel-default">
-                <div class="panel-heading"><strong>Mark a member paid</strong> (in-person / manual)</div>
-                <div class="panel-body">
-                    <p class="text-gray">Records a dues payment for the current term (so they're in good standing) and assigns the Good Standing role if their Discord is linked.</p>
-                    <form method="post" action="/admin/dues-requests" class="form-inline">
-                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
-                        <input type="hidden" name="action" value="mark_paid">
-                        <div class="form-group">
-                            <label>User ID&nbsp;</label>
-                            <input type="number" name="uid" class="form-control" min="1" required>
-                        </div>
-                        <button class="btn btn-success" onclick="return confirm('Mark this user paid for the current term?');">Mark paid</button>
-                    </form>
+            <div class="admin-wrap">
+                <a class="admin-back" href="/admin">&larr; Admin</a>
+                <div class="admin-head">
+                    <h1>Dues Requests</h1>
+                    <p class="lead">Approve members who asked to pay dues an alternative way, or mark a member paid directly for an in-person / manual payment.</p>
                 </div>
-            </div>
 
-            <h4>Pending alternative-dues requests</h4>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead><tr><th>#</th><th>Member</th><th>Reason</th><th>Requested</th><th>Actions</th></tr></thead>
-                    <tbody>
-                    <?php
-                    $rows = $db->query('SELECT r.id, r.uid, r.reason, r.created_at, u.name, u.email
-                        FROM dues_alternative_requests r LEFT JOIN users u ON u.id = r.uid
-                        WHERE r.status = "pending" ORDER BY r.id ASC');
-                    if ($rows && $rows->num_rows):
-                        while ($row = $rows->fetch_assoc()):
-                    ?>
-                        <tr>
-                            <td><?php echo (int) $row['id']; ?></td>
-                            <td><?php echo htmlspecialchars($row['name'] ?: ('uid ' . $row['uid'])); ?><br><span class="text-gray"><?php echo htmlspecialchars($row['email']); ?></span></td>
-                            <td><?php echo htmlspecialchars($row['reason']); ?></td>
-                            <td><?php echo admin_ts($row['created_at']); ?></td>
-                            <td>
-                                <form method="post" action="/admin/dues-requests" style="display:inline" onsubmit="return confirm('Approve and mark this member paid?');">
-                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
-                                    <input type="hidden" name="action" value="approve">
-                                    <input type="hidden" name="request_id" value="<?php echo (int) $row['id']; ?>">
-                                    <button class="btn btn-sm btn-success">Approve &amp; mark paid</button>
-                                </form>
-                                <form method="post" action="/admin/dues-requests" style="display:inline">
-                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
-                                    <input type="hidden" name="action" value="deny">
-                                    <input type="hidden" name="request_id" value="<?php echo (int) $row['id']; ?>">
-                                    <button class="btn btn-sm btn-default">Deny</button>
-                                </form>
-                            </td>
-                        </tr>
-                    <?php endwhile; else: ?>
-                        <tr><td colspan="5" class="text-gray">No pending requests.</td></tr>
-                    <?php endif; ?>
-                    </tbody>
-                </table>
+                <?php if ($notice): ?>
+                    <div class="admin-notice <?php echo $notice[0] === 'ok' ? 'ok' : 'err'; ?>"><?php echo htmlspecialchars($notice[1]); ?></div>
+                <?php endif; ?>
+
+                <div class="admin-help">
+                    <strong>What these actions do</strong>
+                    <ul>
+                        <li><strong>Mark paid</strong> / <strong>Approve &amp; mark paid</strong> — records a dues payment for the <em>current term</em> so the member counts as in good standing, and assigns the Discord Good Standing role if their account is linked (otherwise it's applied when they next visit <em>/join/discord</em>). Safe to click twice — it won't double-charge or double-record.</li>
+                        <li><strong>Deny</strong> — rejects the alternative-dues request without recording a payment.</li>
+                    </ul>
+                </div>
+
+                <div class="admin-card">
+                    <div class="hd">Mark a member paid <span class="sub">in-person / manual payment</span></div>
+                    <div class="bd">
+                        <form method="post" action="/admin/dues-requests" class="admin-form">
+                            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                            <input type="hidden" name="action" value="mark_paid">
+                            <div class="row-inline">
+                                <div class="fld">
+                                    <label for="uid">User ID</label>
+                                    <input id="uid" type="number" name="uid" min="1" required style="max-width:160px;">
+                                </div>
+                                <button class="btn-solid go" onclick="return confirm('Mark this user paid for the current term?');">Mark paid</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="admin-section-title">Pending alternative-dues requests</div>
+                <div class="admin-card">
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead><tr><th>#</th><th>Member</th><th>Reason</th><th>Requested</th><th>Status</th><th>Actions</th></tr></thead>
+                            <tbody>
+                            <?php
+                            $rows = $db->query('SELECT r.id, r.uid, r.reason, r.created_at, u.name, u.email
+                                FROM dues_alternative_requests r LEFT JOIN users u ON u.id = r.uid
+                                WHERE r.status = "pending" ORDER BY r.id ASC');
+                            if ($rows && $rows->num_rows):
+                                while ($row = $rows->fetch_assoc()):
+                            ?>
+                                <tr>
+                                    <td class="num"><?php echo (int) $row['id']; ?></td>
+                                    <td><?php echo htmlspecialchars($row['name'] ?: ('uid ' . $row['uid'])); ?><br><span class="muted"><?php echo htmlspecialchars($row['email']); ?></span></td>
+                                    <td><?php echo htmlspecialchars($row['reason']); ?></td>
+                                    <td><?php echo admin_ts($row['created_at']); ?></td>
+                                    <td><?php echo admin_pill('pending'); ?></td>
+                                    <td>
+                                        <div class="admin-actions">
+                                            <form method="post" action="/admin/dues-requests" onsubmit="return confirm('Approve and mark this member paid?');">
+                                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                                                <input type="hidden" name="action" value="approve">
+                                                <input type="hidden" name="request_id" value="<?php echo (int) $row['id']; ?>">
+                                                <button class="btn-pill go">Approve &amp; mark paid</button>
+                                            </form>
+                                            <form method="post" action="/admin/dues-requests">
+                                                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                                                <input type="hidden" name="action" value="deny">
+                                                <input type="hidden" name="request_id" value="<?php echo (int) $row['id']; ?>">
+                                                <button class="btn-pill danger">Deny</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endwhile; else: ?>
+                                <tr><td colspan="6" class="admin-empty">No pending requests.</td></tr>
+                            <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

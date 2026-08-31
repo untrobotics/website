@@ -10,21 +10,57 @@ if (!is_array(auth(2))) {
 
 $q = $db->query('SELECT * FROM botathon_registration WHERE season = "' . $db->real_escape_string(BOTATHON_SEASON) . '"');
 
-echo '<pre>';
+head('Botathon Registrations', 'Botathon Registrations');
+require_once(BASE . '/admin/_styles.php');
+$count = ($q ? $q->num_rows : 0);
+?>
+<main class="page-content">
+    <section class="section-50">
+        <div class="shell">
+            <div class="admin-wrap">
+                <a class="admin-back" href="/admin">&larr; Admin</a>
+                <div class="admin-head">
+                    <h1>Botathon Registrations</h1>
+                    <p class="lead">Everyone signed up for the current Botathon season. Registrations from previous seasons are hidden.</p>
+                </div>
 
-while ($r = $q->fetch_array(MYSQLI_ASSOC)) {
-	//var_dump($r);
-	echo '=====================================' . PHP_EOL;
-	echo '<strong>' . $r['name'] . '</strong><br>' .
-		'EMAIL: ' . $r['email'] . PHP_EOL .
-		'PHONE: ' . $r['phone'] . PHP_EOL .
-		'GENDER: ' . $r['gender'] . PHP_EOL .
-		'CLASSIFICATION: ' . $r['classification'] . PHP_EOL .
-		'MAJOR: ' . $r['major'] . PHP_EOL .
-		'DIET RESTRICTIONS: ' . $r['diet_restrictions'] . PHP_EOL .
-		'LATEX ALLERGY: ' . (($r['latex_allergy'] == 0) ? 'No.' : '<strong>Yes.</strong>') . PHP_EOL .
-        'TEAM: ' . $r['team_name'] . PHP_EOL .
-		'EUID: ' . $r['unteuid'] . PHP_EOL;
-}
+                <div class="admin-stats">
+                    <?php
+                    echo admin_stat($count, 'Registrants', 'green');
+                    echo admin_stat('#' . BOTATHON_SEASON, 'Season', 'grey');
+                    ?>
+                </div>
 
-echo '</pre>';
+                <div class="admin-card">
+                    <div class="admin-table-wrap">
+                        <table class="admin-table">
+                            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Gender</th><th>Classification</th><th>Major</th><th>Team</th><th>Diet</th><th>Latex allergy</th><th>EUID</th></tr></thead>
+                            <tbody>
+                            <?php if ($count): ?>
+                                <?php while ($r = $q->fetch_array(MYSQLI_ASSOC)): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($r['name']); ?></td>
+                                        <td><?php echo htmlspecialchars($r['email']); ?></td>
+                                        <td class="num"><?php echo htmlspecialchars($r['phone']); ?></td>
+                                        <td><?php echo htmlspecialchars($r['gender']); ?></td>
+                                        <td><?php echo htmlspecialchars($r['classification']); ?></td>
+                                        <td><?php echo htmlspecialchars($r['major']); ?></td>
+                                        <td><?php echo $r['team_name'] ? htmlspecialchars($r['team_name']) : '<span class="muted">&mdash;</span>'; ?></td>
+                                        <td><?php echo $r['diet_restrictions'] ? htmlspecialchars($r['diet_restrictions']) : '<span class="muted">none</span>'; ?></td>
+                                        <td><?php echo $r['latex_allergy'] ? '<span class="pill pill-refunded">Yes</span>' : '<span class="muted">No</span>'; ?></td>
+                                        <td class="num"><?php echo htmlspecialchars($r['unteuid']); ?></td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr><td colspan="10" class="admin-empty">No registrations for the current season yet.</td></tr>
+                            <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<?php
+footer();
