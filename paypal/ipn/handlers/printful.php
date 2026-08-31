@@ -136,8 +136,10 @@ function handle_payment_notification($ipn, $payment_info, $custom) {
 			$ipn->alert("Alert: Failed to send e-mail receipt for order #{$draft_order->get_id()} [{$payment_info->txn_id}].");
 		}
 		
-		// create association in the database between tx id and printful order id
-		$q = $db->query('INSERT INTO printful_order_tx (txid, printful_order_id) VALUES ("' . $db->real_escape_string($payment_info->txn_id) . '", "' . $db->real_escape_string($draft_order->get_id()) . '")');
+		// create association in the database between tx id and printful order id.
+		// Record the gross paid + processor fee so the AR ledger has merch revenue
+		// (these used to live only in Stripe/PayPal).
+		$q = $db->query('INSERT INTO printful_order_tx (txid, printful_order_id, amount, fee) VALUES ("' . $db->real_escape_string($payment_info->txn_id) . '", "' . $db->real_escape_string($draft_order->get_id()) . '", "' . $db->real_escape_string($amount_paid) . '", "' . $db->real_escape_string($payment_info->mc_fee) . '")');
 		if (!$q) {
 			throw new IPNHandlerException("[{$payment_info->txn_id}]: Unable to create tx id to order id associated in the database (error: {$db->error})");
 		} else {
