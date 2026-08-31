@@ -188,7 +188,12 @@ if ($product_can_be_handled) {
 	
 	// Per-product Open Graph preview so a shared merch link shows the product's
 	// image + blurb (header.php reads these $og_* globals).
-	$og_title = $product->get_name();
+	// Drop the trailing "(Category)" tag from the display name — it's a routing
+	// hint on the Printful product, not part of the product's real name (and now
+	// that items can be re-categorised, "(Gear)" on a shirt would read wrong).
+	$product_display_name = trim(preg_replace('@\s*\([^()]+\)\s*$@', '', $product->get_name()));
+	if ($product_display_name === '') { $product_display_name = $product->get_name(); }
+	$og_title = $product_display_name;
 	$__ogd = trim(strip_tags((string) $catalog_product->get_description()));
 	if (preg_match('@^(.+?)•@ms', $__ogd, $__ogm)) { $__ogd = $__ogm[1]; }
 	$__ogd = trim(preg_replace('/\s+/', ' ', $__ogd));
@@ -200,7 +205,7 @@ if ($product_can_be_handled) {
 		$__ogi = $gallery[0]['preview'];
 		$og_image = (strpos($__ogi, 'http') === 0) ? $__ogi : 'https://www.untrobotics.com' . $__ogi;
 	}
-	head("Buy {$product->get_name()}", true);
+	head("Buy {$product_display_name}", true);
 	// Category for the breadcrumb: resolve to a canonical token (honouring the
 	// override map), then map to its /merch/<slug> page + display name.
 	$category_token = merch_resolve_category($product->get_name());
@@ -361,7 +366,7 @@ function get_variant_variant($variant_name) {
 
 		<div class="range merch-header">
 			<div class="cell-lg-7 cell-md-12">
-				<h1 class="text-center text-lg-left"><?php echo htmlspecialchars($product->get_name()); ?></h1>
+				<h1 class="text-center text-lg-left"><?php echo htmlspecialchars($product_display_name); ?></h1>
 				<div class="product-price"><span id="product-price-amount"><?php
 					$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 					echo $fmt->formatCurrency($selected_variant->get_price(), $product->get_product_currency());
