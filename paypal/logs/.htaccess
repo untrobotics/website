@@ -1,4 +1,4 @@
-Authtype Basic
-AuthName "PayPal Logs"
-AuthUserFile /var/www/untrobotics/paypal/logs/.htpasswd
-Require valid-user
+# Payment logs are never served over the web. The old Basic auth here referenced a
+# .htpasswd on the legacy webroot path that doesn't exist in the container (500).
+# Just deny all web access — the logs are only read from the filesystem.
+Require all denied
