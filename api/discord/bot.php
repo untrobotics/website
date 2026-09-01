@@ -54,6 +54,14 @@ class DiscordBot {
 	}
 
 	public static function send_message($message, $channel_id, $attachments = null) {
+		// Only post to Discord from production. Dev/staging share the same bot
+		// token and channel ids through config, so without this guard dev web
+		// actions (newsletter sign-ups, donations, dues, etc.) spam the real
+		// server. Log what would have been sent instead of sending it.
+		if (!defined('ENVIRONMENT') || ENVIRONMENT !== Environment::PRODUCTION) {
+			error_log('[discord suppressed in non-prod] channel ' . $channel_id . ': ' . (is_string($message) ? $message : json_encode($message)));
+			return null;
+		}
 	    if (is_string($message)) {
             $data = new stdClass(); // can't be bothered right now to make a class
             $data->content = $message;
