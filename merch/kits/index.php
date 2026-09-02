@@ -98,7 +98,7 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
             <div id="paypal-button-container"></div>
           </div>
           <div id="kit-error" class="text-danger offset-top-10" style="display:none;"></div>
-          <p class="kit-note">1 kit per person. Kits are picked up in person at our general meetings &mdash; see the <a href="/events">event calendar</a> and <a href="/join/discord">Discord</a> for times.</p>
+          <p class="kit-note">1 kit per person. Kits are picked up in person at our general meetings. See the <a href="/events">event calendar</a> and <a href="/join/discord">Discord</a> for times.</p>
         </div>
       </div>
     </div>
@@ -159,8 +159,15 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
     var apRedirect = document.getElementById('applepay-redirect');
     expressEl.on('ready', function (e) {
       var avail = e && e.availablePaymentMethods;
-      // If no inline wallet is available, offer the hosted-checkout Apple Pay fallback button.
-      if (apRedirect && (!avail || (!avail.applePay && !avail.googlePay))) { apRedirect.style.display = 'flex'; }
+      if (!avail || (!avail.applePay && !avail.googlePay)) {
+        // No inline wallet. Stripe still mounts an (empty) iframe inside the
+        // container, so the CSS :empty rule never matches and the 0-height
+        // container keeps eating a flex gap on BOTH sides (a fat double gap).
+        // Collapse it explicitly, and show the hosted-checkout fallback instead.
+        var eceEl = document.getElementById('express-checkout-element');
+        if (eceEl) { eceEl.style.display = 'none'; }
+        if (apRedirect) { apRedirect.style.display = 'flex'; }
+      }
     });
     // Validate the form BEFORE the wallet sheet opens; refusing to resolve keeps it closed.
     expressEl.on('click', function (event) {
