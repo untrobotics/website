@@ -214,25 +214,28 @@ strong.no-wrap {
 										?>
 										<?php if ($is_user_in_good_standing) { ?>
 										<h1>You're good to go</h1>
-										<h5 class="offset-top-50"><strong><?php echo $user->username; ?>#<?php echo $user->discriminator; ?></strong> has been given the <em>Good Standing</em> role.</h5>
+										<h5 class="offset-top-50"><strong><?php echo htmlspecialchars($user->username); ?></strong>, you've joined the UNT Robotics Discord and you have the <em>Good Standing</em> role. Welcome!</h5>
 										<?php } else { ?>
 										<h1>You're in!</h1>
-										<h5 class="offset-top-50">Welcome, <strong><?php echo $user->username; ?></strong>. You've joined the UNT Robotics Discord. Pay your <a href="/dues">dues</a> to unlock the <em>Good Standing</em> role and full member access.</h5>
+										<h5 class="offset-top-50">Welcome, <strong><?php echo htmlspecialchars($user->username); ?></strong>. You've joined the UNT Robotics Discord. Once you've <a href="/dues">paid your dues</a> for the semester you'll also get the <em>Good Standing</em> role.</h5>
 										<?php } ?>
 
-										<div class="scheme-buttons offset-top-50">
-											<a href="market://details?id=com.discord">
-												<img class="black" src="/images/buttons/discord-forward-android-white.png"/>
-												<img class="white" src="/images/buttons/discord-forward-android.png"/>
+										<style>
+											.discord-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+											.discord-cta { display:inline-flex; align-items:center; justify-content:center; gap:11px; height:54px; padding:0 30px; border-radius:10px; font-size:16px; font-weight:700; text-decoration:none; transition:background .15s, color .15s, transform .05s; }
+											.discord-cta svg { width:24px; height:24px; fill:currentColor; }
+											.discord-cta.primary { background:#5865F2; color:#fff; }
+											.discord-cta.primary:hover { background:#4752c4; color:#fff; }
+											.discord-cta.ghost { color:#5865F2; border:2px solid #5865F2; background:transparent; }
+											.discord-cta.ghost:hover { background:#5865F2; color:#fff; }
+											.discord-cta:active { transform:translateY(1px); }
+										</style>
+										<div class="discord-ctas offset-top-50">
+											<a class="discord-cta primary" href="https://discord.com/channels/<?php echo DISCORD_GUILD_ID; ?>/<?php echo DISCORD_GENERAL_CHANNEL_ID; ?>">
+												<svg viewBox="0 0 640 512" aria-hidden="true"><path d="M524.5 69.8a1.5 1.5 0 0 0-.8-.7A485.1 485.1 0 0 0 404.1 32a1.8 1.8 0 0 0-1.9.9 337.5 337.5 0 0 0-14.9 30.6 447.8 447.8 0 0 0-134.4 0 309.5 309.5 0 0 0-15.1-30.6 1.9 1.9 0 0 0-1.9-.9A483.7 483.7 0 0 0 116.1 69.1a1.7 1.7 0 0 0-.8.7C39.1 183.7 18.2 294.7 28.4 404.4a2 2 0 0 0 .8 1.4A487.7 487.7 0 0 0 176 479.9a1.9 1.9 0 0 0 2.1-.7A348.2 348.2 0 0 0 208.1 430.4a1.9 1.9 0 0 0-1-2.6 321.2 321.2 0 0 1-45.9-21.9 1.9 1.9 0 0 1-.2-3.1c3.1-2.3 6.2-4.7 9.1-7.1a1.8 1.8 0 0 1 1.9-.3c96.2 43.9 200.4 43.9 295.5 0a1.8 1.8 0 0 1 1.9.2c2.9 2.4 6 4.9 9.1 7.2a1.9 1.9 0 0 1-.2 3.1 301.4 301.4 0 0 1-45.9 21.8 1.9 1.9 0 0 0-1 2.6 391.1 391.1 0 0 0 30 48.8 1.9 1.9 0 0 0 2.1.7A486 486 0 0 0 610.7 405.7a1.9 1.9 0 0 0 .8-1.4C623.7 277.6 590.9 167.5 524.5 69.8zM222.5 337.6c-29 0-52.8-26.6-52.8-59.2S193 219.1 222.5 219.1c29.7 0 53.3 26.8 52.8 59.2 0 32.6-23.4 59.2-52.8 59.2zm195.4 0c-29 0-52.8-26.6-52.8-59.2S388.4 219.1 417.9 219.1c29.7 0 53.3 26.8 52.8 59.2 0 32.6-23.1 59.2-52.8 59.2z"/></svg>
+												Open Discord
 											</a>
-											<a href="https://discordapp.com/channels/<?php echo DISCORD_GUILD_ID; ?>/<?php echo DISCORD_GENERAL_CHANNEL_ID; ?>">
-												<img class="black"  src="/images/buttons/discord-forward-browser-white.png"/>
-												<img class="white" src="/images/buttons/discord-forward-browser.png"/>
-											</a>
-											<a href="com.hammerandchisel.discord://">
-												<img class="black"  src="/images/buttons/discord-forward-apple-white.png"/>
-												<img class="white" src="/images/buttons/discord-forward-apple.png"/>
-											</a>
+											<a class="discord-cta ghost" href="https://discord.com/download">Get the app</a>
 										</div>
 										<?php
 									} catch (Exception $ex) {
