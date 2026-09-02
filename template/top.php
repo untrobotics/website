@@ -193,11 +193,25 @@ function brevo_sent_today() {
     if ($q && $q->num_rows > 0) { $r = $q->fetch_assoc(); return (int) $r['sent']; }
     return 0;
 }
-// How many newsletter emails may still go out today without eating the reserve.
+// Newsletter emails sent today (counted separately from transactional mail).
+function brevo_newsletter_sent_today() {
+    global $db;
+    $q = $db->query("SELECT COUNT(*) c FROM newsletter_queue WHERE status = 'sent' AND sent_at IS NOT NULL AND DATE(sent_at) = CURDATE()");
+    if ($q && $q->num_rows > 0) { return (int) $q->fetch_assoc()['c']; }
+    return 0;
+}
+// How many newsletter emails may still go out today. The reserve is for
+// transactional mail, so transactional sends draw from the reserve FIRST and only
+// eat newsletter capacity once they overflow it. So newsletter has its own
+// (limit - reserve) budget measured against NEWSLETTER sends, capped by the
+// overall daily headroom (limit - total). Previously this subtracted ALL sends
+// (incl. transactional) from the newsletter budget, understating what's left.
 function brevo_newsletter_remaining_today() {
     $limit = defined('BREVO_DAILY_LIMIT') ? BREVO_DAILY_LIMIT : 300;
     $reserve = defined('BREVO_TRANSACTIONAL_RESERVE') ? BREVO_TRANSACTIONAL_RESERVE : 50;
-    return max(0, $limit - $reserve - brevo_sent_today());
+    $own_budget_left = ($limit - $reserve) - brevo_newsletter_sent_today();
+    $overall_headroom = $limit - brevo_sent_today();
+    return max(0, min($own_budget_left, $overall_headroom));
 }
 
 // One-click unsubscribe token (HMAC of the email, no per-row storage needed).
