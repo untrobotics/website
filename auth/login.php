@@ -27,9 +27,9 @@ if (isset($_POST['email'])) {
 			break;
 		} else {
 			if (@$_POST['remember-me'] == 1) {
-				$expires = strtotime("+1 year"); // almost never?
+				$expires = strtotime("+1 year"); $session = 0; // remember-me: persistent (session=0 so auth() won't slide expires down to SESSION_TIMEOUT and log them out after ~24min)
 			} else {
-				$expires = 0;
+				$expires = 0; $session = 1; // normal login: sliding session
 			}
 			$fingerprint = get_fingerprint();
 			$auth_session_id = obfuscate_hash(sha1($fingerprint . session_id())); // based on IP, time, /dev/urandom and a PHP PRNG (PLCG) and fingerprint calculated above
@@ -42,14 +42,16 @@ if (isset($_POST['email'])) {
 			session_name,
 			fingerprint,
 			uid,
-			expires)
+			expires,
+			session)
 			VALUES
 			(
 				'".$db->real_escape_string($auth_session_id)."',
 				'".$db->real_escape_string($auth_session_name)."',
 				'".$db->real_escape_string($fingerprint)."',
 				'".$db->real_escape_string($r['id'])."',
-				'".$db->real_escape_string($expires)."'
+				'".$db->real_escape_string($expires)."',
+				'".$db->real_escape_string($session)."'
 			)
 			") or die($db->error); // remove this for security
 
