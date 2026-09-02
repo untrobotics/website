@@ -527,16 +527,23 @@ footer(false);
 		});
 		ece.mount('#express-checkout-element');
 			var apRedirect = document.getElementById('applepay-redirect');
-			ece.on('ready', function (e) {
-				var avail = e && e.availablePaymentMethods;
-				if (apRedirect && avail && avail.applePay) { apRedirect.style.display = 'none'; }
-				// No wallet on this device: ECE renders an empty sliver — hide it so it
-				// doesn't leave a stray gap above the fallback buttons.
-				if (!avail || (!avail.applePay && !avail.googlePay)) {
-					var eceEl = document.getElementById('express-checkout-element');
-					if (eceEl) { eceEl.style.display = 'none'; }
+			// Decide by ACTUAL rendered height, not availablePaymentMethods: Stripe can
+			// report a method then mount an empty 0-height iframe that keeps eating a
+			// flex gap on both sides. Empty -> collapse + show the hosted fallback;
+			// rendered -> hide the fallback. The timer covers 'ready' never firing.
+			function settleWallet() {
+				var eceEl = document.getElementById('express-checkout-element');
+				if (!eceEl || eceEl.dataset.settled) { return; }
+				if (eceEl.getBoundingClientRect().height > 8) {
+					if (apRedirect) { apRedirect.style.display = 'none'; }
+				} else {
+					eceEl.style.display = 'none';
+					if (apRedirect) { apRedirect.style.display = 'flex'; }
 				}
-			});
+				eceEl.dataset.settled = '1';
+			}
+			ece.on('ready', function () { setTimeout(settleWallet, 350); });
+			setTimeout(settleWallet, 2000);
 			if (apRedirect) {
 				apRedirect.addEventListener('click', function () {
 					apRedirect.disabled = true;
