@@ -52,6 +52,7 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
       #applepay-redirect:disabled { opacity:.6; cursor:default; }
       #kit-error { display:none; margin:12px 0 0; padding:10px 12px; border-radius:6px; background:#fde2e1; color:#a12622; font-size:13px; }
       .kit-note { font-size:12px; color:#8a8f8c; margin-top:12px; line-height:1.5; }
+      .kit-keep { background:#eef7f1; border-left:3px solid #45cd8f; padding:9px 13px; border-radius:5px; margin:14px 0; }
       @media (max-width:900px){ .kit-layout { grid-template-columns:1fr; max-width:440px; gap:26px; } }
     </style>
 
@@ -59,7 +60,8 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
       <div class="kit-left text-left">
         <h1>Electronics Kit</h1>
         <h6>Everything you need for this semester&rsquo;s build workshops</h6>
-        <p>Your own box of parts to build along at our workshops all semester &mdash; from a light-sensing LED nightlight to sound-reactive motors and an RFID door lock. A hands-on intro to Arduino, circuits, sensors, and code. Preorder below; we&rsquo;ll put your kit together and email you the moment it&rsquo;s ready to pick up at a general meeting.</p>
+        <p>Your own box of parts to build along at our workshops all semester, from a light-sensing LED nightlight to sound-reactive motors and an RFID door lock. A hands-on intro to Arduino, circuits, sensors, and code. Preorder below; we&rsquo;ll put your kit together and email you the moment it&rsquo;s ready to pick up at a general meeting.</p>
+        <p class="kit-keep"><strong>The kit is yours to keep.</strong> Everything in it is yours to take home and build with, this semester and beyond. It&rsquo;s not a loaner or a deposit.</p>
         <p><strong>Each kit includes:</strong></p>
         <ul>
           <li>Arduino Uno (USB-C) + breadboard</li>
@@ -98,7 +100,7 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
             <div id="paypal-button-container"></div>
           </div>
           <div id="kit-error" class="text-danger offset-top-10" style="display:none;"></div>
-          <p class="kit-note">1 kit per person. Kits are picked up in person at our general meetings. See the <a href="/events">event calendar</a> and <a href="/join/discord">Discord</a> for times.</p>
+          <p class="kit-note">1 kit per person, and it&rsquo;s yours to keep. Kits are picked up in person at our general meetings. See the <a href="/events">event calendar</a> and <a href="/join/discord">Discord</a> for times.</p>
         </div>
       </div>
     </div>
@@ -157,18 +159,21 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
     });
     expressEl.mount('#express-checkout-element');
     var apRedirect = document.getElementById('applepay-redirect');
-    expressEl.on('ready', function (e) {
-      var avail = e && e.availablePaymentMethods;
-      if (!avail || (!avail.applePay && !avail.googlePay)) {
-        // No inline wallet. Stripe still mounts an (empty) iframe inside the
-        // container, so the CSS :empty rule never matches and the 0-height
-        // container keeps eating a flex gap on BOTH sides (a fat double gap).
-        // Collapse it explicitly, and show the hosted-checkout fallback instead.
-        var eceEl = document.getElementById('express-checkout-element');
-        if (eceEl) { eceEl.style.display = 'none'; }
+    // Decide by what ACTUALLY rendered, not by availablePaymentMethods: Stripe can
+    // report a method and then mount an empty 0-height iframe, which still eats a
+    // flex gap on both sides (a fat double gap above the next button). If no visible
+    // wallet button rendered, collapse the container and show the hosted fallback.
+    function settleWallet() {
+      var eceEl = document.getElementById('express-checkout-element');
+      if (!eceEl || eceEl.dataset.settled) { return; }
+      if (eceEl.getBoundingClientRect().height <= 8) {
+        eceEl.style.display = 'none';
         if (apRedirect) { apRedirect.style.display = 'flex'; }
       }
-    });
+      eceEl.dataset.settled = '1';
+    }
+    expressEl.on('ready', function () { setTimeout(settleWallet, 350); });
+    setTimeout(settleWallet, 2000); // fallback if 'ready' never fires
     // Validate the form BEFORE the wallet sheet opens; refusing to resolve keeps it closed.
     expressEl.on('click', function (event) {
       var err = validate(); if (err) { showErr(err); return; }
