@@ -205,13 +205,20 @@ strong.no-wrap {
 											    error_log("AUTHDIS", var_export($assigned, true));
 												throw new Exception("Failed to give user the correct role: " . $assigned->status_code . " ($code)");
 											}
-										} else {
-											// Alert!
-											throw new Exception("Current user is not in good standing.");
 										}
+										// Not being in good standing is the normal case for anyone who
+										// hasn't paid dues: they've still linked their account and joined
+										// the server. It is NOT an error, so don't throw (that would show
+										// the user an error page and alert officers with a stack trace).
+										// Show a friendly message either way.
 										?>
+										<?php if ($is_user_in_good_standing) { ?>
 										<h1>You're good to go</h1>
 										<h5 class="offset-top-50"><strong><?php echo $user->username; ?>#<?php echo $user->discriminator; ?></strong> has been given the <em>Good Standing</em> role.</h5>
+										<?php } else { ?>
+										<h1>You're in!</h1>
+										<h5 class="offset-top-50">Welcome, <strong><?php echo $user->username; ?></strong>. You've joined the UNT Robotics Discord. Pay your <a href="/dues">dues</a> to unlock the <em>Good Standing</em> role and full member access.</h5>
+										<?php } ?>
 
 										<div class="scheme-buttons offset-top-50">
 											<a href="market://details?id=com.discord">
