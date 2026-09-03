@@ -30,4 +30,4 @@ images:
     newTag: "develop"
   - name: untrobotics-discord-bot
     newName: ghcr.io/untrobotics/website-discord-bot
-    newTag: "develop"
+    newTag: "sha-84f957f"
