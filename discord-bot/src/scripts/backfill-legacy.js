@@ -2,7 +2,7 @@
 
 /**
  * One-time backfill: grant a role (default "Verified Legacy") to EVERY current
- * human member of the guild. Idempotent — members who already have the role are
+ * human member of the guild. Idempotent – members who already have the role are
  * skipped, so it is safe to re-run.
  *
  * Uses the REST API only (NO gateway connection), so it can run alongside the
@@ -71,7 +71,7 @@ async function main() {
       const who = m.user ? `${m.user.username} (${m.user.id})` : 'unknown';
       log.error(`  failed for ${who}: ${err.message}`);
       // If the very first grant fails with 403, it's almost certainly the role
-      // hierarchy (bot role must be above the target) — bail early with a hint.
+      // hierarchy (bot role must be above the target) – bail early with a hint.
       if (added === 0 && failed === 1 && /Missing Permissions|403/.test(err.message)) {
         log.error('  -> looks like a permissions/hierarchy issue: move the bot\'s role ABOVE the target role and re-run.');
         break;

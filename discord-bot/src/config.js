@@ -22,7 +22,7 @@ try {
   // eslint-disable-next-line global-require
   require('dotenv').config();
 } catch (_) {
-  /* dotenv not installed (production image) — env comes from k8s/compose */
+  /* dotenv not installed (production image) – env comes from k8s/compose */
 }
 
 /** Read an env var, returning `fallback` when unset/empty. */
@@ -150,7 +150,7 @@ const config = Object.freeze({
   //   + MAX_VERIFY_PER_HOUR), each /token attempt has a cooldown
   //   (TOKEN_ATTEMPT_COOLDOWN_SECONDS) and a global LOCKOUT_THRESHOLD trips a
   //   LOCKOUT_SECONDS freeze. Together these make online guessing impractical.
-  //   4-digit codes are materially weaker — see README — default stays at 6.
+  //   4-digit codes are materially weaker – see README – default stays at 6.
   codeLength: intEnv('CODE_LENGTH', 6),
   codeTtlSeconds: intEnv('CODE_TTL_SECONDS', 600),
   maxVerifyPerHour: intEnv('MAX_VERIFY_PER_HOUR', 5),
@@ -162,7 +162,7 @@ const config = Object.freeze({
 
   // Optional secret mixed into the code hash so a DB leak alone can't be used
   // to recompute hashes offline. Falls back to HASH_SALT (already in the app
-  // secret set) and finally to a constant — set one in prod.
+  // secret set) and finally to a constant – set one in prod.
   hashSecret: envAny(['VERIFY_HASH_SECRET', 'HASH_SALT'], 'untrobotics-verify'),
 });
 

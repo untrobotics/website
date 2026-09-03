@@ -14,7 +14,7 @@ const log = require('../logger');
 
 /**
  * Lower-case, trim, and repair "smart punctuation". Mobile keyboards autocorrect
- * a straight apostrophe (') into a curly one (’ U+2019) — which is NOT a valid
+ * a straight apostrophe (') into a curly one (’ U+2019) – which is NOT a valid
  * email character, so an address like `ta’kiyahjohnson@my.unt.edu` gets rejected
  * by the mailer and the code never sends. Straighten curly quotes and strip
  * zero-width characters so a valid address that got "beautified" on a phone still
@@ -32,7 +32,7 @@ function normalizeEmail(email) {
 /**
  * Structural email check. Restricted to characters actually valid in an email
  * (RFC 5322 atext local part + a normal dotted domain, ASCII only). This rejects
- * malformed input up front — with the clear `invalid_email` message — instead of
+ * malformed input up front – with the clear `invalid_email` message – instead of
  * letting it through to the mailer, which would reject it and surface the
  * misleading "couldn't send, try again" (email_failed) instead. The real
  * authorization gate is still the domain allow-list below.
@@ -42,7 +42,7 @@ function looksLikeEmail(email) {
 }
 
 /**
- * Exact-domain allow-list check (NOT a substring match — "notunt.edu" must not
+ * Exact-domain allow-list check (NOT a substring match – "notunt.edu" must not
  * pass for "unt.edu"). The part after the last '@' must equal an allowed domain.
  */
 function isAllowedDomain(email) {
@@ -90,7 +90,7 @@ async function getRow(discordId) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* /verify — request a code                                                    */
+/* /verify – request a code                                                    */
 /* -------------------------------------------------------------------------- */
 
 /**
@@ -164,7 +164,7 @@ async function requestCode(discordId, rawEmail, username) {
   let sendCount = row ? row.send_count_window || 0 : 0;
   const windowAgeSec = windowStartedAt ? (now - windowStartedAt) / 1000 : Infinity;
   if (windowAgeSec >= 3600) {
-    // Window expired — start a new one.
+    // Window expired – start a new one.
     windowStartedAt = now;
     sendCount = 0;
   }
@@ -190,7 +190,7 @@ async function requestCode(discordId, rawEmail, username) {
   try {
     await sendVerificationCode(email, code, Math.round(config.codeTtlSeconds / 60));
   } catch (err) {
-    ratelimit.clear(cdKey); // send failed — don't penalise the user
+    ratelimit.clear(cdKey); // send failed – don't penalise the user
     log.error('verification: email send failed', err.message);
     await logAttempt({ discordId, username, email, action: 'verify_request', outcome: 'email_failed' });
     return { ok: false, reason: 'email_failed' };
@@ -218,7 +218,7 @@ async function requestCode(discordId, rawEmail, username) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* /token — redeem a code                                                      */
+/* /token – redeem a code                                                      */
 /* -------------------------------------------------------------------------- */
 
 /**

@@ -68,7 +68,7 @@ module.exports = {
           (await interaction.guild.members.fetch(interaction.user.id));
         await member.roles.add(config.verifiedRoleId, 'UNT email verification passed');
       } catch (err) {
-        // Verified in DB but couldn't assign the role — almost always a role
+        // Verified in DB but couldn't assign the role – almost always a role
         // hierarchy / Manage Roles permission problem. Tell the user to ping an
         // officer and log loudly.
         log.error('token: role assignment failed', err.message);
@@ -113,7 +113,7 @@ module.exports = {
         );
         break;
       case 'attempt_cooldown':
-        message = `Slow down — try again in ${fmtDuration(result.retryAfter)}.`;
+        message = `Slow down – try again in ${fmtDuration(result.retryAfter)}.`;
         break;
       case 'expired':
       case 'invalid':
@@ -121,7 +121,7 @@ module.exports = {
         message = GENERIC_INVALID;
         if (result.locked) {
           message =
-            `Too many failed attempts — verification is now locked for ` +
+            `Too many failed attempts – verification is now locked for ` +
             `${fmtDuration(result.retryAfter)}.`;
         } else if (result.burned) {
           message =

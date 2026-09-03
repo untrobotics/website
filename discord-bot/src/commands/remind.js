@@ -12,7 +12,7 @@ const MIN_REPEAT = 300;            // clamp repeats to >= 5 min so we don't spam
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('remind')
-    .setDescription('Set a reminder in this channel — optionally repeating until it’s marked done.')
+    .setDescription('Set a reminder in this channel – optionally repeating until it’s marked done.')
     .addStringOption((o) =>
       o.setName('text').setDescription('What to remind about').setRequired(true).setMaxLength(500))
     .addStringOption((o) =>
@@ -20,7 +20,7 @@ module.exports = {
     .addStringOption((o) =>
       o.setName('repeat').setDescription('Keep reminding at this interval until marked done, e.g. 1h, 1d (optional)').setRequired(false).setMaxLength(40))
     .addMentionableOption((o) =>
-      o.setName('who').setDescription('Who to remind — a person or role (defaults to you)').setRequired(false)),
+      o.setName('who').setDescription('Who to remind – a person or role (defaults to you)').setRequired(false)),
 
   async execute(interaction) {
     if (!interaction.inGuild()) {
@@ -41,7 +41,7 @@ module.exports = {
       return;
     }
     if (inSeconds > MAX_FIRST) {
-      await interaction.reply({ content: 'That’s too far out — keep it under about a year, please.', flags: MessageFlags.Ephemeral });
+      await interaction.reply({ content: 'That’s too far out – keep it under about a year, please.', flags: MessageFlags.Ephemeral });
       return;
     }
 
@@ -50,7 +50,7 @@ module.exports = {
       repeatSeconds = parseDuration(repeatRaw);
       if (!repeatSeconds) {
         await interaction.reply({
-          content: `I couldn’t read the repeat interval “${repeatRaw}”. Try \`1h\`, \`6h\`, or \`1d\` — or leave it blank for a one-off.`,
+          content: `I couldn’t read the repeat interval “${repeatRaw}”. Try \`1h\`, \`6h\`, or \`1d\` – or leave it blank for a one-off.`,
           flags: MessageFlags.Ephemeral,
         });
         return;
@@ -98,7 +98,7 @@ module.exports = {
     const mention = targetType === 'role' ? `<@&${targetId}>` : `<@${targetId}>`;
     const repeatLine = repeatSeconds ? `, then every **${humanDuration(repeatSeconds)}** until someone marks it done` : '';
     await interaction.reply({
-      content: `⏰ Got it — I’ll remind ${mention} in **${humanDuration(inSeconds)}**${repeatLine}.\n> ${text}`,
+      content: `⏰ Got it – I’ll remind ${mention} in **${humanDuration(inSeconds)}**${repeatLine}.\n> ${text}`,
       flags: MessageFlags.Ephemeral,
       allowedMentions: { parse: [] },
     });

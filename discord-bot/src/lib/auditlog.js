@@ -34,7 +34,7 @@ async function logAttempt({ discordId, username, email, action, outcome, detail 
       ]
     );
   } catch (err) {
-    // Never rethrow — the audit trail is auxiliary and must not affect the
+    // Never rethrow – the audit trail is auxiliary and must not affect the
     // verification flow.
     log.warn('auditlog: failed to record attempt', err && err.message);
   }

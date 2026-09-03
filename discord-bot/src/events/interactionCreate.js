@@ -27,7 +27,7 @@ module.exports = {
       return;
     }
 
-    // Interest-role picker (StringSelectMenu) — sync the member's roles.
+    // Interest-role picker (StringSelectMenu) – sync the member's roles.
     if (interaction.isStringSelectMenu() && interaction.customId === selfroles.SELECT_ID) {
       try {
         await selfroles.applySelection(interaction);
@@ -61,7 +61,7 @@ module.exports = {
           await interaction.reply(payload);
         }
       } catch (_) {
-        /* interaction already gone — nothing more to do */
+        /* interaction already gone – nothing more to do */
       }
     }
   },

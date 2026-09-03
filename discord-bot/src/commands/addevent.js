@@ -10,7 +10,7 @@ const { config } = require('../config');
 const log = require('../logger');
 
 /**
- * /addevent — officers add an event to the club Google Calendar (the one the
+ * /addevent – officers add an event to the club Google Calendar (the one the
  * /events page embeds). The bot stays thin: it validates input and the Officer
  * role, then POSTs to the website's internal endpoint, which owns the Google
  * Calendar service-account credentials and makes the API call. Same pattern as
@@ -206,8 +206,8 @@ module.exports = {
 
     // --- Also create a Discord scheduled event (best-effort) -----------------
     // The calendar add already succeeded, so a failure here must not fail the
-    // command. Discord shows this in the server's Events tab and — when it flips
-    // to ACTIVE at start time — fires the start announcement (see
+    // command. Discord shows this in the server's Events tab and – when it flips
+    // to ACTIVE at start time – fires the start announcement (see
     // events/guildScheduledEventUpdate.js).
     let discordEventNote = '';
     try {
@@ -225,12 +225,12 @@ module.exports = {
         });
         discordEventNote = '\n📅 Added to the server’s **Events** tab too.';
       } else {
-        discordEventNote = '\n_(Skipped the Discord event — its start time is in the past.)_';
+        discordEventNote = '\n_(Skipped the Discord event – its start time is in the past.)_';
       }
     } catch (err) {
       log.warn('addevent: could not create Discord scheduled event', err.message);
       discordEventNote =
-        '\n_(Calendar updated, but I couldn’t create the Discord event — check my permissions.)_';
+        '\n_(Calendar updated, but I couldn’t create the Discord event – check my permissions.)_';
     }
 
     const when = allDay
@@ -238,13 +238,13 @@ module.exports = {
       : `${date}, ${startTime}–${endTime} ${config.eventTimezone.split('/')[1].replace('_', ' ')}`;
     const link = body.htmlLink ? `\n${body.htmlLink}` : '';
 
-    // Post a confirmation to the officer/admin channel — the reply above is
+    // Post a confirmation to the officer/admin channel – the reply above is
     // ephemeral (only the officer who ran the command sees it), so this gives the
     // team a shared record that an event was created, on the calendar + Discord.
     try {
       const adminCh = await interaction.client.channels.fetch(config.logChannelId).catch(() => null);
       if (adminCh && adminCh.isTextBased()) {
-        let admin = `📅 **New event added** by <@${interaction.user.id}>\n**${title}** — ${when}`;
+        let admin = `📅 **New event added** by <@${interaction.user.id}>\n**${title}** – ${when}`;
         if (location) admin += `\n📍 ${location}`;
         admin += discordEventNote;
         if (body.htmlLink) admin += `\n🔗 ${body.htmlLink}`;
@@ -254,7 +254,7 @@ module.exports = {
       log.warn('addevent: could not post admin confirmation', err.message);
     }
 
-    await interaction.editReply(`✅ Added **${title}** — ${when}.${link}${discordEventNote}`);
+    await interaction.editReply(`✅ Added **${title}** – ${when}.${link}${discordEventNote}`);
     log.info(`addevent: "${title}" on ${date} by ${interaction.user.tag}`);
   },
 };

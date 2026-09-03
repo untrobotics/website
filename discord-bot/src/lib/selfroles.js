@@ -17,7 +17,7 @@ const SELECT_ID = 'selfroles_select';
 function isVerified(member) {
   if (!member || !member.roles) return false;
   // Any verified role counts (UNT / Legacy / Industry / Other-Edu), not just the
-  // single UNT-email role — Legacy members were being told they weren't verified.
+  // single UNT-email role – Legacy members were being told they weren't verified.
   const ids =
     config.verifiedRoleIds && config.verifiedRoleIds.length
       ? config.verifiedRoleIds
@@ -67,7 +67,7 @@ function openButtonRow() {
 function notVerifiedReply() {
   return {
     content:
-      `You need to verify first before picking interest roles — head to <#${config.verifyChannelId}> and run \`/verify\`.`,
+      `You need to verify first before picking interest roles – head to <#${config.verifyChannelId}> and run \`/verify\`.`,
     flags: MessageFlags.Ephemeral,
   };
 }
@@ -111,7 +111,7 @@ async function applySelection(interaction) {
   }
   let msg;
   if (!added.length && !removed.length) {
-    msg = "No changes — you're all set. ✅";
+    msg = "No changes – you're all set. ✅";
   } else {
     const parts = [];
     if (added.length) parts.push(`**Added:** ${added.join(', ')}`);

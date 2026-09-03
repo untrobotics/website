@@ -4,7 +4,7 @@
  * Tiny structured-ish logger. Keeps log lines greppable and timestamps in UTC.
  * Dependency-free. ERROR-level lines are also forwarded to the Discord log
  * channel (rate-limited) so prod issues are visible without shelling into the
- * pod — mirroring the website's Apache log-forwarder.
+ * pod – mirroring the website's Apache log-forwarder.
  */
 
 function ts() {

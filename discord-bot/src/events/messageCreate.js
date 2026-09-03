@@ -48,7 +48,7 @@ function failureMessage(result) {
     case 'already_verified':
       return 'You’re already verified. 🎉';
     case 'locked':
-      return 'Too many failed attempts — verification is locked for a little while. Try again later.';
+      return 'Too many failed attempts – verification is locked for a little while. Try again later.';
     case 'attempt_cooldown':
       return 'Slow down a moment, then try again.';
     case 'expired':
@@ -92,18 +92,18 @@ async function handleInlineToken(message) {
   }
 
   // A bare number from someone with no pending request is probably just chatter,
-  // not a code — leave it alone. An explicit "/token ..." is always treated as an
+  // not a code – leave it alone. An explicit "/token ..." is always treated as an
   // attempt.
   if (!prefixed && result.reason === 'no_request') return true;
 
   if (!result.ok) {
-    // Don't delete a failed attempt — leave the person's message in place and just
+    // Don't delete a failed attempt – leave the person's message in place and just
     // tell them privately what went wrong.
     await notifyPrivately(message, failureMessage(result));
     return true;
   }
 
-  // Verified — now it's safe to remove the message (the code is used/burned).
+  // Verified – now it's safe to remove the message (the code is used/burned).
   try {
     await message.delete();
   } catch (err) {
@@ -135,7 +135,7 @@ async function handleInlineToken(message) {
   await postAudit(
     message.client,
     `:white_check_mark: Verified <@${message.author.id}> (\`${message.author.tag}\`, id ${message.author.id}) → ${result.email} ` +
-      '(code posted in channel — auto-redeemed, message removed)'
+      '(code posted in channel – auto-redeemed, message removed)'
   );
   return true;
 }
@@ -150,7 +150,7 @@ function isUntEmail(email) {
 /**
  * The #1 verify-channel mistake: people paste their email straight into the
  * channel (or type "/verify" as chat) instead of using the /verify slash command
- * — which also leaves their email public. Catch it: delete the message when it
+ * – which also leaves their email public. Catch it: delete the message when it
  * exposes an email, then privately walk them through the command. Returns true
  * if handled.
  */
@@ -163,7 +163,7 @@ async function handleStrayVerifyMessage(message) {
   const typedVerify = /^[!\/]?verify\b/i.test(content); // typed "/verify" as chat, not the command
   if (!emailMatch && !typedVerify) return false;
 
-  // Note: we do NOT delete the person's message here — only a *successful*
+  // Note: we do NOT delete the person's message here – only a *successful*
   // verification removes a message. We just nudge them privately (and, if they
   // posted an email, suggest they delete it themselves to keep it private).
   const verifyCh = `<#${config.verifyChannelId}>`;
@@ -173,10 +173,10 @@ async function handleStrayVerifyMessage(message) {
   if (emailMatch && !isUntEmail(emailMatch[0])) {
     await notifyPrivately(
       message,
-      "That's not a UNT email, so automatic verification won't work — it needs your " +
+      "That's not a UNT email, so automatic verification won't work – it needs your " +
         '**@unt.edu** or **@my.unt.edu** address.\n\n' +
         "If you're from **another university, a high school, or you're an industry " +
-        `mentor**, you're welcome here — just request **manual verification** in ${helpCh}.\n\n` +
+        `mentor**, you're welcome here – just request **manual verification** in ${helpCh}.\n\n` +
         '_(Tip: you can delete your message above so your email doesn\'t stay public.)_'
     );
     return true;
@@ -185,11 +185,11 @@ async function handleStrayVerifyMessage(message) {
   // UNT email pasted in chat, or "/verify" typed as a message → show them how.
   await notifyPrivately(
     message,
-    "Almost! Don't type your email in the channel — use the **`/verify`** *slash " +
+    "Almost! Don't type your email in the channel – use the **`/verify`** *slash " +
       'command* so it stays private:\n\n' +
       `**1.** In ${verifyCh}, type \`/verify\` and **click the \`/verify\` popup** that appears above the message box.\n` +
       '**2.** Put your UNT email in the **email** box and press enter.\n' +
-      "**3.** I'll email you a code — enter it the same way with **`/token`**.\n\n" +
+      "**3.** I'll email you a code – enter it the same way with **`/token`**.\n\n" +
       (emailMatch ? '_(Tip: you can delete your message above so your email doesn\'t stay public.)_' : '')
   );
   return true;

@@ -16,7 +16,7 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 5,
   queueLimit: 0,
-  // Match the app's MySQL charset (tables are latin1 — see 01-schema.sql).
+  // Match the app's MySQL charset (tables are latin1 – see 01-schema.sql).
   charset: 'utf8mb4',
   // Return DATETIME/TIMESTAMP as JS Date objects in the server's timezone.
   timezone: 'Z',

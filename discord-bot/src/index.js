@@ -33,8 +33,8 @@ async function main() {
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.MessageContent, // privileged — enable in Dev Portal
-      GatewayIntentBits.GuildMembers, // privileged — enable in Dev Portal
+      GatewayIntentBits.MessageContent, // privileged – enable in Dev Portal
+      GatewayIntentBits.GuildMembers, // privileged – enable in Dev Portal
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.GuildScheduledEvents, // /addevent creates + announces events
     ],
@@ -45,7 +45,7 @@ async function main() {
   // Load and attach slash commands for the interaction router.
   client.commands = new Collection();
   for (const [name, command] of loadCommands()) client.commands.set(name, command);
-  log.info('startup: loaded commands —', [...client.commands.keys()].join(', '));
+  log.info('startup: loaded commands –', [...client.commands.keys()].join(', '));
 
   // Wire all event handlers (ready, guildMemberAdd, messageCreate, interactionCreate).
   registerEvents(client);
@@ -54,7 +54,7 @@ async function main() {
   // actually connected (status READY). The k8s liveness probe restarts the pod
   // if this file goes stale (>2m). So a gateway that stays wedged longer than a
   // normal reconnect self-heals via a restart, while the frequent, harmless
-  // sub-second reconnects — which briefly drop status from READY — never trip it
+  // sub-second reconnects – which briefly drop status from READY – never trip it
   // (the file was touched moments before). This is what makes a truly stuck
   // connection recover instead of silently swallowing interactions forever.
   touchHeartbeat();
@@ -73,7 +73,7 @@ async function main() {
   }, 30 * 1000);
   if (remindTimer.unref) remindTimer.unref();
 
-  // Surface gateway errors instead of swallowing them — but transient network /
+  // Surface gateway errors instead of swallowing them – but transient network /
   // Discord-side blips (5xx, dropped sockets, DNS wobble) are auto-recovered by
   // discord.js, so log those as "reconnecting" WARNINGS, not ERRORs. Only genuinely
   // unexpected shard errors stay at ERROR. The shard lifecycle events below make the
