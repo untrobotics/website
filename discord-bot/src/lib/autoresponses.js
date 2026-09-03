@@ -13,11 +13,12 @@
 // caller restricts it to the verification channel(s) — see messageCreate.js.
 const KEYWORD_RESPONSES = [
   {
-    triggers: ['how do i verify', 'how to verify', 'get verified', 'verify me'],
+    triggers: ['how do i verify', 'how to verify', 'get verified', 'verify me', 'cant verify', "can't verify", 'not working'],
     reply:
-      'To get verified, run `/verify your-euid@unt.edu` in the verification ' +
-      "channel, then `/token <code>` with the code we email you. You'll get " +
-      'the **Verified UNT** role automatically.',
+      "To verify: type **`/verify`** here and **click the `/verify` popup** that appears " +
+      "(don't just send it as a message), then put your **@unt.edu / @my.unt.edu** email " +
+      "in the box — it stays private, so don't type it in chat. I'll email you a code; " +
+      "enter it the same way with **`/token`**, and you'll get the **Verified UNT** role automatically.",
   },
 ];
 
