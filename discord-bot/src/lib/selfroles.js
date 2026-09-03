@@ -15,12 +15,16 @@ const OPEN_ID = 'selfroles_open';
 const SELECT_ID = 'selfroles_select';
 
 function isVerified(member) {
-  return !!(
-    config.verifiedRoleId &&
-    member &&
-    member.roles &&
-    member.roles.cache.has(config.verifiedRoleId)
-  );
+  if (!member || !member.roles) return false;
+  // Any verified role counts (UNT / Legacy / Industry / Other-Edu), not just the
+  // single UNT-email role — Legacy members were being told they weren't verified.
+  const ids =
+    config.verifiedRoleIds && config.verifiedRoleIds.length
+      ? config.verifiedRoleIds
+      : config.verifiedRoleId
+        ? [config.verifiedRoleId]
+        : [];
+  return ids.some((id) => member.roles.cache.has(id));
 }
 
 /** The multi-select of interest roles, pre-checked with what the member has. */

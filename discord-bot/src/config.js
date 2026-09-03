@@ -80,6 +80,16 @@ const config = Object.freeze({
 
   // Verification feature targets.
   verifiedRoleId: env('DISCORD_VERIFIED_ROLE_ID'),
+  // ALL roles that count as "verified" for self-role gating: UNT-email, the
+  // grandfathered Legacy role, and the manual Industry / Other-Edu categories.
+  // (Gating on only verifiedRoleId wrongly blocked the 593 Verified Legacy folks.)
+  verifiedRoleIds: env(
+    'DISCORD_VERIFIED_ROLE_IDS',
+    '1521694650027479253,1521695260521005147,1521695291437223967,1521695315390890095'
+  )
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
   verifyChannelId: env('DISCORD_VERIFY_CHANNEL_ID'),
   // Where non-UNT folks (other schools, HS, industry mentors) go for MANUAL
   // verification. Rendered as a clickable channel mention if set.
