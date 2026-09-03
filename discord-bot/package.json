@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "discord.js": "^14.27.0",
-    "mysql2": "^3.10.0"
+    "mysql2": "^3.23.1"
   },
   "devDependencies": {
     "dotenv": "^16.4.5",
