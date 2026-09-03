@@ -3,6 +3,7 @@
 const { Events, MessageFlags } = require('discord.js');
 const log = require('../logger');
 const reminders = require('../lib/reminders');
+const selfroles = require('../lib/selfroles');
 
 module.exports = {
   name: Events.InteractionCreate,
@@ -16,6 +17,22 @@ module.exports = {
         } catch (err) {
           log.error('interactionCreate: remind_done button failed', err.stack || err.message);
         }
+      } else if (interaction.customId === selfroles.OPEN_ID) {
+        try {
+          await selfroles.showMenu(interaction);
+        } catch (err) {
+          log.error('interactionCreate: selfroles open failed', err.stack || err.message);
+        }
+      }
+      return;
+    }
+
+    // Interest-role picker (StringSelectMenu) — sync the member's roles.
+    if (interaction.isStringSelectMenu() && interaction.customId === selfroles.SELECT_ID) {
+      try {
+        await selfroles.applySelection(interaction);
+      } catch (err) {
+        log.error('interactionCreate: selfroles select failed', err.stack || err.message);
       }
       return;
     }

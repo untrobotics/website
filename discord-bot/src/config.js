@@ -48,6 +48,29 @@ function intEnv(key, fallback) {
   return Number.isFinite(n) ? n : fallback;
 }
 
+/**
+ * Self-assignable interest roles (the reaction-role feature we're moving off
+ * Carl-bot). Override with SELF_ROLES as a JSON array of {id,label,emoji}; the
+ * default is the current guild's interest roles.
+ */
+function parseSelfRoles(raw) {
+  if (raw) {
+    try {
+      const a = JSON.parse(raw);
+      if (Array.isArray(a)) return a.filter((r) => r && r.id && r.label);
+    } catch (_) {
+      /* fall through to default */
+    }
+  }
+  return [
+    { id: '1339411513106104431', label: 'Aerospace / Rockets', emoji: '🚀' },
+    { id: '1339415894002241670', label: 'NASA Rover', emoji: '🛰️' },
+    { id: '1339411474635817000', label: 'SofaBot', emoji: '🛋️' },
+    { id: '1339411594236661832', label: 'Scrapp-e', emoji: '♻️' },
+    { id: '1339412055563833395', label: 'Robot Competitions', emoji: '🤖' },
+  ];
+}
+
 const config = Object.freeze({
   // --- Discord identity -----------------------------------------------------
   // Reuse the existing admin bot token (DISCORD_ADMIN_BOT_TOKEN in web-secrets).
@@ -95,6 +118,12 @@ const config = Object.freeze({
   // guild's "Officer" role. The event timezone matches the /events embed.
   officerRoleId: env('DISCORD_OFFICER_ROLE_ID', '674703491985309772'),
   eventTimezone: env('EVENT_TIMEZONE', 'America/Chicago'),
+
+  // --- Self-assignable interest roles (replaces Carl-bot's reaction roles) ---
+  // Members pick these via /roles or a posted picker; gated behind Verified so
+  // an unverified account can't self-assign its way into gated channels (that
+  // was the Carl-bot spam hole).
+  selfRoles: parseSelfRoles(process.env.SELF_ROLES),
 
   // --- Database -------------------------------------------------------------
   db: {
