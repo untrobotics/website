@@ -27,15 +27,23 @@ function isVerified(member) {
   return ids.some((id) => member.roles.cache.has(id));
 }
 
+/** Config interest roles that actually exist in the guild (skip stale ids). */
+function liveSelfRoles(member) {
+  const guildRoles = member.guild && member.guild.roles && member.guild.roles.cache;
+  if (!guildRoles) return config.selfRoles;
+  return config.selfRoles.filter((r) => guildRoles.has(r.id));
+}
+
 /** The multi-select of interest roles, pre-checked with what the member has. */
 function buildMenuRow(member) {
+  const roles = liveSelfRoles(member);
   const menu = new StringSelectMenuBuilder()
     .setCustomId(SELECT_ID)
     .setPlaceholder("Pick the teams / projects you're interested in")
     .setMinValues(0)
-    .setMaxValues(config.selfRoles.length)
+    .setMaxValues(Math.max(1, roles.length))
     .addOptions(
-      config.selfRoles.map((r) => {
+      roles.map((r) => {
         const opt = { label: r.label, value: r.id, default: member.roles.cache.has(r.id) };
         if (r.emoji) opt.emoji = r.emoji;
         if (r.description) opt.description = r.description;
@@ -84,7 +92,7 @@ async function applySelection(interaction) {
     return;
   }
   const chosen = new Set(interaction.values);
-  const managed = config.selfRoles;
+  const managed = liveSelfRoles(interaction.member);
   const added = [];
   const removed = [];
   for (const r of managed) {

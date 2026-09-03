@@ -63,7 +63,6 @@ function parseSelfRoles(raw) {
     }
   }
   return [
-    { id: '1339411513106104431', label: 'Aerospace / Rockets', emoji: '🚀' },
     { id: '1339415894002241670', label: 'NASA Rover', emoji: '🛰️' },
     { id: '1339411474635817000', label: 'SofaBot', emoji: '🛋️' },
     { id: '1339411594236661832', label: 'Scrapp-e', emoji: '♻️' },
