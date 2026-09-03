@@ -1,11 +1,17 @@
 <?php
 require_once('../../template/top.php');
+header('Content-Type: application/json');
 
-$data = file_get_contents("php://input");
-error_log("DATA: " . $data);
-$data = json_decode($data);
+$data = json_decode(file_get_contents("php://input"));
 
-error_log("ROBOTS TUNNEL API: " . $data->endpoint . " is at " . $data->tunnel . " auth " . $data->api_key);
+// Validate the body before reading it. Bots/scanners hit this endpoint with empty
+// or non-JSON bodies, which used to throw "read property on null" warnings (they
+// were flooding the web-logs channel). Reject anything without the required fields.
+if (!is_object($data) || !isset($data->endpoint, $data->tunnel, $data->api_key)) {
+    http_response_code(400);
+    echo json_encode(array("response" => "Invalid request."));
+    exit;
+}
 
 $endpoint = $data->endpoint;
 $tunnel_url = $data->tunnel;
@@ -26,7 +32,7 @@ if ($q->num_rows > 0) {
 		$tunnel_ip = gethostbyname($tunnel_host);
 		$internal_port = intval($r['internal_port']);
 
-		error_log("ROBOTS TUNNEL API: " . $data->endpoint . " is " . $tunnel_host . " : " . $tunnel_port);
+		// tunnel status computed
 
 		$status = "{$tunnel_ip}|{$tunnel_port}|{$internal_port}";
 
