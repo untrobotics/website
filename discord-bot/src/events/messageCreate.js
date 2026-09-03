@@ -96,19 +96,21 @@ async function handleInlineToken(message) {
   // attempt.
   if (!prefixed && result.reason === 'no_request') return true;
 
-  // Remove the public message so the code doesn't linger in the channel.
+  if (!result.ok) {
+    // Don't delete a failed attempt — leave the person's message in place and just
+    // tell them privately what went wrong.
+    await notifyPrivately(message, failureMessage(result));
+    return true;
+  }
+
+  // Verified — now it's safe to remove the message (the code is used/burned).
   try {
     await message.delete();
   } catch (err) {
     log.warn('messageCreate: could not delete inline token message', err.message);
   }
 
-  if (!result.ok) {
-    await notifyPrivately(message, failureMessage(result));
-    return true;
-  }
-
-  // Success → grant the Verified role, then confirm privately.
+  // Grant the Verified role, then confirm privately.
   try {
     const member = message.member || (await message.guild.members.fetch(message.author.id));
     await member.roles.add(config.verifiedRoleId, 'UNT email verification (code posted in channel)');
@@ -161,11 +163,9 @@ async function handleStrayVerifyMessage(message) {
   const typedVerify = /^[!\/]?verify\b/i.test(content); // typed "/verify" as chat, not the command
   if (!emailMatch && !typedVerify) return false;
 
-  // Remove the public message if it exposed an email, so it doesn't linger.
-  if (emailMatch) {
-    try { await message.delete(); } catch (err) { log.warn('messageCreate: could not delete stray email', err.message); }
-  }
-
+  // Note: we do NOT delete the person's message here — only a *successful*
+  // verification removes a message. We just nudge them privately (and, if they
+  // posted an email, suggest they delete it themselves to keep it private).
   const verifyCh = `<#${config.verifyChannelId}>`;
   const helpCh = config.verifyHelpChannelId ? `<#${config.verifyHelpChannelId}>` : '#verification-help';
 
@@ -177,7 +177,7 @@ async function handleStrayVerifyMessage(message) {
         '**@unt.edu** or **@my.unt.edu** address.\n\n' +
         "If you're from **another university, a high school, or you're an industry " +
         `mentor**, you're welcome here — just request **manual verification** in ${helpCh}.\n\n` +
-        '_(I removed your message so your email doesn\'t stay public.)_'
+        '_(Tip: you can delete your message above so your email doesn\'t stay public.)_'
     );
     return true;
   }
@@ -190,7 +190,7 @@ async function handleStrayVerifyMessage(message) {
       `**1.** In ${verifyCh}, type \`/verify\` and **click the \`/verify\` popup** that appears above the message box.\n` +
       '**2.** Put your UNT email in the **email** box and press enter.\n' +
       "**3.** I'll email you a code — enter it the same way with **`/token`**.\n\n" +
-      (emailMatch ? '_(I removed your message to keep your email private.)_' : '')
+      (emailMatch ? '_(Tip: you can delete your message above so your email doesn\'t stay public.)_' : '')
   );
   return true;
 }
