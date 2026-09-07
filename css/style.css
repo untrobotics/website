@@ -40690,8 +40690,11 @@ html .page .isotope-filters .list-isotop > li > a:hover, html .page .isotope-fil
   .rd-navbar-static .rd-navbar-inner {
     padding-top: 70px;
     padding-bottom: 70px;
-	padding-left: 100px;
-	padding-right: 100px;
+	/* was 100px each side; the nav menu didn't fit 1200-1309px viewports and
+	   overflowed horizontally (e.g. 30px scroll at a 1280 laptop). 30px keeps a
+	   tasteful indent while eliminating the scroll at all common widths. */
+	padding-left: 30px;
+	padding-right: 30px;
   }
 }
 
