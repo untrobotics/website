@@ -1,3 +1,0 @@
-deploy pipeline canary — end-to-end test of "merge develop->master deploys prod".
-This file is a throwaway marker used to trigger a web image build; safe to delete.
-test: master-drives-prod cutover
