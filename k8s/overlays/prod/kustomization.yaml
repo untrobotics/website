@@ -35,7 +35,7 @@ patches:
 images:
   - name: untrobotics-web
     newName: ghcr.io/untrobotics/website
-    newTag: "v1.1.43"
+    newTag: "sha-aa0fd48"
   - name: untrobotics-driver-ws
     newName: ghcr.io/untrobotics/website-driver-ws
     newTag: "v1.0.96"
