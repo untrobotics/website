@@ -73,7 +73,7 @@ head('Contact Us', true);
 			  <div class="offset-top-40"></div>
 			</div>
 			<div class="cell-sm-6 cell-lg-preffix-1 cell-lg-5 cell-xl-preffix-2 cell-xl-6">
-			  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.464051673264!2d-97.15466088480574!3d33.254341580830605!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864db595e854e1a1%3A0x3a9a9ff3cc14dfe3!2sUniversity+of+North+Texas+Discovery+Park%2C+3940+N+Elm+St%2C+Denton%2C+TX+76207!5e0!3m2!1sen!2s!4v1546668215690" width="600" height="600" frameborder="0" style="border: 4px solid lightgray;" allowfullscreen></iframe>
+			  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3336.464051673264!2d-97.15466088480574!3d33.254341580830605!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864db595e854e1a1%3A0x3a9a9ff3cc14dfe3!2sUniversity+of+North+Texas+Discovery+Park%2C+3940+N+Elm+St%2C+Denton%2C+TX+76207!5e0!3m2!1sen!2s!4v1546668215690" width="600" height="600" frameborder="0" style="border: 4px solid lightgray; width: 100%; max-width: 100%; box-sizing: border-box;" allowfullscreen></iframe>
 			</div>
 		  </div>
 		</div>
