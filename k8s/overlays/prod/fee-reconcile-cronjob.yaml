@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: reconcile-payment-fees
+spec:
+  # Daily at 04:30 Central. Stripe posts a charge's balance_transaction (the real
+  # processing fee) asynchronously — minutes to hours after the webhook — so the
+  # webhook records fee=0 at payment time. This nightly sweep fills the true
+  # amount/fee for any still-empty AR-ledger rows once Stripe has settled them.
+  # Idempotent + guarded: only touches rows where amount IS NULL / fee is 0/NULL,
+  # so re-running never double-counts (URW-240, follow-up to URW-232).
+  schedule: "30 4 * * *"
+  timeZone: America/Chicago
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 600
+      template:
+        spec:
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: ghcr-pull
+          containers:
+            - name: reconcile-payment-fees
+              image: untrobotics-web
+              command:
+                - php
+                - /var/www/html/scripts/backfill-payment-fees.php
+              # The script is dry-run by default; DRY_RUN=0 makes it apply.
+              env:
+                - name: DRY_RUN
+                  value: "0"
+              envFrom:
+                - configMapRef:
+                    name: web-config
+                - secretRef:
+                    name: web-secrets
