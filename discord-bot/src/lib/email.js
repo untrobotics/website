@@ -7,9 +7,9 @@ const log = require('../logger');
 // single internal email path (api/internal/send-email.php), which owns the
 // branded template, the Brevo -> Postfix failover, and the admin-channel alert
 // on Brevo failure. Keeping one send path means one place handles Brevo
-// responses, quota, and expired keys — not two.
+// responses, quota, and expired keys – not two.
 
-// Big code box — matches brand_email_code_box() in template/top.php. This is the
+// Big code box – matches brand_email_code_box() in template/top.php. This is the
 // only presentational bit left here; the outer branded wrapper is applied by
 // email() on the website side.
 function codeBox(code) {

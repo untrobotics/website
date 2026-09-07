@@ -201,6 +201,41 @@ try {
         ));
 
         echo json_encode(array('clientSecret' => $intent->client_secret, 'needsShipping' => $tshirt ? true : false));
+    } else if ($source === 'kit') {
+        // Inline wallet (Apple Pay / Google Pay) for the $40 Electronics Kit.
+        // Phone required; email optional (falls back to the wallet's email).
+        $first = trim((string) (isset($_REQUEST['first_name']) ? $_REQUEST['first_name'] : ''));
+        $last  = trim((string) (isset($_REQUEST['last_name'])  ? $_REQUEST['last_name']  : ''));
+        $phone = preg_replace('/\D/', '', (string) (isset($_REQUEST['phone']) ? $_REQUEST['phone'] : ''));
+        if (strlen($phone) === 11 && $phone[0] === '1') { $phone = substr($phone, 1); }
+        if ($first === '' || $last === '' || strlen($phone) < 10) {
+            fail('HTTP/1.1 400 Bad Request', 'Please enter your first name, last name, and a valid phone number.');
+        }
+        $email = strtolower($buyer_email); // validated above (form field or wallet email), or ''
+        $existing = $db->query('SELECT id FROM kit_preorders WHERE phone = "' . $db->real_escape_string($phone) . '" AND refunded = 0 LIMIT 1');
+        if ($existing && $existing->num_rows > 0) {
+            fail('HTTP/1.1 409 Conflict', 'It looks like you have already preordered a kit with this phone number.');
+        }
+        $custom = array('source' => 'KIT_PREORDER', 'first_name' => $first, 'last_name' => $last, 'phone' => $phone, 'email' => $email);
+        $item_name = 'UNT Robotics Electronics Kit (preorder)';
+
+        $intent = \Stripe\PaymentIntent::create(array(
+            'amount' => 4000,
+            'currency' => 'usd',
+            'automatic_payment_methods' => array('enabled' => true),
+            'description' => $item_name,
+            'receipt_email' => $receipt_email,
+            'metadata' => array(
+                'source' => 'KIT_PREORDER',
+                'custom' => serialize($custom),
+                'options' => json_encode(array()),
+                'quantity' => '1',
+                'item_name' => $item_name,
+                'email' => $email,
+            ),
+        ));
+
+        echo json_encode(array('clientSecret' => $intent->client_secret, 'needsShipping' => false));
     } else {
         fail('HTTP/1.1 400 Bad Request', 'Unknown payment source.');
     }

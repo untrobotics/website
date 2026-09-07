@@ -61,7 +61,7 @@ module.exports = {
 
     if (result.ok) {
       await interaction.editReply(
-        `Check your inbox — we emailed a ${config.codeLength}-digit code to ` +
+        `Check your inbox – we emailed a ${config.codeLength}-digit code to ` +
           `**${result.email}**. It expires in ${fmtDuration(config.codeTtlSeconds)}.\n` +
           'Enter it here with `/token <code>`. (Check spam if you don\'t see it.)'
       );
@@ -75,7 +75,7 @@ module.exports = {
         'students & staff (' +
         config.allowedEmailDomains.map((d) => `\`${d}\``).join(', ') +
         ").\n\nIf you're from **another university or a high school**, or an " +
-        "**industry mentor**, you're welcome here — please request **manual " +
+        "**industry mentor**, you're welcome here – please request **manual " +
         'verification** in ' +
         (config.verifyHelpChannelId ? `<#${config.verifyHelpChannelId}>` : '#verification-help') +
         ' and an officer will get you sorted.',

@@ -4,7 +4,7 @@ require(BASE . '/template/functions/functions.php');
 require('includes/merch-template.php');
 head('Order Trousers', true);
 
-merch_template("Trousers", "(Trousers)");
+merch_template("Trousers");
 
 footer(false);
 ?>

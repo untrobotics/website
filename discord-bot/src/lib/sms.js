@@ -5,7 +5,7 @@ const log = require('../logger');
 
 // When an officer REPLIES (Discord native reply) to an "Received SMS Message"
 // embed the admin bot posted, text the original sender back with the reply's
-// content — via the website's single internal SMS endpoint. Returns true if the
+// content – via the website's single internal SMS endpoint. Returns true if the
 // message was handled as an SMS reply (so the caller can stop).
 async function handleSmsReply(message) {
   if (!message.reference || !message.reference.messageId) return false;

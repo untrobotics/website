@@ -64,7 +64,12 @@ $not_found_paths_to_ignore = array(
 );
 
 $offending_patterns = array(
-    "@^AH01797@"
+    "@^AH01797@",   // client denied by server config (existing)
+    "@^AH01630@",   // client denied — probes for /server-status, /.htpasswd, etc.
+    "@^AH01276@",   // "Cannot serve directory ... no DirectoryIndex" — this is just
+                    //   Options -Indexes doing its job when someone hits a dir.
+    "@^AH00126@",   // "Invalid URI in request" — malformed / path-traversal attack
+                    //   probes (e.g. .../proc/self/environ) that Apache already rejects.
 );
 
 foreach ($not_found_paths_to_ignore as $path) {

@@ -1,6 +1,6 @@
-Authtype Basic
-AuthName "UNT Robotics Admin"
-AuthUserFile /var/www/untrobotics/admin/.htpasswd
-Require valid-user
-
-Options +Indexes
+# The /admin pages gate themselves in PHP via auth(2) (requires users.is_admin=1)
+# — see template/top.php. The old HTTP Basic auth here pointed at a .htpasswd on
+# the legacy webroot path (/var/www/untrobotics/...), which doesn't exist in the
+# container, so Apache 500'd before the page could run. Removed it; just keep
+# directory listing off.
+Options -Indexes

@@ -7,6 +7,7 @@ resources:
   - ingress.yaml
   - good-standing-cronjob.yaml
   - newsletter-cronjob.yaml
+  - fee-reconcile-cronjob.yaml
 patches:
   - path: config-patch.yaml
   # Pull the private GHCR images using the out-of-band ghcr-pull secret
@@ -34,10 +35,10 @@ patches:
 images:
   - name: untrobotics-web
     newName: ghcr.io/untrobotics/website
-    newTag: "v1.1.11"
+    newTag: "v1.1.43"
   - name: untrobotics-driver-ws
     newName: ghcr.io/untrobotics/website-driver-ws
     newTag: "v1.0.96"
   - name: untrobotics-discord-bot
     newName: ghcr.io/untrobotics/website-discord-bot
-    newTag: "v1.1.11"
+    newTag: "v1.1.40"

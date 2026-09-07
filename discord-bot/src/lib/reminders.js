@@ -7,7 +7,7 @@
  * tick() (called on an interval from index.js) fires every due reminder by
  * posting to its channel with a "Mark done" button. If the reminder has a
  * `repeat_seconds`, it re-arms itself for that interval and keeps nagging until
- * someone clicks the button (handleDoneButton) — that's the "keep reminding
+ * someone clicks the button (handleDoneButton) – that's the "keep reminding
  * until it's checked off as done" behaviour.
  *
  * All times are stored/compared in UTC via MySQL's UTC_TIMESTAMP() so the bot's
@@ -177,7 +177,7 @@ async function handleDoneButton(interaction) {
 
   const base = interaction.message && interaction.message.content ? interaction.message.content : '';
   await interaction.update({
-    content: `${base}\n\n✅ **Done** — marked by <@${interaction.user.id}>.`,
+    content: `${base}\n\n✅ **Done** – marked by <@${interaction.user.id}>.`,
     components: [],
     allowedMentions: { parse: [] },
   });

@@ -2,6 +2,7 @@
 require('../template/top.php');
 require(BASE . '/api/printful/printful.php');
 require(BASE . '/template/functions/functions.php');
+require_once(BASE . '/merch/includes/merch-data.php');
 
 $printfulapi = new PrintfulCustomAPI();
 
@@ -187,7 +188,12 @@ if ($product_can_be_handled) {
 	
 	// Per-product Open Graph preview so a shared merch link shows the product's
 	// image + blurb (header.php reads these $og_* globals).
-	$og_title = $product->get_name();
+	// Drop the trailing "(Category)" tag from the display name — it's a routing
+	// hint on the Printful product, not part of the product's real name (and now
+	// that items can be re-categorised, "(Gear)" on a shirt would read wrong).
+	$product_display_name = trim(preg_replace('@\s*\([^()]+\)\s*$@', '', $product->get_name()));
+	if ($product_display_name === '') { $product_display_name = $product->get_name(); }
+	$og_title = $product_display_name;
 	$__ogd = trim(strip_tags((string) $catalog_product->get_description()));
 	if (preg_match('@^(.+?)•@ms', $__ogd, $__ogm)) { $__ogd = $__ogm[1]; }
 	$__ogd = trim(preg_replace('/\s+/', ' ', $__ogd));
@@ -199,11 +205,12 @@ if ($product_can_be_handled) {
 		$__ogi = $gallery[0]['preview'];
 		$og_image = (strpos($__ogi, 'http') === 0) ? $__ogi : 'https://www.untrobotics.com' . $__ogi;
 	}
-	head("Buy {$product->get_name()}", true);
-	$category_name = strtolower(preg_replace('@^.*\(([^()]+)\)$@i', '$1', $product->get_name()));
-	if($category_name !== 'gear' && $category_name[-1]!=='s'){
-	$category_name .= 's';
-	}
+	head("Buy {$product_display_name}", true);
+	// Category for the breadcrumb: resolve to a canonical token (honouring the
+	// override map), then map to its /merch/<slug> page + display name.
+	$category_token = merch_resolve_category($product->get_name());
+	$category_slug = $category_token ? merch_category_slug($category_token) : 'gear';
+	$category_label = $category_token ? merch_category_display($category_token) : 'Merch';
 
 } else {
 	head("Invalid Product", true);
@@ -342,7 +349,7 @@ function get_variant_variant($variant_name) {
 			  <li><a href="/">Home</a></li>
 			  <li><a href="/merch">Merch</a></li>
 	<?php if ($product_can_be_handled) { ?>
-			  <li><a href="/merch/<?php echo $category_name; ?>"><?php echo $category_name; ?></a></li>
+			  <li><a href="/merch/<?php echo htmlspecialchars($category_slug); ?>"><?php echo htmlspecialchars($category_label); ?></a></li>
 	<?php } ?>
 			  <li>Product</li>
 			</ul>
@@ -359,7 +366,7 @@ function get_variant_variant($variant_name) {
 
 		<div class="range merch-header">
 			<div class="cell-lg-7 cell-md-12">
-				<h1 class="text-center text-lg-left"><?php echo htmlspecialchars($product->get_name()); ?></h1>
+				<h1 class="text-center text-lg-left"><?php echo htmlspecialchars($product_display_name); ?></h1>
 				<div class="product-price"><span id="product-price-amount"><?php
 					$fmt = new NumberFormatter( 'en_US', NumberFormatter::CURRENCY );
 					echo $fmt->formatCurrency($selected_variant->get_price(), $product->get_product_currency());
@@ -520,16 +527,23 @@ footer(false);
 		});
 		ece.mount('#express-checkout-element');
 			var apRedirect = document.getElementById('applepay-redirect');
-			ece.on('ready', function (e) {
-				var avail = e && e.availablePaymentMethods;
-				if (apRedirect && avail && avail.applePay) { apRedirect.style.display = 'none'; }
-				// No wallet on this device: ECE renders an empty sliver — hide it so it
-				// doesn't leave a stray gap above the fallback buttons.
-				if (!avail || (!avail.applePay && !avail.googlePay)) {
-					var eceEl = document.getElementById('express-checkout-element');
-					if (eceEl) { eceEl.style.display = 'none'; }
+			// Decide by ACTUAL rendered height, not availablePaymentMethods: Stripe can
+			// report a method then mount an empty 0-height iframe that keeps eating a
+			// flex gap on both sides. Empty -> collapse + show the hosted fallback;
+			// rendered -> hide the fallback. The timer covers 'ready' never firing.
+			function settleWallet() {
+				var eceEl = document.getElementById('express-checkout-element');
+				if (!eceEl || eceEl.dataset.settled) { return; }
+				if (eceEl.getBoundingClientRect().height > 8) {
+					if (apRedirect) { apRedirect.style.display = 'none'; }
+				} else {
+					eceEl.style.display = 'none';
+					if (apRedirect) { apRedirect.style.display = 'flex'; }
 				}
-			});
+				eceEl.dataset.settled = '1';
+			}
+			ece.on('ready', function () { setTimeout(settleWallet, 350); });
+			setTimeout(settleWallet, 2000);
 			if (apRedirect) {
 				apRedirect.addEventListener('click', function () {
 					apRedirect.disabled = true;

@@ -30,7 +30,7 @@ async function main() {
     Routes.applicationGuildCommands(config.clientId, config.guildId),
     { body }
   );
-  log.info(`register: done — ${data.length} command(s) registered:`, body.map((c) => c.name).join(', '));
+  log.info(`register: done – ${data.length} command(s) registered:`, body.map((c) => c.name).join(', '));
 }
 
 // Quiet the unused-var lint for assertConfig (intentionally not used here).

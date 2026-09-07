@@ -244,6 +244,50 @@ try {
             ),
         );
 
+    } else if ($source === 'kit') {
+        // ---- KIT PREORDER: fixed $40 Electronics Kit; buyer details from the form.
+        // Phone is required (the primary contact + dedup key); email is optional.
+        $first = trim((string) (isset($_REQUEST['first_name']) ? $_REQUEST['first_name'] : ''));
+        $last  = trim((string) (isset($_REQUEST['last_name'])  ? $_REQUEST['last_name']  : ''));
+        $email = strtolower(trim((string) (isset($_REQUEST['email']) ? $_REQUEST['email'] : '')));
+        $phone = preg_replace('/\D/', '', (string) (isset($_REQUEST['phone']) ? $_REQUEST['phone'] : ''));
+        if (strlen($phone) === 11 && $phone[0] === '1') { $phone = substr($phone, 1); } // drop US country code
+        if ($first === '' || $last === '' || strlen($phone) < 10) {
+            fail('HTTP/1.1 400 Bad Request', 'Please enter your first name, last name, and a valid phone number.');
+        }
+        if ($email !== '' && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            fail('HTTP/1.1 400 Bad Request', 'That email address looks invalid — fix it or leave it blank.');
+        }
+        // One kit per person (keyed on phone).
+        $existing = $db->query('SELECT id FROM kit_preorders WHERE phone = "' . $db->real_escape_string($phone) . '" AND refunded = 0 LIMIT 1');
+        if ($existing && $existing->num_rows > 0) {
+            fail('HTTP/1.1 409 Conflict', 'It looks like you have already preordered a kit with this phone number.');
+        }
+        $custom = array('source' => 'KIT_PREORDER', 'first_name' => $first, 'last_name' => $last, 'phone' => $phone, 'email' => $email);
+        $item_name = 'UNT Robotics Electronics Kit (preorder)';
+        $session_params = array(
+            'mode' => 'payment',
+            'payment_method_types' => array('card'),
+            'line_items' => array(array(
+                'price_data' => array(
+                    'currency' => 'usd',
+                    'product_data' => array('name' => $item_name),
+                    'unit_amount' => 4000,
+                ),
+                'quantity' => 1,
+            )),
+            'success_url' => $origin . '/merch/kits/thank-you',
+            'cancel_url' => $origin . '/merch/kits',
+            'metadata' => array(
+                'source' => 'KIT_PREORDER',
+                'custom' => serialize($custom),
+                'options' => json_encode(array()),
+                'quantity' => '1',
+                'item_name' => $item_name,
+            ),
+        );
+        if ($email !== '') { $session_params['customer_email'] = $email; }
+
     } else {
         fail('HTTP/1.1 400 Bad Request', 'Unknown payment source.');
     }

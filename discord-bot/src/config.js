@@ -22,7 +22,7 @@ try {
   // eslint-disable-next-line global-require
   require('dotenv').config();
 } catch (_) {
-  /* dotenv not installed (production image) — env comes from k8s/compose */
+  /* dotenv not installed (production image) – env comes from k8s/compose */
 }
 
 /** Read an env var, returning `fallback` when unset/empty. */
@@ -48,6 +48,28 @@ function intEnv(key, fallback) {
   return Number.isFinite(n) ? n : fallback;
 }
 
+/**
+ * Self-assignable interest roles (the reaction-role feature we're moving off
+ * Carl-bot). Override with SELF_ROLES as a JSON array of {id,label,emoji}; the
+ * default is the current guild's interest roles.
+ */
+function parseSelfRoles(raw) {
+  if (raw) {
+    try {
+      const a = JSON.parse(raw);
+      if (Array.isArray(a)) return a.filter((r) => r && r.id && r.label);
+    } catch (_) {
+      /* fall through to default */
+    }
+  }
+  return [
+    { id: '1339415894002241670', label: 'NASA Rover', emoji: '🛰️' },
+    { id: '1339411474635817000', label: 'SofaBot', emoji: '🛋️' },
+    { id: '1339411594236661832', label: 'Scrapp-e', emoji: '♻️' },
+    { id: '1339412055563833395', label: 'Robot Competitions', emoji: '🤖' },
+  ];
+}
+
 const config = Object.freeze({
   // --- Discord identity -----------------------------------------------------
   // Reuse the existing admin bot token (DISCORD_ADMIN_BOT_TOKEN in web-secrets).
@@ -57,6 +79,16 @@ const config = Object.freeze({
 
   // Verification feature targets.
   verifiedRoleId: env('DISCORD_VERIFIED_ROLE_ID'),
+  // ALL roles that count as "verified" for self-role gating: UNT-email, the
+  // grandfathered Legacy role, and the manual Industry / Other-Edu categories.
+  // (Gating on only verifiedRoleId wrongly blocked the 593 Verified Legacy folks.)
+  verifiedRoleIds: env(
+    'DISCORD_VERIFIED_ROLE_IDS',
+    '1521694650027479253,1521695260521005147,1521695291437223967,1521695315390890095'
+  )
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
   verifyChannelId: env('DISCORD_VERIFY_CHANNEL_ID'),
   // Where non-UNT folks (other schools, HS, industry mentors) go for MANUAL
   // verification. Rendered as a clickable channel mention if set.
@@ -68,6 +100,10 @@ const config = Object.freeze({
   // Verification-completion audits (verify/token successes + failures) go to a
   // dedicated officer-only channel, separate from the bot error log above.
   verifyUpdatesChannelId: env('DISCORD_VERIFY_UPDATES_CHANNEL_ID', '1540073411424944168'),
+
+  // Where /addevent announces that an event is starting. Defaults to the
+  // #announcements channel the website footer feed reads from.
+  announcementsChannelId: env('DISCORD_ANNOUNCEMENTS_CHANNEL_ID', '757730622843125831'),
 
   // --- Email verification ---------------------------------------------------
   allowedEmailDomains: env(
@@ -92,6 +128,12 @@ const config = Object.freeze({
   officerRoleId: env('DISCORD_OFFICER_ROLE_ID', '674703491985309772'),
   eventTimezone: env('EVENT_TIMEZONE', 'America/Chicago'),
 
+  // --- Self-assignable interest roles (replaces Carl-bot's reaction roles) ---
+  // Members pick these via /roles or a posted picker; gated behind Verified so
+  // an unverified account can't self-assign its way into gated channels (that
+  // was the Carl-bot spam hole).
+  selfRoles: parseSelfRoles(process.env.SELF_ROLES),
+
   // --- Database -------------------------------------------------------------
   db: {
     host: envAny(['DB_HOST', 'DATABASE_HOST'], 'mysql'),
@@ -108,7 +150,7 @@ const config = Object.freeze({
   //   + MAX_VERIFY_PER_HOUR), each /token attempt has a cooldown
   //   (TOKEN_ATTEMPT_COOLDOWN_SECONDS) and a global LOCKOUT_THRESHOLD trips a
   //   LOCKOUT_SECONDS freeze. Together these make online guessing impractical.
-  //   4-digit codes are materially weaker — see README — default stays at 6.
+  //   4-digit codes are materially weaker – see README – default stays at 6.
   codeLength: intEnv('CODE_LENGTH', 6),
   codeTtlSeconds: intEnv('CODE_TTL_SECONDS', 600),
   maxVerifyPerHour: intEnv('MAX_VERIFY_PER_HOUR', 5),
@@ -120,7 +162,7 @@ const config = Object.freeze({
 
   // Optional secret mixed into the code hash so a DB leak alone can't be used
   // to recompute hashes offline. Falls back to HASH_SALT (already in the app
-  // secret set) and finally to a constant — set one in prod.
+  // secret set) and finally to a constant – set one in prod.
   hashSecret: envAny(['VERIFY_HASH_SECRET', 'HASH_SALT'], 'untrobotics-verify'),
 });
 
