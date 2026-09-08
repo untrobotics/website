@@ -34,15 +34,22 @@ function get_member_card(string $name, string $title, string $description, strin
             '</li>';
     }
 
+    // Photo is optional: when no picture_uri is given, drop the image cell and
+    // let the text run wider. (UNT Robotics currently runs photo-free bios.)
+    $has_pic = !empty($picture_uri);
+    $img_cell = $has_pic
+        ? "<div class='cell-md-3'><img src='{$picture_uri}' alt='' width='360' height='404' class='img-responsive' /></div>"
+        : '';
+    $text_cell_class = $has_pic ? 'cell-md-6' : 'cell-md-10';
+    $desc_html = $description !== null && $description !== '' ? "<p>{$description}</p>" : '';
+
     echo '<div class="cell-lg-12 bio-area">' .
             '<div class="range range-sm-middle">' .
-                '<div class="cell-md-3">' .
-                    "<img src='{$picture_uri}' alt='' width='360' height='404' class='img-responsive' />" .
-                '</div>' .
-                '<div class="cell-md-6">' .
+                $img_cell .
+                "<div class='{$text_cell_class}'>" .
                     '<div class="inset-xl-right-70 inset-xl-left-70 inset-left-15 inset-right-15">' .
                         "<h6 class='h6-with-small'><p>{$name}</p><span class='small text-silver-chalice'>{$title}</span></h6>" .
-                        "<p>{$description}</p>" .
+                        $desc_html .
                         '<ul class="list-inline-lg">' .
                             $contact_links_html .
                         '</ul>' .
