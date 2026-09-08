@@ -24,10 +24,10 @@ patches:
 images:
   - name: untrobotics-web
     newName: ghcr.io/untrobotics/website
-    newTag: "develop"
+    newTag: "sha-f957ba4"
   - name: untrobotics-driver-ws
     newName: ghcr.io/untrobotics/website-driver-ws
-    newTag: "develop"
+    newTag: "sha-f957ba4"
   - name: untrobotics-discord-bot
     newName: ghcr.io/untrobotics/website-discord-bot
-    newTag: "develop"
+    newTag: "sha-f957ba4"
