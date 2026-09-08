@@ -111,27 +111,23 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # Continuous deployment to the dev environment. On a push to develop, take
-  # develop's tree, pin the just-built images to their immutable sha tag in the
-  # dev overlay, and force-publish it to the CI-owned `deploy/dev` branch. The
-  # untrobotics-dev Argo app tracks deploy/dev (auto-sync) and rolls dev.
+  # Continuous deployment to dev. On a push to develop, pin the just-built images
+  # to their immutable sha tag in the dev overlay and commit it straight back to
+  # develop with [skip ci]. The untrobotics-dev Argo app tracks develop (auto-sync)
+  # and rolls dev. Mirrors deploy-prod (master); no deploy/dev branch anymore.
   #
-  # We publish to deploy/dev (not develop) on purpose: develop is protected
-  # (3-review PRs + push restricted to a person), and the built-in github-actions
-  # bot cannot be granted a branch-protection bypass. deploy/dev is unprotected,
-  # so GITHUB_TOKEN can push it; that push does not re-trigger CI (deploy/dev is
-  # not in the trigger list).
+  # develop is protected (3-review PRs, no force-push) BUT enforce_admins is off,
+  # so the DEVELOP_SYNC_PAT (owned by admin sebastian-king) pushes non-force,
+  # bypassing the PR rule. `[skip ci]` on the pin commit stops it re-triggering CI.
   deploy-dev:
     needs: [detect, build]
     if: ${{ github.ref == 'refs/heads/develop' && github.event_name == 'push' && fromJSON(needs.detect.outputs.matrix).include[0] != null }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DEVELOP_SYNC_PAT }}
 
       - name: Pin dev overlay images to this commit's sha tag
         env:
@@ -157,13 +153,13 @@ jobs:
           p.write_text(text)
           PY
 
-      - name: Force-publish to deploy/dev
+      - name: Commit + push pinned overlay to develop
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add k8s/overlays/dev/kustomization.yaml
-          git commit -m "dev: auto-deploy ${GITHUB_SHA:0:7}" || echo "overlay unchanged"
-          git push --force origin HEAD:deploy/dev
+          git commit -m "dev: auto-deploy ${GITHUB_SHA:0:7} [skip ci]" || echo "overlay unchanged"
+          git push origin HEAD:develop
 
   # Continuous deployment to prod. On a push to master (i.e. a develop->master
   # merge — that IS the release now), pin the just-built images to their immutable
@@ -217,3 +213,20 @@ jobs:
           git add k8s/overlays/prod/kustomization.yaml
           git commit -m "prod: auto-deploy ${GITHUB_SHA:0:7} [skip ci]" || echo "overlay unchanged"
           git push origin HEAD:master
+
+      # URW-46: keep develop from drifting behind master. master accumulates the
+      # [skip ci] prod-pin commits (and any direct-to-master hotfixes); merge them
+      # back into develop so future develop->master releases stay clean. [skip ci]
+      # on the merge keeps it from triggering a dev deploy. A conflict is logged,
+      # not fatal — a release must not fail because the develop-sync needs a hand.
+      - name: Sync master -> develop (URW-46)
+        run: |
+          git fetch --unshallow origin 2>/dev/null || git fetch origin
+          git fetch origin master develop
+          git checkout -B _syncdev origin/develop
+          if git merge --no-edit -m "sync: merge master into develop (image pins/hotfixes) [skip ci]" origin/master; then
+            git push origin _syncdev:develop && echo "synced master -> develop"
+          else
+            echo "::warning::master->develop sync hit a conflict; skipped. Reconcile develop manually."
+            git merge --abort || true
+          fi
