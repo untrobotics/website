@@ -7,12 +7,12 @@ spec:
   project: default
   source:
     repoURL: https://github.com/untrobotics/website.git
-    # Dev tracks the CI-owned deploy/dev branch. On each push to develop, CI
-    # builds the images and force-publishes develop's tree + the pinned sha image
-    # tag to deploy/dev; the automated sync below then rolls dev out. (develop
-    # itself is protected and the github-actions bot can't push to it, so the
-    # deploy artifact lives on this separate unprotected branch.)
-    targetRevision: deploy/dev
+    # Dev tracks develop. On each push to develop, CI builds the changed images
+    # and (via DEVELOP_SYNC_PAT — develop has enforce_admins off, so the admin PAT
+    # pushes non-force) pins their sha tags into this overlay on develop with a
+    # [skip ci] commit; the automated sync below then rolls dev. Mirrors prod on
+    # master. No deploy/dev branch anymore.
+    targetRevision: develop
     path: k8s/overlays/dev
   destination:
     server: https://kubernetes.default.svc
