@@ -109,6 +109,10 @@ sudo -E bash deploy/deploy.sh
 
 ## Pull from GHCR (CI-built images)
 
+> For the full continuous-deployment model (push→dev, merge→prod, how releases
+> and the auto-pin commits work, and the failure modes), see **`cicd.md`**. This
+> section only covers pulling CI images onto a node by hand.
+
 The `.github/workflows/build-images.yml` workflow builds both images on every
 push to `develop`/`master` (and tags) and pushes them to:
 
