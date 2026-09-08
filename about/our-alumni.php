@@ -95,6 +95,15 @@ $alumni_by_year = [
                 </div>
             </div>
         </section>
+        <style>
+            .roster-group { margin-top: 70px; }
+            .roster-group:first-of-type { margin-top: 40px; }
+            .roster-group > h3 { margin: 0 0 4px; }
+            .roster-group > hr { margin: 0 0 6px; border-top-width: 2px; }
+            .roster-entry { padding: 14px 0 12px; border-bottom: 1px solid rgba(0,0,0,.09); }
+            .roster-entry .roster-name { display: block; font-size: 16px; line-height: 1.35; font-weight: 700; }
+            .roster-entry .roster-role-sub { display: block; font-size: 13px; line-height: 1.35; margin-top: 3px; }
+        </style>
         <section class="section-75 section-md-100 section-lg-150">
             <div class="shell">
                 <div class="range justify-center">
@@ -105,14 +114,14 @@ $alumni_by_year = [
                     </div>
                 </div>
                 <?php foreach ($alumni_by_year as $year => $people): ?>
-                    <div class="offset-top-66">
+                    <div class="roster-group">
                         <h3><?php echo $year; ?></h3>
                         <hr class="divider-color-2">
-                        <div class="range range-30 text-left">
+                        <div class="range text-left">
                             <?php foreach ($people as [$name, $roles]): ?>
-                                <div class="cell-sm-6 cell-lg-4 offset-top-30">
-                                    <p style="margin-bottom: 2px;"><strong><?php echo htmlspecialchars($name, ENT_QUOTES); ?></strong></p>
-                                    <p class="small text-silver-chalice"><?php echo htmlspecialchars($roles, ENT_QUOTES); ?></p>
+                                <div class="cell-md-6 roster-entry">
+                                    <span class="roster-name"><?php echo htmlspecialchars($name, ENT_QUOTES); ?></span>
+                                    <span class="roster-role-sub text-silver-chalice"><?php echo htmlspecialchars($roles, ENT_QUOTES); ?></span>
                                 </div>
                             <?php endforeach; ?>
                         </div>

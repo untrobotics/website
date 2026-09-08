@@ -71,6 +71,15 @@ $roster = [
                 </div>
             </div>
         </section>
+        <style>
+            .roster-group { margin-top: 70px; }
+            .roster-group:first-of-type { margin-top: 40px; }
+            .roster-group > h3 { margin: 0 0 4px; }        /* heading hugs its own rule + entries below */
+            .roster-group > hr { margin: 0 0 6px; border-top-width: 2px; }
+            .roster-entry { padding: 14px 0 12px; border-bottom: 1px solid rgba(0,0,0,.09); }
+            .roster-entry .roster-role { display: block; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; line-height: 1.3; }
+            .roster-entry .roster-name { display: block; font-size: 16px; line-height: 1.4; margin-top: 3px; }
+        </style>
         <section class="section-75 section-md-100 section-lg-150">
             <div class="shell">
                 <div class="range justify-center">
@@ -82,18 +91,18 @@ $roster = [
                     </div>
                 </div>
                 <?php foreach ($roster as $group => $rows): ?>
-                    <div class="offset-top-66">
+                    <div class="roster-group">
                         <h3><?php echo $group; ?></h3>
                         <hr class="divider-color-2">
-                        <div class="range range-30 text-left">
+                        <div class="range text-left">
                             <?php foreach ($rows as [$role, $people]): ?>
-                                <div class="cell-sm-6 cell-lg-4 offset-top-30">
-                                    <p class="text-primary" style="margin-bottom: 2px;"><strong><?php echo $role; ?></strong></p>
-                                    <p><?php
+                                <div class="cell-md-6 roster-entry">
+                                    <span class="roster-role text-primary"><?php echo $role; ?></span>
+                                    <span class="roster-name"><?php
                                         echo $people !== null
                                             ? htmlspecialchars($people, ENT_QUOTES)
                                             : '<em class="text-silver-chalice">Vacant</em>';
-                                    ?></p>
+                                    ?></span>
                                 </div>
                             <?php endforeach; ?>
                         </div>
