@@ -76,6 +76,7 @@ $roster = [
             .roster-group:first-of-type { margin-top: 40px; }
             .roster-group > h3 { margin: 0 0 4px; }        /* heading hugs its own rule + entries below */
             .roster-group > hr { margin: 0 0 6px; border-top-width: 2px; }
+            .roster-group > .range { margin-top: 0; }   /* theme puts 50px on .range — too much under the rule */
             .roster-entry { padding: 14px 0 12px; border-bottom: 1px solid rgba(0,0,0,.09); }
             .roster-entry .roster-role { display: block; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; line-height: 1.3; }
             .roster-entry .roster-name { display: block; font-size: 16px; line-height: 1.4; margin-top: 3px; }
