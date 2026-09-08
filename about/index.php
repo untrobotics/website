@@ -29,7 +29,10 @@ head('About Us', true);
                 <div class="inset-md-right-30 inset-lg-right-0">
                   <h1>What We Do</h1>
                     <small><em>Last updated: <?php echo date ("F d Y", filemtime(__FILE__)); ?></em></small>
+		            <h3>Mission</h3>
+		            <p class="text-primary"><em>To inspire and stimulate development &ndash; one bolt, one circuit, and one line of code at a time &ndash; while connecting the students of today and the leaders of tomorrow.</em></p>
 		            <h3>Overview</h3>
+                  <p>Robotics is revolutionizing the way the world works, and we here at UNT Robotics are committed to unlocking the potential in students to solve unique problems, live on the edge of authentic discovery, and provide them with a diverse set of skills and tools to act as a catalyst to solve the much larger industrial, environmental, and unmet issues of the future.</p>
                   <p>UNT Robotics is a broad engineering student organisation at the <a href="https://www.unt.edu/">University of North Texas</a>.</p>
 				  <p>We focus on developing student's skills in engineering &amp; robotics, which involves a range of beginner workshops, industry talks, robotics-based hackathons, recreational projects and competitions.</p>
                   <div class="well-custom">
