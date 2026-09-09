@@ -14,14 +14,25 @@
  * PAYPAL_SANDBOX_BUSINESS_ID vs PAYPAL_BUSINESS_ID.
  */
 
+/**
+ * Exception thrown when a PayPal REST request fails or is misconfigured.
+ */
 class PayPalAPIException extends Exception {}
 
+/**
+ * Minimal client for the PayPal Orders v2 REST API (token, create, capture,
+ * add tracking) over raw cURL. Live vs. sandbox is selected per instance.
+ */
 class PayPalOrdersAPI {
 	private $sandbox;
 	private $client_id;
 	private $client_secret;
 	private $base_url;
 
+	/**
+	 * @param bool $sandbox When true, use the sandbox base URL and sandbox credentials; otherwise live.
+	 * @throws PayPalAPIException If the selected client id/secret are not configured.
+	 */
 	public function __construct($sandbox) {
 		$this->sandbox = (bool) $sandbox;
 		if ($this->sandbox) {
@@ -39,6 +50,7 @@ class PayPalOrdersAPI {
 		}
 	}
 
+	/** @return bool Whether this client is operating against the PayPal sandbox. */
 	public function get_sandbox() {
 		return $this->sandbox;
 	}
