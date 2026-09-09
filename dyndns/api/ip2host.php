@@ -25,14 +25,16 @@ $a = array();
 
 // --- authenticate the caller's dyndns API key against our own DB -------------
 $auth_api = false;
-if (isset($_GET['API_KEY'])) {
+if (!empty($_GET['API_KEY'])) {
     $api_key = $_GET['API_KEY'];
-    $q = $db->query('SELECT subdomain_restrictions FROM dyndns_api_keys WHERE api_key_value = "' . $db->real_escape_string($api_key) . '"');
-    if ($q && $q->num_rows > 0) {
-        $r = $q->fetch_array(MYSQLI_ASSOC);
-        $subdomain_restrictions = @unserialize($r['subdomain_restrictions']);
-        // A key may be limited to specific sub-domains; empty/false = unrestricted.
-        if (!$subdomain_restrictions || in_array($sub_domain, $subdomain_restrictions)) {
+    $st = $db->prepare('SELECT subdomain_restrictions FROM dyndns_api_keys WHERE api_key_value = ?');
+    $st->bind_param('s', $api_key);
+    if ($st->execute() && ($res = $st->get_result()) && $res->num_rows > 0) {
+        $r = $res->fetch_assoc();
+        // subdomain_restrictions is admin-written (trusted); disallow object
+        // instantiation anyway. empty/false = unrestricted.
+        $subdomain_restrictions = @unserialize((string) $r['subdomain_restrictions'], ['allowed_classes' => false]);
+        if (!$subdomain_restrictions || in_array($sub_domain, $subdomain_restrictions, true)) {
             $auth_api = true;
         }
     }
