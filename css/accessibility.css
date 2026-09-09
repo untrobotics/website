@@ -61,6 +61,25 @@ textarea:focus-visible,
   white-space: nowrap;
 }
 
+/* --- Text contrast on light content (WCAG 1.4.3) ---------------------------
+ * The brand green (#45cd8f) and the muted greys fail 4.5:1 for small text on
+ * white. Darken them, but scope to the page body (.page-content) so the dark
+ * header/footer — where the light versions are correct — are untouched. The
+ * accent stays green, just dark enough to read. If any specific spot sits on a
+ * dark band inside the content and now looks off, it can be exempted per-context.
+ */
+.page-content .text-primary,
+.page-content a.text-primary {
+  color: #157a3f !important;
+}
+.page-content .text-silver-chalice,
+.page-content .text-gray-light,
+.page-content .text-gray-light-1,
+.page-content .text-muted,
+.page-content .stripe-note {
+  color: #5f6360 !important;
+}
+
 /* --- Reduced motion (WCAG 2.3.3 / 2.2.2) -----------------------------------
  * Near-zero durations (not `none`) so animated content still lands in its end
  * state; force WOW-animated elements visible so nothing stays stuck hidden;

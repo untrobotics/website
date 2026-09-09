@@ -99,7 +99,7 @@ function dues_term_label($term, $year) {
                         </div>
                         <div class="cell-sm-4 text-sm-right">
                             <?php if ($good_standing): ?>
-                                <span class="label" style="background:#24c57c;color:#fff;padding:8px 14px;border-radius:20px;display:inline-block;font-size:13px;">
+                                <span class="label" style="background:#157a3f;color:#fff;padding:8px 14px;border-radius:20px;display:inline-block;font-size:13px;">
                                     <span class="mdi mdi-check-circle"></span> Good Standing
                                 </span>
                             <?php else: ?>
@@ -127,7 +127,7 @@ function dues_term_label($term, $year) {
                                     <small class="text-gray">Discord</small>
                                     <div>
                                         <?php if ($is_linked_discord): ?>
-                                            <strong style="color:#24c57c;"><span class="mdi mdi-check-circle"></span> Linked</strong>
+                                            <strong style="color:#157a3f;"><span class="mdi mdi-check-circle"></span> Linked</strong>
                                             &nbsp;<a href="<?php echo e($discord_link_url); ?>" class="text-primary">Re-link</a>
                                         <?php else: ?>
                                             <a href="<?php echo e($discord_link_url); ?>" class="btn btn-sm btn-default">
@@ -243,7 +243,7 @@ function dues_term_label($term, $year) {
                                             <tr<?php echo !empty($o['refunded']) ? ' class="text-gray"' : ''; ?>>
                                                 <td><?php echo e($o['order_variant_name'] ?: $o['order_name']); ?></td>
                                                 <td><?php echo e($o['order_id']); ?></td>
-                                                <td class="text-right"><?php echo !empty($o['refunded']) ? '<span class="label label-warning">Refunded</span>' : ($o['confirmed'] ? '<span style="color:#24c57c;">Confirmed</span>' : '<span class="text-gray">Pending</span>'); ?></td>
+                                                <td class="text-right"><?php echo !empty($o['refunded']) ? '<span class="label label-warning">Refunded</span>' : ($o['confirmed'] ? '<span style="color:#157a3f;">Confirmed</span>' : '<span class="text-gray">Pending</span>'); ?></td>
                                             </tr>
                                         <?php endforeach; ?>
                                         </tbody>
