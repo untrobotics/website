@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
-# End-to-end test / release: merge develop -> master (non-force, descends from
-# master). This is the new release action. On the resulting master push, CI's
-# deploy-prod job builds the changed images, pins their sha tags into
-# k8s/overlays/prod on master ([skip ci]), and Argo rolls prod.
-#
-# The prod overlay's live tags (v1.1.43 etc., set on master in step 2) survive
-# the merge (develop never changed them), then deploy-prod re-pins whatever it
-# rebuilt to a sha tag. App behavior is unchanged for this test.
+# Release: merge develop -> master (non-force, descends from master). This IS the
+# release action. On the resulting master push, CI's deploy-prod job builds the
+# changed images, pins their sha tags into k8s/overlays/prod on master
+# ([skip ci]), the migrate init container applies any pending migrations, and
+# Argo rolls prod. (Formerly scripts/cutover-e2e-merge.sh — renamed once it
+# became the canonical release command rather than a one-off cutover test.)
 #
 # --no-ff is REQUIRED, not cosmetic. develop's tip is almost always a CI auto-pin
 # commit ("dev: auto-deploy … [skip ci]" / "sync: … [skip ci]"). A fast-forward
