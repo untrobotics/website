@@ -94,7 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // ---- gather data for display ------------------------------------------------
 $keys = array();
-$kq = $db->query('SELECT id, api_key_value, description, subdomain_restrictions FROM dyndns_api_keys ORDER BY id ASC');
+$kq = $db->query('SELECT k.id, k.api_key_value, k.description, k.subdomain_restrictions, k.uid, u.name AS owner_name
+                  FROM dyndns_api_keys k LEFT JOIN users u ON u.id = k.uid ORDER BY k.id ASC');
 if ($kq) { while ($row = $kq->fetch_assoc()) { $keys[] = $row; } }
 
 $nc = namecom_client();
@@ -181,13 +182,16 @@ require_once(BASE . '/admin/_styles.php');
                 <div class="admin-card">
                     <div class="admin-table-wrap">
                         <table class="admin-table">
-                            <thead><tr><th>#</th><th>Description</th><th>Key</th><th>Restrictions</th><th>Actions</th></tr></thead>
+                            <thead><tr><th>#</th><th>Owner</th><th>Description</th><th>Key</th><th>Restrictions</th><th>Actions</th></tr></thead>
                             <tbody>
                             <?php if ($keys): foreach ($keys as $k):
                                 $restr = @unserialize((string) $k['subdomain_restrictions']);
                             ?>
                                 <tr>
                                     <td class="num"><?php echo (int) $k['id']; ?></td>
+                                    <td><?php echo $k['uid'] === null
+                                            ? '<span class="pill pill-neutral">Global</span>'
+                                            : ($k['owner_name'] !== null ? htmlspecialchars($k['owner_name']) : ('<span class="muted">uid ' . (int) $k['uid'] . '</span>')); ?></td>
                                     <td><?php echo $k['description'] !== null && $k['description'] !== '' ? htmlspecialchars($k['description']) : '<span class="muted">—</span>'; ?></td>
                                     <td><code style="font-size:12.5px;"><?php echo htmlspecialchars($k['api_key_value']); ?></code></td>
                                     <td><?php echo (is_array($restr) && $restr) ? htmlspecialchars(implode(', ', $restr)) : '<span class="muted">Unrestricted</span>'; ?></td>
@@ -203,7 +207,7 @@ require_once(BASE . '/admin/_styles.php');
                                     </td>
                                 </tr>
                             <?php endforeach; else: ?>
-                                <tr><td colspan="5" class="admin-empty">No keys yet. Issue one above.</td></tr>
+                                <tr><td colspan="6" class="admin-empty">No keys yet. Issue one above.</td></tr>
                             <?php endif; ?>
                             </tbody>
                         </table>

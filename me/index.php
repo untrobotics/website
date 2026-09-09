@@ -31,6 +31,19 @@ $order_history = array();
 $oq = $db->query('SELECT order_id, order_name, order_variant_name, confirmed, refunded FROM printful_order WHERE uid = "' . $db->real_escape_string($userinfo['id']) . '" ORDER BY id DESC');
 if ($oq) { while ($r = $oq->fetch_assoc()) { $order_history[] = $r; } }
 
+// Personal dynamic-DNS key (admins only). The legacy global key(s) are separate
+// (uid NULL) and never surface here.
+$dyndns_key = null;
+$dyndns_super = DYNDNS_ALLOWED_SUPERDOMAINS[0];
+$dyndns_suffix = DYNDNS_FORCE_SUBDOMAIN;
+if (!empty($userinfo['is_admin'])) {
+    $kq = $db->query('SELECT api_key_value FROM dyndns_api_keys WHERE uid = "' . $db->real_escape_string($userinfo['id']) . '" LIMIT 1');
+    if ($kq && $kq->num_rows) { $dyndns_key = $kq->fetch_assoc()['api_key_value']; }
+}
+$dyndns_url = $dyndns_key
+    ? 'https://' . $dyndns_super . '/dyndns/api/ip2host.php?API_KEY=' . $dyndns_key . '&super_domain=' . $dyndns_super . '&sub_domain=YOURNAME.' . $dyndns_suffix
+    : '';
+
 // Discord OAuth authorize URL (the /auth/discord callback consumes ?code).
 $discord_link_url = DISCORD_APP_API_URL . '/oauth2/authorize?' . http_build_query(array(
     'client_id' => DISCORD_APP_CLIENT_ID,
@@ -240,6 +253,27 @@ function dues_term_label($term, $year) {
                         </div>
                     </div>
 
+                    <?php if (!empty($userinfo['is_admin'])): ?>
+                    <!-- DYNAMIC DNS (admins only) -->
+                    <div class="panel panel-default offset-bottom-30">
+                        <div class="panel-heading"><strong>Dynamic DNS key</strong> <span class="text-gray" style="font-weight:normal;font-size:12px;">admins only</span></div>
+                        <div class="panel-body">
+                            <div class="dyndns-feedback offset-bottom-20" hidden></div>
+                            <p class="text-gray" style="margin-top:0;">
+                                Point a <code><?php echo e('<name>.' . $dyndns_suffix . '.' . $dyndns_super); ?></code> subdomain at your changing home IP
+                                (like No-IP / DuckDNS, on our own domain). Your personal key can set any <code>*.<?php echo e($dyndns_suffix); ?></code> name.
+                                Have your client (router DDNS, or a cron running <code>curl</code>) request the URL below whenever your IP changes &mdash; omit
+                                <code>&amp;ip=</code> to use the caller's own address. <strong>Keep the key secret;</strong> regenerating replaces the old one.
+                            </p>
+                            <div class="dyndns-key-box"<?php echo $dyndns_key ? '' : ' hidden'; ?>>
+                                <small class="text-gray">Your update URL (replace <code>YOURNAME</code> with the label you want)</small>
+                                <textarea class="form-control dyndns-url" readonly rows="2" style="font-family:monospace;font-size:12px;margin-bottom:12px;"><?php echo e($dyndns_url); ?></textarea>
+                            </div>
+                            <button type="button" class="btn btn-default dyndns-gen"><?php echo $dyndns_key ? 'Regenerate my key' : 'Generate my key'; ?></button>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
                     <!-- PASSWORD -->
                     <div class="panel panel-default offset-bottom-30">
                         <div class="panel-heading"><strong>Change password</strong></div>
@@ -308,6 +342,50 @@ function dues_term_label($term, $year) {
 
     wire('profile-form', '.profile-feedback', { resetOnSuccess: false });
     wire('password-form', '.password-feedback', { resetOnSuccess: true });
+})();
+
+// Dynamic DNS key generate/regenerate (admins only; panel absent otherwise).
+(function () {
+    var btn = document.querySelector('.dyndns-gen');
+    if (!btn) return;
+    var panel = btn.closest('.panel-body');
+    var fb = panel.querySelector('.dyndns-feedback');
+    var box = panel.querySelector('.dyndns-key-box');
+    var urlField = panel.querySelector('.dyndns-url');
+    var csrf = <?php echo json_encode($csrf); ?>;
+
+    function fbShow(ok, msg) {
+        fb.hidden = false;
+        fb.className = (fb.className.replace(/alert[-a-z ]*/g, '').trim()) + ' alert ' + (ok ? 'alert-success' : 'alert-danger');
+        fb.textContent = msg;
+    }
+
+    btn.addEventListener('click', function () {
+        if (/regenerate/i.test(btn.textContent) &&
+            !confirm('Regenerate your key? Any client using the old key stops updating until you give it the new one.')) {
+            return;
+        }
+        var label = btn.textContent;
+        btn.disabled = true; btn.textContent = 'Generating…';
+        var fd = new FormData();
+        fd.append('csrf_token', csrf);
+        fd.append('action', 'generate');
+        fetch('/ajax/dyndns-key', { method: 'POST', body: fd, headers: { 'Accept': 'application/json' }, credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (res.ok && res.url) {
+                    urlField.value = res.url;
+                    box.hidden = false;
+                    btn.textContent = 'Regenerate my key';
+                    urlField.focus(); urlField.select();
+                } else {
+                    btn.textContent = label;
+                }
+                fbShow(!!res.ok, res.message || (res.ok ? 'Done.' : 'Something went wrong.'));
+            })
+            .catch(function () { btn.textContent = label; fbShow(false, 'A network error occurred. Please try again.'); })
+            .then(function () { btn.disabled = false; });
+    });
 })();
 </script>
 
