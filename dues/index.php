@@ -80,7 +80,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
         .stripe-mark { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 4px; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.32); }
     </style>
 
-<main class="page-content">
+<main id="main-content" class="page-content">
 	<section class="breadcrumb-classic">
 	  <div class="rd-parallax">
 	    <div data-speed="0.25" data-type="media" data-url="/images/headers/dues.jpg" class="rd-parallax-layer"></div>
@@ -123,7 +123,7 @@ $paypal_client_id = $untrobotics->get_sandbox() ? PAYPAL_SANDBOX_CLIENT_ID : PAY
                                         <div><small>(The shirt will be shipped to the shipping address you select during payment)</small></div>
                                         <div class="dues-shirt-preview">
                                             <a href="/images/dues-shirt.png" target="_blank">
-                                                <img src="/images/dues-shirt.png"/>
+                                                <img src="/images/dues-shirt.png" alt="Dues T-shirt design"/>
                                             </a>
                                         </div>
                                         <select id="include-tshirt" name="include-tshirt" class="">

@@ -56,7 +56,7 @@ head('Kit Preorders', 'Kit Preorders');
 require_once(BASE . '/admin/_styles.php');
 $stats = $db->query('SELECT COUNT(*) total, SUM(status = "paid" AND refunded = 0) paid, SUM(status = "ready") ready, SUM(status = "picked_up") picked_up FROM kit_preorders')->fetch_assoc();
 ?>
-<main class="page-content">
+<main id="main-content" class="page-content">
     <section class="section-50">
         <div class="shell">
             <div class="admin-wrap">

@@ -33,7 +33,7 @@ if (isset($_GET['id'])) {
     $e = $db->query('SELECT * FROM sent_emails WHERE id = ' . $id . ' LIMIT 1');
     $row = ($e && $e->num_rows) ? $e->fetch_assoc() : null;
     ?>
-    <main class="page-content">
+    <main id="main-content" class="page-content">
         <section class="section-50">
             <div class="shell">
                 <div class="admin-wrap">
@@ -86,7 +86,7 @@ $pages = max(1, (int) ceil($match / $per));
 $rows = $db->query("SELECT id, `to`, subject, status, created_at FROM sent_emails $wsql ORDER BY id DESC LIMIT $per OFFSET $off");
 $qs = $q !== '' ? '&q=' . urlencode($q) : '';
 ?>
-<main class="page-content">
+<main id="main-content" class="page-content">
     <section class="section-50">
         <div class="shell">
             <div class="admin-wrap">

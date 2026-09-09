@@ -79,7 +79,7 @@ $guides = array(
     .learn-cta { text-align: center; padding: 10px 15px 60px; }
     .learn-cta p { color: #555; margin-bottom: 16px; }
 </style>
-<main class="page-content">
+<main id="main-content" class="page-content">
     <section class="breadcrumb-classic">
       <div class="rd-parallax">
         <div data-speed="0.25" data-type="media" data-url="/images/headers/learn.jpg" class="rd-parallax-layer"></div>

@@ -5,7 +5,7 @@ head('Authentication', true);
 require_once('saml/simplesamlphp/lib/_autoload.php');
 $as = new \SimpleSAML\Auth\Simple('untrobotics-sp');
 ?>
-<main class="page-content">
+<main id="main-content" class="page-content">
 	<section class="section-75 section-md-100 section-lg-150">
 		<div class="shell text-sm-left">
 			<div class="range">

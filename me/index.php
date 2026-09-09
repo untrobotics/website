@@ -86,7 +86,7 @@ function dues_term_label($term, $year) {
 .sms-toggle input { margin-top: 4px; flex: 0 0 auto; }
 </style>
 
-<main class="page-content">
+<main id="main-content" class="page-content">
     <section class="section-50 section-md-66">
         <div class="shell text-left">
             <div class="range range-md-center">
@@ -147,7 +147,7 @@ function dues_term_label($term, $year) {
                     <div class="panel panel-default offset-bottom-30">
                         <div class="panel-heading"><strong>Profile details</strong></div>
                         <div class="panel-body">
-                            <div class="profile-feedback offset-bottom-20" hidden></div>
+                            <div class="profile-feedback offset-bottom-20" role="alert" aria-live="assertive" hidden></div>
                             <form id="profile-form" method="post" action="/ajax/update-profile" novalidate>
                                 <input type="hidden" name="csrf_token" value="<?php echo e($csrf); ?>">
                                 <div class="range">
@@ -258,7 +258,7 @@ function dues_term_label($term, $year) {
                     <div class="panel panel-default offset-bottom-30">
                         <div class="panel-heading"><strong>Dynamic DNS key</strong> <span class="text-gray" style="font-weight:normal;font-size:12px;">admins only</span></div>
                         <div class="panel-body">
-                            <div class="dyndns-feedback offset-bottom-20" hidden></div>
+                            <div class="dyndns-feedback offset-bottom-20" role="alert" aria-live="assertive" hidden></div>
                             <p class="text-gray" style="margin-top:0;">
                                 Point a <code><?php echo e('<name>.' . $dyndns_suffix . '.' . $dyndns_super); ?></code> subdomain at your changing home IP
                                 (like No-IP / DuckDNS, on our own domain). Your personal key can set any <code>*.<?php echo e($dyndns_suffix); ?></code> name.
@@ -278,7 +278,7 @@ function dues_term_label($term, $year) {
                     <div class="panel panel-default offset-bottom-30">
                         <div class="panel-heading"><strong>Change password</strong></div>
                         <div class="panel-body">
-                            <div class="password-feedback offset-bottom-20" hidden></div>
+                            <div class="password-feedback offset-bottom-20" role="alert" aria-live="assertive" hidden></div>
                             <form id="password-form" method="post" action="/ajax/update-password" novalidate>
                                 <input type="hidden" name="csrf_token" value="<?php echo e($csrf); ?>">
                                 <div class="range">

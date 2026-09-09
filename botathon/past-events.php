@@ -57,7 +57,7 @@ $seasons = array(
     }
 </style>
 
-<main class="page-content">
+<main id="main-content" class="page-content">
     <!-- Classic Breadcrumbs-->
     <section class="breadcrumb-classic">
         <div class="rd-parallax">

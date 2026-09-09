@@ -338,7 +338,7 @@ function get_variant_variant($variant_name) {
 		.pay-buttons #stripe-pay-button:hover { background: #544dff; }
 		.stripe-mark { display: inline-flex; align-items: center; padding: 3px 7px; border-radius: 4px; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.32); }
 		</style>
-<main class="page-content">
+<main id="main-content" class="page-content">
 	<!-- Classic Breadcrumbs-->
 	<section class="breadcrumb-classic">
 	  <div class="rd-parallax">

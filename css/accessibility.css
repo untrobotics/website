@@ -1,0 +1,85 @@
+/*
+ * Accessibility overrides (URW-245). Loaded AFTER style.css so these win.
+ * Keep site-wide, low-risk a11y fixes here rather than editing the compiled
+ * theme CSS.
+ */
+
+/* --- Visible keyboard focus (WCAG 2.4.7) -----------------------------------
+ * The theme sets `*, *:active, *:focus { outline: none !important }`, which
+ * removes the focus indicator for keyboard users on every control. Restore a
+ * clear focus ring for keyboard focus only (:focus-visible, so it doesn't show
+ * on mouse click). Element-specific selectors out-specify the theme's `*:focus`.
+ */
+:focus-visible {
+  outline: 3px solid #1a8a4f !important;
+  outline-offset: 2px !important;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible,
+[role="button"]:focus-visible,
+[role="radio"]:focus-visible {
+  outline: 3px solid #1a8a4f !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 2px #fff !important; /* halo so the ring shows on any colour */
+}
+
+/* --- Skip to content (WCAG 2.4.1) ------------------------------------------
+ * First focusable element; hidden off-screen until focused.
+ */
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 100000;
+  padding: 10px 16px;
+  background: #0f5d33;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 4px;
+  transform: translateY(-150%);
+  transition: transform .15s ease;
+}
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 3px solid #fff !important;
+  outline-offset: 2px !important;
+}
+
+/* Utility: available to screen readers, invisible on screen. */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* --- Reduced motion (WCAG 2.3.3 / 2.2.2) -----------------------------------
+ * Near-zero durations (not `none`) so animated content still lands in its end
+ * state; force WOW-animated elements visible so nothing stays stuck hidden;
+ * stop the parallax transform.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .wow,
+  [data-caption-animate] {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .rd-parallax-layer {
+    transform: none !important;
+  }
+}
