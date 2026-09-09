@@ -79,7 +79,7 @@ $budget = function_exists('brevo_newsletter_remaining_today') ? brevo_newsletter
 head('Newsletter', 'Newsletter');
 require_once(BASE . '/admin/_styles.php');
 ?>
-<main class="page-content">
+<main id="main-content" class="page-content">
     <section class="section-50">
         <div class="shell">
             <div class="admin-wrap">

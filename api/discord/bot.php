@@ -1,8 +1,25 @@
 <?php
 require_once(__DIR__ . '/../../template/functions/mime2ext.php');
 
+/**
+ * Low-level Discord REST API client. Abstract in practice: it authenticates with
+ * a bot token read from `static::AUTH_TOKEN`, so it's used via a subclass that
+ * defines that constant (see AdminBot). Methods are static and return a response
+ * object ({ result: decoded JSON, status_code: int }).
+ */
 class DiscordBot {
 
+	/**
+	 * Make an authenticated request to the Discord API.
+	 *
+	 * @param string      $URI          API path beginning with '/' (appended to https://discord.com/api).
+	 * @param string      $method       HTTP method (GET, POST, PUT, DELETE, ...).
+	 * @param string      $content_type "application/json" or "multipart/form-data" (for file uploads).
+	 * @param mixed       $data         Request body; JSON-encoded, or sent as payload_json for multipart.
+	 * @param array|null  $files        CURLFile entries to attach when multipart.
+	 * @return stdClass    { result: decoded JSON response, status_code: int }.
+	 * @throws DiscordBotException On a cURL transport error.
+	 */
 	protected static function send_api_request($URI, $method = 'GET', $content_type = "application/json", $data = null, $files = null) {
 		$ch = curl_init();
 
@@ -53,6 +70,16 @@ class DiscordBot {
 		return $response;
 	}
 
+	/**
+	 * Post a message to a channel. No-op (logged only) outside production, since
+	 * dev/staging share the prod bot token + channel ids and would otherwise spam
+	 * the real server.
+	 *
+	 * @param string|object $message     Message text, or a prepared message object.
+	 * @param string        $channel_id  Target channel id.
+	 * @param array|null    $attachments Attachments; each is ['bin'|'path'|'url', 'type', ...].
+	 * @return stdClass|null The API response, or null when suppressed in non-prod.
+	 */
 	public static function send_message($message, $channel_id, $attachments = null) {
 		// Only post to Discord from production. Dev/staging share the same bot
 		// token and channel ids through config, so without this guard dev web
@@ -121,28 +148,64 @@ class DiscordBot {
 		return static::send_api_request("/channels/{$channel_id}/messages", 'POST', 'multipart/form-data', $data, $files);
 	}
 
+	/**
+	 * Add a role to a guild member.
+	 *
+	 * @param string $guild_id Guild (server) id.
+	 * @param string $user_id  Member's Discord user id.
+	 * @param string $role_id  Role id to add.
+	 * @return stdClass The API response.
+	 */
 	public static function add_user_role($guild_id, $user_id, $role_id) {
 		return static::send_api_request("/guilds/{$guild_id}/members/{$user_id}/roles/{$role_id}", 'PUT');
 	}
 
+	/**
+	 * Remove a role from a guild member.
+	 *
+	 * @param string $guild_id Guild (server) id.
+	 * @param string $user_id  Member's Discord user id.
+	 * @param string $role_id  Role id to remove.
+	 * @return stdClass The API response.
+	 */
 	public static function remove_user_role($guild_id, $user_id, $role_id) {
 		return static::send_api_request("/guilds/{$guild_id}/members/{$user_id}/roles/{$role_id}", 'DELETE');
 	}
 
+	/**
+	 * Trigger the "typing…" indicator in a channel.
+	 *
+	 * @param string $channel_id Channel id.
+	 * @return stdClass The API response.
+	 */
 	public static function type($channel_id) {
 		return static::send_api_request("/channels/{$channel_id}/typing", 'POST');
 	}
 
+	/**
+	 * List up to 1000 members of a guild.
+	 *
+	 * @param string $guild_id Guild (server) id.
+	 * @return stdClass The API response (result is the member array).
+	 */
 	public static function get_all_users($guild_id) {
 	    return static::send_api_request("/guilds/{$guild_id}/members?limit=1000");
     }
 
     // utils
+
+    /**
+     * @param stdClass $result A response from send_api_request().
+     * @return bool True if Discord returned HTTP 429 (rate limited).
+     */
     public static function hasHitRateLimit($result) {
         return $result->status_code == 429;
     }
 }
 
+/**
+ * Thrown by DiscordBot when a Discord API request fails at the transport level.
+ */
 class DiscordBotException extends Exception {
 	public function __construct($message, $code = 0, Exception $previous = null) {
 		parent::__construct($message, $code, $previous);

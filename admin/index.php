@@ -21,7 +21,7 @@ $tools = array(
     array('/admin/dyndns', 'Dynamic DNS', 'Issue/revoke member dyndns keys and manage the live *.dyndns.untrobotics.com records.'),
 );
 ?>
-<main class="page-content">
+<main id="main-content" class="page-content">
     <section class="section-50">
         <div class="shell">
             <div class="admin-wrap">

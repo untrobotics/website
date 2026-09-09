@@ -1,6 +1,9 @@
 <?php
 
 
+/**
+ * Discord interaction response type constants (the "type" field of an interaction response).
+ */
 abstract class InteractionResponseType
 {
     const PONG = 1;

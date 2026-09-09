@@ -43,7 +43,7 @@ if ($product) {
     .btn-amazon:hover { background: #f08c00; color: #111; }
     .amazon-note { font-size: 12px; color: #8a908c; margin-top: 10px; max-width: 400px; }
 </style>
-<main class="page-content">
+<main id="main-content" class="page-content">
     <!-- Classic Breadcrumbs-->
     <section class="breadcrumb-classic">
         <div class="rd-parallax">

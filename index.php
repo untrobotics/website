@@ -24,7 +24,7 @@ head('Home', true);
 		padding: 10px;
 	}
 </style>
-      <main class="page-content hide-overflow">
+      <main id="main-content" class="page-content hide-overflow">
         <div style="height: 600px !important" data-min-height="300px" class="swiper-container swiper-slider swiper-secondary">
           <div class="swiper-wrapper text-md-left">
             <div class="swiper-slide">
@@ -36,8 +36,8 @@ head('Home', true);
                       <div class="divider-1"></div>
                       <p class="h6 offset-top-40">Tap one of the buttons below to officially become part of UNT Robotics</p>
 			<div class="group">
-				<a class="join-btn discord" href="/join/discord"><img src="/images/btn-discord.png"/></a>
-				<a class="join-btn campuslabs" href="/join/campuslabs"><img src="/images/btn-campuslabs.png"/></a>
+				<a class="join-btn discord" href="/join/discord"><img src="/images/btn-discord.png" alt="Join our Discord"/></a>
+				<a class="join-btn campuslabs" href="/join/campuslabs"><img src="/images/btn-campuslabs.png" alt="Join on CampusLabs"/></a>
 			</div>
                     </div>
                   </div>
@@ -49,7 +49,7 @@ head('Home', true);
                 <div class="shell">
                   <div class="slider-padding range section-100-vh range-xs-middle range-xs-center range-md-right">
                     <div data-caption-animate="fadeInDown" data-caption-delay="200" class="cell-md-6 cell-sm-9 postfix-md-right-90 postfix-xl-right-0">
-                      <h1>Building our futures</h1>
+                      <h2>Building our futures</h2>
                       <div class="divider-1"></div>
                       <p class="h6 offset-top-40">We develop our community, our skills and epic robots</p>
                       <div class="group">
@@ -93,10 +93,10 @@ head('Home', true);
 					<div class="divider-block">
 					  <h2>Our Sponsors</h2>
 					  	<div class="sponsors">
-							<div class="sponsor"><img src="/images/sponsor-logos/respec.jpg"/></div>
-							<div class="sponsor"><img src="/images/sponsor-logos/servocity.jpg"/></div>
-							<div class="sponsor"><img src="/images/sponsor-logos/ieee-ft-worth.jpg"/></div>
-							<div class="sponsor"><img src="/images/sponsor-logos/eagles-nest.jpg"/></div>
+							<div class="sponsor"><img src="/images/sponsor-logos/respec.jpg" alt="RESPEC"/></div>
+							<div class="sponsor"><img src="/images/sponsor-logos/servocity.jpg" alt="ServoCity"/></div>
+							<div class="sponsor"><img src="/images/sponsor-logos/ieee-ft-worth.jpg" alt="IEEE Fort Worth"/></div>
+							<div class="sponsor"><img src="/images/sponsor-logos/eagles-nest.jpg" alt="Eagle's Nest"/></div>
 						</div>
 					</div>
 				  </div>

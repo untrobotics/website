@@ -32,7 +32,17 @@ $session = array();
 // restore the pre-8.1 return-false behavior site-wide (else failed queries 500).
 mysqli_report(MYSQLI_REPORT_OFF);
 
+/**
+ * Thin mysqli subclass that connects in its constructor and dies with a clear
+ * message on connection failure. Used site-wide as the global $db handle.
+ */
 class mmysqli extends mysqli {
+    /**
+     * @param string $host Database host.
+     * @param string $user Database user.
+     * @param string $pass Database password.
+     * @param string $db   Database (schema) name.
+     */
     public function __construct($host, $user, $pass, $db) {
         parent::__construct(); // no-arg: create unconnected, then real_connect (mysqli::init() is deprecated in PHP 8.3)
 
@@ -52,6 +62,20 @@ $untrobotics = new untrobotics($db);
 // DB-backed runtime settings (admin-settable values like the Botathon season).
 require_once(__DIR__ . '/functions/settings.php');
 
+/**
+ * Emit (or return) the page header and open the document. Runs the auth check
+ * for the page: if $auth is truthy and the visitor isn't authenticated, it
+ * redirects to /auth/login (preserving the return URL) and dies. On success it
+ * populates the global $userinfo/$session and sets the user's timezone.
+ *
+ * @param string    $title   Page title (prefixed onto the site name in <title>).
+ * @param string    $heading Page heading; pass true to reuse the title.
+ * @param bool|int  $auth    Required auth level (falsey = public, 1 = logged in,
+ *                           2 = admin). Truthy values also gate access.
+ * @param bool      $return  If true, capture the header HTML and return it
+ *                           instead of echoing it.
+ * @return string|void The header HTML when $return is true; otherwise nothing.
+ */
 function head($title, $heading, $auth = false, $return = false) {
     global $base, $userinfo, $session, $untrobotics, $db;
     $default_values = array(
@@ -96,6 +120,13 @@ function head($title, $heading, $auth = false, $return = false) {
     }
 }
 
+/**
+ * Emit the page footer. By default it ends the request (die()) after rendering,
+ * matching how most pages call it as the last statement.
+ *
+ * @param bool $die Whether to die() after emitting the footer (default true).
+ * @return void
+ */
 function footer($die = true) {
     global $base;
     require("$base/template/footer.php");
@@ -183,29 +214,43 @@ function notify_brevo_failure($detail) {
 // Every successful Brevo send bumps a per-day counter; the newsletter drip sender
 // reads it so it never sends past DAILY_LIMIT - TRANSACTIONAL_RESERVE, leaving the
 // reserve as headroom that transactional email always has on Brevo.
+/**
+ * Increment today's Brevo send counter (called after each successful Brevo send).
+ * @return void
+ */
 function brevo_record_send() {
     global $db;
     $db->query('INSERT INTO brevo_daily_sends (send_date, sent) VALUES (CURDATE(), 1) ON DUPLICATE KEY UPDATE sent = sent + 1');
 }
+
+/**
+ * @return int Number of Brevo emails sent so far today (all send types).
+ */
 function brevo_sent_today() {
     global $db;
     $q = $db->query('SELECT sent FROM brevo_daily_sends WHERE send_date = CURDATE()');
     if ($q && $q->num_rows > 0) { $r = $q->fetch_assoc(); return (int) $r['sent']; }
     return 0;
 }
-// Newsletter emails sent today (counted separately from transactional mail).
+/**
+ * @return int Newsletter emails sent today (counted separately from transactional mail).
+ */
 function brevo_newsletter_sent_today() {
     global $db;
     $q = $db->query("SELECT COUNT(*) c FROM newsletter_queue WHERE status = 'sent' AND sent_at IS NOT NULL AND DATE(sent_at) = CURDATE()");
     if ($q && $q->num_rows > 0) { return (int) $q->fetch_assoc()['c']; }
     return 0;
 }
-// How many newsletter emails may still go out today. The reserve is for
-// transactional mail, so transactional sends draw from the reserve FIRST and only
-// eat newsletter capacity once they overflow it. So newsletter has its own
-// (limit - reserve) budget measured against NEWSLETTER sends, capped by the
-// overall daily headroom (limit - total). Previously this subtracted ALL sends
-// (incl. transactional) from the newsletter budget, understating what's left.
+/**
+ * How many newsletter emails may still go out today. The reserve is for
+ * transactional mail, so transactional sends draw from the reserve FIRST and only
+ * eat newsletter capacity once they overflow it: newsletter has its own
+ * (limit - reserve) budget measured against NEWSLETTER sends, capped by the
+ * overall daily headroom (limit - total). (Previously this subtracted ALL sends,
+ * incl. transactional, from the newsletter budget, understating what's left.)
+ *
+ * @return int Newsletter sends still permitted today (never negative).
+ */
 function brevo_newsletter_remaining_today() {
     $limit = defined('BREVO_DAILY_LIMIT') ? BREVO_DAILY_LIMIT : 300;
     $reserve = defined('BREVO_TRANSACTIONAL_RESERVE') ? BREVO_TRANSACTIONAL_RESERVE : 50;
@@ -214,15 +259,31 @@ function brevo_newsletter_remaining_today() {
     return max(0, min($own_budget_left, $overall_headroom));
 }
 
-// One-click unsubscribe token (HMAC of the email, no per-row storage needed).
+/**
+ * One-click unsubscribe token: an HMAC of the (normalised) email, so links can be
+ * verified without storing a per-recipient token.
+ *
+ * @param string $email Recipient email address.
+ * @return string A 32-char hex token.
+ */
 function newsletter_unsub_token($email) {
     $secret = defined('INTERNAL_EMAIL_SECRET') ? INTERNAL_EMAIL_SECRET : 'unset';
     return substr(hash_hmac('sha256', 'newsletter-unsub:' . strtolower(trim($email)), $secret), 0, 32);
 }
+
+/**
+ * @param string $email Recipient email address.
+ * @return string The full one-click unsubscribe URL (email + token in the query).
+ */
 function newsletter_unsub_url($email) {
     return 'https://' . (defined('WEBSITE_DOMAIN') ? WEBSITE_DOMAIN : 'untrobotics.com')
         . '/newsletter/unsubscribe?e=' . urlencode($email) . '&t=' . newsletter_unsub_token($email);
 }
+
+/**
+ * @param string $email Recipient email address.
+ * @return string An HTML footer fragment with the unsubscribe link, for newsletter bodies.
+ */
 function newsletter_unsub_footer($email) {
     $url = newsletter_unsub_url($email);
     return '<hr style="margin-top:28px;border:none;border-top:1px solid #e0e0e0;">'
@@ -232,7 +293,13 @@ function newsletter_unsub_footer($email) {
 }
 
 // --- Public-form anti-abuse helpers ------------------------------------------
-// Real client IP (behind the k3s ingress, REMOTE_ADDR is the internal proxy).
+
+/**
+ * The real client IP. Behind the k3s ingress REMOTE_ADDR is the internal proxy,
+ * so prefer the first entry of X-Forwarded-For when present.
+ *
+ * @return string The client IP, or '' if unknown.
+ */
 function client_ip() {
     if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
@@ -240,17 +307,29 @@ function client_ip() {
     }
     return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
 }
-// Verify a Google reCAPTCHA v2 response. Returns true if the key isn't configured
-// (so a misconfigured env doesn't lock every form), false on a missing/failed token.
+/**
+ * Verify a Google reCAPTCHA v2 response. Fails open when unconfigured so a
+ * missing key doesn't lock every form.
+ *
+ * @param string $response The g-recaptcha-response token from the form.
+ * @return bool True if the token verifies, or if no key is configured; false on
+ *              a missing or failed token.
+ */
 function recaptcha_verify($response) {
     if (!defined('GOOGLE_RECAPTCHA_KEY') || GOOGLE_RECAPTCHA_KEY === '') { return true; }
     if (empty($response)) { return false; }
     $r = @json_decode(@file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . GOOGLE_RECAPTCHA_KEY . '&response=' . urlencode($response) . '&remoteip=' . urlencode(client_ip())), true);
     return !empty($r['success']);
 }
-// Sliding-window rate limit. Returns true if $bucket has hit $max requests within
-// the last $window_secs (and does NOT count this one); otherwise records it and
-// returns false.
+/**
+ * Sliding-window rate limit backed by the rate_limits table.
+ *
+ * @param string $bucket      Identifier for what's being limited (e.g. "contact:1.2.3.4").
+ * @param int    $max         Max requests allowed within the window.
+ * @param int    $window_secs Window length in seconds.
+ * @return bool True if $bucket has already hit $max within the window (this call
+ *              is NOT recorded); otherwise records this hit and returns false.
+ */
 function rate_limited($bucket, $max, $window_secs) {
     global $db;
     $b = $db->real_escape_string($bucket);
@@ -263,6 +342,22 @@ function rate_limited($bucket, $max, $window_secs) {
     return false;
 }
 
+/**
+ * Send a transactional email. Tries the Brevo smarthost first (best inbox
+ * placement), then falls back to the self-hosted Postfix relay. Optionally wraps
+ * the body in the branded template and archives a copy in sent_emails.
+ *
+ * @param string|array $to          Recipient email, or [email, name].
+ * @param string       $subject     Subject line.
+ * @param string       $message     HTML body (inner content when $branded).
+ * @param string|false $replyto     Reply-To address, or false for none.
+ * @param array|null   $headers     Optional extra headers as name => value.
+ * @param array        $attachments SendGrid-shaped attachments (base64 content,
+ *                                  filename, type, disposition, content_id).
+ * @param bool         $branded     Wrap $message in the branded template (default true).
+ * @param bool         $archive     Record a copy in sent_emails (default true).
+ * @return bool True if any transport delivered the message.
+ */
 function email($to, $subject, $message, $replyto = false, $headers = NULL, $attachments = array(), $branded = true, $archive = true) {
     global $db;
     // Outbound now goes through the self-hosted Postfix relay via PHPMailer/SMTP.
@@ -406,10 +501,25 @@ function email($to, $subject, $message, $replyto = false, $headers = NULL, $atta
     return $sent;
 }
 
+/**
+ * A weak per-session fingerprint (hash of the User-Agent) stored with the auth
+ * session and re-checked by auth() to bind a session to the same client.
+ *
+ * @return string An md5 hash of the request User-Agent.
+ */
 function get_fingerprint() {
     return md5($_SERVER['HTTP_USER_AGENT']);
 }
 
+/**
+ * Resolve the current auth session from cookies and return the authenticated
+ * user. Refreshes the session expiry, applies the user's sandbox flag, and
+ * enforces admin access when $auth_level is 2.
+ *
+ * @param int $auth_level 1 = any logged-in user; 2 = admins only (is_admin = 1).
+ * @return array|false [$userinfo, $auth_session] on success, or false if not
+ *                     authenticated (or not an admin when level 2 is required).
+ */
 function auth($auth_level = 1) {
     global $untrobotics, $db;
     if (isset($_COOKIE[COOKIE_PREFIX . '_SESSION_ID']) && isset($_COOKIE[COOKIE_PREFIX . '_SESSION_NAME'])) {
@@ -444,6 +554,10 @@ function auth($auth_level = 1) {
     return false;
 }
 
+/**
+ * @return bool Whether the globals populated by head()/auth() indicate a
+ *              logged-in user this request.
+ */
 function is_current_user_authenticated() {
     global $userinfo, $session;
     return !empty($userinfo) && !empty($session);

@@ -38,7 +38,7 @@ head('Botathon Registrations', 'Botathon Registrations');
 require_once(BASE . '/admin/_styles.php');
 $count = ($q ? $q->num_rows : 0);
 ?>
-<main class="page-content">
+<main id="main-content" class="page-content">
     <section class="section-50">
         <div class="shell">
             <div class="admin-wrap">

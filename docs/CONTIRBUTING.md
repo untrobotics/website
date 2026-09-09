@@ -72,6 +72,14 @@ Closes #123
 5. Request review from maintainers
 6. Address review feedback
 
+### 3a. Database changes
+
+Any schema change goes in a **migration file** in `sql/migrations/`, committed in
+the same PR as the code that needs it — not applied by hand. It then applies
+itself automatically on deploy (dev on merge to `develop`, prod at the release to
+`master`); there is no manual step. See
+[DATABASE_CHANGES.md](DATABASE_CHANGES.md) for the how-to and rules.
+
 ### 4. Code Style Guidelines
 
 #### PHP

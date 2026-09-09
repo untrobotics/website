@@ -15,7 +15,7 @@ head('Events Calendar', true);
         }
 
     </style>
-    <main class="page-content">
+    <main id="main-content" class="page-content">
         <section class="breadcrumb-classic">
           <div class="rd-parallax">
             <div data-speed="0.25" data-type="media" data-url="/images/headers/events.jpg" class="rd-parallax-layer"></div>

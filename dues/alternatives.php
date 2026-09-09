@@ -39,7 +39,7 @@ if (isset($_POST['submit'])) {
     }
 </style>
 
-<main class="page-content">
+<main id="main-content" class="page-content">
 	<section class="section-50 section-md-75 section-lg-100">
 	  <div class="shell">
 		<div class="range range-md-center">

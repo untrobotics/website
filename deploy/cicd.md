@@ -91,7 +91,7 @@ A release is just: **merge `develop` into `master`.** Use the helper so the merg
 is done the one safe way:
 
 ```sh
-bash scripts/cutover-e2e-merge.sh
+bash scripts/release.sh
 ```
 
 It checks out `master`, merges `develop` with **`--no-ff`** and a clean message
@@ -126,7 +126,7 @@ ssh ubuntu@dev2.untrobotics.com \
 workflow.** A skipped push produces no check-suite at all — identical on the API
 to a genuine delivery drop, which is what made this look random.
 
-**Fix (already in place):** `scripts/cutover-e2e-merge.sh` merges with `--no-ff`
+**Fix (already in place):** `scripts/release.sh` merges with `--no-ff`
 and an explicit clean message, so the pushed head is always a merge commit with no
 skip token. `detect` diffs `github.event.before..HEAD`, so the merge commit still
 yields the full `develop` diff → non-empty matrix → `deploy-prod` runs. **Always

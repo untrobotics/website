@@ -110,7 +110,7 @@ $period_label = $all_time ? 'All time' : ('Tax year ' . $year);
 $cur_year = (int) $untrobotics->get_current_year();
 $money = function ($n) { return '$' . number_format($n, 2); };
 ?>
-<main class="page-content">
+<main id="main-content" class="page-content">
     <section class="section-50">
         <div class="shell">
             <div class="admin-wrap">

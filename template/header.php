@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" class="wide wow-animation">
   <head>
+    <meta charset="utf-8">
     <title><?php echo $title; ?></title>
     <?php
       // Open Graph / Twitter Card. Pages may set $og_title / $og_description /
@@ -29,11 +30,12 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
     <link rel="icon" href="/favicon.png" type="image/png">
     <!-- Stylesheets-->
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Poppins:400,500,700%7CKanit:300,400,700">
     <link rel="stylesheet" href="/css/style.css">
+    <!-- Accessibility overrides (URW-245): must load AFTER style.css to win -->
+    <link rel="stylesheet" href="/css/accessibility.css">
 		<!--[if lt IE 10]>
     <div style="background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index:1;"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="/images/ie8-panel/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
     <script src="js/html5shiv.min.js"></script>
@@ -65,6 +67,7 @@
      
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <!-- Page-->
     <div class="page text-center text-md-left">
       <div class="page-loader">
@@ -81,23 +84,23 @@
       <!-- Page Header-->
       <header class="page-head">
         <div class="rd-navbar-wrap">
-          <nav data-stick-up-clone="true" data-layout="rd-navbar-fixed" data-md-layout="rd-navbar-static" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up-offset="252px" class="rd-navbar rd-navbar-secondary">
+          <nav data-stick-up-clone="true" data-layout="rd-navbar-fixed" data-md-layout="rd-navbar-static" data-md-device-layout="rd-navbar-fixed" data-lg-layout="rd-navbar-static" data-lg-device-layout="rd-navbar-static" data-lg-stick-up-offset="252px" class="rd-navbar rd-navbar-secondary" aria-label="Primary">
             <div class="rd-navbar-inner">
               <ul class="list-inline list-inline-lg offset-top-0">
-				<li><a href="/events" class="ioon icon-md2 icon-silver-chalice fa-calendar"></a></li>
-                <li><a href="<?php echo SOCIAL_MEDIA_FACEBOOK_URL; ?>" class="ioon icon-md2 icon-silver-chalice fa-facebook"></a></li>
-                <li><a href="<?php echo SOCIAL_MEDIA_INSTAGRAM_URL; ?>" class="ioon icon-md2 icon-silver-chalice fa-instagram"></a></li>
+				<li><a href="/events" aria-label="Events calendar" class="ioon icon-md2 icon-silver-chalice fa-calendar"></a></li>
+                <li><a href="<?php echo SOCIAL_MEDIA_FACEBOOK_URL; ?>" aria-label="UNT Robotics on Facebook" class="ioon icon-md2 icon-silver-chalice fa-facebook"></a></li>
+                <li><a href="<?php echo SOCIAL_MEDIA_INSTAGRAM_URL; ?>" aria-label="UNT Robotics on Instagram" class="ioon icon-md2 icon-silver-chalice fa-instagram"></a></li>
               </ul>
             </div>
             <div class="rd-navbar-inner">
               <!-- RD Navbar Panel-->
               <div class="rd-navbar-panel">
                 <!-- RD Navbar Toggle-->
-                <button data-rd-navbar-toggle=".rd-navbar-nav-wrap" class="rd-navbar-toggle"><span></span></button>
-                <button data-rd-navbar-toggle=".rd-navbar-collapse" class="rd-navbar-collapse-toggle" style="z-index: 99;"><span></span></button>
-                <div class="rd-navbar-brand"><a href="/" class="brand-name"><span class="brand-logo veil">UNT Robotics</span><img class="brand-logo-main" src="/images/unt-robotics-brand-logo-white.svg" alt="UNT Robotics"><span class="brand-text-main">UNT Robotics</span></a></div>
+                <button data-rd-navbar-toggle=".rd-navbar-nav-wrap" class="rd-navbar-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="rd-navbar-nav-wrap"><span></span></button>
+                <button data-rd-navbar-toggle=".rd-navbar-collapse" class="rd-navbar-collapse-toggle" style="z-index: 99;" aria-label="Toggle contact details" aria-expanded="false" aria-controls="rd-navbar-collapse"><span></span></button>
+                <div class="rd-navbar-brand"><a href="/" class="brand-name"><span class="brand-logo veil">UNT Robotics</span><img class="brand-logo-main" src="/images/unt-robotics-brand-logo-white.svg" alt="" aria-hidden="true"><span class="brand-text-main">UNT Robotics</span></a></div>
               </div>
-              <div class="rd-navbar-collapse animated">
+              <div id="rd-navbar-collapse" class="rd-navbar-collapse animated">
                 <div class="rd-navbar-collapse-items">
                   <ul class="list-inline text-center text-lg-left">
                     <li>
@@ -122,15 +125,15 @@
                 </div>
                 <div class="rd-navbar-collapse-items">
                   <ul class="list-inline list-inline-lg offset-top-0">
-					<li><a href="/events" class="ioon icon-sm icon-silver-chalice fa-calendar"></a></li>
-                    <li><a href="<?php echo SOCIAL_MEDIA_FACEBOOK_URL; ?>" class="ioon icon-sm icon-silver-chalice fa-facebook"></a></li>
-                    <li><a href="<?php echo SOCIAL_MEDIA_INSTAGRAM_URL; ?>" class="ioon icon-sm icon-silver-chalice fa-instagram"></a></li>
+					<li><a href="/events" aria-label="Events calendar" class="ioon icon-sm icon-silver-chalice fa-calendar"></a></li>
+                    <li><a href="<?php echo SOCIAL_MEDIA_FACEBOOK_URL; ?>" aria-label="UNT Robotics on Facebook" class="ioon icon-sm icon-silver-chalice fa-facebook"></a></li>
+                    <li><a href="<?php echo SOCIAL_MEDIA_INSTAGRAM_URL; ?>" aria-label="UNT Robotics on Instagram" class="ioon icon-sm icon-silver-chalice fa-instagram"></a></li>
                   </ul>
                 </div>
               </div>
             </div>
             <div class="rd-navbar-inner">
-              <div class="rd-navbar-nav-wrap">
+              <div id="rd-navbar-nav-wrap" class="rd-navbar-nav-wrap">
                 <!-- RD Navbar Nav-->
                 <ul class="rd-navbar-nav">
                   <li class="<?php echo (in_array($_SERVER['REQUEST_URI'], array('/', '/index', '/index.php'), true)) ? 'active' : ''; ?>"><a href="/">Home</a></li>
@@ -212,4 +215,14 @@
           </nav>
         </div>
       </header>
+      <script>
+        // a11y (URW-245): reflect open/closed state of the nav toggles for AT.
+        (function () {
+          document.querySelectorAll('.rd-navbar-toggle, .rd-navbar-collapse-toggle').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              btn.setAttribute('aria-expanded', btn.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+            });
+          });
+        })();
+      </script>
       <!-- Page Content-->

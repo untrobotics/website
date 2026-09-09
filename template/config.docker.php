@@ -76,6 +76,11 @@ define('PRINTFUL_API_KEY', env('PRINTFUL_API_KEY'));
 // URL). Leave unset to skip verification; set it — and add ?secret=<value> to the
 // webhook URL in the Printful dashboard — to require it.
 define('PRINTFUL_WEBHOOK_SECRET', env('PRINTFUL_WEBHOOK_SECRET', ''));
+// Lets the Printful product webhook kick the "Refresh merch mockups" GitHub
+// Actions workflow (repository_dispatch). A fine-grained PAT with contents:write
+// on GITHUB_REPO; blank disables the dispatch (webhook still acks). See URW-244.
+define('GITHUB_DISPATCH_TOKEN', env('GITHUB_DISPATCH_TOKEN', ''));
+define('GITHUB_REPO', env('GITHUB_REPO', 'untrobotics/website'));
 
 // Brevo (Sendinblue) v3 API — used to push newsletter sign-ups into a contact
 // list and to send the newsletter as a self-throttled drip. Leave the key unset

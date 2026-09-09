@@ -122,7 +122,7 @@ function merch_template($token) {
     .merch-badge.onsite { background: #d8f5e3; color: #12703f; }
     .merch-badge.amazon { background: #232f3e; color: #ff9900; }
     </style>
-    <main class="page-content">
+    <main id="main-content" class="page-content">
     <!-- Classic Breadcrumbs-->
     <section class="breadcrumb-classic">
         <div class="rd-parallax">

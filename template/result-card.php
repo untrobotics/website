@@ -83,7 +83,7 @@ function result_card(array $o) {
         <?php
     }
     ?>
-<main class="page-content">
+<main id="main-content" class="page-content">
     <section class="section-50">
         <div class="rc-wrap">
             <div class="rc-card">

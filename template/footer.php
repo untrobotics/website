@@ -66,7 +66,7 @@
       </footer>
 
     <!-- Global Mailform Output-->
-    <div id="form-output-global" class="snackbars"></div>
+    <div id="form-output-global" class="snackbars" role="alert" aria-live="assertive"></div>
 
     </div>
 
