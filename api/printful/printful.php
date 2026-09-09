@@ -158,13 +158,12 @@ class PrintfulCustomAPI {
         }
 
         $products_results = $this->send_request("store/products$1", false, "?limit=100" . $search_string);
-        $parsed_products_results = $this->parse_results($products_results);
-
-        foreach ($parsed_products_results->get_results() as $product) {
-            $product = new PrintfulProduct($product);
-        }
-
-        return $parsed_products_results;
+        // Returns the raw PrintfulResult (its ->get_results() items are the decoded
+        // Printful objects, which callers read directly). Previously a foreach here
+        // built PrintfulProduct wrappers into a local variable and discarded them —
+        // a no-op — so it's removed. Instantiate PrintfulProduct explicitly if a
+        // wrapped view is ever wanted.
+        return $this->parse_results($products_results);
     }
 
     /**
@@ -441,11 +440,11 @@ class PrintfulProduct {
      */
     public function __construct($object) {
         $this->id = $object->id;
-        $this->external_id = $object->id;
-        $this->name = $object->id;
-        $this->number_of_variants = $object->id;
-        $this->synced = $object->id;
-        $this->thumbnail_url = $object->id;
+        $this->external_id = $object->external_id;
+        $this->name = $object->name;
+        $this->number_of_variants = $object->variants;
+        $this->synced = $object->synced;
+        $this->thumbnail_url = $object->thumbnail_url;
     }
 
     /** @return mixed The product id. */
