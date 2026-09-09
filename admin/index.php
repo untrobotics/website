@@ -18,6 +18,7 @@ $tools = array(
     array('/admin/users', 'Users', 'Member list + Good Standing CSV export.'),
     array('/admin/check-good-standing', 'Check Good Standing', 'Look up a single member\'s standing by UID.'),
     array('/admin/botathon_registration', 'Botathon Registrations', 'Botathon sign-ups for the current season.'),
+    array('/admin/dyndns', 'Dynamic DNS', 'Issue/revoke member dyndns keys and manage the live *.dyndns.untrobotics.com records.'),
 );
 ?>
 <main class="page-content">

@@ -180,7 +180,7 @@ Database schema changes are tracked in migration files:
 - `dues/` - Membership dues handling
 - `me/` - Member dashboard
 - `botathon/` - Competition registration and management 
-- `dyndns/` - Dynamic DNS service for member projects
+- `dyndns/` - Dynamic DNS service for member projects (see [DYNDNS.md](DYNDNS.md))
 - `sponsorships/` - Sponsor management and donations
 
 ### Administrative & System
