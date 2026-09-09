@@ -1,0 +1,76 @@
+name: Refresh merch mockups
+
+# Regenerate Printful garment mockups automatically and commit any that changed
+# back to develop (which redeploys via build-images.yml). Three triggers:
+#   - schedule: a daily change-detection pass, plus a full re-render on the 1st
+#     (in case Printful changes a product/preview on their side).
+#   - repository_dispatch (printful-product-changed): fired by the Printful
+#     webhook (api/printful/webhook.php) when a product is added/updated, so a
+#     change is picked up promptly rather than waiting for the daily run.
+#   - workflow_dispatch: manual, with an optional full re-render.
+#
+# refresh-mockups.php only regenerates new/changed products; and the image bytes
+# are the real gate — an identical re-render produces no diff, so nothing is
+# committed or redeployed unless a mockup genuinely changed.
+on:
+  schedule:
+    - cron: "17 9 * * *"   # daily 09:17 UTC
+  repository_dispatch:
+    types: [printful-product-changed]
+  workflow_dispatch:
+    inputs:
+      all:
+        description: "Regenerate ALL products (full refresh)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-mockups
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          token: ${{ secrets.DEVELOP_SYNC_PAT }}
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: curl
+
+      - name: Decide full vs changed-only
+        id: mode
+        run: |
+          ALL=""
+          if [ "${{ github.event.inputs.all }}" = "true" ]; then ALL="--all"; fi
+          # Monthly full refresh on the 1st (scheduled runs only).
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%d)" = "01" ]; then ALL="--all"; fi
+          echo "all=$ALL" >> "$GITHUB_OUTPUT"
+          echo "Mode: ${ALL:-changed-only} (event=${{ github.event_name }})"
+
+      - name: Refresh mockups
+        env:
+          PRINTFUL_API_KEY: ${{ secrets.PRINTFUL_API_KEY }}
+        run: php merch/tools/refresh-mockups.php ${{ steps.mode.outputs.all }}
+
+      - name: Commit changed mockups
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -z "$(git status --porcelain images/merch/generated)" ]; then
+            echo "No mockup changes — nothing to commit."
+            exit 0
+          fi
+          git add images/merch/generated
+          git commit -m "merch: auto-refresh mockups (${{ steps.mode.outputs.all && 'full' || 'changed' }})"
+          # Land on top of whatever else advanced develop meanwhile, then push.
+          git pull --rebase origin develop
+          git push origin HEAD:develop
+          echo "Committed refreshed mockups to develop."

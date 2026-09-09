@@ -50,6 +50,10 @@ define('TWILIO_FIND_FIRST_QUEUE',			'find-first');
 define('TWILIO_FIND_FIRST_QUEUE_SID',		'');
 
 define('PRINTFUL_API_KEY',					'');
+// Optional: enables the Printful product webhook to trigger the mockup-refresh
+// workflow (URW-244). Fine-grained PAT with contents:write on GITHUB_REPO.
+define('GITHUB_DISPATCH_TOKEN',				'');
+define('GITHUB_REPO',						'untrobotics/website');
 
 
 define('DISCORD_CLIENT_PUBLIC_KEY',         '');

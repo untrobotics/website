@@ -33,6 +33,45 @@ $store = $data->store;
 class PrintfulWebhookType {
 	const PACKAGE_SHIPPED = 'package_shipped';
 	const PACKAGE_RETURNED = 'package_returned';
+	const PRODUCT_UPDATED = 'product_updated';
+	const PRODUCT_SYNCED = 'product_synced';
+}
+
+/**
+ * A product was added/changed in Printful — kick the GitHub Actions "Refresh
+ * merch mockups" workflow (repository_dispatch) so its mockups regenerate
+ * promptly. Best-effort: never throws, and no-ops (logs) when the dispatch
+ * token isn't configured, so the webhook still acks. Requires a token with
+ * contents:write on the repo in GITHUB_DISPATCH_TOKEN + the repo in
+ * GITHUB_REPO ("owner/name").
+ */
+function trigger_mockup_refresh($type, $data) {
+	$token = defined('GITHUB_DISPATCH_TOKEN') ? GITHUB_DISPATCH_TOKEN : '';
+	$repo = defined('GITHUB_REPO') && GITHUB_REPO !== '' ? GITHUB_REPO : 'untrobotics/website';
+	if (empty($token)) {
+		webhook_log("[mockup-refresh] GITHUB_DISPATCH_TOKEN not set — skipping dispatch for {$type}.");
+		return;
+	}
+	$payload = json_encode(array(
+		'event_type' => 'printful-product-changed',
+		'client_payload' => array('reason' => $type),
+	));
+	$ch = curl_init("https://api.github.com/repos/{$repo}/dispatches");
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		'Authorization: Bearer ' . $token,
+		'Accept: application/vnd.github+json',
+		'User-Agent: untrobotics-webhook',
+		'X-GitHub-Api-Version: 2022-11-28',
+		'Content-Type: application/json',
+	));
+	curl_exec($ch);
+	$code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	curl_close($ch);
+	// 204 = accepted.
+	webhook_log("[mockup-refresh] dispatched printful-product-changed ({$type}) -> HTTP {$code}");
 }
 
 $printful_event = null;
@@ -242,6 +281,11 @@ try {
 				webhook_log("[{$log_prefix}] PayPal tracking push skipped/failed: " . $e->getMessage());
 			}
 
+			break;
+		case PrintfulWebhookType::PRODUCT_UPDATED:
+		case PrintfulWebhookType::PRODUCT_SYNCED:
+			webhook_log(PHP_EOL . PHP_EOL . "Received {$type} event — triggering mockup refresh");
+			trigger_mockup_refresh($type, isset($data->data) ? $data->data : null);
 			break;
 		default:
 			webhook_log(PHP_EOL . PHP_EOL . "Received a notification which does not have a corresponding handler: " . $type);

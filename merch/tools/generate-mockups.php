@@ -17,7 +17,13 @@ if (PHP_SAPI !== 'cli') {
     exit("cli only\n");
 }
 
-require_once(__DIR__ . '/../../template/config.php');
+// Config is optional here: run inside the app/pod it comes from config.php; run
+// in CI (the scheduled refresh workflow) there is no config.php, so the key is
+// taken from the environment instead.
+$config = __DIR__ . '/../../template/config.php';
+if (is_readable($config)) {
+    require_once($config);
+}
 
 $out_dir = __DIR__ . '/../../images/merch/generated';
 $json_path = $out_dir . '/mockups.json';
@@ -25,7 +31,7 @@ if (!is_dir($out_dir) && !mkdir($out_dir, 0775, true)) {
     exit("cannot create $out_dir\n");
 }
 
-$api_key = PRINTFUL_API_KEY;
+$api_key = defined('PRINTFUL_API_KEY') && PRINTFUL_API_KEY !== '' ? PRINTFUL_API_KEY : getenv('PRINTFUL_API_KEY');
 if (empty($api_key)) {
     exit("PRINTFUL_API_KEY is not set\n");
 }
