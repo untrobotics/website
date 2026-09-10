@@ -103,7 +103,7 @@ function dues_term_label($term, $year) {
                                     <span class="mdi mdi-check-circle"></span> Good Standing
                                 </span>
                             <?php else: ?>
-                                <a href="/dues" class="label" style="background:#f0ad4e;color:#fff;padding:8px 14px;border-radius:20px;display:inline-block;font-size:13px;text-decoration:none;">
+                                <a href="/dues" class="label" style="background:#f0ad4e;color:#5a3d00;padding:8px 14px;border-radius:20px;display:inline-block;font-size:13px;text-decoration:none;">
                                     <span class="mdi mdi-alert-circle-outline"></span> Dues not paid &mdash; Pay now
                                 </a>
                             <?php endif; ?>

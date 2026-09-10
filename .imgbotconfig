@@ -1,0 +1,8 @@
+{
+  "schedule": "daily",
+  "aggressiveCompression": "false",
+  "ignoredFiles": [
+    "/images/merch/generated/*",
+    "/fonts/*"
+  ]
+}
