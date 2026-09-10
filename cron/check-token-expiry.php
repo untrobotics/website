@@ -26,6 +26,14 @@ $tokens = array(
     'DEVELOP_SYNC_PAT (CI releases + webhook dispatch)' => 'GITHUB_DISPATCH_TOKEN',
 );
 
+// Tokens with NO queryable live expiry (e.g. Atlassian API tokens) — tracked by
+// a hardcoded known expiry date. Unlike the GitHub tokens above, these are NOT
+// self-updating: when you rotate the token you MUST update the date here, or the
+// warning will keep firing (and eventually report it as expired). Format Y-m-d.
+$fixed_expiry = array(
+    'Jira API token "untrobotics-prod-jira-bot" (prod /jira command)' => '2027-09-10',
+);
+
 /**
  * Query GitHub with the token and return its current expiry info.
  *
@@ -86,6 +94,26 @@ foreach ($tokens as $label => $envvar) {
         $when = date('Y-m-d', $exp);
         $warnings[] = ":warning: **{$label}** expires in **{$days} day" . ($days === 1 ? '' : 's') . "** (on {$when}). "
             . "Rotate it, then update the GitHub Actions secret `DEVELOP_SYNC_PAT`, the prod `web-secrets` key `GITHUB_DISPATCH_TOKEN`, and the local `~/.gh-pat-untr-tok` / `.claude/tools/.github.json` — otherwise CI, releases, and the mockup webhook all break.";
+    }
+}
+
+foreach ($fixed_expiry as $label => $date) {
+    $exp = strtotime($date . ' 00:00:00 UTC');
+    if ($exp === false) {
+        error_log("[token-check] {$label}: bad fixed date '{$date}' — skipping");
+        continue;
+    }
+    $days = (int) floor(($exp - time()) / 86400);
+    error_log("[token-check] {$label}: expires in {$days} day(s) (on {$date})");
+    if ($days > $WARN_WITHIN_DAYS) {
+        continue;
+    }
+    if ($days < 0) {
+        $warnings[] = ":rotating_light: **{$label}** — **expired " . abs($days) . " day" . (abs($days) === 1 ? '' : 's') . " ago** (on {$date}). "
+            . "Re-mint at id.atlassian.com/manage-profile/security/api-tokens, update the prod `web-secrets` key `JIRA_API_TOKEN`, then bump the date in `cron/check-token-expiry.php`.";
+    } else {
+        $warnings[] = ":warning: **{$label}** expires in **{$days} day" . ($days === 1 ? '' : 's') . "** (on {$date}). "
+            . "Re-mint at id.atlassian.com/manage-profile/security/api-tokens, update the prod `web-secrets` key `JIRA_API_TOKEN`, then bump the date in `cron/check-token-expiry.php` — otherwise `/jira` breaks.";
     }
 }
 
