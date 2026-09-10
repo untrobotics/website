@@ -39,10 +39,15 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY docker/php/zz-untrobotics.ini "$PHP_INI_DIR/conf.d/zz-untrobotics.ini"
 
 # --- Apache -------------------------------------------------------------------
-# Enable rewrite + headers and allow .htaccess overrides under the docroot.
-RUN a2enmod rewrite headers \
+# Enable rewrite + headers + deflate (gzip) and allow .htaccess overrides under
+# the docroot. deflate serves the ~48k-line vendor CSS (and all JS/HTML) gzipped
+# on the wire automatically — see docker/apache/compression.conf (URW-155).
+RUN a2enmod rewrite headers deflate \
     && sed -ri 's!AllowOverride None!AllowOverride All!g' /etc/apache2/apache2.conf \
     && echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# Gzip text assets (CSS/JS/HTML/SVG/JSON) on every response.
+COPY docker/apache/compression.conf /etc/apache2/conf-enabled/compression.conf
 
 # Pipe the Apache error log to a shared file (for the Discord log-forwarder
 # sidecar) AND keep it on stderr (kubectl logs). The server-scope piped logger
