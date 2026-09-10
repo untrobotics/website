@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: check-token-expiry
+spec:
+  # Weekly, Mondays 08:00 Central. Reads each watched GitHub token's CURRENT
+  # expiry live from the API and posts a Discord warning to #webmasters when one
+  # is within ~3 weeks of expiring (silent otherwise). No hardcoded dates, so a
+  # rotated token is picked up automatically. See cron/check-token-expiry.php.
+  schedule: "0 8 * * 1"
+  timeZone: America/Chicago
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 300
+      template:
+        spec:
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: ghcr-pull
+          containers:
+            - name: check-token-expiry
+              image: untrobotics-web
+              command:
+                - php
+                - /var/www/html/cron/check-token-expiry.php
+              envFrom:
+                - configMapRef:
+                    name: web-config
+                - secretRef:
+                    name: web-secrets
