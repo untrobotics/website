@@ -76,12 +76,14 @@ class untrobotics {
 	 * @return array|null The user row as an associative array, or null if none.
 	 */
     public function get_user_by_discord_id($discord_id) {
-        $q = $this->db->query('SELECT * FROM users WHERE discord_id = "' . $this->db->real_escape_string($discord_id) . '"');
-        if ($q) {
-            $r = $q->fetch_array(MYSQLI_ASSOC);
-            return $r;
+        $st = $this->db->prepare('SELECT * FROM users WHERE discord_id = ? LIMIT 1');
+        if (!$st) {
+            return null;
         }
-        return null;
+        $st->bind_param('s', $discord_id);
+        $st->execute();
+        $res = $st->get_result();
+        return $res ? $res->fetch_array(MYSQLI_ASSOC) : null;
     }
 
 	/**
@@ -98,20 +100,18 @@ class untrobotics {
 	        $uid = $userinfo;
         }
 
-		$q = $this->db->query('
-			SELECT * FROM dues_payments
-			WHERE
-				uid = "' . $this->db->real_escape_string($uid) . '" AND
-				dues_term = "' . $this->get_current_term() . '" AND
-				dues_year = "' . $this->get_current_year() . '" AND
-				refunded = 0
-			');
-
-		if (!$q) {
+		$term = $this->get_current_term();
+		$year = $this->get_current_year();
+		$st = $this->db->prepare('SELECT id FROM dues_payments WHERE uid = ? AND dues_term = ? AND dues_year = ? AND refunded = 0');
+		if (!$st) {
 			return false;
 		}
-
-		return $q->num_rows === 1;
+		$st->bind_param('sss', $uid, $term, $year);
+		if (!$st->execute()) {
+			return false;
+		}
+		$res = $st->get_result();
+		return $res && $res->num_rows === 1;
 	}
 
 	// semester, dues functions
