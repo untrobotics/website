@@ -14,6 +14,7 @@ $tools = array(
     array('/admin/newsletter', 'Newsletter', 'Compose and send the email newsletter (drips out within the daily limit).'),
     array('/admin/emails', 'Email Log', 'Every transactional email the site has sent, with delivery status and full message bodies.'),
     array('/admin/dues-requests', 'Dues Requests', 'Approve alternative-dues requests + mark members paid (in-person / manual).'),
+    array('/admin/dues-verify', 'Dues Verify', 'Reconcile the bookkeeping sheet against recorded dues payments for a term.'),
     array('/admin/kit-preorders', 'Kit Preorders', 'Electronics Kit preorders. Track who paid, mark ready, send pickup emails.'),
     array('/admin/users', 'Users', 'Member list + Good Standing CSV export.'),
     array('/admin/check-good-standing', 'Check Good Standing', 'Look up a single member\'s standing by UID.'),
