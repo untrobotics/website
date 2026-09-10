@@ -30,4 +30,4 @@ images:
     newTag: "sha-5a2ad80"
   - name: untrobotics-discord-bot
     newName: ghcr.io/untrobotics/website-discord-bot
-    newTag: "sha-5a2ad80"
+    newTag: "sha-34f2e84"
