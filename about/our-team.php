@@ -87,13 +87,13 @@ $roster = [
                     <div class="cell-lg-8 text-center">
                         <h1>Our Team</h1>
                         <small><em>Last updated: <?php echo date("F d Y", filemtime(__FILE__)); ?></em></small>
-                        <h6>These people are the reason for our success and expertise.</h6>
+                        <h6 role="presentation">These people are the reason for our success and expertise.</h6>
                         <p>Interested in a vacant role? <a href="/join">Join us</a> and get involved.</p>
                     </div>
                 </div>
                 <?php foreach ($roster as $group => $rows): ?>
                     <div class="roster-group">
-                        <h3><?php echo $group; ?></h3>
+                        <h3 aria-level="2"><?php echo $group; ?></h3>
                         <hr class="divider-color-2">
                         <div class="range text-left">
                             <?php foreach ($rows as [$role, $people]): ?>

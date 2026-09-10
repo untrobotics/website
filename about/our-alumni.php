@@ -110,13 +110,13 @@ $alumni_by_year = [
                 <div class="range justify-center">
                     <div class="cell-lg-8 text-center">
                         <h1>Our Alumni</h1>
-                        <h6>These people are the ones responsible for building our organisation and getting us to where we are today.</h6>
+                        <h6 role="presentation">These people are the ones responsible for building our organisation and getting us to where we are today.</h6>
                         <p>Past officers by the year they joined the team. Current officers are on <a href="/about/our-team">Our Team</a>.</p>
                     </div>
                 </div>
                 <?php foreach ($alumni_by_year as $year => $people): ?>
                     <div class="roster-group">
-                        <h3><?php echo $year; ?></h3>
+                        <h3 aria-level="2"><?php echo $year; ?></h3>
                         <hr class="divider-color-2">
                         <div class="range text-left">
                             <?php foreach ($people as [$name, $roles]): ?>

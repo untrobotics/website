@@ -61,8 +61,8 @@ head('Home', true);
               </div>
             </div>
           </div>
-          <div class="swiper-button-prev"><span>Prev</span></div>
-          <div class="swiper-button-next"><span>Next</span></div>
+          <div class="swiper-button-prev" role="button" tabindex="0" aria-label="Previous slide"><span>Prev</span></div>
+          <div class="swiper-button-next" role="button" tabindex="0" aria-label="Next slide"><span>Next</span></div>
           <div data-custom-scroll-to="custom-way-point" class="custom-way-point custom-way-point-swiper animated">Scroll down</div>
 			<video class="promo-video" autoplay="" muted="" loop="">
 			  <source src="/media/home-video-feature.mp4" type="video/mp4">
@@ -178,8 +178,8 @@ head('Home', true);
             </div>
             <div class="owl-custom-navigation">
               <div class="owl-nav">
-                <div data-owl-prev class="owl-prev">Prev</div>
-                <div data-owl-next class="owl-next">Next</div>
+                <div data-owl-prev class="owl-prev" role="button" tabindex="0" aria-label="Previous featured project">Prev</div>
+                <div data-owl-next class="owl-next" role="button" tabindex="0" aria-label="Next featured project">Next</div>
               </div>
             </div>
           </div>
@@ -221,6 +221,32 @@ head('Home', true);
 			  </div>
 			</section>
 		</footer>
+
+<script>
+// a11y (URW-245): make the slider/carousel arrow controls keyboard-operable
+// (they're <div role="button">), and honour prefers-reduced-motion by stopping
+// the auto-advancing carousel + the background hero video.
+(function () {
+  function wireKey(sel) {
+    document.querySelectorAll(sel).forEach(function (el) {
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); el.click(); }
+      });
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    wireKey('.swiper-button-prev, .swiper-button-next, .owl-prev, .owl-next');
+  });
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    window.addEventListener('load', function () {
+      document.querySelectorAll('video[autoplay], video.promo-video').forEach(function (v) {
+        try { v.pause(); v.removeAttribute('autoplay'); } catch (e) {}
+      });
+      try { if (window.jQuery) { window.jQuery('.owl-carousel').trigger('stop.owl.autoplay'); } } catch (e) {}
+    });
+  }
+})();
+</script>
 
 <?php
 footer();
