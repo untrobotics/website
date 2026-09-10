@@ -120,6 +120,7 @@ const config = Object.freeze({
   emailEndpoint: env('EMAIL_ENDPOINT', 'http://web/api/internal/send-email.php'),
   smsEndpoint: env('SMS_ENDPOINT', 'http://web/api/internal/send-sms.php'),
   calendarEndpoint: env('CALENDAR_ENDPOINT', 'http://web/api/internal/calendar-add-event.php'),
+  jiraEndpoint: env('JIRA_ENDPOINT', 'http://web/api/internal/jira-create.php'),
   internalEmailSecret: env('INTERNAL_EMAIL_SECRET'),
 
   // --- /addevent ------------------------------------------------------------

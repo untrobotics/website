@@ -54,6 +54,11 @@ define('PRINTFUL_API_KEY',					'');
 // workflow (URW-244). Fine-grained PAT with contents:write on GITHUB_REPO.
 define('GITHUB_DISPATCH_TOKEN',				'');
 define('GITHUB_REPO',						'untrobotics/website');
+// Jira (URW-82): powers the Discord /jira command via api/internal/jira-create.php.
+define('JIRA_BASE_URL',						'https://untrobotics.atlassian.net');
+define('JIRA_EMAIL',						'');
+define('JIRA_API_TOKEN',					'');
+define('JIRA_PROJECT_KEY',					'URW');
 
 
 define('DISCORD_CLIENT_PUBLIC_KEY',         '');
