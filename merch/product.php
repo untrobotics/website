@@ -406,9 +406,9 @@ function get_variant_variant($variant_name) {
 							<?php if (count($variant_colours) > 1) { ?>
 							<div class="variant-picker">
 								<div class="variant-picker-label">Colour: <span id="selected-colour-name"><?php echo htmlspecialchars($default_colour); ?></span></div>
-								<div class="colour-swatches" id="colour-swatches">
+								<div class="colour-swatches" id="colour-swatches" role="group" aria-label="Colour">
 									<?php foreach ($variant_colours as $cname => $ccode) { ?>
-									<button type="button" class="colour-swatch<?php echo $cname === $default_colour ? ' is-active' : ''; ?>" data-colour="<?php echo htmlspecialchars($cname); ?>" title="<?php echo htmlspecialchars($cname); ?>" style="background-color: <?php echo htmlspecialchars($ccode ? $ccode : '#cccccc'); ?>;"></button>
+									<button type="button" class="colour-swatch<?php echo $cname === $default_colour ? ' is-active' : ''; ?>" data-colour="<?php echo htmlspecialchars($cname); ?>" title="<?php echo htmlspecialchars($cname); ?>" aria-label="<?php echo htmlspecialchars($cname); ?>" aria-pressed="<?php echo $cname === $default_colour ? 'true' : 'false'; ?>" style="background-color: <?php echo htmlspecialchars($ccode ? $ccode : '#cccccc'); ?>;"></button>
 									<?php } ?>
 								</div>
 							</div>
@@ -416,9 +416,9 @@ function get_variant_variant($variant_name) {
 							<?php if ($has_size_axis) { ?>
 							<div class="variant-picker">
 								<div class="variant-picker-label">Size</div>
-								<div class="size-buttons" id="size-buttons">
+								<div class="size-buttons" id="size-buttons" role="group" aria-label="Size">
 									<?php foreach ($variant_sizes as $sname => $srank) { ?>
-									<button type="button" class="size-btn<?php echo $sname === $default_size ? ' is-active' : ''; ?>" data-size="<?php echo htmlspecialchars($sname); ?>"><?php echo htmlspecialchars($sname); ?></button>
+									<button type="button" class="size-btn<?php echo $sname === $default_size ? ' is-active' : ''; ?>" data-size="<?php echo htmlspecialchars($sname); ?>" aria-pressed="<?php echo $sname === $default_size ? 'true' : 'false'; ?>"><?php echo htmlspecialchars($sname); ?></button>
 									<?php } ?>
 								</div>
 							</div>
@@ -744,13 +744,15 @@ footer(false);
 			var ok = !!COMBO[selColour + "|" + sz];
 			b.disabled = !ok;
 			b.classList.toggle("is-active", ok && sz === selSize);
+			b.setAttribute("aria-pressed", (ok && sz === selSize) ? "true" : "false");
 		});
 	}
 	swatches.forEach(function (sw) {
 		sw.addEventListener("click", function () {
 			selColour = sw.getAttribute("data-colour");
-			swatches.forEach(function (x) { x.classList.remove("is-active"); });
+			swatches.forEach(function (x) { x.classList.remove("is-active"); x.setAttribute("aria-pressed", "false"); });
 			sw.classList.add("is-active");
+			sw.setAttribute("aria-pressed", "true");
 			if (colourNameEl) { colourNameEl.textContent = selColour; }
 			if (!COMBO[selColour + "|" + selSize]) {
 				for (var i = 0; i < sizeBtns.length; i++) {

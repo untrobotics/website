@@ -112,7 +112,7 @@ function dues_term_label($term, $year) {
 
                     <!-- ACCOUNT (read-only) -->
                     <div class="panel panel-default offset-bottom-30">
-                        <div class="panel-heading"><strong>Account</strong></div>
+                        <div class="panel-heading"><strong role="heading" aria-level="2">Account</strong></div>
                         <div class="panel-body">
                             <div class="range">
                                 <div class="cell-sm-6 offset-bottom-20">
@@ -145,7 +145,7 @@ function dues_term_label($term, $year) {
 
                     <!-- PROFILE DETAILS (editable) -->
                     <div class="panel panel-default offset-bottom-30">
-                        <div class="panel-heading"><strong>Profile details</strong></div>
+                        <div class="panel-heading"><strong role="heading" aria-level="2">Profile details</strong></div>
                         <div class="panel-body">
                             <div class="profile-feedback offset-bottom-20" role="alert" aria-live="assertive" hidden></div>
                             <form id="profile-form" method="post" action="/ajax/update-profile" novalidate>
@@ -205,7 +205,7 @@ function dues_term_label($term, $year) {
 
                     <!-- DUES HISTORY -->
                     <div class="panel panel-default offset-bottom-30">
-                        <div class="panel-heading"><strong>Dues payment history</strong></div>
+                        <div class="panel-heading"><strong role="heading" aria-level="2">Dues payment history</strong></div>
                         <div class="panel-body">
                             <?php if (empty($dues_history)): ?>
                                 <p class="text-gray" style="margin:0;">No dues payments on record yet.</p>
@@ -230,7 +230,7 @@ function dues_term_label($term, $year) {
 
                     <!-- ORDER HISTORY -->
                     <div class="panel panel-default offset-bottom-30">
-                        <div class="panel-heading"><strong>Merch order history</strong></div>
+                        <div class="panel-heading"><strong role="heading" aria-level="2">Merch order history</strong></div>
                         <div class="panel-body">
                             <?php if (empty($order_history)): ?>
                                 <p class="text-gray" style="margin:0;">No merch orders on record yet.</p>
@@ -256,7 +256,7 @@ function dues_term_label($term, $year) {
                     <?php if (!empty($userinfo['is_admin'])): ?>
                     <!-- DYNAMIC DNS (admins only) -->
                     <div class="panel panel-default offset-bottom-30">
-                        <div class="panel-heading"><strong>Dynamic DNS key</strong> <span class="text-gray" style="font-weight:normal;font-size:12px;">admins only</span></div>
+                        <div class="panel-heading"><strong role="heading" aria-level="2">Dynamic DNS key</strong> <span class="text-gray" style="font-weight:normal;font-size:12px;">admins only</span></div>
                         <div class="panel-body">
                             <div class="dyndns-feedback offset-bottom-20" role="alert" aria-live="assertive" hidden></div>
                             <p class="text-gray" style="margin-top:0;">
@@ -276,7 +276,7 @@ function dues_term_label($term, $year) {
 
                     <!-- PASSWORD -->
                     <div class="panel panel-default offset-bottom-30">
-                        <div class="panel-heading"><strong>Change password</strong></div>
+                        <div class="panel-heading"><strong role="heading" aria-level="2">Change password</strong></div>
                         <div class="panel-body">
                             <div class="password-feedback offset-bottom-20" role="alert" aria-live="assertive" hidden></div>
                             <form id="password-form" method="post" action="/ajax/update-password" novalidate>

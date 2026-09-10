@@ -161,7 +161,7 @@ function merch_template($token) {
                                                 <div class="col-lg-6 col-sm-12 product-item product-listing extern-items">
                                                     <div class="product-container-pad">
                                                         <div class="product-item-listing">
-                                                            <h4>
+                                                            <h4 aria-level="2">
                                                                 <span><?php echo htmlspecialchars($card['name']); ?></span>
                                                                 <span><?php echo '$' . $card['price']; ?></span>
                                                             </h4>
