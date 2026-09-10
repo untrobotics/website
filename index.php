@@ -223,9 +223,10 @@ head('Home', true);
 		</footer>
 
 <script>
-// a11y (URW-245): make the slider/carousel arrow controls keyboard-operable
-// (they're <div role="button">), and honour prefers-reduced-motion by stopping
-// the auto-advancing carousel + the background hero video.
+// a11y (URW-245): (1) make the slider/carousel arrow controls keyboard-operable
+// (they're <div role="button">); (2) provide a single always-visible control to
+// pause/resume all auto-moving content (WCAG 2.2.2) — the hero video + carousel
+// autoplay — and start paused for prefers-reduced-motion users.
 (function () {
   function wireKey(sel) {
     document.querySelectorAll(sel).forEach(function (el) {
@@ -237,14 +238,31 @@ head('Home', true);
   document.addEventListener('DOMContentLoaded', function () {
     wireKey('.swiper-button-prev, .swiper-button-next, .owl-prev, .owl-next');
   });
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    window.addEventListener('load', function () {
-      document.querySelectorAll('video[autoplay], video.promo-video').forEach(function (v) {
-        try { v.pause(); v.removeAttribute('autoplay'); } catch (e) {}
-      });
-      try { if (window.jQuery) { window.jQuery('.owl-carousel').trigger('stop.owl.autoplay'); } } catch (e) {}
-    });
+
+  var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function vids() { return document.querySelectorAll('video[autoplay], video.promo-video'); }
+  function setMotion(play) {
+    vids().forEach(function (v) { try { if (play) { v.play(); } else { v.pause(); } } catch (e) {} });
+    try { if (window.jQuery) { window.jQuery('.owl-carousel').trigger((play ? 'play' : 'stop') + '.owl.autoplay'); } } catch (e) {}
   }
+
+  window.addEventListener('load', function () {
+    var hasMotion = vids().length || document.querySelector('.owl-carousel[data-autoplay="true"]');
+    if (!hasMotion) { return; }
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'a11y-motion-toggle';
+    document.body.appendChild(btn);
+    var paused = false;
+    function render() {
+      btn.setAttribute('aria-pressed', paused ? 'true' : 'false');
+      btn.setAttribute('aria-label', paused ? 'Resume moving content' : 'Pause moving content');
+      btn.textContent = paused ? '▶ Motion' : '⏸ Motion';
+    }
+    btn.addEventListener('click', function () { paused = !paused; setMotion(!paused); render(); });
+    if (prefersReduced) { paused = true; setMotion(false); }
+    render();
+  });
 })();
 </script>
 

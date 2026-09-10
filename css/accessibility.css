@@ -79,6 +79,33 @@ textarea:focus-visible,
 .page-content .stripe-note {
   color: #5f6360 !important;
 }
+/* Amber "warning" labels ship white-on-#f0ad4e (~1.9:1). Dark text passes AA
+   while keeping the amber chip. */
+.label-warning {
+  color: #5a3d00 !important;
+}
+
+/* WCAG 2.2.2: the always-visible control (injected on pages with auto-motion)
+   to pause/resume the hero video + carousel autoplay. */
+.a11y-motion-toggle {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 9999;
+  padding: 8px 12px;
+  border: 1px solid #fff;
+  border-radius: 999px;
+  background: rgba(15, 20, 25, .82);
+  color: #fff;
+  font: 600 12px/1 system-ui, -apple-system, sans-serif;
+  cursor: pointer;
+  opacity: .55;
+  transition: opacity .15s;
+}
+.a11y-motion-toggle:hover,
+.a11y-motion-toggle:focus-visible {
+  opacity: 1;
+}
 
 /* --- Reduced motion (WCAG 2.3.3 / 2.2.2) -----------------------------------
  * Near-zero durations (not `none`) so animated content still lands in its end
