@@ -523,15 +523,30 @@ function get_fingerprint() {
 function auth($auth_level = 1) {
     global $untrobotics, $db;
     if (isset($_COOKIE[COOKIE_PREFIX . '_SESSION_ID']) && isset($_COOKIE[COOKIE_PREFIX . '_SESSION_NAME'])) {
-        $q = $db->query("SELECT * FROM auth_sessions WHERE session_id = '".$db->real_escape_string($_COOKIE[COOKIE_PREFIX . '_SESSION_ID'])."' AND session_name = '".$db->real_escape_string($_COOKIE[COOKIE_PREFIX . '_SESSION_NAME'])."' AND (expires > ".time()." OR expires = 0) LIMIT 1") or die($db->error); //or die($db->error); // this is potentially a security risk if a user sees one of these errors
+        $sid   = $_COOKIE[COOKIE_PREFIX . '_SESSION_ID'];
+        $sname = $_COOKIE[COOKIE_PREFIX . '_SESSION_NAME'];
+        $now   = time();
+        $st = $db->prepare("SELECT * FROM auth_sessions WHERE session_id = ? AND session_name = ? AND (expires > ? OR expires = 0) LIMIT 1") or die($db->error);
+        $st->bind_param('ssi', $sid, $sname, $now);
+        $st->execute();
+        $q = $st->get_result();
         if ($q->num_rows > 0) {
             $auth_session = $q->fetch_array(MYSQLI_ASSOC);
             if (get_fingerprint() == $auth_session['fingerprint']) {
-                $q = $db->query("SELECT * FROM users WHERE id = '".$db->real_escape_string($auth_session['uid'])."' LIMIT 1") or die($db->error);
+                $uid = $auth_session['uid'];
+                $ust = $db->prepare("SELECT * FROM users WHERE id = ? LIMIT 1") or die($db->error);
+                $ust->bind_param('i', $uid);
+                $ust->execute();
+                $q = $ust->get_result();
                 if ($q->num_rows > 0) {
                     $userinfo = $q->fetch_array(MYSQLI_ASSOC);
                     if ($auth_session['session'] == 1) {
-                        $db->query("UPDATE auth_sessions SET expires = '".$db->real_escape_string(time() + SESSION_TIMEOUT)."' WHERE id = '".$auth_session['id']."' LIMIT 1");
+                        $newexp = time() + SESSION_TIMEOUT;
+                        $sessid = $auth_session['id'];
+                        if ($ust2 = $db->prepare("UPDATE auth_sessions SET expires = ? WHERE id = ? LIMIT 1")) {
+                            $ust2->bind_param('ii', $newexp, $sessid);
+                            $ust2->execute();
+                        }
                     }
 
                     //extras

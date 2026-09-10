@@ -108,7 +108,7 @@
                         <div class="unit-left"><span class="icon icon-primary fa-phone"></span></div>
                         <div class="unit-body">
                           <div class="title"><span class="small">CALL US</span></div>
-                          <h6><a href="tel:<?php echo PHONE_NUMBER; ?>"><?php echo PHONE_NUMBER_FORMATTED; ?></a></h6>
+                          <h6 role="presentation"><a href="tel:<?php echo PHONE_NUMBER; ?>"><?php echo PHONE_NUMBER_FORMATTED; ?></a></h6>
                         </div>
                       </div>
                     </li>
@@ -117,7 +117,7 @@
                         <div class="unit-left"><span class="icon icon-primary fa-map-marker"></span></div>
                         <div class="unit-body">
                           <div class="title"><span class="small">EMAIL US</span></div>
-                          <h6><a href="mailto:<?php echo EMAIL_SUPPORT; ?>"><?php echo EMAIL_SUPPORT; ?></a></h6>
+                          <h6 role="presentation"><a href="mailto:<?php echo EMAIL_SUPPORT; ?>"><?php echo EMAIL_SUPPORT; ?></a></h6>
                         </div>
                       </div>
                     </li>

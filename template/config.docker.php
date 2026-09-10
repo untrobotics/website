@@ -81,6 +81,12 @@ define('PRINTFUL_WEBHOOK_SECRET', env('PRINTFUL_WEBHOOK_SECRET', ''));
 // on GITHUB_REPO; blank disables the dispatch (webhook still acks). See URW-244.
 define('GITHUB_DISPATCH_TOKEN', env('GITHUB_DISPATCH_TOKEN', ''));
 define('GITHUB_REPO', env('GITHUB_REPO', 'untrobotics/website'));
+// Jira (URW-82): the internal /api/internal/jira-create.php endpoint (called by
+// the Discord /jira command) creates backlog tickets. Needs a Jira API token.
+define('JIRA_BASE_URL', env('JIRA_BASE_URL', 'https://untrobotics.atlassian.net'));
+define('JIRA_EMAIL', env('JIRA_EMAIL', ''));
+define('JIRA_API_TOKEN', env('JIRA_API_TOKEN', ''));
+define('JIRA_PROJECT_KEY', env('JIRA_PROJECT_KEY', 'URW'));
 
 // Brevo (Sendinblue) v3 API — used to push newsletter sign-ups into a contact
 // list and to send the newsletter as a self-throttled drip. Leave the key unset
