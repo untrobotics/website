@@ -1,8 +1,10 @@
 <?php
 /**
- * GitHub webhook -> Discord. Posts a deploy summary to #webmasters whenever
- * master advances, because prod tracks master (we promote develop -> master and
- * sync Argo to ship). Registered in the repo's webhooks (event: push).
+ * GitHub webhook -> Discord (#webmasters). Posts:
+ *   - push to master  -> a prod-deploy summary (prod tracks master).
+ *   - pull_request     -> PR opened / merged.
+ *   - workflow_run     -> CI failures (failures only, master/develop only, low-noise).
+ * Registered in the repo's webhooks (events: push, pull_request, workflow_run).
  *
  * Signature verification is enforced when GITHUB_WEBHOOK_SECRET is configured
  * (recommended); until then it does a light shape check so random noise can't
@@ -65,6 +67,47 @@ if ($event === 'push' && is_array($req)
          . ($compare !== '' ? "\n<{$compare}>" : '');
 
     AdminBot::send_message(substr($msg, 0, 1900), DISCORD_WEBMASTERS_CHANNEL_ID);
+}
+
+// Pull requests: announce opened + merged.
+if ($event === 'pull_request' && is_array($req) && isset($req['pull_request'])) {
+    $pr     = $req['pull_request'];
+    $action = isset($req['action']) ? $req['action'] : '';
+    $num    = isset($pr['number']) ? $pr['number'] : '?';
+    $title  = isset($pr['title']) ? $pr['title'] : '';
+    $author = isset($pr['user']['login']) ? $pr['user']['login'] : 'someone';
+    $url    = isset($pr['html_url']) ? $pr['html_url'] : '';
+    $base   = isset($pr['base']['ref']) ? $pr['base']['ref'] : '';
+    $head   = isset($pr['head']['ref']) ? $pr['head']['ref'] : '';
+
+    $line = '';
+    if ($action === 'opened' || $action === 'reopened') {
+        $line = ":inbox_tray: **PR #{$num} opened** by **{$author}** — `{$head}` \u{2192} `{$base}`\n**{$title}**"
+              . ($url !== '' ? "\n<{$url}>" : '');
+    } elseif ($action === 'closed' && !empty($pr['merged'])) {
+        $by = isset($pr['merged_by']['login']) ? $pr['merged_by']['login'] : $author;
+        $line = ":twisted_rightwards_arrows: **PR #{$num} merged** into `{$base}` by **{$by}**\n**{$title}**"
+              . ($url !== '' ? "\n<{$url}>" : '');
+    }
+    if ($line !== '') {
+        AdminBot::send_message(substr($line, 0, 1900), DISCORD_WEBMASTERS_CHANNEL_ID);
+    }
+}
+
+// CI failures only, on the main branches, so the channel isn't spammed by every run.
+if ($event === 'workflow_run' && is_array($req) && isset($req['workflow_run'])) {
+    $wr     = $req['workflow_run'];
+    $action = isset($req['action']) ? $req['action'] : '';
+    $branch = isset($wr['head_branch']) ? $wr['head_branch'] : '';
+    if ($action === 'completed'
+        && isset($wr['conclusion']) && $wr['conclusion'] === 'failure'
+        && in_array($branch, array('master', 'develop'), true)) {
+        $name = isset($wr['name']) ? $wr['name'] : 'workflow';
+        $sha  = isset($wr['head_sha']) ? substr($wr['head_sha'], 0, 7) : '';
+        $url  = isset($wr['html_url']) ? $wr['html_url'] : '';
+        $line = ":x: **CI failed** \u{2014} {$name} on `{$branch}` (`{$sha}`)" . ($url !== '' ? "\n<{$url}>" : '');
+        AdminBot::send_message(substr($line, 0, 1900), DISCORD_WEBMASTERS_CHANNEL_ID);
+    }
 }
 
 http_response_code(200);
