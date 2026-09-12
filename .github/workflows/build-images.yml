@@ -158,8 +158,22 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add k8s/overlays/dev/kustomization.yaml
-          git commit -m "dev: auto-deploy ${GITHUB_SHA:0:7} [skip ci]" || echo "overlay unchanged"
-          git push origin HEAD:develop
+          git commit -m "dev: auto-deploy ${GITHUB_SHA:0:7} [skip ci]" || { echo "overlay unchanged"; exit 0; }
+          # The push back can race with rapid pushes to develop. On rejection: if a
+          # newer real (non-[skip ci]) commit already landed, a later run will pin it,
+          # so skip this now-stale image; otherwise rebase onto develop and retry.
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:develop; then echo "pinned overlay pushed"; exit 0; fi
+            echo "push rejected (attempt $attempt/5); reconciling..."
+            git fetch origin develop
+            if [ -n "$(git log --invert-grep --grep='\[skip ci\]' ${GITHUB_SHA}..origin/develop --oneline 2>/dev/null)" ]; then
+              echo "a newer commit is already on develop; a later run will pin it. Skipping stale image."
+              exit 0
+            fi
+            git pull --rebase origin develop || { echo "rebase failed"; exit 1; }
+          done
+          echo "could not push pinned overlay after 5 attempts" >&2
+          exit 1
 
   # Continuous deployment to prod. On a push to master (i.e. a develop->master
   # merge — that IS the release now), pin the just-built images to their immutable
@@ -211,8 +225,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add k8s/overlays/prod/kustomization.yaml
-          git commit -m "prod: auto-deploy ${GITHUB_SHA:0:7} [skip ci]" || echo "overlay unchanged"
-          git push origin HEAD:master
+          git commit -m "prod: auto-deploy ${GITHUB_SHA:0:7} [skip ci]" || { echo "overlay unchanged"; exit 0; }
+          # Same race-safe push back as develop (see the dev job for rationale).
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:master; then echo "pinned overlay pushed"; exit 0; fi
+            echo "push rejected (attempt $attempt/5); reconciling..."
+            git fetch origin master
+            if [ -n "$(git log --invert-grep --grep='\[skip ci\]' ${GITHUB_SHA}..origin/master --oneline 2>/dev/null)" ]; then
+              echo "a newer commit is already on master; a later run will pin it. Skipping stale image."
+              exit 0
+            fi
+            git pull --rebase origin master || { echo "rebase failed"; exit 1; }
+          done
+          echo "could not push pinned overlay after 5 attempts" >&2
+          exit 1
 
       # URW-46: keep develop from drifting behind master. master accumulates the
       # [skip ci] prod-pin commits (and any direct-to-master hotfixes); merge them

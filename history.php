@@ -3,32 +3,37 @@ require('template/top.php');
 head('Our History', true);
 
 /*
- * Club history page (URW-80). SHELL BUILD.
+ * Club history page (URW-80). Sourced from the UNT Robotics Discord scrape,
+ * the GroupMe archive (2019-2020), the founder's email (reaches 2017), and the
+ * shared Google Drive. Photos are the optimized set under /images/content/.
  *
- * The 2019->today timeline below is sourced from the UNT Robotics Discord
- * archive (243k-message scrape, findings/club-history.md) and is well
- * documented. Photos are the already-optimized set under /images/content/.
+ * Documented lineage: "Robotics Club at UNT" founded 2015 (constitution on
+ * file), ran through 2017 under Charles Bido (pres) + Robert Maxson (vp); went
+ * dormant; revived Nov 2018 as UNT Robotics by Sebastian King + Nick Tindle
+ * (first meeting 28 Nov 2018, Discovery Park rm 201; domain Dec 2018).
  *
- * PENDING (pre-2018 layer — deliberately framed, not fabricated):
- *   - The "roots since the 1970s" claim rests on a photo the founder recalls
- *     seeing; it is NOT yet located in an archive. digital.library.unt.edu
- *     (The Yucca / The Aerie yearbooks) is the place to find it but blocks
- *     automation — needs a manual search or a UNT Special Collections request.
- *   - Charles Bido (pre-2018 club lead) — real UNT alum; club role/dates
- *     unconfirmed by any public source.
- *   - Advisors "Jack & Suzie Sprague" — founder-attested; spelling of "Suzie"
- *     unconfirmed; no external source found yet.
- * The Origins section is a marked fill-in block until the above firm up.
+ * Still open (see URW-249): the pre-2015 / "1970s" claim rests only on a photo
+ * the founder recalls; not located in any archive (UNT Digital Library blocks
+ * automation). The Origins block keeps that framed as reported, not asserted.
+ * Not yet pulled in: the dated Drive assets (Nov 2018 first-meeting flyer,
+ * era logos, Media photo folders) if we want more period imagery.
  */
 
 // Brand green that passes contrast (matches css/accessibility.css overrides).
 $eras = array(
     array(
+        'year' => '2018',
+        'title' => 'The revival',
+        'body' => "After the earlier club went dormant, <strong>Sebastian King and Nick Tindle</strong> restarted it as UNT Robotics. The first meeting of the revived club was <strong>November 28, 2018</strong> in Discovery Park room 201, with Tindle as president, Juan Ruiz as vice president, and King as webmaster. The domain untrobotics.com was registered that December.",
+        'img' => '',
+        'gallery' => array(),
+    ),
+    array(
         'year' => '2019',
-        'title' => 'A new chapter: “UNT Robotics &amp; Aerospace”',
-        'body' => "The club&rsquo;s modern era begins. The Discord that still runs things today went up in <strong>October 2019</strong>, growing out of a student rocketry effort that joined forces with UNT&rsquo;s existing robotics group. Members designed the first logo and set their sights on NASA Student Launch and intercollegiate rocketry. The competition team took <strong>first place at IEEE Region 5</strong> with an autonomous balloon-popping drone, and the very first <strong>Botathon</strong> ran that spring, robots carrying balloons on their backs and popping everyone else&rsquo;s.",
-        'img' => 'aerospace/rocket-launch-still.jpg',
-        'gallery' => array('ieee2019/build-5.jpg', 'ieee2019/build-3.jpg'),
+        'title' => 'CoolerBot, SofaBot, and a first-place drone',
+        'body' => "The club threw itself into building. The new Rec Bots crew kicked off two flagship projects the month it formed, CoolerBot (a driveable robot cooler) and <strong>SofaBot</strong> (a driveable couch). The competition team took <strong>first place at IEEE Region 5</strong> with an autonomous balloon-popping drone. Members ran the first <strong>Botathon</strong> that spring (robots popping each other&rsquo;s balloons), wrote a club constitution, and held officer elections. The club stood up its own Discord in October, landed a <strong>SOLIDWORKS sponsorship</strong> (a 30-seat license), and secured a dedicated robotics room on campus. By November, the idea for an Aerospace division was taking shape: fly a rocket and a near-space balloon carrying the club logo.",
+        'img' => 'ieee2019/build-5.jpg',
+        'gallery' => array('ieee2019/build-3.jpg', 'ieee2019/build-1.jpg'),
     ),
     array(
         'year' => '2020',
@@ -86,7 +91,7 @@ $eras = array(
     .hist-hero h1 { margin-bottom: 10px; }
     .hist-hero p { max-width: 720px; margin: 0 auto; color: #555; font-size: 17px; line-height: 1.6; }
 
-    /* Origins — the pre-2018 layer, honestly framed while sources firm up. */
+    /* Origins: the pre-2018 layer, framed as reported. */
     .hist-origins { max-width: 860px; margin: 34px auto 0; padding: 0 15px; }
     .hist-origins .card { background: #f4f8f5; border: 1px solid #d8e6dd; border-left: 4px solid #157a3f; border-radius: 10px; padding: 26px 28px; }
     .hist-origins h2 { margin: 0 0 12px; }
@@ -150,15 +155,9 @@ $eras = array(
         <div class="card">
             <h2>Origins</h2>
             <p>Robotics and engineering have a long history at the University of North Texas. Student teams and clubs have come and gone on campus for decades, <strong>reportedly as far back as the 1970s</strong>, through the university&rsquo;s earlier eras as North Texas State University and the growth of its computing and engineering programs.</p>
-            <p>By the mid-2010s the organization had gone quiet. In <strong>2018</strong> it was revived by <span class="founders">Sebastian King and Nick Tindle</span> as a fresh iteration of UNT Robotics, picking up a torch that had been carried before them, including by earlier leaders such as Charles&nbsp;Bido.</p>
-            <!--
-              FILL-IN once sourced (see file header): confirm the 1970s photo +
-              citation, Charles Bido's club role/dates, and the pre-2018 division
-              history (aerospace/rocketry). Then expand this section with real
-              dates, names, and an archival image.
-            -->
+            <p>The lineage we can document begins in <strong>2015</strong>, when the &ldquo;Robotics Club at UNT&rdquo; was founded. It ran through 2017 out of Discovery Park and the university library&rsquo;s Factory makerspace, with dues, workshops, and Fall kickoff meetings, led in its later years by <span class="founders">Charles&nbsp;Bido</span> (president) and <span class="founders">Robert&nbsp;Maxson</span> (vice president). The club went quiet heading into 2018, and then a new group of students picked it back up.</p>
             <div class="hist-fillin">
-                <strong>This section is still growing.</strong> We&rsquo;re digging through the UNT archives for the club&rsquo;s earliest days. If you have old photos or stories, or know who led robotics at North Texas before 2018, we&rsquo;d love to hear from you.
+                <strong>Help us go back further.</strong> We&rsquo;ve traced the club to 2015, but robotics at North Texas may reach back decades earlier. If you have old photos or stories, especially anything from the 1970s or 80s, we&rsquo;d love to see them.
             </div>
         </div>
     </section>
@@ -189,8 +188,7 @@ $eras = array(
 
     <section class="hist-people">
         <h2>People who shaped the club</h2>
-        <p>UNT Robotics runs on its members and an elected officer team. Faculty advisors and mentors have helped along the way, among them Jack and Suzie&nbsp;Sprague, Dr.&nbsp;Keathly, Dr.&nbsp;Wasikowski, and Dr.&nbsp;Hassan. Guest speakers have included NASA engineer George&nbsp;Salazar, Dr.&nbsp;Amir&nbsp;Jafari of UNT&rsquo;s Advanced Robotics Manipulators Lab, and roboticist Terrence&nbsp;Southern.</p>
-        <!-- Advisor names incl. Sprague are founder-attested; confirm "Suzie" spelling + roles/dates before treating as fully verified. -->
+        <p>UNT Robotics runs on its members and an elected officer team. The earlier Robotics Club at UNT was led by Charles&nbsp;Bido and Robert&nbsp;Maxson. The 2018 revival was started by Sebastian&nbsp;King and Nick&nbsp;Tindle, with early officers including Juan&nbsp;Ruiz, Alex&nbsp;Ferguson, and Michelle&nbsp;Victoria. Faculty advisors and mentors over the years have included Dr.&nbsp;Keathly, Dr.&nbsp;Hassan, and Mark&nbsp;Wasikowski, along with rocketry mentors Jack and Suzy&nbsp;Sprague. Guest speakers have included NASA engineer George&nbsp;Salazar, Dr.&nbsp;Amir&nbsp;Jafari of UNT&rsquo;s Advanced Robotics Manipulators Lab, and roboticist Terrence&nbsp;Southern.</p>
     </section>
 
     <div class="hist-cta">
