@@ -25,57 +25,57 @@ head('Our History', true);
 $eras = array(
     array(
         'year' => '2019',
-        'title' => 'A new chapter: “UNT Robotics &amp; Aerospace”',
-        'body' => "The club&rsquo;s modern era begins. Its Discord &mdash; still the organizational backbone today &mdash; was created in <strong>October 2019</strong>, growing out of a student rocketry effort that joined forces with UNT&rsquo;s existing robotics group. Members designed the first logo and set their sights on big goals: NASA Student Launch and intercollegiate rocketry. That same year, the competition team took <strong>first place at IEEE Region 5</strong> with an autonomous balloon-popping drone.",
+        'title' => '“UNT Robotics &amp; Aerospace”',
+        'body' => "The Discord server that still runs the club today was set up in <strong>October 2019</strong>. It grew out of a student rocketry effort that teamed up with UNT&rsquo;s existing robotics group. Members drew the first logo and set targets: NASA Student Launch and intercollegiate rocketry. The competition team won <strong>first place at IEEE Region 5</strong> that year, with a drone that found and popped balloons by color.",
         'img' => 'aerospace/rocket-launch-still.jpg',
         'gallery' => array('ieee2019/build-5.jpg'),
     ),
     array(
         'year' => '2020',
-        'title' => 'Divisions, and a pivot to virtual',
-        'body' => "A roles-and-divisions system launched so members could self-select the project teams they wanted &mdash; rocketry, robotics, and more. When COVID-19 closed campus, the club kept building online through Zoom and Discord, running CAD and OpenRocket workshops and fielding a VEX&nbsp;U competition team.",
+        'title' => 'Divisions, then a move online',
+        'body' => "Members set up a roles system so people could pick the project teams they cared about. When COVID-19 closed campus, the club moved online. It ran CAD and OpenRocket workshops over Zoom and Discord and put together a VEX&nbsp;U team.",
         'img' => 'events/meeting-pics.jpg',
         'gallery' => array(),
     ),
     array(
         'year' => '2021',
-        'title' => 'The biggest growth surge on record',
-        'body' => "As campus reopened, membership exploded &mdash; <strong>153 new members in a single month</strong> (September 2021), the largest recruiting spike in the club&rsquo;s history. Officers tabled at Discovery Park, ran the first full slate of officer elections, and moved general meetings back in person.",
+        'title' => 'The biggest month on record',
+        'body' => "Membership jumped once campus reopened. <strong>153 people joined in September 2021</strong>, the biggest single month the club has had. Officers ran the first full election, tabled at Discovery Park, and brought general meetings back in person.",
         'img' => 'events/group-work-session.jpg',
         'gallery' => array(),
     ),
     array(
         'year' => '2022',
-        'title' => 'Botathon becomes the flagship &mdash; and the Rover begins',
-        'body' => "<strong>Botathon</strong>, the club&rsquo;s free, all-majors robot competition, grew into its signature annual event at Discovery Park. The club built the automated dues and &ldquo;Good Standing&rdquo; system on untrobotics.com, kicked off the <strong>NASA JPL Open-Source Rover</strong> project, and showed off an Arduino wind-turbine build at HackUNT.",
+        'title' => 'Botathon becomes the main event, and the Rover starts',
+        'body' => "<strong>Botathon</strong>, the club&rsquo;s free robot competition open to any major, became the event the year is built around. The club also wrote the automated dues and &ldquo;Good Standing&rdquo; system on untrobotics.com, started the <strong>NASA JPL Open-Source Rover</strong>, and showed an Arduino wind-turbine build at HackUNT.",
         'img' => 'rover/frame-assembly.jpg',
         'gallery' => array('botathon/s3-1.jpg', 'botathon/s3-2.jpg'),
     ),
     array(
         'year' => '2023',
         'title' => 'Workshops mature',
-        'body' => "The 4th annual Botathon ran a Mario-Kart-themed robot race, and club projects were featured at Senior Design Day. Members ran a deep slate of workshops &mdash; KiCad PCB design with a professional guest, GPS/radio programming, NLP in Python, and drones &amp; deep learning.",
+        'body' => "The fourth Botathon ran as a Mario-Kart-themed race, and club projects went to Senior Design Day. Members ran workshops through the year on KiCad PCB design (with a professional guest), GPS and radio programming, Python NLP, and drones.",
         'img' => 'rover/system-integration.jpg',
         'gallery' => array(),
     ),
     array(
         'year' => '2024',
-        'title' => 'Sofabot, Scrapp-E, and RoboMasters',
-        'body' => "The club voted to enter <strong>RoboMasters</strong>, the international collegiate robotics competition. Weekend build sessions brought the rideable self-driving <strong>Sofabot</strong> to life, and a brand-new flagship robot &mdash; <strong>Scrapp-E</strong>, the club mascot &mdash; began taking shape. Guest speakers included NASA figures and Dr.&nbsp;Amir Jafari of UNT&rsquo;s Advanced Robotics Manipulators Lab.",
+        'title' => 'Scrapp-E begins, and the RoboMasters vote',
+        'body' => "The club voted to enter <strong>RoboMasters</strong>, an international collegiate competition. Weekend sessions got the rideable, self-driving <strong>Sofabot</strong> working, and a new flagship robot started coming together: <strong>Scrapp-E</strong>, based on the club mascot. Guest speakers that year came from NASA and UNT&rsquo;s robotics labs.",
         'img' => 'scrappe/build-hdr.jpg',
         'gallery' => array('sofabot/build-1.jpg', 'sofabot/circle-done.jpg'),
     ),
     array(
         'year' => '2025',
         'title' => 'The Rover goes ROS 2',
-        'body' => "The JPL Rover was re-platformed onto a Raspberry Pi&nbsp;4 running <strong>ROS&nbsp;2</strong> with RoboClaw motor controllers, with weekly Friday build days. Scrapp-E work continued, and the club began an ongoing collaboration with Engineers United at Discovery Park.",
+        'body' => "The JPL Rover moved onto a Raspberry Pi&nbsp;4 running <strong>ROS&nbsp;2</strong> with RoboClaw motor controllers, with build days every Friday. Scrapp-E work kept going, and the club started working alongside Engineers United at Discovery Park.",
         'img' => 'rover/bench-work.jpg',
         'gallery' => array(),
     ),
     array(
         'year' => '2026',
         'title' => 'Still building',
-        'body' => "The club tabled at Spring Fling, ran a semester of structured intro projects &mdash; an Arduino piano, a 3D-printed robotic arm and quadruped &mdash; and began prep for the next Botathon. Seven seasons of Botathon in, and the workshop lights are still on.",
+        'body' => "The club tabled at Spring Fling and ran a semester of intro builds: an Arduino piano, a 3D-printed robotic arm, a printed quadruped. Prep for the eighth Botathon is underway.",
         'img' => 'botathon/s7-1.jpg',
         'gallery' => array('botathon/s7-2.jpg'),
     ),
@@ -142,15 +142,15 @@ $eras = array(
     <section class="hist-hero">
         <div class="shell">
             <h1>Our History</h1>
-            <p>UNT Robotics was revived in 2018 &mdash; but robotics and engineering culture at North Texas runs much deeper. Here&rsquo;s the story we&rsquo;ve been able to piece together.</p>
+            <p>UNT Robotics was revived in 2018. Robotics at North Texas goes back a lot further than that, and we&rsquo;re still piecing the early years together.</p>
         </div>
     </section>
 
     <section class="hist-origins">
         <div class="card">
             <h2>Origins</h2>
-            <p>Robotics and engineering have a long history at the University of North Texas. Student teams and clubs have come and gone on campus for decades &mdash; <strong>reportedly as far back as the 1970s</strong> &mdash; through the university&rsquo;s earlier eras as North Texas State University and the growth of its computing and engineering programs.</p>
-            <p>By the mid-2010s the organization had gone quiet. In <strong>2018</strong> it was revived by <span class="founders">Sebastian King and Nick Tindle</span> as a fresh iteration of UNT Robotics &mdash; picking up a torch that had been carried before them, including by earlier leaders such as Charles&nbsp;Bido.</p>
+            <p>Students have built robots and rockets at North Texas for a long time. Clubs have formed and faded here since <strong>at least the 1970s</strong>, back through the university&rsquo;s years as North Texas State and the early growth of its computing and engineering programs.</p>
+            <p>The organization had gone quiet by the mid-2010s. <span class="founders">Sebastian King and Nick Tindle</span> restarted it in <strong>2018</strong> as a new version of UNT Robotics. Charles&nbsp;Bido had run an earlier version before them.</p>
             <!--
               FILL-IN once sourced (see file header): confirm the 1970s photo +
               citation, Charles Bido's club role/dates, and the pre-2018 division
@@ -158,13 +158,13 @@ $eras = array(
               dates, names, and an archival image.
             -->
             <div class="hist-fillin">
-                <strong>This section is still growing.</strong> We&rsquo;re digging through the UNT archives for the club&rsquo;s earliest days. If you have old photos, stories, or know who led robotics at North Texas before 2018, we&rsquo;d love to hear from you.
+                <strong>This part is still growing.</strong> We&rsquo;re going through the UNT archives to fill in the club&rsquo;s early days. If you have old photos or stories, or you know who ran robotics at North Texas before 2018, get in touch.
             </div>
         </div>
     </section>
 
     <section class="hist-timeline-head">
-        <h2>The modern era</h2>
+        <h2>2019 to now</h2>
     </section>
     <ol class="hist-timeline">
         <?php foreach ($eras as $e): ?>
@@ -188,13 +188,13 @@ $eras = array(
     </ol>
 
     <section class="hist-people">
-        <h2>People who shaped the club</h2>
-        <p>UNT Robotics runs on its members and an elected officer team, supported over the years by faculty advisors and mentors &mdash; including Jack and Suzie&nbsp;Sprague, Dr.&nbsp;Keathly, Dr.&nbsp;Wasikowski, and Dr.&nbsp;Hassan &mdash; and guest speakers such as NASA engineer George&nbsp;Salazar, Dr.&nbsp;Amir&nbsp;Jafari of UNT&rsquo;s Advanced Robotics Manipulators Lab, and roboticist Terrence&nbsp;Southern.</p>
+        <h2>People behind the club</h2>
+        <p>UNT Robotics runs on its members and an elected officer team. Faculty advisors and mentors have helped along the way, among them Jack and Suzie&nbsp;Sprague, Dr.&nbsp;Keathly, Dr.&nbsp;Wasikowski, and Dr.&nbsp;Hassan. Guest speakers have included NASA engineer George&nbsp;Salazar, Dr.&nbsp;Amir&nbsp;Jafari of UNT&rsquo;s Advanced Robotics Manipulators Lab, and roboticist Terrence&nbsp;Southern.</p>
         <!-- Advisor names incl. Sprague are founder-attested; confirm "Suzie" spelling + roles/dates before treating as fully verified. -->
     </section>
 
     <div class="hist-cta">
-        <a href="/join/discord" class="btn btn-primary">Be part of the next chapter</a>
+        <a href="/join/discord" class="btn btn-primary">Come build with us</a>
     </div>
 </main>
 
