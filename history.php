@@ -33,9 +33,9 @@ $eras = array(
     array(
         'year' => '2020',
         'title' => 'Divisions, and a pivot to virtual',
-        'body' => "A roles-and-divisions system let members pick the teams they wanted to work on. An aerospace and space community formed over the summer, and the <strong>3D-printing</strong> channel that still anchors half the club&rsquo;s builds got going that fall. Sofabot, the rideable robot couch, moved under its own power for the first time. Then COVID-19 closed campus. Botathon 2020 had to be cancelled, but the club kept building online through Zoom and Discord, running CAD and OpenRocket workshops and fielding a VEX&nbsp;U team.",
-        'img' => 'printing/printer-in-action.jpg',
-        'gallery' => array('events/meeting-pics.jpg', 'sofabot/early-build.jpg'),
+        'body' => "February brought the club its first taste of going viral: a clip of <strong>Sofabot</strong>, the rideable robot couch, spread across Twitter and Facebook. Weeks later COVID-19 closed campus and Botathon 2020 had to be cancelled. The club kept building online through Zoom and Discord instead, running CAD and OpenRocket workshops and fielding a VEX&nbsp;U team. As the year went on, a roles-and-divisions system let members pick their teams, an aerospace and space community formed, and the <strong>3D-printing</strong> channel that still anchors half the club&rsquo;s builds got going.",
+        'img' => 'sofabot/early-build.jpg',
+        'gallery' => array('printing/printer-in-action.jpg', 'events/meeting-pics.jpg'),
     ),
     array(
         'year' => '2021',
