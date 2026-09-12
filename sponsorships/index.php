@@ -101,6 +101,48 @@ $stripe_pk = STRIPE_PUBLISHABLE_KEY;
     </div>
 </section>
 
+<?php
+// Current + past sponsors and supporters. Logos live in /images/sponsor-logos/.
+$sponsors = array(
+    array('RESPEC', 'respec.jpg'),
+    array('ServoCity', 'servocity.jpg'),
+    array('Studyology', 'studyology.jpg'),
+    array('IEEE Fort Worth', 'ieee-ft-worth.jpg'),
+    array('UNT Eagle\'s Nest', 'eagles-nest.jpg'),
+    array('Elegoo', 'botathon/elegoo.jpg'),
+    array('Marco\'s Pizza', 'botathon/marcos-pizza.jpg'),
+    array('Monster Energy', 'botathon/monster-energy.jpg'),
+);
+?>
+<style>
+    .sp-sponsors { background: #f4f8f5; border-top: 1px solid #e2ece6; }
+    .sp-sponsors .shell { max-width: 1040px; }
+    .sp-sponsors .head { text-align: center; max-width: 640px; margin: 0 auto 30px; }
+    .sp-sponsors h2 { margin-bottom: 8px; }
+    .sp-sponsors .head p { color: #555; font-size: 16px; line-height: 1.6; }
+    .sp-logo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; }
+    .sp-logo { display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid #e2ece6; border-radius: 10px; padding: 22px 18px; min-height: 120px; }
+    /* margin:0 overrides a theme rule that adds top margin to stacked images. */
+    .sp-logo img { max-width: 100%; max-height: 76px; width: auto; height: auto; object-fit: contain; margin: 0 !important; }
+    .sp-sponsors .note { text-align: center; color: #6b716d; font-size: 13.5px; margin-top: 24px; }
+</style>
+<section class="sp-sponsors section-50 section-md-75">
+    <div class="shell">
+        <div class="head">
+            <h2>Our Sponsors</h2>
+            <p>The companies and organizations that help fund our teams, events, and Botathon. We&rsquo;re grateful for their support.</p>
+        </div>
+        <div class="sp-logo-grid">
+            <?php foreach ($sponsors as $s): ?>
+                <div class="sp-logo">
+                    <img src="/images/sponsor-logos/<?php echo htmlspecialchars($s[1]); ?>" alt="<?php echo htmlspecialchars($s[0]); ?>" loading="lazy">
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <p class="note">Want your company here? <a href="/sponsorships/flyer">See the sponsorship flyer</a> or email <a href="mailto:hello@untrobotics.com">hello@untrobotics.com</a>.</p>
+    </div>
+</section>
+
 <?php footer(false); ?>
 <script src="https://js.stripe.com/v3/"></script>
 <script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars($paypal_client_id); ?>&currency=USD&disable-funding=card"></script>
