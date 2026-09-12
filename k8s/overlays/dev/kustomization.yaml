@@ -24,7 +24,7 @@ patches:
 images:
   - name: untrobotics-web
     newName: ghcr.io/untrobotics/website
-    newTag: "sha-d1a3c5b"
+    newTag: "sha-3c6584f"
   - name: untrobotics-driver-ws
     newName: ghcr.io/untrobotics/website-driver-ws
     newTag: "sha-5a2ad80"
