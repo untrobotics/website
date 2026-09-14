@@ -45,7 +45,7 @@ $eras = array(
     array(
         'year' => '2021',
         'title' => 'The biggest growth surge on record',
-        'body' => "Campus reopened and membership exploded, with <strong>153 new members in a single month</strong> (September 2021), the biggest recruiting spike in club history. In April the club spun up a dedicated <strong>High-Power Rocketry team</strong> to enter NASA Student Launch, backed by sponsors including RESPEC, Mouser, and O&rsquo;Reilly. The <strong>NASA JPL Open-Source Rover</strong> started in October, first as a rocket payload, then as a build of its own. Members competed at HackDFW in Frisco, ran Botathon Season 3 (Pirates), built an eight-foot rocket-shaped trophy case, and teamed up with UNT Fashion Design students on custom club apparel.",
+        'body' => "Campus reopened and membership exploded, with <strong>153 new members in a single month</strong> (September 2021), the biggest recruiting spike in club history. The club spun up a dedicated <strong>High-Power Rocketry team</strong>, started by <strong>Joseph Moore</strong> (a former Marine Corps EOD technician), to enter NASA Student Launch, backed by sponsors including RESPEC, Mouser, and O&rsquo;Reilly. The <strong>NASA JPL Open-Source Rover</strong> started in October, first as a rocket payload, then as a build of its own. Members competed at HackDFW in Frisco, ran Botathon Season 3 (Pirates), built an eight-foot rocket-shaped trophy case, and teamed up with UNT Fashion Design students on custom club apparel.",
         'img' => 'aerospace/hpr-launch-prep.jpg',
         'gallery' => array('botathon/s3-1.jpg', 'botathon/s3-2.jpg', 'rover/laser-cut-parts.jpg'),
     ),
@@ -155,7 +155,7 @@ $eras = array(
         <div class="card">
             <h2>Origins</h2>
             <p>Robotics and engineering have a long history at the University of North Texas. Student teams and clubs have come and gone on campus for decades, <strong>reportedly as far back as the 1970s</strong>, through the university&rsquo;s earlier eras as North Texas State University and the growth of its computing and engineering programs.</p>
-            <p>The lineage we can document begins in <strong>2015</strong>, when the &ldquo;Robotics Club at UNT&rdquo; was founded. It ran through 2017 out of Discovery Park and the university library&rsquo;s Factory makerspace, with dues, workshops, and Fall kickoff meetings, led in its later years by <span class="founders">Charles&nbsp;Bido</span> (president) and <span class="founders">Robert&nbsp;Maxson</span> (vice president). The club went quiet heading into 2018, and then a new group of students picked it back up.</p>
+            <p>The lineage we can document begins in <strong>2015</strong>, when the &ldquo;Robotics Club at UNT&rdquo; was founded. It ran through 2017 out of Discovery Park and the university library&rsquo;s Factory makerspace, holding officer elections, workshops, and Fall kickoff meetings. Members built laser-cut meArm robotic arms, and by 2017, under <span class="founders">Charles&nbsp;Bido</span> (president) and <span class="founders">Robert&nbsp;Maxson</span> (vice president), the club was working to charter an official IEEE Robotics &amp; Automation Society student branch. It went quiet heading into 2018, and then a new group of students picked it back up.</p>
             <div class="hist-fillin">
                 <strong>Help us go back further.</strong> We&rsquo;ve traced the club to 2015, but robotics at North Texas may reach back decades earlier. If you have old photos or stories, especially anything from the 1970s or 80s, we&rsquo;d love to see them.
             </div>
@@ -188,7 +188,7 @@ $eras = array(
 
     <section class="hist-people">
         <h2>People who shaped the club</h2>
-        <p>UNT Robotics runs on its members and an elected officer team. The earlier Robotics Club at UNT was led by Charles&nbsp;Bido and Robert&nbsp;Maxson. The 2018 revival was started by Sebastian&nbsp;King and Nick&nbsp;Tindle, with early officers including Juan&nbsp;Ruiz, Alex&nbsp;Ferguson, and Michelle&nbsp;Victoria. Faculty advisors and mentors over the years have included Dr.&nbsp;Keathly, Dr.&nbsp;Hassan, and Mark&nbsp;Wasikowski, along with rocketry mentors Jack and Suzy&nbsp;Sprague. Guest speakers have included NASA engineer George&nbsp;Salazar, Dr.&nbsp;Amir&nbsp;Jafari of UNT&rsquo;s Advanced Robotics Manipulators Lab, and roboticist Terrence&nbsp;Southern.</p>
+        <p>UNT Robotics runs on its members and an elected officer team. The earlier Robotics Club at UNT was led by Charles&nbsp;Bido and Robert&nbsp;Maxson. The 2018 revival was started by Sebastian&nbsp;King and Nick&nbsp;Tindle, with early officers including Juan&nbsp;Ruiz, Alex&nbsp;Ferguson, and Michelle&nbsp;Victoria. Joseph&nbsp;Moore founded the Aerospace and Rocketry division in 2021. Faculty advisors and mentors over the years have included Dr.&nbsp;Keathly, Dr.&nbsp;Hassan, and Mark&nbsp;Wasikowski, along with rocketry mentors Jack and Suzy&nbsp;Sprague. Guest speakers have included NASA engineer George&nbsp;Salazar, Dr.&nbsp;Amir&nbsp;Jafari of UNT&rsquo;s Advanced Robotics Manipulators Lab, and roboticist Terrence&nbsp;Southern.</p>
     </section>
 
     <div class="hist-cta">
