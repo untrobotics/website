@@ -24,7 +24,7 @@ $eras = array(
     array(
         'year' => '2018',
         'title' => 'The revival',
-        'body' => "After the earlier club went dormant, <strong>Sebastian King and Nick Tindle</strong> restarted it as UNT Robotics. The first meeting of the revived club was <strong>November 28, 2018</strong> in Discovery Park room 201, with Tindle as president, Juan Ruiz as vice president, and King as webmaster. The domain untrobotics.com was registered that December.",
+        'body' => "<strong>Sebastian King and Nick Tindle</strong> relaunched the club as UNT Robotics, kicking off the chapter that runs today. The first meeting was <strong>November 28, 2018</strong> in Discovery Park room 201, with Tindle as president, Juan Ruiz as vice president, and King as webmaster. untrobotics.com went up that December.",
         'img' => '',
         'gallery' => array(),
     ),
@@ -154,10 +154,10 @@ $eras = array(
     <section class="hist-origins">
         <div class="card">
             <h2>Origins</h2>
-            <p>Robotics and engineering have a long history at the University of North Texas. UNT&rsquo;s own Student Organizations archive documents an <strong>Eagle Robotics Society on campus from 1977</strong>, and a UNT Robotics Club registered in 2007, so student robotics groups have come and gone here for decades, through the university&rsquo;s earlier eras as North Texas State University.</p>
-            <p>The lineage we can document begins in <strong>2015</strong>, when the &ldquo;Robotics Club at UNT&rdquo; was founded. It ran through 2017 out of Discovery Park and the university library&rsquo;s Factory makerspace, holding officer elections, workshops, and Fall kickoff meetings. Members built laser-cut meArm robotic arms, and by 2017, under <span class="founders">Charles&nbsp;Bido</span> (president) and <span class="founders">Robert&nbsp;Maxson</span> (vice president), the club was working to charter an official IEEE Robotics &amp; Automation Society student branch. It went quiet heading into 2018, and then a new group of students picked it back up.</p>
+            <p>Our roots run deep. Students have been building robots at North Texas since at least <strong>1977</strong>, when the Eagle Robotics Society got its start, back when the school still went by North Texas State University. A UNT Robotics Club carried the torch forward in 2007. We&rsquo;re proud to be the latest to pick it up, one link in a robotics tradition here that stretches back nearly fifty years.</p>
+            <p>Our own chapter takes shape in <strong>2015</strong>, when the &ldquo;Robotics Club at UNT&rdquo; was founded. It ran out of Discovery Park and the university library&rsquo;s Factory makerspace, holding officer elections, workshops, and Fall kickoff meetings. Members built laser-cut meArm robotic arms, and by 2017, under <span class="founders">Charles&nbsp;Bido</span> (president) and <span class="founders">Robert&nbsp;Maxson</span> (vice president), the club was working to charter an official IEEE Robotics &amp; Automation Society student branch. In 2018, a new generation of students took the reins and relaunched it as the UNT Robotics you see today.</p>
             <div class="hist-fillin">
-                <strong>Help us go back further.</strong> We&rsquo;ve traced the club to 2015, but robotics at North Texas may reach back decades earlier. If you have old photos or stories, especially anything from the 1970s or 80s, we&rsquo;d love to see them.
+                <strong>Help us fill in the story.</strong> We&rsquo;ve traced our roots to 1977, and there&rsquo;s surely more out there. If you have old photos or stories from the early days, especially the 1970s and 80s, we&rsquo;d love to see them.
             </div>
         </div>
     </section>
