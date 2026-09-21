@@ -103,7 +103,7 @@ define('BREVO_TRANSACTIONAL_RESERVE', (int) env('BREVO_TRANSACTIONAL_RESERVE', '
 
 define('DISCORD_CLIENT_PUBLIC_KEY',  env('DISCORD_CLIENT_PUBLIC_KEY'));
 define('DISCORD_APP_API_URL',        'https://discordapp.com/api');
-define('DISCORD_INVITE_URL',         env('DISCORD_INVITE_URL', 'https://discord.gg/aaaaaaa'));
+define('DISCORD_INVITE_URL',         env('DISCORD_INVITE_URL', 'https://discord.gg/q8BEammSfe'));
 define('DISCORD_APP_REDIRECT_URI',   env('DISCORD_APP_REDIRECT_URI', 'https://www.untrobotics.com/auth/discord'));
 define('DISCORD_ADMIN_BOT_TOKEN',    env('DISCORD_ADMIN_BOT_TOKEN'));
 define('DISCORD_APP_CLIENT_ID',      env('DISCORD_APP_CLIENT_ID'));
