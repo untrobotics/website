@@ -17,6 +17,24 @@
                 "view": "right",
                 "path": "/images/merch/generated/unt-robotics-bomber-jacket-gear-default-right.jpg"
             }
+        ],
+        "White": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-gear-white-back.jpg"
+            },
+            {
+                "view": "back-right",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-gear-white-back-right.jpg"
+            },
+            {
+                "view": "left",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-gear-white-left.jpg"
+            },
+            {
+                "view": "right",
+                "path": "/images/merch/generated/unt-robotics-bomber-jacket-gear-white-right.jpg"
+            }
         ]
     },
     "636ea56986bad9": {
@@ -58,6 +76,20 @@
             {
                 "view": "right",
                 "path": "/images/merch/generated/unt-robotics-aerospace-shirt-default-right.jpg"
+            }
+        ],
+        "White": [
+            {
+                "view": "back",
+                "path": "/images/merch/generated/unt-robotics-aerospace-shirt-white-back.jpg"
+            },
+            {
+                "view": "left",
+                "path": "/images/merch/generated/unt-robotics-aerospace-shirt-white-left.jpg"
+            },
+            {
+                "view": "right",
+                "path": "/images/merch/generated/unt-robotics-aerospace-shirt-white-right.jpg"
             }
         ]
     },
