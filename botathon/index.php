@@ -207,7 +207,7 @@ head('Botathon Info', true);
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <h2>Registration</h2>
-                        <p>Botathon runs each spring and is open to all currently enrolled UNT students &mdash; every major, every skill level. For this season&rsquo;s exact dates and theme, check our <a href="https://untro.bo/join/discord">Discord</a> and the announcements channel.</p>
+                        <p>Botathon registration is now open.</p>
 
                         <div class="well-custom">
                             <div><h5><strong>Open to all UNT students.</strong></h5></div>
