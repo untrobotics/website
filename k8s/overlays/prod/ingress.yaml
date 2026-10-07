@@ -17,6 +17,17 @@ spec:
         - untrobotics.com
         - www.untrobotics.com
       secretName: prod-untrobotics-tls
+    # untro.bo short domain. Separate secrets per host so the apex cert, which
+    # can't issue until its OVH DNS A record is repointed to this cluster, does
+    # not block www.untro.bo (already pointed here) from getting its cert. The
+    # web app's .htaccess 301s any non-canonical host to https://www.untrobotics.com/$1,
+    # so both hosts just land on the canonical site, path preserved.
+    - hosts:
+        - www.untro.bo
+      secretName: prod-untrobo-www-tls
+    - hosts:
+        - untro.bo
+      secretName: prod-untrobo-apex-tls
   rules:
     - host: www.untrobotics.com
       http:
@@ -29,6 +40,26 @@ spec:
                 port:
                   number: 80
     - host: untrobotics.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80
+    - host: www.untro.bo
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 80
+    - host: untro.bo
       http:
         paths:
           - path: /
