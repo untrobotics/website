@@ -4,8 +4,8 @@ head('Botathon — Past Events', true);
 
 // Season-by-season history. Newest first. Photos live in /images/content/botathon/.
 $seasons = array(
-    array('n' => 7, 'year' => 2025, 'theme' => 'Keep on Trucking', 'tag' => 'IR-laser combat',
-        'blurb' => 'Our biggest season yet &mdash; robots dueled with infrared lasers in last-bot-standing combat.',
+    array('n' => 7, 'year' => 2025, 'theme' => 'Keep on Trucking', 'tag' => 'cargo haul',
+        'blurb' => 'Bots raced to haul cargo to the drop-off zone before time ran out.',
         'photos' => array('s7-1.jpg', 's7-2.jpg', 's7-3.jpg')),
     array('n' => 6, 'year' => 2024, 'theme' => 'Capture the Flag', 'tag' => '1v1 block battles',
         'blurb' => 'Robots faced off one-on-one, each side racing to capture the other team&rsquo;s blocks &mdash; blue grabbing red, red grabbing blue.',
