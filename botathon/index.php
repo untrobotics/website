@@ -159,7 +159,7 @@ head('Botathon Info', true);
                             <!--<li><a href="#field-preview" class="text-content">Field Preview</a></li>-->
                             <li id="nav-parts-list"><a href="#parts-list" class="text-content">Parts List</a></li>
                             <li id="nav-teams"><a href="#teams" class="text-content">Teams</a></li>
-                            <!--<li><a href="#tshirts" class="text-content">T-Shirts</a></li>-->
+                            <li id="nav-tshirts"><a href="#tshirts" class="text-content">T-Shirts</a></li>
                             <li id="nav-sponsors"><a href="#sponsors" class="text-content">Event Sponsors</a></li>
                             <li id="nav-contacts"><a href="#contacts" class="text-content">Contact Info</a></li>
                             <!--<li><a href="brackets" class="text-content">Gameday Brackets</a></li>-->
@@ -207,7 +207,7 @@ head('Botathon Info', true);
                 <div class="cell-md-12 cell-lg-10">
                     <div class="inset-md-right-30 inset-lg-right-0">
                         <h2>Registration</h2>
-                        <p>Botathon runs each spring and is open to all currently enrolled UNT students &mdash; every major, every skill level. For this season&rsquo;s exact dates and theme, check our <a href="https://untro.bo/join/discord">Discord</a> and the announcements channel.</p>
+                        <p>Botathon registration is now open. It&rsquo;s a one-day build-and-compete marathon open to every UNT student, whatever your major or skill level.</p>
 
                         <div class="well-custom">
                             <div><h5><strong>Open to all UNT students.</strong></h5></div>
@@ -242,45 +242,38 @@ head('Botathon Info', true);
                         <tr><td>Season 4</td><td>2022</td><td>Football</td></tr>
                         <tr><td>Season 5</td><td>2023</td><td>Mario Kart</td></tr>
                         <tr><td>Season 6</td><td>2024</td><td>Capture the Flag</td></tr>
-                        <tr><td>Season 7</td><td>2025</td><td>Keep on Trucking (IR-laser combat)</td></tr>
+                        <tr><td>Season 7</td><td>2025</td><td>Keep on Trucking</td></tr>
+                        <tr><td>Season 8</td><td>2026</td><td>Laser Tag</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </section>
 
-    <!--<section class="section-50" id="event-details">
+    <section class="section-50" id="event-details">
         <div class="shell">
             <h2>Event Details</h2>
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div>Registration</div>
-                    <h4><strong>Feb. 19:</strong> Registration Opened</h4>
-                    <h4><strong>Mar. 20:</strong> Registration Ends</h4>
+                    <h4><strong>Oct. 1:</strong> Registration Opened</h4>
+                    <h4><strong>Oct. 27:</strong> Registration Ends</h4>
+                    <h4><strong>Oct. 31:</strong> Day of Event</h4>
                 </div>
             </div>
         </div>
-    </section>-->
+    </section>
 
     <section class="section-50" id="gameplay">
         <div class="shell">
             <h2>Gameplay</h2>
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
-                    <p class="inset-md-right-30 inset-lg-right-0">
-                        <p>Gameplay changes with each season&rsquo;s theme. As an example, one recent season was a capture-the-flag style event, where robots faced off 1v1 and had to capture blocks from the opposing team &mdash; the blue side capturing red blocks, and the red side capturing blue blocks.</p>
-                        <p>These blocks will be of two types:</p>
-                        <p>
-                            <ol>
-                                <li>• 1” square wooden blocks, worth 1 point each</li>
-                                <li>• 1” square nickel (magnetic) blocks, worth 2 points each <em>(electromagnets will be provided too with your robot kits)</em></li>
-                            </ol>
-                        </p>
-                        <p>To capture a block, it must be placed on the robot’s home side within a marked boundary called the ‘capture area’ (marked using tape) and remain within the boundary at the end of the match.</p>
-                        <p>A secondary capture area atop a ramp will provide the team one extra point per block. So, a wooden block in the secondary capture area will be worth 2 points, and a nickel block worth 3 points.</p>
-                        <p>Each round will have a 3 minute time limit. At the end of the match, a referee will count all of the blocks in each area and determine the scores and winner. In the case of a tie, a sudden death round will occur with a single block placed in the center of the field and the first team to capture the block and place it into one of their capture areas will be the winner.</p>
-                        <div><img src="/images/content/botathon/s7-2.jpg" alt="Botathon robots competing" class="img-responsive" style="border-radius:8px;margin-top:15px;"/></div>
-                    </p>
+                    <div class="inset-md-right-30 inset-lg-right-0">
+                        <p>This season&rsquo;s theme is Laser Tag. Teams build and pilot RC cars in a glow-in-the-dark arena and hunt each other down for points.</p>
+                        <p>Bots aim with laser pointers and use IR transmitters and receivers to register &ldquo;hits.&rdquo; Each car gets 3 lives per round. Take a hit and your bot&rsquo;s laser and IR shut off until you drive to a recharge point to jump back in.</p>
+                        <p>Play runs on a shuffling bracket: after each round, the winners get reshuffled into fresh Red and Blue teams, round after round, until a final 1v1 showdown decides the overall winner.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -292,7 +285,7 @@ head('Botathon Info', true);
             <div class="range">
                 <div class="cell-md-8 cell-lg-9">
                     <div class="inset-md-right-30 inset-lg-right-0">
-                        <div>A typical event-day schedule looks like this:</div>
+                        <div>Event Date: <strong>October 31, 2026</strong></div>
                         <table id="schedule">
                             <tr><td>&nbsp;9:00 am</td><td>Check-in Opens</td></tr>
                             <tr><td>&nbsp;9:30 am</td><td>Team Finding Event</td></tr>
@@ -555,7 +548,7 @@ head('Botathon Info', true);
         </div>
     </section>
 
-    <!--<section class="section-50" id="tshirts">
+    <section class="section-50" id="tshirts">
         <div class="shell">
             <h2>T-Shirts</h2>
             <div class="range">
@@ -567,7 +560,7 @@ head('Botathon Info', true);
                 </div>
             </div>
         </div>
-    </section>-->
+    </section>
 
     <section class="section-50" id="sponsors">
         <div class="shell">
@@ -582,8 +575,6 @@ head('Botathon Info', true);
                             our members with your company's message. </p>
                         <p><strong>If you would like to become a UNT Robotics sponsor, please <a href="/contact">contact
                                     us</a>!</strong></p>
-                        <div class="sponsor"><img src="/images/sponsor-logos/botathon/eagles-nest.jpg"
-                                                  alt="eagle's nest logo"/></div>
                     </div>
                 </div>
             </div>
