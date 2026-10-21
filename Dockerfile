@@ -2,11 +2,13 @@
 #
 # Apache + mod_rewrite is kept so the existing .htaccess routing works unchanged.
 #
-# Base pinned to an exact patch release for the php2shell RCE fix
-# (CVE-2026-109618 / CVE-2026-109619, CVSS 9.2, fixed in PHP 8.3.36 on 2026-10-21).
-# Pinning the exact tag also forces CI to pull a fresh base rather than reuse a
-# cached 8.3.35 layer. Bump this when applying future PHP security releases.
-FROM php:8.3.36-apache
+# php:8.3-apache currently resolves to PHP 8.3.36 — the php2shell RCE fix
+# (CVE-2026-109618 / CVE-2026-109619, CVSS 9.2, released 2026-10-21). buildx
+# resolves this tag to its current digest on every build, so the floating tag
+# picks up the fix (and later 8.3.x security releases). The exact 8.3.36-apache
+# tag was avoided: it lagged in multi-arch registry propagation at release and
+# broke the CI build with "no match for platform in manifest".
+FROM php:8.3-apache
 
 # --- PHP extensions -----------------------------------------------------------
 # Only what the codebase actually uses: mysqli/pdo_mysql (DB), gmp (Discord
