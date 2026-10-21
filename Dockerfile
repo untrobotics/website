@@ -1,10 +1,12 @@
 # UNT Robotics website — PHP/Apache application image.
 #
-# Production currently runs PHP 7.2 + Apache (mod_php). This image targets the
-# modern PHP 8.3; expect some 7.2 -> 8.3 compatibility fixes to surface when the
-# stack is exercised. Apache + mod_rewrite is kept so the existing .htaccess
-# routing works unchanged (lift-and-shift).
-FROM php:8.3-apache
+# Apache + mod_rewrite is kept so the existing .htaccess routing works unchanged.
+#
+# Base pinned to an exact patch release for the php2shell RCE fix
+# (CVE-2026-109618 / CVE-2026-109619, CVSS 9.2, fixed in PHP 8.3.36 on 2026-10-21).
+# Pinning the exact tag also forces CI to pull a fresh base rather than reuse a
+# cached 8.3.35 layer. Bump this when applying future PHP security releases.
+FROM php:8.3.36-apache
 
 # --- PHP extensions -----------------------------------------------------------
 # Only what the codebase actually uses: mysqli/pdo_mysql (DB), gmp (Discord
