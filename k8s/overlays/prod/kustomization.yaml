@@ -36,10 +36,10 @@ patches:
 images:
   - name: untrobotics-web
     newName: ghcr.io/untrobotics/website
-    newTag: "sha-c0138ca"
+    newTag: "sha-7354084"
   - name: untrobotics-driver-ws
     newName: ghcr.io/untrobotics/website-driver-ws
     newTag: "sha-29f87cb"
   - name: untrobotics-discord-bot
     newName: ghcr.io/untrobotics/website-discord-bot
-    newTag: "sha-9f47d75"
+    newTag: "sha-7354084"
