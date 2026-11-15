@@ -71,6 +71,13 @@ define('TWILIO_FIND_FIRST_QUEUE_SID', env('TWILIO_FIND_FIRST_QUEUE_SID'));
 // carries the approved campaign, otherwise carriers reject with error 30034.
 define('TWILIO_MESSAGING_SERVICE_SID', env('TWILIO_MESSAGING_SERVICE_SID', 'MGb6d953f5f877fa5175519f04db5aa6cb'));
 
+// Incoming-SMS spam filter (twilio/sms-spam-filter.php). The filter ships with
+// built-in defaults; these add more entries without a code change. Comma or
+// newline separated. Numbers match on last 10 digits; patterns are matched as a
+// lowercase substring of the message body and may be multi-word phrases.
+define('SMS_SPAM_BLOCK_NUMBERS',  env('SMS_SPAM_BLOCK_NUMBERS'));
+define('SMS_SPAM_BLOCK_PATTERNS', env('SMS_SPAM_BLOCK_PATTERNS'));
+
 define('PRINTFUL_API_KEY', env('PRINTFUL_API_KEY'));
 // Shared secret for the Printful webhook (carried as ?secret=... in the webhook
 // URL). Leave unset to skip verification; set it — and add ?secret=<value> to the
