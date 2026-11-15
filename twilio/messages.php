@@ -16,6 +16,20 @@ if (!validate_twilio_signature()) {
     die();
 }
 
+// Drop known SMS spam (fundraiser / mass-text blasts) before it reaches Discord.
+// Return 200 so Twilio does not retry, and log the drop so a false positive can
+// be recovered from the web-logs channel. See twilio/sms-spam-filter.php.
+require_once(__DIR__ . '/sms-spam-filter.php');
+$incoming_from = isset($_POST['From']) ? $_POST['From'] : '';
+$incoming_body = isset($_POST['Body']) ? $_POST['Body'] : '';
+$spam_reason = sms_spam_reason($incoming_from, $incoming_body);
+if ($spam_reason !== null) {
+    error_log('[sms] spam dropped from=' . $incoming_from . ' reason=' . $spam_reason
+        . ' body=' . substr((string) $incoming_body, 0, 200));
+    http_response_code(200);
+    die();
+}
+
 require_once(BASE . '/api/discord/bots/admin.php');
 
 $body = isset($_POST['Body']) ? trim($_POST['Body']) : '';
