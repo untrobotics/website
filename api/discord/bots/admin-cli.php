@@ -70,6 +70,11 @@ $offending_patterns = array(
                     //   Options -Indexes doing its job when someone hits a dir.
     "@^AH00126@",   // "Invalid URI in request" — malformed / path-traversal attack
                     //   probes (e.g. .../proc/self/environ) that Apache already rejects.
+    "@^AH10508@",   // "Unsafe URL with %3f" — Apache refusing to rewrite an encoded
+                    //   '?' in a redirect (query-string-injection probe); blocked as
+                    //   intended, so do not weaken it with UnsafeAllow3F.
+    "@^AH10411@",   // "Rewritten query string contains control characters or spaces"
+                    //   — same class of malformed-URL probe the redirect rules reject.
 );
 
 foreach ($not_found_paths_to_ignore as $path) {
